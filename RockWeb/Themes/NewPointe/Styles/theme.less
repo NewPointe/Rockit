@@ -1,0 +1,626 @@
+﻿
+// Load Master Styles  
+// -------------------------
+@import "../../../Styles/_rock-core.less";
+@import "../../../Styles/_rock-variables.less";
+@import "_variables.less";
+@import "_print.less";
+
+
+/*
+    Rock Theme Styles
+
+    1. HTML Overrides
+    2. Bootstrap Overides
+    3. Theme Styling
+    4. Responsive Overrides 
+
+*/
+
+@font-face{ 
+    font-family: 'Gotham';
+    src: url('../Assets/Fonts/Gotham/gotham-light-webfont.eot');
+    src: url('../Assets/Fonts/Gotham/gotham-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Assets/Fonts/Gotham/gotham-light-webfont.woff') format('woff'),
+         url('../Assets/Fonts/Gotham/gotham-light-webfont.ttf') format('truetype'),
+         url('../Assets/Fonts/Gotham/gotham-light-webfont.svg#webfont') format('svg');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face{ 
+    font-family: 'Gotham';
+    src: url('../Assets/Fonts/Gotham/gotham-book-webfont.eot');
+    src: url('../Assets/Fonts/Gotham/gotham-book-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Assets/Fonts/Gotham/gotham-book-webfont.woff') format('woff'),
+         url('../Assets/Fonts/Gotham/gotham-book-webfont.ttf') format('truetype'),
+         url('../Assets/Fonts/Gotham/gotham-book-webfont.svg#webfont') format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face{ 
+    font-family: 'Gotham';
+    src: url('../Assets/Fonts/Gotham/gotham-bold-webfont.eot');
+    src: url('../Assets/Fonts/Gotham/gotham-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Assets/Fonts/Gotham/gotham-bold-webfont.woff') format('woff'),
+         url('../Assets/Fonts/Gotham/gotham-bold-webfont.ttf') format('truetype'),
+         url('../Assets/Fonts/Gotham/gotham-bold-webfont.svg#webfont') format('svg');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face{ 
+    font-family: 'Gotham';
+    src: url('../Assets/Fonts/Gotham/gotham-black-webfont.eot');
+    src: url('../Assets/Fonts/Gotham/gotham-black-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Assets/Fonts/Gotham/gotham-black-webfont.woff') format('woff'),
+         url('../Assets/Fonts/Gotham/gotham-black-webfont.ttf') format('truetype'),
+         url('../Assets/Fonts/Gotham/gotham-black-webfont.svg#webfont') format('svg');
+    font-weight: 700;
+    font-style: normal;
+}
+
+// 1. HTML Overrides
+// -------------------------
+
+main {
+    display: block;
+}
+
+img {
+    .img-responsive();
+}
+
+h1, h2, h3, h4, h5 {
+    text-transform: uppercase;
+    letter-spacing: -1px;
+}
+
+p, dd {
+    font-family: @font-family-serif;
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+.btn {
+    font-family: "Gotham", Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+// 2. Bootstrap Overrides
+// -------------------------
+
+.navbar {
+    position: static; // default is relative which causes the dropdowns to go under the other navbars dispite having a higher z-index - JME 9/9/2013
+    // using fontawesome nav toggle button instead of the BS default
+    .navbar-toggle {
+        padding: 6px 10px;
+
+        i.fa-bars {
+            color: @navbar-inverse-toggle-icon-bar-bg;
+        }
+    }
+
+    .navbar-brand {
+      font-family: @headings-font-family;
+      text-transform: uppercase;
+      @media (max-width: @screen-xs-max) {
+        font-size: 97%
+      }
+    }
+}
+
+a:hover i.fs {
+    text-decoration: none;
+}
+
+.form-control {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    color: #404040;
+    background-color: #8BC540;
+    border-color: #8BC540;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    color: #8BC540;
+    background-color: #404040;
+    border-color: #404040;
+}
+
+// 3. Theme Styling
+// -------------------------
+
+header {
+    .page-menu,
+    .login-status {
+        float: right;
+    }
+
+    .navbar {
+        background-color: @header-bg;
+    }
+}
+
+.navbar-brand {
+    height: auto;
+    padding-bottom: 0;
+    display: none;
+}
+
+.navbar-brand.navbar-brand-icon {
+    display: inherit;
+}
+
+.navbar-brand img {
+    max-height: 55px;
+    width: auto;
+}
+
+.navbar-toggle {
+    margin-top: 15px;
+}
+
+// homepage items
+#announcement-rotator {
+    margin: 0 -@grid-gutter-width/2 @spacing-lg-px;
+
+    .item {
+        img {
+            width: 100%;
+        }
+    }
+}
+
+.announcement-list {
+    .announcement {
+        margin: 0 auto @spacing-lg-px;
+        max-width: 390px;
+    }
+
+    .announcement-title {
+        margin: @spacing-sm-px 0;
+    }
+
+    img {
+        width: 100%;
+    }
+}
+
+.announcement-detail {
+    img {
+        width: 100%;
+    }
+}
+
+header .page-menu {
+    width: 100%;
+    padding: 0;
+
+    .nav.navbar-nav {
+        float: none;
+        text-align: center;
+    
+        > li {
+            font-family: "Gotham";
+            font-weight: 600;
+            font-size: 1em;
+            text-transform: uppercase;
+            text-align: center;
+            display: inline-block;
+            float: none;
+        }
+
+        a {
+            padding: 5px;
+        }
+
+    }
+}
+
+.navbar-nav {
+    margin: 0;
+    float: right;
+}
+
+.nav-sub {
+    li {
+        border: 1px solid @gray-lighter;
+        border-radius: @border-radius-base;
+
+        a:hover {
+            background-color: @gray-lighter;
+        }
+    }
+}
+
+.subnav {
+    background-color: #404040;
+    border: none!important;
+
+    ul {
+        text-align: center;
+    }
+
+    li {
+        display: block;
+        border: none;
+        text-align: center;
+        width: 100%;
+        font-family: "Gotham";
+        font-weight: 600;
+        font-size: 1em;
+        text-transform: uppercase;
+        a {
+            width: 100%;
+            color: @brand-primary;
+        }
+        a:hover {
+            background-color: transparent;
+            color: #fff;
+        }
+        a:focus {
+            background-color: transparent;
+            color: #fff;
+        }
+    }
+
+    p {
+        margin: 0;
+    }
+}
+
+footer {
+    margin-bottom: 20px;
+
+    .footer-message {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .footer-address {
+        float: right;
+    }
+}
+
+footer .container {
+    max-width: 1140px;
+    background: @accent-semibold-color;
+    color: @accent-semibold-text-color;
+    padding-top: 20px;
+}
+
+#footer-tiny-logo {
+	background: url('../Assets/Images/NPCC_Small.png') no-repeat center;
+	background-color: #404040;
+	background-size: 18px;
+	width: 28px;
+	height: 28px;
+	position: absolute;
+	left: 50%;
+	margin-left: -16px;
+}
+
+.copyright {
+    font-size: 10px;
+    text-align: center;
+    border-top: 1px solid #fff;
+    margin-top: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.social-circle {
+	width: 45px;
+	height: 45px;
+	background-color: #fff;
+	display: inline-block;
+	margin-right: 10px;
+	text-align: center;
+}
+
+.social-circle i {
+	width: 100%!important;
+	height: 100%!important;
+	font-size: 32px;
+	background-color: transparent!important;
+	color: #404040;
+	line-height: 45px;
+	top: 1px;
+	transition: all 0.2s linear;
+	-moz-transition: all 0.2s linear;
+	-webkit-transition: all 0.2s linear;
+}
+
+.social-circle i:hover {
+    color: @brand-primary;
+}
+
+#splash.error {
+    background-color: @gray-lighter;
+
+    #content {
+        margin-top: 20px;
+        background-color: @body-bg;
+        border-radius: @border-radius-base;
+        padding: 20px;
+    }
+}
+
+.not-found h2 {
+    font-size: 200px;
+    font-weight: @font-weight-bold;
+    letter-spacing: -5px;
+    line-height: 210px;
+
+    i {
+        color: #F03;
+        font-size: 210px;
+        position: relative;
+        top: -12px;
+    }
+}
+
+
+/* datepicker styles */
+.datepicker table td.day,
+th.prev,
+th.next,
+.datepicker table thead th.datepicker-switch, 
+th.dow {
+    color: #ffffff;
+}
+
+.datepicker table td.active {
+    background-color: @brand-primary;
+}
+
+.datepicker table td.day.old, td.day.new {
+   color: #808080!important;
+}
+
+
+/* hide block panels */
+.panel.panel-block {
+    border: 0;
+    box-shadow: none;
+
+    & > .panel-heading {
+        display: none;
+    }
+
+    & > .panel-body {
+        padding: 0;
+
+        .grid.grid-panel {
+            margin: 0;
+        }
+    }
+}
+
+//Forms
+
+.contribution-total {
+    font-family: "Gotham", Arial, Helvetica, sans-serif;
+    font-size: 1.7em;
+    font-weight: 700;
+    color: @brand-primary;
+    text-transform: uppercase;
+}
+
+.contribution-total label {
+    font-size: .8em;
+    font-weight: 600;
+    letter-spacing: -1px;
+    color: #404040;
+}
+
+.month-year-picker .separator, .month-day-picker .separator {
+    margin: 0 2px 0 -3px;
+    color: #404040;
+}
+
+// 4. Responsive Overrides
+// -------------------------
+
+// default styling should be for phones 767px or less
+
+// Small devices (tablets, 768px and up)
+@media (min-width: @screen-sm-min) {
+    #announcement-rotator {
+        margin: @spacing-lg-px 0;
+    }
+
+    .navbar-brand {
+        display: inherit;
+    }
+
+    .navbar-brand.navbar-brand-icon {
+        display: none;
+    }
+
+    header .page-menu {
+        padding: 10px 80px;
+        border-top: 1px solid @accent-bold-color;
+        border-bottom: 1px solid @accent-semibold-color;
+    }
+    header .page-menu .nav.navbar-nav > li {
+        font-size: 1.3em;
+    }
+
+    header .page-menu .nav.navbar-nav > li a {
+        padding: 5px 17px;
+    }
+
+    .subnav li {
+        display: inline-block;
+        font-size: 1.2em;
+        width: 30%;
+        a {
+            width: auto;
+        }
+    }
+
+    footer .container {
+        max-width: 720px;
+    }
+}
+
+// Medium devices (desktops, 992px and up)
+@media (min-width: @screen-md-min) {
+    header .page-menu .nav.navbar-nav > li {
+        font-size: 1.8em;
+    }
+
+    header .page-menu .nav.navbar-nav > li a {
+        padding: 8px 22px;
+    }
+
+    .subnav li {
+        font-size: 1.4em;
+
+        a {
+            padding: 10px 25px;
+        }
+    }
+
+    footer .container {
+        max-width: 940px;
+    }
+
+    footer .footer-message {
+        width: auto;
+        text-align: inherit;
+        float: left;
+        margin-bottom: 0;
+    }
+}
+
+// Large devices (large desktops, 1200px and up)
+@media (min-width: @screen-lg-min) {
+    header .page-menu .nav.navbar-nav > li {
+        font-size: 2em;
+    }
+
+    header .page-menu .nav.navbar-nav > li a {
+        padding: 10px 40px;
+    }
+
+    .subnav li {
+        font-size: 1.6em;
+    }
+
+    footer .container {
+        max-width: 1140px;
+    }
+}
+
+
+// DISC
+
+.disc-assessment th {
+  padding: 6px;
+}
+.disc-assessment th:last-child {
+  border-radius: 0 4px 0 0;
+}
+.disc-assessment th.disc-question {
+  font-weight: 700;
+  padding: 6px;
+  border-radius: 4px 0 0 0;
+}
+.disc-assessment .disc-question {
+  width: 100%;
+}
+.disc-assessment .disc-answer {
+  width: 100px;
+}
+.disc-heading {
+  text-align: center;
+}
+.discchart {
+  clear: both;
+  padding: 0;
+  width: 80%;
+  height: 425px;
+  margin: 0 auto;
+  max-width: 650px;
+  position: relative;
+}
+.discchart li {
+  display: inline-block;
+  height: 425px;
+  margin: 0 2% 0 0;
+  width: 20%;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  vertical-align: bottom;
+  border-radius: 6px 6px 0 0;
+  background-color: #428bca;
+  color: #ecf0f3;
+}
+.discchart .discbar-d {
+    background-color: #E60000;
+}
+.discchart .discbar-i {
+    background-color: #ffd724;
+}
+.discchart .discbar-s {
+    background-color: #47ba12;
+}
+.discchart .discbar-c {
+    background-color: #428bca;
+}
+
+.discchart li.discchart-midpoint {
+  height: 70%;
+  width: 100%;
+  background-color: transparent;
+  position: absolute;
+  bottom: 0;
+  border-top: 2px solid red;
+  border-radius: 0;
+}
+.discchart .discbar-label {
+  font-weight: 500;
+  overflow: hidden;
+  text-transform: uppercase;
+  width: 100%;
+  font-size: 28px;
+  bottom: 20px;
+  position: absolute;
+}
+.discchart .discbar {
+  border: 1px solid #ddd;
+}
+.discchart .discbar:before {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5%;
+  letter-spacing: -3px;
+  font-size: 20px;
+  padding: 5px 1em 0;
+  display: block;
+  text-align: center;
+  content: attr(title);
+  word-wrap: break-word;
+  line-height: 1em;
+}
+.discchart .discbar.discbar-primary {
+  background: #193c5a;
+}
+.disc-chart .discbar-value {
+  letter-spacing: -3px;
+  opacity: .4;
+  width: 100%;
+  font-size: 30px;
+  position: absolute;
+}
