@@ -45,10 +45,10 @@
 
             <div class="panel-body">
                 
-           Campus:  <%= selectedCampus %> 
-                Time; <%= startDateTime %>
-                Group  <%= selectedGroup %>
-                Location <%= selectedLocation %>
+           Campus:  <%= Session["campus"] %> 
+                Time; <%= Session["startDateTime"] %>
+                Group  <%= Session["group"] %>
+                Location <%= Session["location"] %>
 
 
 

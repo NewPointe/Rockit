@@ -60,6 +60,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
     public String selectedCampus;
     public String selectedGroup;
     public String selectedLocation;
+    public String selectedStartDateTimeString;
 
     
                
@@ -98,18 +99,18 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         schedule = spSchedule;
         group = gpGroup;
 
+        
+        selectedCampus = campus.SelectedCampusId.ToString();
+        selectedGroup = group.SelectedValue.ToString();
+        selectedLocation = location.Location.ToStringSafe();
+        selectedStartDateTimeString = startDateTime.ToString();
+
         //Session["person"] = person;
         Session["location"] = location;
         Session["campus"] = campus;
         Session["startDateTime"] = startDateTime;
         Session["schedule"] = schedule;
         Session["group"] = group;
-
-
-
-        selectedCampus = campus.SelectedCampusId.ToString();
-        selectedGroup = group.SelectedValue.ToString();
-        selectedLocation = location.Location.ToStringSafe();
 
 
         //Set Panel Visability
