@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Net;
 using System.Text;
+using System.Diagnostics;
 
 using Rock;
 using Rock.Data;
@@ -99,13 +100,10 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
     {
 
         //Set Variables from form
-        //person = ppPerson;
-        //location = locpLocation;
+        person = ppPerson;
         //campusString = cpCampus.SelectedCampusId.ToString();
         startDateTime = Convert.ToDateTime(dtpDateTime.SelectedDateTime);
         eventName = ddlEvent.SelectedValue.ToString();
-        //schedule = spSchedule;
-        //group = gpGroup;
 
 
         int? newCampusId = cpCampus.SelectedCampusId;
@@ -125,7 +123,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         //selectedLocation = location.Location.ToStringSafe();
         selectedStartDateTimeString = startDateTime.ToString();
 
-        //Session["person"] = person;
+        Session["person"] = person;
         //Session["location"] = location;
         Session["campus"] = campusString;
         Session["campusName"] = campusName;
@@ -139,13 +137,54 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         pnlEventDetails.Visible = true;
         pnlEvent.Visible = false;
         pnlPeople.Visible = true;
-        return;
+        
 
         //Set Variables based on Campus and Event selected
 
-        // 
+        if (Session["eventName"].ToString() == "New to NewPointe")
+            {
+                schedule = null;
 
-    }
+                if (Session["campusName"].ToString() == "Akron Campus")
+                {
+                    Session["group"] = 1;
+                    Session["location"] = 1;
+                }
+                else if (Session["campusName"].ToString() == "Canton Campus")
+                {
+                    Session["group"] = 1;
+                    Session["location"] = 1;
+                }
+                else if (Session["campusName"].ToString() == "Coshocton Campus")
+                {
+                    Session["group"] = 1;
+                    Session["location"] = 1;
+                }
+                else if (Session["campusName"].ToString() == "Dover Campus")
+                {
+                    Session["group"] = 1;
+                    Session["location"] = 1;
+                }
+                else if (Session["campusName"].ToString() == "Millersburg Campus")
+                {
+                    Session["group"] = 1;
+                    Session["location"] = 1;
+                }
+                else if (Session["campusName"].ToString() == "Wooster Campus")
+                {
+                    Session["group"] = 1;
+                    Session["location"] = 1;
+                }
+
+
+                Session["schedule"] = 1;
+                Session["person"] = person.SelectedValue.ToString();
+
+            }
+
+
+            return;
+        }
 
 
 
@@ -157,10 +196,17 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         GroupMemberService groupMemberService = new GroupMemberService(rockContext);
         PersonAliasService personAliasService = new PersonAliasService(rockContext);
 
-        
-        // Only create one attendance record per day for each person/schedule/group/location
-        var attendance = attendanceService.Get(startDateTime, location.Location.Id, Int32.Parse(schedule.SelectedValue), Int32.Parse(group.SelectedValue), Int32.Parse(person.SelectedValue.ToString()));
-        if (attendance == null)
+
+            // Only create one attendance record per day for each person/schedule/group/location
+            Debug.WriteLine(Convert.ToDateTime(Session["startDateTime"]));
+            Debug.WriteLine(Session["location"].ToString());
+            Debug.WriteLine(Session["schedule"].ToString());
+            Debug.WriteLine(Session["group"].ToString());
+            Debug.WriteLine(Session["person"].ToString());
+
+        var attendance = attendanceService.Get(Convert.ToDateTime(Session["startDateTime"]), int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), int.Parse(Session["person"].ToString()));
+ 
+            if (attendance == null)
         {
             var primaryAlias = personAliasService.GetPrimaryAlias(Int32.Parse(person.SelectedValue.ToString()));
             if (primaryAlias != null)

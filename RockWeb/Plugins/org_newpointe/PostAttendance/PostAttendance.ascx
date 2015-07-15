@@ -44,7 +44,7 @@
             <div class="panel-body">
                 
                 <h3><strong><%= Session["eventName"] %> at <%= Session["campusName"] %></strong> <br /> <%= Session["startDateTime"] %></h3>
-
+                <%= Session["location"] %> <%= Session["schedule"] %>
 
 
                 </div>
