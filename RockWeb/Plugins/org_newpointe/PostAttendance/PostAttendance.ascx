@@ -16,11 +16,9 @@
 
  <fieldset> 
     
-    <Rock:LocationPicker ID="locpLocation" runat="server" Label="Location" />
-     <Rock:CampusPicker ID="cpCampus" runat="server" Required="true" Label="Campus" />
-     <Rock:DateTimePicker ID="dtpDateTime" runat="server" Required="true" Label="Rock:DateTimePicker" />
-     <Rock:GroupPicker ID="gpGroup" runat="server" Label="Rock:GroupPicker" ItemId="129" InitialItemParentIds="129"   />
-     <Rock:SchedulePicker ID="spSchedule" runat="server" Label="Schedule Picker" />
+     <Rock:CampusPicker ID="cpCampus" runat="server" Required="true" />
+     <Rock:DataDropDownList ID="ddlEvent" runat="server" Label="Event" PropertyName="Name" Required="true" SourceTypeName="Rock.Model.GroupType, Rock"  />
+     <Rock:DateTimePicker ID="dtpDateTime" runat="server" Required="true" Label="Event Date / Time" />
 
 
 
@@ -29,7 +27,7 @@
             <asp:LinkButton ID="btnSaveEvent" runat="server" Text="Save Event and Add People" OnClick="btnSaveEvent_Click" CssClass="btn btn-primary"/>
         </div>
     </fieldset>   
-
+                <br /><p><small>Need to add attendance for an event not listed here?  Please let us know: <a href="mailto:help@newpointe.org">help@newpointe.org</a></small></p>
                 </div>
             </asp:Panel>
 
@@ -45,10 +43,7 @@
 
             <div class="panel-body">
                 
-           Campus:  <%= Session["campus"] %> 
-                Time; <%= Session["startDateTime"] %>
-                Group  <%= Session["group"] %>
-                Location <%= Session["location"] %>
+                <h3><strong><%= Session["eventName"] %> at <%= Session["campusName"] %></strong> <br /> <%= Session["startDateTime"] %></h3>
 
 
 

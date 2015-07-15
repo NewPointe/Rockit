@@ -88,7 +88,15 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 
         if (!IsPostBack)
         {
-            
+            string email = PageParameter("email");
+
+            if (!String.IsNullOrWhiteSpace(email))
+            {
+                var rockContext = new RockContext();
+                string emailSubject = string.Format("[Metrics] Attendance for Week {0} ({1})", weeknumber, currentSundayDate);
+                SendEmail("bwitting@newpointe.org", GetAttributeValue("FromEmail"), emailSubject, emailContent, rockContext);
+            }
+
         }
 
          }

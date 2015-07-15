@@ -15,6 +15,7 @@ using Rock.Web.Cache;
 using Rock.Web.UI.Controls;
 using Rock.Attribute;
 using Rock.CheckIn;
+using System.Data;
 
 
 
@@ -53,6 +54,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
     public PersonPicker person;
     public LocationPicker location;
     public CampusPicker campus;
+    public string campusString;
     public DateTime startDateTime;
     public SchedulePicker schedule;
     public GroupPicker group;
@@ -61,24 +63,28 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
     public String selectedGroup;
     public String selectedLocation;
     public String selectedStartDateTimeString;
+    public String eventName;
+    public String campusName;
 
     
                
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        //Generate Campus List
-        var campusi = CampusCache.All();
-        cpCampus.Campuses = campusi;
-        cpCampus.Visible = campusi.Any();
         
-        //Generate Group List?
-
-
         if (!Page.IsPostBack)
         {
+            //Generate Campus List
+            cpCampus.Campuses = CampusCache.All();
+
+            //Set Event List (static for now)
+            string[] eventList = { "New to NewPointe" };
+
+            ddlEvent.DataSource = eventList;
+            ddlEvent.DataBind();
 
         }
+
 
         if (Page.IsPostBack) {
 
@@ -88,29 +94,45 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
     }
 
 
+
     protected void btnSaveEvent_Click(object sender, EventArgs e)
     {
 
         //Set Variables from form
         //person = ppPerson;
-        location = locpLocation;
-        campus = cpCampus;
+        //location = locpLocation;
+        //campusString = cpCampus.SelectedCampusId.ToString();
         startDateTime = Convert.ToDateTime(dtpDateTime.SelectedDateTime);
-        schedule = spSchedule;
-        group = gpGroup;
+        eventName = ddlEvent.SelectedValue.ToString();
+        //schedule = spSchedule;
+        //group = gpGroup;
 
-        
-        selectedCampus = campus.SelectedCampusId.ToString();
-        selectedGroup = group.SelectedValue.ToString();
-        selectedLocation = location.Location.ToStringSafe();
+
+        int? newCampusId = cpCampus.SelectedCampusId;
+        if (newCampusId.HasValue)
+        {
+            var campus = CampusCache.Read(newCampusId.Value);
+            if (campus != null)
+            {
+                campusString = newCampusId.ToString();
+                campusName = cpCampus.SelectedItem.ToString();
+            }
+        }
+
+
+        selectedCampus = campusString;
+        //selectedGroup = group.SelectedValue.ToString();
+        //selectedLocation = location.Location.ToStringSafe();
         selectedStartDateTimeString = startDateTime.ToString();
 
         //Session["person"] = person;
-        Session["location"] = location;
-        Session["campus"] = campus;
+        //Session["location"] = location;
+        Session["campus"] = campusString;
+        Session["campusName"] = campusName;
         Session["startDateTime"] = startDateTime;
-        Session["schedule"] = schedule;
-        Session["group"] = group;
+        Session["eventName"] = eventName;
+        //Session["schedule"] = schedule;
+        //Session["group"] = group;
 
 
         //Set Panel Visability
@@ -118,6 +140,10 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         pnlEvent.Visible = false;
         pnlPeople.Visible = true;
         return;
+
+        //Set Variables based on Campus and Event selected
+
+        // 
 
     }
 
@@ -143,7 +169,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
                 attendance.LocationId = location.Location.Id;
                 attendance.CampusId = campus.SelectedCampusId;
                 attendance.ScheduleId = Int32.Parse(schedule.SelectedValue);
-                attendance.GroupId = Int32.Parse(gpGroup.SelectedValue);
+                //attendance.GroupId = Int32.Parse(gpGroup.SelectedValue);
                 attendance.PersonAlias = primaryAlias;
                 attendance.PersonAliasId = primaryAlias.Id;
                 attendance.DeviceId = null;
