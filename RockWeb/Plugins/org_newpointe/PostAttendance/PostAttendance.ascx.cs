@@ -204,8 +204,12 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
             Debug.WriteLine(Session["group"].ToString());
             Debug.WriteLine(Session["person"].ToString());
 
-        var attendance = attendanceService.Get(Convert.ToDateTime(Session["startDateTime"]), int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), int.Parse(Session["person"].ToString()));
- 
+            DateTime theTime = Convert.ToDateTime(Session["startDateTime"]);
+
+           // var attendance = attendanceService.Get(theTime, int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), int.Parse(Session["person"].ToString()));
+
+            var attendance = attendanceService.Get(theTime, int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), 1);
+
             if (attendance == null)
         {
             var primaryAlias = personAliasService.GetPrimaryAlias(Int32.Parse(person.SelectedValue.ToString()));

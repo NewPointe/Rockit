@@ -82,7 +82,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
         currentSundayDate = dateThisYear;
 
 
-        //Get Attendance Data
+        //Generate Attendance Data
         GetAttendance();
         
 
@@ -94,7 +94,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
             {
                 var rockContext = new RockContext();
                 string emailSubject = string.Format("[Metrics] Attendance for Week {0} ({1})", weeknumber, currentSundayDate);
-                SendEmail("bwitting@newpointe.org", GetAttributeValue("FromEmail"), emailSubject, emailContent, rockContext);
+                SendEmail(email, GetAttributeValue("FromEmail"), emailSubject, emailContent, rockContext);
             }
 
         }
