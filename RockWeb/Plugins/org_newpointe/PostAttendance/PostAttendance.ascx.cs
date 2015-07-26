@@ -123,7 +123,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         //selectedLocation = location.Location.ToStringSafe();
         selectedStartDateTimeString = startDateTime.ToString();
 
-        Session["person"] = person;
+        Session["person"] = person.SelectedValue.ToString();
         //Session["location"] = location;
         Session["campus"] = campusString;
         Session["campusName"] = campusName;
@@ -143,7 +143,8 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
 
         if (Session["eventName"].ToString() == "New to NewPointe")
             {
-                schedule = null;
+                //schedule = 10;
+                Session["schedule"] = 10;
 
                 if (Session["campusName"].ToString() == "Akron Campus")
                 {
@@ -162,8 +163,8 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
                 }
                 else if (Session["campusName"].ToString() == "Dover Campus")
                 {
-                    Session["group"] = 1;
-                    Session["location"] = 1;
+                    Session["group"] = 2;
+                    Session["location"] = 129;
                 }
                 else if (Session["campusName"].ToString() == "Millersburg Campus")
                 {
@@ -175,9 +176,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
                     Session["group"] = 1;
                     Session["location"] = 1;
                 }
-
-
-                Session["schedule"] = 1;
+                
                 Session["person"] = person.SelectedValue.ToString();
 
             }
@@ -190,12 +189,15 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
+        //TODO: Move to Session
+        var peopleList = new List<string>();
 
         AttendanceCodeService attendanceCodeService = new AttendanceCodeService(rockContext);
         AttendanceService attendanceService = new AttendanceService(rockContext);
         GroupMemberService groupMemberService = new GroupMemberService(rockContext);
         PersonAliasService personAliasService = new PersonAliasService(rockContext);
 
+            Session["person"] = ppPerson.SelectedValue.ToString();
 
             // Only create one attendance record per day for each person/schedule/group/location
             Debug.WriteLine(Convert.ToDateTime(Session["startDateTime"]));
@@ -206,38 +208,42 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
 
             DateTime theTime = Convert.ToDateTime(Session["startDateTime"]);
 
-           // var attendance = attendanceService.Get(theTime, int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), int.Parse(Session["person"].ToString()));
-
-            var attendance = attendanceService.Get(theTime, int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), 1);
+            var attendance = attendanceService.Get(theTime, int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), int.Parse(ppPerson.SelectedValue.ToString()));
+            var primaryAlias = personAliasService.GetPrimaryAlias(int.Parse(ppPerson.SelectedValue.ToString()));
 
             if (attendance == null)
-        {
-            var primaryAlias = personAliasService.GetPrimaryAlias(Int32.Parse(person.SelectedValue.ToString()));
-            if (primaryAlias != null)
             {
-                attendance = rockContext.Attendances.Create();
-                attendance.LocationId = location.Location.Id;
-                attendance.CampusId = campus.SelectedCampusId;
-                attendance.ScheduleId = Int32.Parse(schedule.SelectedValue);
-                //attendance.GroupId = Int32.Parse(gpGroup.SelectedValue);
-                attendance.PersonAlias = primaryAlias;
-                attendance.PersonAliasId = primaryAlias.Id;
-                attendance.DeviceId = null;
-                attendance.SearchTypeValueId = 1;
-                attendanceService.Add(attendance);
-            }
+            
+                if (primaryAlias != null)
+                {
+                    attendance = rockContext.Attendances.Create();
+                    attendance.LocationId = int.Parse(Session["location"].ToString());
+                    attendance.CampusId = int.Parse(Session["campus"].ToString());
+                    attendance.ScheduleId = int.Parse(Session["schedule"].ToString());
+                    attendance.GroupId = int.Parse(Session["group"].ToString());
+                    attendance.PersonAlias = primaryAlias;
+                    attendance.PersonAliasId = primaryAlias.Id;
+                    attendance.DeviceId = null;
+                    attendance.SearchTypeValueId = 1;
+                    attendanceService.Add(attendance);
+                }
         }
-
         attendance.AttendanceCodeId = null;
-        attendance.StartDateTime = startDateTime;
+        attendance.StartDateTime = Convert.ToDateTime(Session["startDateTime"]);
         attendance.EndDateTime = null;
         attendance.DidAttend = true;
 
         //KioskLocationAttendance.AddAttendance(attendance);
         rockContext.SaveChanges();
 
-        //Clear Person field
-        ppPerson.PersonId = null;
+        //Add Person to Dictionary
+        peopleList.Add( ppPerson.PersonName );
+        repLinks.DataSource = peopleList;
+        repLinks.DataBind();
+
+
+            //Clear Person field
+            ppPerson.PersonId = null;
 
 
         //Update Current Participants List

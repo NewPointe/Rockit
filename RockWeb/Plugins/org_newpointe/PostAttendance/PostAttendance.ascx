@@ -68,6 +68,13 @@
             <asp:LinkButton ID="btnSave" runat="server" Text="Add Attendance" OnClick="btnSave_Click" CssClass="btn btn-primary"/>
         </div>
     </fieldset>   
+                
+                <h4>People</h4>
+                <asp:Repeater id="repLinks" runat="server">
+                       <ItemTemplate>
+                          <asp:HyperLink runat="server" NavigateUrl='<%# Container.DataItem.ToString() %>' Text="LinkText" />
+                       </ItemTemplate>
+                    </asp:Repeater>
 
                 </div>
             </asp:Panel>
