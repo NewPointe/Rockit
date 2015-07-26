@@ -132,7 +132,7 @@ namespace RockWeb.Webhooks
                 }
 
 
-                SendEmail("bwitting@newpointe.org", "bwitting@newpointe.org", "Attendance Submitted for " + formCampus, formNotes, rockContext);
+                //SendEmail("bwitting@newpointe.org", "bwitting@newpointe.org", "Attendance Submitted for " + formCampus, formNotes, rockContext);
                 
                 
             }
