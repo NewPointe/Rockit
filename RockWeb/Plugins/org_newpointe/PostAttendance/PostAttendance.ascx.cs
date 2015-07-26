@@ -31,20 +31,6 @@ namespace RockWeb.Plugins.org_newpointe.PostAttendance
     [Description("Add attendance to a person after the event.")]
 
 
-        //LocationId --
-        //ScheduleId
-        //GroupId
-        //DeviceId
-        //SearchTypeValueId
-        //AttendanceC0deId
-        //StartDateTime
-        //DidAttend
-        //Note
-        //Guid
-        //CampusId --
-        //PersonAliasId --
-
-
 public partial class PostAttendance : Rock.Web.UI.RockBlock
 {
 
@@ -67,10 +53,11 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
     public String eventName;
     public String campusName;
 
-    
-               
 
-    protected void Page_Load(object sender, EventArgs e)
+
+
+
+        protected void Page_Load(object sender, EventArgs e)
     {
         
         if (!Page.IsPostBack)
@@ -189,8 +176,20 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
-        //TODO: Move to Session
+
+        btnDone.Visible = true;
+        lblPeople.Visible = true;
+
+
+        //Create List to Save Registered People
+
         var peopleList = new List<string>();
+
+        if (Session["peopleList"] != null)
+        {
+            peopleList = (List<string>)Session["peopleList"];
+        }
+        
 
         AttendanceCodeService attendanceCodeService = new AttendanceCodeService(rockContext);
         AttendanceService attendanceService = new AttendanceService(rockContext);
@@ -200,14 +199,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
             Session["person"] = ppPerson.SelectedValue.ToString();
 
             // Only create one attendance record per day for each person/schedule/group/location
-            Debug.WriteLine(Convert.ToDateTime(Session["startDateTime"]));
-            Debug.WriteLine(Session["location"].ToString());
-            Debug.WriteLine(Session["schedule"].ToString());
-            Debug.WriteLine(Session["group"].ToString());
-            Debug.WriteLine(Session["person"].ToString());
-
             DateTime theTime = Convert.ToDateTime(Session["startDateTime"]);
-
             var attendance = attendanceService.Get(theTime, int.Parse(Session["location"].ToString()), int.Parse(Session["schedule"].ToString()), int.Parse(Session["group"].ToString()), int.Parse(ppPerson.SelectedValue.ToString()));
             var primaryAlias = personAliasService.GetPrimaryAlias(int.Parse(ppPerson.SelectedValue.ToString()));
 
@@ -240,10 +232,12 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         peopleList.Add( ppPerson.PersonName );
         repLinks.DataSource = peopleList;
         repLinks.DataBind();
+        Session["peopleList"] = peopleList;
 
 
             //Clear Person field
             ppPerson.PersonId = null;
+            ppPerson.PersonName = null;
 
 
         //Update Current Participants List
@@ -251,7 +245,14 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
 
     }
 
- 
+        protected void btnDone_Click(object sender, EventArgs e)
+        {
+            Session["peopleList"] = null;
+            Response.Redirect(Request.RawUrl);
+
+        }
+
+
 
 }
 }

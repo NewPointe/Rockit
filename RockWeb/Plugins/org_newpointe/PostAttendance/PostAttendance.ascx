@@ -3,6 +3,12 @@
 
 <asp:UpdatePanel ID="upExceptionList" runat="server">
     <ContentTemplate>
+        
+        <Rock:ModalAlert ID="Warning" runat="server" />
+                <asp:ValidationSummary ID="valValidation" runat="server" HeaderText="Please Correct the Following:" CssClass="alert alert-danger" />
+                <Rock:NotificationBox ID="nbWarningMessage" runat="server" NotificationBoxType="Warning" Title="Warning" Visible="false" />
+        
+
         <asp:Panel ID="pnlEvent" CssClass="panel panel-block" runat="server" Visible="true">
 
             <div class="panel-heading">
@@ -12,7 +18,7 @@
             <div class="panel-body">
 
 
-<Rock:ModalAlert ID="Warning" runat="server" />
+
 
  <fieldset> 
     
@@ -43,9 +49,7 @@
 
             <div class="panel-body">
                 
-                <h3><strong><%= Session["eventName"] %> at <%= Session["campusName"] %></strong> <br /> <%= Session["startDateTime"] %></h3>
-                <%= Session["location"] %> <%= Session["schedule"] %>
-
+                <h3><strong><%= Session["eventName"] %> at <%= Session["campusName"] %></strong></h3> <h4><%= Session["startDateTime"] %></h4>
 
                 </div>
             </asp:Panel>
@@ -61,20 +65,23 @@
 
             <div class="panel-body">
                 
-            <Rock:PersonPicker ID="ppPerson" runat="server" Label="Person" />
+            <Rock:PersonPicker ID="ppPerson" runat="server" Label="Person" Required="true"/>
 
             <fieldset>
                 <div class="actions">
             <asp:LinkButton ID="btnSave" runat="server" Text="Add Attendance" OnClick="btnSave_Click" CssClass="btn btn-primary"/>
         </div>
-    </fieldset>   
-                
-                <h4>People</h4>
+    </fieldset>
+                <br/>
+                <h5 ID="lblPeople" runat="server" Visible="false" >These People Have Been Added:</h5>
                 <asp:Repeater id="repLinks" runat="server">
                        <ItemTemplate>
-                          <asp:HyperLink runat="server" NavigateUrl='<%# Container.DataItem.ToString() %>' Text="LinkText" />
+                           <%# Container.DataItem.ToString() %><br/>
                        </ItemTemplate>
                     </asp:Repeater>
+                <br />
+                
+                <asp:LinkButton ID="btnDone" runat="server" Text="Finished Adding" OnClick="btnDone_Click" CssClass="btn btn-success" Visible="false"/>
 
                 </div>
             </asp:Panel>
