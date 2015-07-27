@@ -5,3 +5,4 @@
 + Inactive groups no longer show up in GroupFinder (Fixes #1019).
 + Merge branch 'hotfix-dt-newpointe' into hotfix-1.3.4
 + Added support for financial gateway providers to specify whether they support Saved account functionality for a given currencty type ( credit card, ACH ) and update UI to render options based on setting (Fixes #1031).
+Test!
