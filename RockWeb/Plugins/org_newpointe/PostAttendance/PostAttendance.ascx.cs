@@ -66,7 +66,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
             cpCampus.Campuses = CampusCache.All();
 
             //Set Event List (static for now)
-            string[] eventList = { "New to NewPointe" };
+            string[] eventList = { "", "New to NewPointe" };
 
             ddlEvent.DataSource = eventList;
             ddlEvent.DataBind();
@@ -135,33 +135,33 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
 
                 if (Session["campusName"].ToString() == "Akron Campus")
                 {
-                    Session["group"] = 1;
-                    Session["location"] = 1;
+                    Session["group"] = 68292;
+                    Session["location"] = 27;
                 }
                 else if (Session["campusName"].ToString() == "Canton Campus")
                 {
-                    Session["group"] = 1;
-                    Session["location"] = 1;
+                    Session["group"] = 68293;
+                    Session["location"] = 18;
                 }
                 else if (Session["campusName"].ToString() == "Coshocton Campus")
                 {
-                    Session["group"] = 1;
-                    Session["location"] = 1;
+                    Session["group"] = 37294;
+                    Session["location"] = 20;
                 }
                 else if (Session["campusName"].ToString() == "Dover Campus")
                 {
-                    Session["group"] = 2;
-                    Session["location"] = 129;
+                    Session["group"] = 68294;
+                    Session["location"] = 2;
                 }
                 else if (Session["campusName"].ToString() == "Millersburg Campus")
                 {
-                    Session["group"] = 1;
-                    Session["location"] = 1;
+                    Session["group"] = 68295;
+                    Session["location"] = 23;
                 }
                 else if (Session["campusName"].ToString() == "Wooster Campus")
                 {
-                    Session["group"] = 1;
-                    Session["location"] = 1;
+                    Session["group"] = 68296;
+                    Session["location"] = 60;
                 }
                 
                 Session["person"] = person.SelectedValue.ToString();
