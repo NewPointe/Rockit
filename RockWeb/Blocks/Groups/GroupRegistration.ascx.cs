@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -330,7 +330,7 @@ namespace RockWeb.Blocks.Groups
                         }
 
                         History.EvaluateChange( changes, "Email", person.Email, tbEmail.Text );
-                        spouse.Email = tbEmail.Text;
+                        spouse.Email = tbSpouseEmail.Text;
 
                         SetPhoneNumber( rockContext, spouse, pnHome, null, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME.AsGuid(), spouseChanges );
                         SetPhoneNumber( rockContext, spouse, pnSpouseCell, cbSpouseSms, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_MOBILE.AsGuid(), spouseChanges );

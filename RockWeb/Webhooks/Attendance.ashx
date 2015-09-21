@@ -78,33 +78,29 @@ namespace RockWeb.Webhooks
 
                 int campusEntityId = 0;
 
-                if (formCampus == "Akron")
+                switch (formCampus)
                 {
-                    campusEntityId = 6;
-                }
-                else if (formCampus == "Canton")
-                {
-                    campusEntityId = 2;
-                }
-                else if (formCampus == "Coshocton")
-                {
-                    campusEntityId = 3;
-                }
-                else if (formCampus == "Dover")
-                {
-                    campusEntityId = 1;
-                }
-                else if (formCampus == "Millersburg")
-                {
-                    campusEntityId = 4;
-                }
-                else if (formCampus == "Wooster")
-                {
-                    campusEntityId = 5;
-                }
-                else if (formCampus == "_Online")
-                {
-                    campusEntityId = 8;
+                    case "Akron":
+                        campusEntityId = 6;
+                        break;
+                    case "Canton":
+                        campusEntityId = 2;
+                        break;
+                    case "Coshocton":
+                        campusEntityId = 3;
+                        break;
+                    case "Dover":
+                        campusEntityId = 1;
+                        break;
+                    case "Millersburg":
+                        campusEntityId = 4;
+                        break;
+                    case "Wooster":
+                        campusEntityId = 5;
+                        break;
+                    case "_Online":
+                        campusEntityId = 8;
+                        break;
                 }
 
 

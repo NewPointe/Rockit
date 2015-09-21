@@ -20,9 +20,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
     /// <summary>
     /// Template block for a TreeView.
     /// </summary>
-    [DisplayName("Check-in Group Tree View")]
-    [Category("Newpointe.org -> Check-in")]
-    [Description("A tree view of the Check-in Groups")]
+    [DisplayName("Metrics Tree View")]
+    [Category("NewPointe Metrics")]
+    [Description("A tree view for Tableau Dashboards")]
     [GroupTypeField("Check-in Type", required: false, key: "GroupTypeTemplate", groupTypePurposeValueGuid: Rock.SystemGuid.DefinedValue.GROUPTYPE_PURPOSE_CHECKIN_TEMPLATE)]
     public partial class MetricsTreeView : Rock.Web.UI.RockBlock
     {
@@ -84,7 +84,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
                 if (configurationTemplateGuid == Guid.Empty)
                 {
-                    lWarnings.Text = "<div class='alert alert-warning'>No check-in configuration template configured.</div>" + GetAttributeValue("GroupTypeTemplate");
+                    //lWarnings.Text = "<div class='alert alert-warning'>No check-in configuration template configured.</div>" + GetAttributeValue("GroupTypeTemplate");
                 }
                 else
                 {

@@ -66,7 +66,7 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
             cpCampus.Campuses = CampusCache.All();
 
             //Set Event List (static for now)
-            string[] eventList = { "", "New to NewPointe" };
+            string[] eventList = { "", "Discover Groups (Combined)", "Discover Group - Intimacy with God", "Discover Group - Involvement in Community", "Discover Group - Influence In Your World", "New to NewPointe", "KidsLife" };
 
             ddlEvent.DataSource = eventList;
             ddlEvent.DataBind();
@@ -124,11 +124,191 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
         pnlEventDetails.Visible = true;
         pnlEvent.Visible = false;
         pnlPeople.Visible = true;
-        
 
-        //Set Variables based on Campus and Event selected
 
-        if (Session["eventName"].ToString() == "New to NewPointe")
+            //Set Variables based on Campus and Event selected
+
+
+            //Discover Groups
+            if (Session["eventName"].ToString() == "Discover Groups (Combined)")
+            {
+                //schedule = 10;
+                Session["schedule"] = 10;
+
+                if (Session["campusName"].ToString() == "Akron Campus")
+                {
+                    nbWarningMessage.Text = "Discover Groups (Combined) is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Canton Campus")
+                {
+                    nbWarningMessage.Text = "Discover Groups (Combined) is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Coshocton Campus")
+                {
+                    nbWarningMessage.Text = "Discover Groups (Combined) is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Dover Campus")
+                {
+                    Session["group"] = 62721;
+                    Session["location"] = 2;
+                }
+                else if (Session["campusName"].ToString() == "Millersburg Campus")
+                {
+                    Session["group"] = 68287;
+                    Session["location"] = 23;
+                }
+                else if (Session["campusName"].ToString() == "Wooster Campus")
+                {
+                    nbWarningMessage.Text = "Discover Groups (Combined) is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+
+                Session["person"] = person.SelectedValue.ToString();
+
+            }
+
+
+            //Discover Group - Intimacy with God
+            if (Session["eventName"].ToString() == "Discover Group - Intimacy with God")
+            {
+                //schedule = 10;
+                Session["schedule"] = 10;
+
+                if (Session["campusName"].ToString() == "Akron Campus")
+                {
+                    nbWarningMessage.Text = "Discover Group - Intimacy with God is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Canton Campus")
+                {
+                    Session["group"] = 37264;
+                    Session["location"] = 18;
+                }
+                else if (Session["campusName"].ToString() == "Coshocton Campus")
+                {
+                    Session["group"] = 37282;
+                    Session["location"] = 20;
+                }
+                else if (Session["campusName"].ToString() == "Dover Campus")
+                {
+                    Session["group"] = 58652;
+                    Session["location"] = 2;
+                }
+                else if (Session["campusName"].ToString() == "Millersburg Campus")
+                {
+                    Session["group"] = 37295;
+                    Session["location"] = 23;
+                }
+                else if (Session["campusName"].ToString() == "Wooster Campus")
+                {
+                    Session["group"] = 72674;
+                    Session["location"] = 60;
+                }
+
+                Session["person"] = person.SelectedValue.ToString();
+
+            }
+
+
+
+
+            //Discover Group - Involvement in Community
+            if (Session["eventName"].ToString() == "Discover Group - Involvement in Community")
+            {
+                //schedule = 10;
+                Session["schedule"] = 10;
+
+                if (Session["campusName"].ToString() == "Akron Campus")
+                {
+                    nbWarningMessage.Text = "Discover Group - Intimacy with God is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Canton Campus")
+                {
+                    Session["group"] = 37266;
+                    Session["location"] = 18;
+                }
+                else if (Session["campusName"].ToString() == "Coshocton Campus")
+                {
+                    Session["group"] = 37280;
+                    Session["location"] = 20;
+                }
+                else if (Session["campusName"].ToString() == "Dover Campus")
+                {
+                    Session["group"] = 58651;
+                    Session["location"] = 2;
+                }
+                else if (Session["campusName"].ToString() == "Millersburg Campus")
+                {
+                    Session["group"] = 60241;
+                    Session["location"] = 23;
+                }
+                else if (Session["campusName"].ToString() == "Wooster Campus")
+                {
+                    Session["group"] = 72673;
+                    Session["location"] = 60;
+                }
+
+                Session["person"] = person.SelectedValue.ToString();
+
+            }
+
+
+
+
+            //Discover Group - Influence In Your World
+            if (Session["eventName"].ToString() == "Discover Group - Influence In Your World")
+            {
+                //schedule = 10;
+                Session["schedule"] = 10;
+
+                if (Session["campusName"].ToString() == "Akron Campus")
+                {
+                    nbWarningMessage.Text = "Discover Group - Influence In Your World is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Canton Campus")
+                {
+                    Session["group"] = 37277;
+                    Session["location"] = 18;
+                }
+                else if (Session["campusName"].ToString() == "Coshocton Campus")
+                {
+                    Session["group"] = 37279;
+                    Session["location"] = 20;
+                }
+                else if (Session["campusName"].ToString() == "Dover Campus")
+                {
+                    Session["group"] = 58653;
+                    Session["location"] = 2;
+                }
+                else if (Session["campusName"].ToString() == "Millersburg Campus")
+                {
+                    Session["group"] = 48732;
+                    Session["location"] = 23;
+                }
+                else if (Session["campusName"].ToString() == "Wooster Campus")
+                {
+                    Session["group"] = 72675;
+                    Session["location"] = 60;
+                }
+
+                Session["person"] = person.SelectedValue.ToString();
+
+            }
+
+
+
+
+
+
+
+
+            //New to NewPointe
+            if (Session["eventName"].ToString() == "New to NewPointe")
             {
                 //schedule = 10;
                 Session["schedule"] = 10;
@@ -168,8 +348,48 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
 
             }
 
+        //KidsLife
+            if (Session["eventName"].ToString() == "KidsLife")
+            {
+                //schedule = 10;
+                Session["schedule"] = 10;
 
-            return;
+                if (Session["campusName"].ToString() == "Akron Campus")
+                {
+                    nbWarningMessage.Text = "KidsLife is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+
+                }
+                else if (Session["campusName"].ToString() == "Canton Campus")
+                {
+                    Session["group"] = 71045;
+                    Session["location"] = 18;
+                }
+                else if (Session["campusName"].ToString() == "Coshocton Campus")
+                {
+                    nbWarningMessage.Text = "KidsLife is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Dover Campus")
+                {
+                    Session["group"] = 72745;
+                    Session["location"] = 2;
+                }
+                else if (Session["campusName"].ToString() == "Millersburg Campus")
+                {
+                    nbWarningMessage.Text = "KidsLife is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+                else if (Session["campusName"].ToString() == "Wooster Campus")
+                {
+                    nbWarningMessage.Text = "KidsLife is not available at this Campus.";
+                    nbWarningMessage.Visible = true;
+                }
+
+                Session["person"] = person.SelectedValue.ToString();
+
+            }
+
         }
 
 

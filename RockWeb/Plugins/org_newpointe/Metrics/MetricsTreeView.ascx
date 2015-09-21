@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="MetricsTreeView.ascx.cs" Inherits="RockWeb.Plugins.org_newpointe.Metrics.MetricsTreeView" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="~/Plugins/org_newpointe/Metrics/MetricsTreeView.ascx.cs" Inherits="RockWeb.Plugins.org_newpointe.Metrics.MetricsTreeView" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -8,7 +8,7 @@
                 <h1 class="panel-title"><i class="fa fa-check-square-o"></i>Check-in Areas</h1>
             </div>
             <div class="panel-body">
-                <asp:Literal ID="lWarnings" runat="server" />
+                <asp:Literal ID="lWarnings" runalt="server" />
                 <asp:Literal ID="lContent" runat="server" />
 
 
