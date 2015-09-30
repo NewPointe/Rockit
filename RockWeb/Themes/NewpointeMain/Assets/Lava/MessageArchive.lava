@@ -1,0 +1,36 @@
+﻿<style>
+  .overlay{
+  position:relative;
+  }
+
+  .overlay:after{
+  position: absolute;
+  content:"";
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  opacity:0;
+  }
+
+  .overlay:hover:after  {
+  opacity: .8;
+  background-color:#8bc540;
+  }
+</style>
+
+<div class="col-xs-12">
+  <h1>MESSAGE ARCHIVE</h1>
+  {% for item in Items %}
+  <div class="col-xs-12 col-sm-6 col-md-3" style="padding:15px; max-width:300px">
+
+    <a href="{{LinkedPages.DetailPage}}?SeriesID={{item.Id}}">
+      <div class="overlay">
+        {{item.SermonGraphic}}
+      </div>
+    </a>
+  </div>
+  {% endfor -%}
+</div>
+
+

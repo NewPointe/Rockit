@@ -1,0 +1,45 @@
+﻿
+{% assign count = Items | Size %}
+
+{% if count > 0 %}
+ 
+
+
+<div class="row employment-campus">
+  <div class="col-xs-12">
+    <h3>
+
+      {% assign campusName = Items | First %}
+      {{ campusName.Campus }}
+
+    </h3>
+  </div>
+</div>
+<div class="row">
+
+
+
+
+  {% for item in Items %}
+
+  <div class="col-sm-6 col-md-4">
+        <div class="job-listing">
+          <h4>
+            {{ item.Title}}</h4>
+
+              <p>
+                <a href="{{ item | Attribute: 'ApplicationLink', 'RawValue' }}" class="btn btn-newpointe" target="_blank">Apply Here</a>
+              </p>
+
+              <p>
+                <a href="/GetFile.ashx?guid={{ item | Attribute: 'Description', 'RawValue' }}" class="btn btn-newpointe" target="_blank">View the full job description</a>
+              </p>
+            </div>
+      </div>
+
+  {% endfor %}
+
+
+</div>  
+
+{% endif %}

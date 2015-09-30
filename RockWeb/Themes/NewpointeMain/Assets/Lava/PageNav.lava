@@ -1,0 +1,22 @@
+{% if Page.DisplayChildPages == 'true' and Page.Pages != empty %}
+    <ul class="nav navbar-nav">
+
+		{% for childPage in Page.Pages %}
+			{% if childPage.Pages %}
+				<li class="dropdown npMenu">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{childPage.Title}} <i class="caret"></i></a>
+					<ul class="dropdown-menu">
+						{% for childPage2 in childPage.Pages %}
+							<li ><a href="{{childPage2.Url}}">{{childPage2.Title}}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+			{% else %}
+
+				<li{% if childPage.Current == 'true' %} class="active npMenu" {% else %} class="npMenu" {% endif%}>
+					<a href="{{ childPage.Url }}">{{ childPage.Title }}</a>
+				</li>
+			{% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
