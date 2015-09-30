@@ -127,9 +127,6 @@ public class TextToGive : IHttpHandler
         {
             string errorMessage = string.Empty;
 
-
-            //Test for now - send email
-
             //Look up the person
             string personDetails = "";
             char[] trimThese = {'+', '1',' ' };
