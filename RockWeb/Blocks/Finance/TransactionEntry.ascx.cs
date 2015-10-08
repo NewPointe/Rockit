@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Rock;
 using Rock.Attribute;
@@ -114,6 +115,11 @@ namespace RockWeb.Blocks.Finance
         private bool _showRepeatingOptions = false;
         private GatewayComponent _ccGateway;
         private GatewayComponent _achGateway;
+
+        public string PersonalInfoClass;
+        public string PersonData = "";
+        public string SavedCardPresent = "";
+        public string SavedCardName = "";
 
         #endregion
 
@@ -226,7 +232,7 @@ namespace RockWeb.Blocks.Finance
         protected override void OnInit( EventArgs e )
         {
             base.OnInit( e );
-
+            
             if ( !Page.IsPostBack )
             {
                 lPanelTitle1.Text = GetAttributeValue( "PanelTitle" );
@@ -239,6 +245,7 @@ namespace RockWeb.Blocks.Finance
                 lSaveAcccountTitle.Text = GetAttributeValue( "SaveAccountTitle" );
             }
 
+            
             // If impersonation is allowed, and a valid person key was used, set the target to that person
             if ( GetAttributeValue( "Impersonation" ).AsBooleanOrNull() ?? false )
             {
@@ -263,6 +270,8 @@ namespace RockWeb.Blocks.Finance
             {
                 TargetPerson = CurrentPerson;
             }
+
+            
 
             // Enable payment options based on the configured gateways
             bool ccEnabled = false;
@@ -561,8 +570,25 @@ namespace RockWeb.Blocks.Finance
                         txtLastName.Visible = true;
                     }
 
+                    
+
+
                     SetPage( 1 );
                 }
+
+
+                //Personal info panel
+                HtmlGenericControl d1 = (HtmlGenericControl)FindControl("collapseOne");
+                PersonalInfoClass = d1.ClientID.ToString();
+                if (TargetPerson != null)
+                {
+                    if (TargetPerson.FirstName != null && TargetPerson.LastName != null && TargetPerson.Email != null && acAddress != null)
+                    {
+                        //collapseOne.Attributes["class"] = "panel-collapse collapse out";
+                        PersonData = "true";
+                    }
+                }
+
             }
             else
             {
@@ -1066,6 +1092,8 @@ namespace RockWeb.Blocks.Finance
                         if ( rblSavedCC.Items.Count > 0 )
                         {
                             rblSavedCC.Items.Add( new ListItem( "Use a different card", "0" ) );
+                            SavedCardName = rblSavedCC.Items[0].Text.ToString();
+                            SavedCardPresent = "true";
                         }
                     }
                 }
@@ -1666,6 +1694,8 @@ namespace RockWeb.Blocks.Finance
 
             string scriptFormat = @"
     Sys.Application.add_load(function () {{
+
+
         // As amounts are entered, validate that they are numeric and recalc total
         $('.account-amount').on('change', function() {{
             var totalAmt = Number(0);
@@ -1690,6 +1720,11 @@ namespace RockWeb.Blocks.Finance
             $('.total-amount').html('$ ' + totalAmt.toFixed(2));
             return false;
         }});
+
+
+       
+    
+
 
         // Set the date prompt based on the frequency value entered
         $('#ButtonDropDown_btnFrequency .dropdown-menu a').click( function () {{

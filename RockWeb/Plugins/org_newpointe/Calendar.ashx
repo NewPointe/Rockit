@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data.Common;
 using System.Data.Entity.Core.Objects;
+using System.EnterpriseServices.Internal;
 
 public class Calendar : IHttpHandler
 {
@@ -119,9 +120,15 @@ public class Calendar : IHttpHandler
             description = "<div class='text-center'><img src='" + string.Format(url, result[0].Image.ToString()) + "' alt='" + title + "' /></div>";
         }
         description = description + "<p>" + Description + "</p>";
+
         if (!string.IsNullOrEmpty(result[0].Details.ToString()))
         {
             description = description + System.Text.RegularExpressions.Regex.Replace(result[0].Details.ToString(), @"\t|\n|\r", "");
+        }
+
+        if (!string.IsNullOrEmpty(result[0].RegistrationURL.ToString()))
+        {
+            description = description + "<p><a class=\"btn btn-primary\" data-loading-text=\"&lt;i class='fa fa-refresh fa-spin'&gt;&lt;/i&gt; Let's go!\" href=\" " + result[0].RegistrationURL.ToString() + "\" id=\"ctl00_main_ctl23_ctl01_ctl06_lbSave\" onclick=\"Rock.controls.bootstrapButton.showLoading(this);\">Register Now</a></p>";
         }
         return description;
     }
@@ -152,5 +159,5 @@ class additionalInfo
 {
     public string Image { get; set; }
     public string Details { get; set; }
-
+    public string RegistrationURL { get; set; }
 }

@@ -38,10 +38,6 @@ namespace RockWeb.Plugins.org_newpointe.ChooseCampus
         {
             CampusService campusService = new CampusService(new RockContext());
 
-
-
-
-
             var qry = campusService.Queryable().Where(c => !c.Name.Contains("Central Services") && !c.Name.Contains("Online") && !c.Name.Contains("Future")).Select(p => new { Name = p.Name.Replace("Campus", "").Trim(), URL = p.Url }).OrderBy(c => c.Name).ToList();
 
             rptCampuses.DataSource = qry;

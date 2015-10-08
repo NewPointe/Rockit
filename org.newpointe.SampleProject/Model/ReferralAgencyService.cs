@@ -1,5 +1,8 @@
 using org.newpointe.SampleProject.Data;
 using Rock.Model;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace org.newpointe.SampleProject.Model
 {
@@ -14,5 +17,13 @@ namespace org.newpointe.SampleProject.Model
         /// <param name="context">The context.</param>
         public ReferralAgencyService( SampleProjectContext context ) : base( context ) { }
 
+        [HttpGet]
+        public HttpResponseMessage ping()
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.Accepted);
+
+
+            return response;
+        }
     }
 }

@@ -30,7 +30,7 @@ using Rock.Data;
 using Rock.Model;
 using Rock.Web.Cache;
 using Rock.Communication;
-using Twilio;
+//using Twilio;
 
 
 public class TextToGive : IHttpHandler
@@ -138,7 +138,7 @@ public class TextToGive : IHttpHandler
             {
                 //personDetails = thePerson.FullName;
                 //SendEmail("bwitting@newpointe.org", "bwitting@newpointe.org", "Test SMS Email ", "Crap, there are no results for: " + lookupNumber, rockContext);
-                SendSms(lookupNumber, "We don't have an account set up for this phone number yet. Go to: https://my.newpointe.org and set up an account.  If you already have an account, log in and add this cell phone number.");
+               // SendSms(lookupNumber, "We don't have an account set up for this phone number yet. Go to: https://my.newpointe.org and set up an account.  If you already have an account, log in and add this cell phone number.");
             }
             else if (personList.Count() == 1)
             {
@@ -157,7 +157,7 @@ public class TextToGive : IHttpHandler
                 else
                 {
                     responseMessage += "You don't have a MyNewPointe Account. ";
-                    
+
                 }
 
                 //Todo: Check if opted into text to give
@@ -201,7 +201,7 @@ public class TextToGive : IHttpHandler
 
                 //SendEmail("bwitting@newpointe.org", "bwitting@newpointe.org", "Test SMS Email ", "Sweet, there is one result for this number: " + personDetails, rockContext);
                 SmsTest(thePerson);
-                SendSms(lookupNumber, thePerson.NickName + ", thank you for giving $" + body + " to NewPointe with " + responseMessage);
+              //  SendSms(lookupNumber, thePerson.NickName + ", thank you for giving $" + body + " to NewPointe with " + responseMessage);
             }
             else if (personList.Count() > 1)
             {
@@ -215,7 +215,7 @@ public class TextToGive : IHttpHandler
                     i++;
                 }
                 //SendEmail("bwitting@newpointe.org", "bwitting@newpointe.org", "Test SMS Email ", "Oh no, there is more than one result for this number: " + smsBody, rockContext);
-                SendSms(lookupNumber, "There is more than one result for this number. " + smsBody);
+               // SendSms(lookupNumber, "There is more than one result for this number. " + smsBody);
             }
 
 
@@ -265,17 +265,17 @@ public class TextToGive : IHttpHandler
     }
 
 
-    private void SendSms(string number, string body)
-    {
-        string AccountSid = "AC829f7d9fb532f01252621c6af4e7849e";
-        string AuthToken = "47676cee39cb444ead74a3ed9bd48ba1";
-        var twilio = new TwilioRestClient(AccountSid, AuthToken);
+    //private void SendSms(string number, string body)
+    //{
+    //    string AccountSid = "AC829f7d9fb532f01252621c6af4e7849e";
+    //    string AuthToken = "47676cee39cb444ead74a3ed9bd48ba1";
+    //    var twilio = new TwilioRestClient(AccountSid, AuthToken);
 
-        var message = twilio.SendMessage("+13305566655", "3309340252", body);
+    //    var message = twilio.SendMessage("+13305566655", "3309340252", body);
 
 
-        Console.WriteLine(message.Sid);
-    }
+    //    Console.WriteLine(message.Sid);
+    //}
 
 
     private void SmsTest(Rock.Model.Person person)

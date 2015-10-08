@@ -6,6 +6,7 @@ using org.newpointe.SampleProject.Model;
 
 using Rock.Rest;
 using Rock.Rest.Filters;
+using System.Net.Http;
 
 namespace org.newpointe.SampleProject.Rest
 {
@@ -18,5 +19,7 @@ namespace org.newpointe.SampleProject.Rest
         /// Initializes a new instance of the <see cref="ReferralAgenciesController"/> class.
         /// </summary>
         public ReferralAgenciesController() : base( new ReferralAgencyService( new Data.SampleProjectContext() ) ) { }
+
+    
     }
 }

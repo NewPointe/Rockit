@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="org.newpointe.SampleProject.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ServiceUKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">195d2f5d-2cc0-48c8-a533-0c990a59a46f</Value>
+    </Setting>
+    <Setting Name="departmentIds" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">67713,53103,62004,51774,67714,51773</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,5 +1,44 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeFile="TransactionEntry.ascx.cs" Inherits="RockWeb.Blocks.Finance.TransactionEntry" %>
 
+<script type="text/javascript">
+    
+    $(window).bind('resize load postback', function pageLoad() {
+        var PersonData = <%= PersonData %>;
+        var SavedCardPresent = <%= SavedCardPresent %>;
+
+        if ($(this).width() < 768 && PersonData == true) {
+            $('#<%= PersonalInfoClass %>').removeClass('in');
+            $('#<%= PersonalInfoClass %>').addClass('out');
+            document.getElementById("PersonalInfoSmallText").innerHTML = "Touch to Change";
+        } else {
+            $('#<%= PersonalInfoClass %>').removeClass('out');
+            $('#<%= PersonalInfoClass %>').addClass('in');
+            document.getElementById("PersonalInfoSmallText").innerHTML = "";
+        }
+
+        if ($(this).width() < 768 && SavedCardPresent == true) {
+            $('#collapseTwo').removeClass('in');
+            $('#collapseTwo').addClass('out');
+            document.getElementById("SavedCardSmallText").innerHTML = "Touch to Change";
+            document.getElementById("SavedCardName").innerHTML = "<%= SavedCardName %>";
+        } else {
+            $('#collapseTwo').removeClass('out');
+            $('#collapseTwo').addClass('in');
+            document.getElementById("SavedCardSmallText").innerHTML = "";   
+            document.getElementById("SavedCardName").innerHTML = "";
+        }
+    }); 
+
+</script>
+
+<script type="text/javascript">
+    var prm = Sys.WebForms.PageRequestManager.getInstance();
+    prm.add_endRequest(function (s, e) {
+        alert('Postback!');
+    });
+</script>
+
+
 <asp:UpdatePanel ID="upPayment" runat="server">
     <ContentTemplate>
 
@@ -64,10 +103,12 @@
                     </div>
                     <div class="col-md-6">
                     <% } %>
-
+                        
+                    <div class="panel-group" id="accordion">
                         <div class="panel panel-default contribution-personal">
-                            <div class="panel-heading"><h3 class="panel-title"><asp:Literal ID="lPersonalInfoTitle" runat="server" /></h3></div>
-                            <div class="panel-body">
+                            <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#<%= PersonalInfoClass %>" style="text-decoration: none"><asp:Literal ID="lPersonalInfoTitle" runat="server" /> <small id="PersonalInfoSmallText"></small></a></h3></div>
+                            <div id="collapseOne" class="panel-collapse collapse in" runat="server">
+                            <div class="panel-body" id="PersonDetails">
                                 <fieldset>
                                     <Rock:RockLiteral ID="txtCurrentName" runat="server" Label="Name" Visible="true" />
                                     <Rock:RockTextBox ID="txtFirstName" runat="server" Label="First Name"></Rock:RockTextBox>
@@ -77,7 +118,9 @@
                                     <Rock:AddressControl ID="acAddress" runat="server" UseStateAbbreviation="true" UseCountryAbbreviation="false" />
                                 </fieldset>
                             </div>
+                                </div>
                         </div>
+                    </div>
 
                 <% if ( FluidLayout )
                 { %>
@@ -86,13 +129,14 @@
                 <div class="row">
                     <div class="col-md-12">
                 <% } %>
-
+                        
+                      <div class="panel-group" id="accordion2">
                 <div class="panel panel-default contribution-payment">
 
                     <asp:HiddenField ID="hfPaymentTab" runat="server" />
 
-                    <div class="panel-heading"><h3 class="panel-title"><asp:Literal ID="lPaymentInfoTitle" runat="server" /></h3></div>
-                
+                    <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo" style="text-decoration: none"><asp:Literal ID="lPaymentInfoTitle" runat="server"/> <small id="SavedCardSmallText"></small></h3><span id="SavedCardName" style="text-decoration: none; color: #000"></span></a></div>
+                    <div id="collapseTwo" class="panel-collapse collapse in">
                     <div class="panel-body">   
                         <asp:PlaceHolder ID="phPills" runat="server" Visible="false">
                             <ul class="nav nav-pills">
@@ -169,10 +213,11 @@
                                 </fieldset>
                             </div>
 
-
+                            </div>
                         </div>
                     </div> 
                 </div>
+           </div>
 
                 <% if ( FluidLayout )
                 { %>

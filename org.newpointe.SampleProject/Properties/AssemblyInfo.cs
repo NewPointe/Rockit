@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("org.newpointe.SampleProject")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("NewPointe Community Church")]
+[assembly: AssemblyCompany("NewPointe")]
 [assembly: AssemblyProduct("org.newpointe.SampleProject")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
