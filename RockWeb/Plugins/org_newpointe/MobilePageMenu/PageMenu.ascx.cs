@@ -36,7 +36,7 @@ using Rock.Web.UI.Controls;
 namespace RockWeb.Plugins.org_newpointe.MobilePageMenu
 {
     [DisplayName("Mobile Page Menu")]
-    [Category("Newpointe")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("Renders a page menu based on a root page and liquid template.")]
     [CodeEditorField( "Template", "The liquid template to use for rendering. This template would typically be in the theme's \"Assets/Lava\" folder.",
         CodeEditorMode.Liquid, CodeEditorTheme.Rock, 200, true, @"{% include '~~/Assets/Lava/PageNav.lava' %}" )]

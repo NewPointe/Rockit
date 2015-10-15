@@ -20,7 +20,7 @@ using System.ComponentModel;
 namespace RockWeb.Plugins.org_newpointe.InstagramWidget
 {
     [DisplayName("InstagramWidget")]
-    [Category("Newpointe")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("This is the InstagramWidget")]
     public partial class InstagramWidget : RockBlock
     {

@@ -22,7 +22,7 @@ using Rock.Model;
 namespace RockWeb.Plugins.org_newpointe.ChooseCampus
 {
     [DisplayName("Choose Campus")]
-    [Category("Newpointe")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("Choose Campuse widget for the homepage")]
     public partial class ChooseCampus : RockBlock
     {

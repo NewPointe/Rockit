@@ -20,7 +20,7 @@ using System.ComponentModel;
 namespace RockWeb.Plugins.org_newpointe.ValueVideo
 {
     [DisplayName("Value Video")]
-    [Category("Newpointe")] 
+    [Category("NewPointe.org Web Blocks")]
     [Description("This is what we value video")]
     public partial class ValueVideo : RockBlock 
     {

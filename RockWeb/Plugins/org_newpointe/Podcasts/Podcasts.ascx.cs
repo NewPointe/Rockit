@@ -22,7 +22,7 @@ using System.Xml.Linq;
 namespace RockWeb.Plugins.org_newpointe.Podcasts
 {
     [DisplayName("Podcasts")]
-    [Category("Newpointe")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("This wil display the top 4 podcast items in the XML file.")]
     public partial class Podcasts : RockBlock
     {

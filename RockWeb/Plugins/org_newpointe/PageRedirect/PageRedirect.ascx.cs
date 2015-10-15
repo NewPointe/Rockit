@@ -18,7 +18,7 @@ using System.ComponentModel;
 using Rock;
 
 [DisplayName("Page Redirect")]
-[Category("Newpointe")]
+[Category("NewPointe.org Web Blocks")]
 [Description("Create a page for friendly URL and set this block to redirect to the correct message or event page")]
 [TextField("ID", "Enter Series ID", required: true)]
 public partial class Plugins_org_newpointe_PageRedirect_PageRedirect : Rock.Web.UI.RockBlock

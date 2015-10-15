@@ -24,43 +24,57 @@ namespace RockWeb.Plugins.org_newpointe.Staff
 {
     [DisplayName("Staff")]
     [Category("Newpointe")]
-    [Description("This will display all member in the central services staff group")]
+    [Description("This block will display all members of the selected group")]
+    [GroupField("Root Group", "Select the root group to use as a starting point for the tree view.", false, order: 1)]
     public partial class Staff : RockBlock
     {
         protected void Page_Load(object sender, EventArgs e)
         {
 
-
+            Guid? rootGroupGuid = GetAttributeValue("RootGroup").AsGuidOrNull();
+            //Guid? rootGroupGuid = Guid.Parse("CB75E90B-C187-4A58-8E0F-E325B694E72D");
             GroupService gs = new GroupService(new RockContext());
 
-            var g = gs.Get(74655); //59654 is the group id for dev site
-            var s = g.Members.Select(m => m.Person).OrderBy(m => m.LastName).ThenBy(m => m.FirstName).ToList();
-
-            var people = new List<PersonData>();
-
-            foreach (var person in s)
+            if (rootGroupGuid != null)
             {
-                person.LoadAttributes();
-                people.Add(new PersonData { Name = person.FullName, PhotoUrl = person.PhotoUrl, Position = person.GetAttributeValue("Position") });
-            }
+                var staffGroup = gs.Get(rootGroupGuid.Value);
+                var groupMembers = staffGroup.Members.Select(m => m.Person).OrderBy(m => m.LastName).ThenBy(m => m.FirstName).ToList();
+                var groupName = staffGroup.Name.ToString();
+                this.lblGroupName.Text = groupName;
 
-            this.rptStaff.DataSource = people;
-            this.rptStaff.DataBind();
+                var people = new List<PersonData>();
+
+                foreach (var person in groupMembers)
+                {
+                    person.LoadAttributes();
+                    people.Add(new PersonData { Name = person.FullName, PhotoUrl = person.PhotoUrl, Position = person.GetAttributeValue("Position") });
+                }
+
+                this.rptStaff.DataSource = people;
+                this.rptStaff.DataBind();
+            }
+            
 
 
         }
         protected void lblName_DataBinding(object sender, EventArgs e)
         {
-            (sender as Label).Text = Eval("Name").ToString();
+            var label = sender as Label;
+            if (label != null) label.Text = Eval("Name").ToString();
         }
+
         protected void lblJob_DataBinding(object sender, EventArgs e)
         {
-            (sender as Label).Text = Eval("Position").ToString();
+            var label = sender as Label;
+            if (label != null) label.Text = Eval("Position").ToString();
         }
+
         protected void img_DataBinding(object sender, EventArgs e)
         {
-            (sender as Image).ImageUrl = Eval("PhotoUrl").ToString();
+            var image = sender as Image;
+            if (image != null) image.ImageUrl = Eval("PhotoUrl").ToString();
         }
+
         protected void rptStaff_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if ((e.Item.ItemIndex + 1) % 6 == 0)

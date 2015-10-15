@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using Rock.Web.Cache;
 
 [DisplayName("ServiceU Events")]
-[Category("Newpointe")]
+[Category("NewPointe.org Web Blocks")]
 [Description("Upcoming events for each campus")]
 public partial class Plugins_org_newpointe_ServiceUEvents_ServiceUEvents : RockBlock
 {

@@ -18,7 +18,7 @@ using System.Data;
 using System.Web.Script.Serialization;
 
 [DisplayName("Custom Menu")]
-[Category("Newpointe")]
+[Category("NewPointe.org Web Blocks")]
 [Description("Main menu")]
 public partial class Plugins_org_newpointe_CustomMenu_CustomMenu : RockBlock
 {

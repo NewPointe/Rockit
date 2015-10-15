@@ -20,7 +20,7 @@ using System.ComponentModel;
 namespace RockWeb.Plugins.org_newpointe.TwitterWidget
 {
     [DisplayName("TwitterWidget")]
-    [Category("Newpointe")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("This is the TwitterWidget")]
     public partial class TwitterWidget : RockBlock
     {

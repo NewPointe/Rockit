@@ -20,7 +20,7 @@ using System.ComponentModel;
 namespace RockWeb.Plugins.org_newpointe.TheMessage
 {
     [DisplayName("The Message")]
-    [Category("Newpointe")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("This s the homepage the message block")]
     public partial class TheMessage : RockBlock
     {

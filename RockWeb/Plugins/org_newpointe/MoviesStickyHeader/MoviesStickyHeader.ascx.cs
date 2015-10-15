@@ -20,7 +20,7 @@ using System.ComponentModel;
 namespace RockWeb.Plugins.org_newpointe.MoviesStickyHeader
 {
     [DisplayName("MoviesStickyHeader")]
-    [Category("Newpointe")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("This the sticky block at the top of movies page")]
     public partial class MoviesStickyHeader : RockBlock
     {
