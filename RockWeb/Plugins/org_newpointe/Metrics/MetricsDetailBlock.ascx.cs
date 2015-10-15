@@ -17,6 +17,7 @@ using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 using System.Data.SqlClient;
 
+
 namespace RockWeb.Plugins.org_newpointe.Reporting
 {
 
@@ -52,6 +53,11 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
         public string DiscoverGroups;
         public string SmallGroupParticipants;
         public string Assimilation;
+        public string SundayDate;
+        public string InactiveFollowup;
+        public string InactiveFollowupComplete;
+        public string InactiveFollowupIncomplete;
+        public string InactiveFollowupPercentage;
 
 
         RockContext rockContext = new RockContext();
@@ -59,6 +65,11 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            //Set Last Sunday Date
+            DateTime dt = DateTime.Now.StartOfWeek(DayOfWeek.Sunday);
+            SundayDate = dt.ToShortDateString();
+
+
             if (!Page.IsPostBack)
             {
                 //Get Attributes
@@ -69,8 +80,63 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 cpCampus.DataSource = eventList;
                 cpCampus.DataBind();
 
-                cpCampus.SelectedValue = "All Org";
-                SelectedCampusId = 0;
+                PersonService personService = new PersonService(rockContext);
+                GroupService groupService = new GroupService(rockContext);
+                GroupMemberService groupMemberService = new GroupMemberService(rockContext);
+                var personObject = personService.Get(CurrentPerson.Guid);
+
+                //Is Person in Akron Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74786, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 5;
+                    cpCampus.SelectedValue = "Akron Campus";
+                    SelectedCampus = "Akron Campus";
+                }
+                //Is Person in Canton Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74787, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 2;
+                    cpCampus.SelectedValue = "Canton Campus";
+                    SelectedCampus = "Canton Campus";
+                }
+                //Is Person in Coshocton Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74788, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 3;
+                    cpCampus.SelectedValue = "Coshocton Campus";
+                    SelectedCampus = "Coshocton Campus";
+                }
+                //Is Person in Dover Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74789, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 1;
+                    cpCampus.SelectedValue = "Dover Campus";
+                    SelectedCampus = "Dover Campus";
+                }
+                //Is Person in Millersburg Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74790, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 4;
+                    cpCampus.SelectedValue = "Millersburg Campus";
+                    SelectedCampus = "Millersburg Campus";
+                }
+                //Is Person in Wooster Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74791, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 6;
+                    cpCampus.SelectedValue = "Wooster Campus";
+                    SelectedCampus = "Wooster Campus";
+                }
+                //Is Person in Central?
+                if (groupMemberService.GetByGroupIdAndPersonId(74785, (int)CurrentPersonId).Any() == true)
+                {
+                    cpCampus.SelectedValue = "All Org";
+                    SelectedCampus = "All Org";
+                    SelectedCampusId = 0;
+                }
+
+
+
             }
 
                 DoSQL();
@@ -80,7 +146,6 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
 
         protected void cpCampus_OnSelectionChanged(object sender, EventArgs e)
         {
-            //throw new NotImplementedException();
 
             SelectedCampus = cpCampus.SelectedValue.ToString();
             switch (SelectedCampus)
@@ -402,9 +467,10 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 (
                 SELECT COUNT(DISTINCT PersonAliasId) as thetotal FROM Attendance a
                 JOIN [Group] g on a.GroupId = g.Id
-                WHERE g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
+                WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
                 OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
-                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144 OR g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR g.GroupTypeId = 124 OR g.GroupTypeId = 125
+                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144 OR g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR g.GroupTypeId = 124 OR g.GroupTypeId = 125)
+                AND a.StartDateTime > '2015-09-01'
                 UNION
                 SELECT COUNT(DISTINCT PersonId) as thetotal FROM [GroupMember] gm
                 JOIN [Group] g on gm.GroupId = g.Id
@@ -420,13 +486,63 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
                 OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
                 OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144 OR g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR g.GroupTypeId = 124 OR g.GroupTypeId = 125)
-                AND g.CampusId = @CampusId
+                AND a.StartDateTime > '2015-09-01' AND g.CampusId = @CampusId
                 UNION
                 SELECT COUNT(DISTINCT PersonId) as thetotal FROM [GroupMember] gm
                 JOIN [Group] g on gm.GroupId = g.Id
                 WHERE g.GroupTypeId = 25 and g.IsActive = 'true' AND g.CampusId = @CampusId
                 ) s", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
+
+            //Inactive Follow-up
+            if (SelectedCampusId == 0)
+            {
+                InactiveFollowupComplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                  FROM [rock-production].[dbo].[Workflow] wf 
+                  JOIN AttributeValue av ON wf.Id = av.EntityID
+                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Completed'
+                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())")
+                    .ToList<int?>()[0].ToString();
+            }
+            else
+            {
+                InactiveFollowupComplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                  FROM [rock-production].[dbo].[Workflow] wf 
+                  JOIN AttributeValue av ON wf.Id = av.EntityID
+                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Completed' AND av.Value = @CampusName
+                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())", new SqlParameter("CampusName", SelectedCampus)).ToList<int?>()[0].ToString();
+            }
+
+            if (SelectedCampusId == 0)
+            {
+                InactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                  FROM [rock-production].[dbo].[Workflow] wf 
+                  JOIN AttributeValue av ON wf.Id = av.EntityID
+                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Active'
+                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())")
+                    .ToList<int?>()[0].ToString();
+            }
+            else
+            {
+                InactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                  FROM [rock-production].[dbo].[Workflow] wf 
+                  JOIN AttributeValue av ON wf.Id = av.EntityID
+                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Active' AND av.Value = @CampusName
+                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())", new SqlParameter("CampusName", SelectedCampus)).ToList<int?>()[0].ToString();
+            }
+
+            var totalFollowups = Int32.Parse(InactiveFollowupComplete) + Int32.Parse(InactiveFollowupIncomplete);
+            InactiveFollowup = totalFollowups.ToString();
+            if (InactiveFollowup != "0")
+            {
+                decimal followupPercent = (decimal.Parse(InactiveFollowupComplete)/decimal.Parse(InactiveFollowup))*100;
+                InactiveFollowupPercentage = followupPercent.ToString();
+            }
+            else
+            {
+                InactiveFollowupPercentage = "100";
+            }
+
         }
     }
 }

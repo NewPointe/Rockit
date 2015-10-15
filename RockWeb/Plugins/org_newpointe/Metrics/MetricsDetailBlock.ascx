@@ -3,10 +3,10 @@
 <div class="panel panel-block"> <div class="panel-heading"><h4 class="panel-title"><i class="fa fa-line-chart"></i> Goals Dashboard - <%= SelectedCampus %> <small style="color: slategray;">(for Fiscal Year 2016)</small></h4></div>
 
 <div class="row">
-<div class='col-md-4'">
+<div class='col-md-4'>
     <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #8BC540;">
         <div class='col-md-12 text-center'>
-            <h4>Weekend Attendance</h4>
+            <h4>Weekend Attendance<small style="color: slategray;"> (<%= SundayDate %>)</small></h4>
         </div>
 
         <div class='row'>    
@@ -20,11 +20,11 @@
             </div>
 
             <div class='col-md-12'>
-                <div class="progress">
+                <!--<div class="progress">
                     <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
                      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"> 41 of 100
                     </div>
-                </div>
+                </div>-->
                 <div class='col-md-12 text-right'>
                     <a href="https://rock.newpointe.org/metrics/attendanceDashboard" class="text-xs-right" style="font-size: 70%">See Trends</a>
                 </div>
@@ -36,7 +36,7 @@
 <div class='col-md-4'>
     <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #800000;">
         <div class='col-md-12 text-center'>
-            <h4>Commitments</h4>
+            <h4>Commitments & Baptisms</h4>
         </div>
 
         <div class='row'>    
@@ -50,11 +50,11 @@
             </div>
 
             <div class='col-md-12'>
-                <div class="progress">
+                 <!--<div class="progress">
                     <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
                      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"> 41 of 100
                     </div>
-                </div>
+                </div>-->
                 <div class='col-md-12 text-right'>
                     <a href="https://rock.newpointe.org/page/525" class="text-xs-right" style="font-size: 70%">See Trends</a>
                 </div>
@@ -79,11 +79,11 @@
             </div>
 
             <div class='col-md-12'>
-                <div class="progress">
+                 <!--<div class="progress">
                     <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
                      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"> 41 of 100
                     </div>
-                </div>
+                </div>-->
                 <div class='col-md-12 text-right'>
                     <a href="https://rock.newpointe.org/page/551" class="text-xs-right" style="font-size: 70%">See Trends</a>
                 </div>
@@ -93,7 +93,7 @@
 </div>
 </div>
 <div class="row" style="padding-top: 10px;">
-<div class='col-md-4'>
+<div class='col-md-3'>
     <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #8AC007;">
         <div class='col-md-12 text-center'>
             <h4>New Here Guests</h4>
@@ -108,11 +108,11 @@
             </div>
 
             <div class='col-md-12'>
-                <div class="progress">
+                 <!--<div class="progress">
                     <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
                      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"> 41 of 100
                     </div>
-                </div>
+                </div>-->
                 <div class='col-md-12 text-right'>
                     <a href="https://rock.newpointe.org/page/525" class="text-xs-right" style="font-size: 70%">See Trends</a>
                 </div>
@@ -121,7 +121,7 @@
     </div>
 </div>
 
-<div class='col-md-4'>
+<div class='col-md-2'>
     <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #0000cd;">
         <div class='col-md-12 text-center'>
             <h4>Baptisms</h4>
@@ -136,11 +136,11 @@
             </div>
 
             <div class='col-md-12'>
-                <div class="progress">
+                 <!--<div class="progress">
                     <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
                      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"> 41 of 100
                     </div>
-                </div>
+                </div>-->
                 <div class='col-md-12 text-right'>
                     <a href="https://rock.newpointe.org/page/525" class="text-xs-right" style="font-size: 70%">See Trends</a>
                 </div>
@@ -166,13 +166,42 @@
             </div>
 
             <div class='col-md-12'>
-                <div class="progress">
+                <!--<div class="progress">
                     <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
                      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"> 41 of 100
                     </div>
-                </div>
+                </div>-->
                 <div class='col-md-12 text-right'>
                     <a href="https://rock.newpointe.org/page/526" class="text-xs-right" style="font-size: 70%">See Trends</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+ <div class='col-md-3'>
+    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #cd853f;">
+        <div class='col-md-12 text-center'>
+            <h4>Inactive Follow-up</h4>
+        </div>
+
+        <div class='row'>    
+            <div class='col-md-6 text-right'>
+                <span style='font-size:50px'><%= InactiveFollowup %></span>
+            </div>
+            <div class='col-md-6' style="font-size: 80%; padding-top: 13px">
+                <%= InactiveFollowupComplete %> Completed<br/>
+                <%= InactiveFollowupIncomplete %> Open<br/>
+            </div>
+
+            <div class='col-md-12'>
+                 <div class="progress">
+                    <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:<%= InactiveFollowupPercentage %>%"> 
+                    </div>
+                </div>
+                <div class='col-md-12 text-right'>
+                    <a href="https://rock.newpointe.org/page/531" class="text-xs-right" style="font-size: 70%">See Report</a>
                 </div>
             </div>
         </div>
