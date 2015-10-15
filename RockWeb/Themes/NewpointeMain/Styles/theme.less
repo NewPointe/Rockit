@@ -468,6 +468,7 @@ table.striped tr {
         text-transform: uppercase;
         margin: 0px;
         letter-spacing: .1px;
+        margin-top: 50px;
     }
 }
 
@@ -577,6 +578,7 @@ table.striped tr {
         text-transform: uppercase;
         margin: 0px;
         letter-spacing: .1px;
+        margin-top: -15px;
     }
 }
 
@@ -594,6 +596,11 @@ table.striped tr {
 #divCustomMenu {
     border-top: #8BC540 1px solid;
     border-bottom: #404040 1px solid;
+    margin-top: -16px;
+}
+
+.NPMenu {
+    margin-top: -20px;
 }
 
 .npCustomMenu {
@@ -869,7 +876,8 @@ header {
 }
 // homepage items
 #announcement-rotator {
-    margin: 0 -@grid-gutter-width/2 @spacing-lg-px;
+    //margin: 0 -@grid-gutter-width/2 @spacing-lg-px;
+    margin-top: -12px !important;
 
     .item {
         img {
@@ -1600,10 +1608,11 @@ strong {
     }
 
     .divLogin {
-        position: absolute;
+        //position: absolute;
+        float: right;
         top: 0px;
-        right: 15px;
-        z-index: 99999;
+        //right: 20%;
+        z-index: 999999;
 
         a { 
             font-size: 1em;
@@ -1987,10 +1996,16 @@ strong {
             background-color: transparent !important;
             border: none;
         }
+
+        .divider {
+            background-color: #404040;
+        }
     }
 
     .loginstatus .dropdown-menu {
-        background-color: #fff !important;
+        background-color: #404040 !important;
+        z-index: 99999;
+        margin-top: -15px;
     }
 }
 

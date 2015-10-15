@@ -81,10 +81,6 @@
 
                         </button>
 
-                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".divCampusMenu">
-                            <i class="fa fa-map-marker"></i>
-                        </button>
-
                         <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".divTime">
                             <i class="fa fa-clock-o"></i>
                         </button>
@@ -110,6 +106,11 @@
                             <h5>watch live every week! sundays at 9 & 11 a.m.</h5>
                         </div>
                     </div>
+                    
+                    <div class="navbar-collapse collapse divLogin collapsed">
+                        <Rock:Zone Name="CustomLogin" runat="server"></Rock:Zone>
+                    </div>
+
                     <div class="navbar-collapse collapse divCampusMenu">
                         <div>
                             <Rock:Zone Name="Login" runat="server" />
@@ -120,9 +121,7 @@
                         <Rock:Zone Name="Navigation" runat="server" />
                     </div>
 
-                    <div class="navbar-collapse collapse divLogin">
-                        <Rock:Zone Name="CustomLogin" runat="server"></Rock:Zone>
-                    </div>
+                    
                 </div>
             </nav>
 
@@ -221,7 +220,7 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 text-xs-center text-sm-left">
-                        EMPLOYMENT | CONTACT US | FEEDBACK
+                        <a href="jobs">EMPLOYMENT</a> | <a href="contact">CONTACT US</a>
                     </div>
                     <div class="col-xs-12 col-sm-6 text-xs-center text-sm-right">
                         <div class="copyright">&copy; 2015 NewPointe Community Church | All Rights Reserved</div>

@@ -5405,7 +5405,6 @@ table.striped tr {
   text-transform: uppercase;
   margin: 0px;
   letter-spacing: .1px;
-  margin-top: 50px;
 }
 /*.main-feature .row div {
     padding: 0px;
@@ -5487,7 +5486,6 @@ table.striped tr {
   text-transform: uppercase;
   margin: 0px;
   letter-spacing: .1px;
-  margin-top: -15px;
 }
 #CustomMenuLogo {
   height: 70px;
@@ -5500,10 +5498,6 @@ table.striped tr {
 #divCustomMenu {
   border-top: #8BC540 1px solid;
   border-bottom: #404040 1px solid;
-  margin-top: -16px;
-}
-.NPMenu {
-  margin-top: -20px;
 }
 .npCustomMenu {
   list-style-type: none;
@@ -5721,7 +5715,7 @@ header .navbar {
   margin-top: 15px;
 }
 #announcement-rotator {
-  margin-top: -12px !important;
+  margin: 0 -15px 30px;
 }
 #announcement-rotator .item img {
   width: 100%;
@@ -6290,9 +6284,10 @@ strong {
     font-size: 2em;
   }
   .divLogin {
-    float: right;
+    position: absolute;
     top: 0px;
-    z-index: 999999;
+    right: 15px;
+    z-index: 99999;
   }
   .divLogin a {
     font-size: 1em;
@@ -6602,13 +6597,8 @@ strong {
   background-color: transparent !important;
   border: none;
 }
-.divLogin .loginstatus .dropdown .divider {
-  background-color: #404040;
-}
 .divLogin .loginstatus .dropdown-menu {
-  background-color: #404040 !important;
-  z-index: 99999;
-  margin-top: -15px;
+  background-color: #fff !important;
 }
 table.gsc-search-box tbody tr td * {
   height: 100%!important;
