@@ -54,14 +54,8 @@ namespace RockWeb.Plugins.org_newpointe.Podcasts
                 var file = item.Element("enclosure").Attribute("url").Value;
                 var duration = item.Element(ns + "duration").Value;
                 var date = item.Element("pubDate").Value;
-
-
-
-                //Sun, 28 Jun 2015 12:00:00 EST
- 
          
                 date = date.Remove(date.LastIndexOf("EST"));
-
                 
                 date = DateTime.ParseExact(date, "ddd, dd MMM yyyy hh:mm:ss K", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString();
 
