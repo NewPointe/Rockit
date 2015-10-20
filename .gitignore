@@ -1,2 +1,7 @@
 *.suo
 /packages/*.*
+
+wwwroot.7z
+RockWeb/App_Data/Logs/RockExceptions.csv
+RockWeb/App_Data/Logs/RockExceptions.csv
+RockWeb/App_Data/Logs/RockExceptions.csv

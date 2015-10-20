@@ -1,1 +1,6 @@
 /web.ConnectionStrings.config
+*.suo
+/packages/*.*
+/Content
+/App_Data/Cache
+/App_Data/
