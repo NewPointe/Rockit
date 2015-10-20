@@ -1,39 +1,46 @@
-﻿<div class="container">
-{% for item in Items %}
-	{% if Pagination.UrlTemplate contains item.SeriesID -%}
-		
-			{% if forloop.index == 1 -%}
-			<div class="col-xs-2">
-				<a href="/message-archive"><i class="fa fa-th-large" style="font-size:2em;"></i></a>
-			</div>
-			<div class="col-xs-8 text-center">
-				<h1>{{item.SeriesTitle}}</h1>
+﻿<div class="container" style="margin-top: -25px;">
+  {% for item in Items %}
+  SeriesId: {{item.SeriesID }}
+  {{ Pagination.UrlTemplate }}
+  {% if Pagination.UrlTemplate contains item.SeriesID -%}
+
+  {% if forloop.index == 1 -%}
+
+  <div class="col-xs-12 text-center">
+				<h1 style="padding-top: -20px;">
+          <small>Message Series:<br /></small>{{item.SeriesTitle}}</h1>
 			</div>
 
 									<div class="col-xs-12 col-md-8">
-							{% for item in Items -%}
-								
-									{% if forloop.index == 1 -%}
-									<a href="#" onclick="javascript:ShowMessage({{item.Id}}); return false" class="seriesButton btn btn-primary active"> Pt {{forloop.index}} {{item.Title1}}</a>
+                    {% for item in Items -%}
+                    {% if Pagination.UrlTemplate contains item.SeriesID -%}
+                    {% if forloop.index == 1 -%}
+                    <a href="#" onclick="javascript:ShowMessage({{item.Id}}); return false" class="seriesButton btn btn-primary active" style="margin-bottom: 5px;"> Pt {{forloop.index}}: {{item.Title}}</a>
 									{% else -%}
-									<a href="#"  onclick="javascript:ShowMessage({{item.Id}}); return false;"  class="seriesButton btn btn-primary"> Pt {{forloop.index}} {{item.Title1}}</a>
-									{% endif -%}
-								
-							{% endfor -%}
-							</div>
-						
+									<a href="#"  onclick="javascript:ShowMessage({{item.Id}}); return false;"  class="seriesButton btn btn-primary" style="margin-bottom: 5px;"> Pt {{forloop.index}}: {{item.Title}}</a>
+                    {% endif -%}
+                    {% endif -%}
+                    {% endfor -%}
+                  </div>
 
-			{% endif -%}
-			{% if forloop.index == 1 -%}
-				
-				<div id="message-{{item.Id}}" class="message">
+
+  {% endif -%}
+
+
+  {% if forloop.index == 1 -%}
+
+  {% assign messagenotes = item | Attribute:'MessageNotes','Url' %}
+  {% assign talkitover = item | Attribute:'TalkItOver','Url' %}
+  {% assign podcastaudio = item | Attribute:'PodcastAudio','Url' %}
+
+  <div id="message-{{item.Id}}" class="message">
 			{% else -%}
 				<div id="message-{{item.Id}}" class="message" style="display:none;">
 			{% endif -%}
 
 					<div class="col-xs-12 col-md-8">
 						
-						<div class="embed-container"><iframe src="{{item.VideoURL | StripHtml}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+						<div class="embed-container"><iframe src="https://player.vimeo.com/video/{{item.VideoId}}?wmode=transparent" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
 						
 					</div>
 
@@ -41,41 +48,68 @@
 				
 					<div class="col-xs-12 col-md-4">
 						<div class="col-xs-12">
-							<h3>{{item.Title1}}</h3>
-							Date: <span class="npDate">{{item.Date}}</span>
+              <h3>{{item.Title}}</h3>
+              <h4>Date: <span class="npDate">{{item.Date}}</span></h4>
 						</div>
 
 						<hr />
 
 						<div class="col-xs-12">
 							<h3>{{item.Speaker}}</h3>
-							{{item.SpeakerTitle}}
+              <h4>{{item.SpeakerTitle}}</h4>
 						</div>
 
 						<hr />
 
 						<div class="col-xs-12">
-							{% if item.AudioLink -%}
-							<h4>Audio:</h4>
+              {% if podcastaudio != '' %}
+              <h4>Audio:</h4>
 								<audio controls>
-									<source src="{{item.AudioLink | StripHtml}}" type="audio/mpeg">
+									<source src="{{ item | Attribute:'PodcastAudio','Url' }}" type="audio/mpeg">
 								</audio>
-							{% else -%}
+							{% else %}
 								<h4>Audio Unavailable</h4>
-							{% endif -%}
+							{% endif %}
 						</div>
 
-						<div class="col-xs-12">
-							<h4>Attachments:</h4> <br />
-							{{item.Attachments}}
-						</div>
+						<div class="col-xs-12"><br />
+							<h4>Attachments:</h4>
+              {% if messagenotes != '' %}
+              <p>
+                <a href="{{ item | Attribute:'MessageNotes','Url' }}">
+                  <i class="fa fa-pencil-square-o"></i> Message Notes
+                </a>
+              </p>
+              {% endif -%}
+              {% if talkitover != '' %}
+              <p>
+                <a href="{{ item | Attribute:'TalkItOver','Url' }}">
+                  <i class="fa fa-comment"></i> Talk It Over Guide
+                </a>
+              </p>
+              {% endif %}
+            <p>
+               <br/>
+                <a href="/">
+                  <i class="fa fa-th-large"></i> Return to Message Archive
+                </a>
+            </p>
+            </div>
 				</div>
+          <div class="col-xs-12">
+            <p>
+              <br />{{item.Content}}
+            </p>
+          </div>
 			</div>
+    
 	{% endif -%}
 {% endfor -%}
-			</div>	
+			</div>
 
-<script type="text/javascript">
+  
+
+  <script type="text/javascript">
 $(document).ready(function(){
 
 });
