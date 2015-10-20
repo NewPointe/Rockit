@@ -54,10 +54,12 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
         public string SmallGroupParticipants;
         public string Assimilation;
         public string SundayDate;
+
         public string InactiveFollowup;
         public string InactiveFollowupComplete;
         public string InactiveFollowupIncomplete;
         public string InactiveFollowupPercentage;
+        public string InactiveFollowupColor;
 
 
         RockContext rockContext = new RockContext();
@@ -85,7 +87,7 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 GroupMemberService groupMemberService = new GroupMemberService(rockContext);
                 var personObject = personService.Get(CurrentPerson.Guid);
 
-                //Is Person in Akron Campus?
+                 //Is Person in Akron Campus?
                 if (groupMemberService.GetByGroupIdAndPersonId(74786, (int)CurrentPersonId).Any() == true)
                 {
                     SelectedCampusId = 5;
@@ -532,15 +534,32 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
             }
 
             var totalFollowups = Int32.Parse(InactiveFollowupComplete) + Int32.Parse(InactiveFollowupIncomplete);
+            decimal followupPercent = 0;
             InactiveFollowup = totalFollowups.ToString();
             if (InactiveFollowup != "0")
             {
-                decimal followupPercent = (decimal.Parse(InactiveFollowupComplete)/decimal.Parse(InactiveFollowup))*100;
+                followupPercent = (decimal.Parse(InactiveFollowupComplete)/decimal.Parse(InactiveFollowup))*100;
                 InactiveFollowupPercentage = followupPercent.ToString();
             }
             else
             {
                 InactiveFollowupPercentage = "100";
+            }
+            if (followupPercent <= 30)
+            {
+                InactiveFollowupColor = "danger";
+            }
+            else if (followupPercent <= 60)
+            {
+                InactiveFollowupColor = "warning";
+            }
+            else if (followupPercent <= 90)
+            {
+                InactiveFollowupColor = "info";
+            }
+            else if (followupPercent <= 100)
+            {
+                InactiveFollowupColor = "success";
             }
 
         }

@@ -195,10 +195,15 @@
             </div>
 
             <div class='col-md-12'>
+                <div class="col-md-6"></div>
+                <div class="col-md-6 right"><small>Goal: <%= InactiveFollowup %></small></div>
+                <div class='col-md-12'>
                  <div class="progress">
-                    <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                    <div class="progress-bar progress-bar-<%= InactiveFollowupColor %> progress-bar-striped" role="progressbar"
                      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:<%= InactiveFollowupPercentage %>%"> 
                     </div>
+                </div>
+
                 </div>
                 <div class='col-md-12 text-right'>
                     <a href="https://rock.newpointe.org/page/531" class="text-xs-right" style="font-size: 70%">See Report</a>
