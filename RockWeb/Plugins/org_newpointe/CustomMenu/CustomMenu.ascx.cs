@@ -24,6 +24,10 @@ public partial class Plugins_org_newpointe_CustomMenu_CustomMenu : RockBlock
 {
 
     public string jsonSearch { get; set; }
+    public string replaceId = "{{seriesid}}";
+    public string replaceImage= "{{seriesimage}}";
+    public string replacedId = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesId");
+    public string replacedImage = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesImage");
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -34,6 +38,9 @@ public partial class Plugins_org_newpointe_CustomMenu_CustomMenu : RockBlock
         rptMenuLinks.DataBind();
         rptMenuDivs.DataSource = customer;
         rptMenuDivs.DataBind();
+
+        replacedId = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesId");
+        replacedImage = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesImage");
     }
 
     public class Aaron

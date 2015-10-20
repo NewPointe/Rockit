@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="CustomMenu.ascx.cs" Inherits="Plugins_org_newpointe_CustomMenu_CustomMenu" %>
+<%@ Import Namespace="Rock" %>
 
 <style>
     /*  Google Custom Search */
@@ -131,7 +132,7 @@
                             s.parentNode.insertBefore(gcse, s);
                         })();
                     </script>
-                    <gcse:searchbox-only resultsurl="http://nprock.rmrdevelopment.com/searchResults"></gcse:searchbox-only>
+                    <gcse:searchbox-only resultsurl="searchResults"></gcse:searchbox-only>
                 </div>
                 <div id="NPMenu">
                     <div id="CustomMenuLogo" class="col-md-1 customMenuContainer">
@@ -154,7 +155,7 @@
                     <asp:Repeater ID="rptMenuDivs" runat="server">
                         <ItemTemplate>
                             <div id="popup-<%#DataBinder.Eval(Container.DataItem, "ID") %>" style="display: none;" class="col-md-12 pop-over fullwidthSub">
-                                <%#DataBinder.Eval(Container.DataItem, "HtmlContent") %>
+                                <%#((string)DataBinder.Eval(Container.DataItem, "HtmlContent")).Replace(replaceId,replacedId).Replace(replaceImage,replacedImage) %>
                             </div>
                         </ItemTemplate>
                     </asp:Repeater>
