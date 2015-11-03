@@ -25,7 +25,6 @@ public partial class Plugins_org_newpointe_ServiceUEvents_ServiceUEvents : RockB
         this.RockPage.AddCSSLink("~/Styles/autocomplete-styles.css");
         this.RockPage.AddCSSLink("~/Plugins/org_newpointe/ServiceUevents/ServiceUEvents.css");
         var eventtitleroute = PageParameter("eventcalendarroute");
-        var eventtitleroute2 = Request.QueryString["eventcalendarroute"];
         GetCampus();
 
         if (!Page.IsPostBack)
@@ -64,9 +63,43 @@ public partial class Plugins_org_newpointe_ServiceUEvents_ServiceUEvents : RockB
     {
         var param = Request.QueryString["campusID"];
 
+        var campusParam = PageParameter("campusName");
+        var campusId = 51773;
+
+        if (campusParam == "Akron")
+        {
+            campusId = 67713;
+        }
+        else if (campusParam == "Canton")
+        {
+            campusId = 53103;
+        }
+        else if (campusParam == "Coshocton")
+        {
+            campusId = 62004;
+        }
+        else if (campusParam == "Dover")
+        {
+            campusId = 51773;
+        }
+        else if (campusParam == "Millersburg")
+        {
+            campusId = 51774;
+        }
+        else if (campusParam == "Wooster")
+        {
+            campusId = 67714;
+        }
+
+
         if (!String.IsNullOrEmpty(param))
         {
             hdnCampus.Value = param;
+        }
+
+        if (!String.IsNullOrEmpty(campusParam))
+        {
+            hdnCampus.Value = campusId.ToString();
         }
     }
 }
