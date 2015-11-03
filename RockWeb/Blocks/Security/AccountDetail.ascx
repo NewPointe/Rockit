@@ -22,7 +22,7 @@
 
             <div class="col-sm-9">
 
-                <h1 class="title name">
+                <h1 class="name">
                     <asp:Literal ID="lName" runat="server" /></h1>
 
                 <div class="row">
