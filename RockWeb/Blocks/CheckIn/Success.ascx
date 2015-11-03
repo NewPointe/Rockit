@@ -2,7 +2,7 @@
 <asp:UpdatePanel ID="upContent" runat="server">
 <ContentTemplate>
 
-    <Rock:ModalAlert ID="maWarning" runat="server" />
+    <Rock:ModalAlert ID="maWarning" runat="server" Visible="False" />
 
     <div class="checkin-header">
         <h1>Checked-in</h1>
