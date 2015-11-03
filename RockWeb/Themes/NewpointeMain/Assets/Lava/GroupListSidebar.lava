@@ -1,13 +1,22 @@
-<div class="panel panel-default">
-  <div class="panel-heading">Groups</div>
+<div style="padding:25px 0;">
+  <div class="col-xs-12 resourceMenu">
+    <h3>
+      <a data-toggle="collapse" data-target="#collapseGroupList" aria-expanded="true" aria-controls="collapseExample">
+        <i class="fa fa-minus-circle"></i>
+        My Groups
+      </a>
+    </h3>
+  </div>
+  <div class="collapse in gray-bg col-xs-12" id="collapseGroupList">
+    
 
-  {% assign groupCount = Groups | Size %}
+      {% assign groupCount = Groups | Size %}
 
-  {% if groupCount == 0 %}
-  <div class="margin-all-md"> No Groups Available To List</div>
+      {% if groupCount == 0 %}
+      <div class="margin-all-md"> No Groups Available To List</div>
   {% endif %}
 
-  <ul class="list-group list-group-panel">
+<ul class="resourceMenuList">
     {% for group in Groups %}
 
     {% capture isLeaderIcon %}
@@ -16,7 +25,7 @@
     {% endif %}
     {% endcapture %}
 
-    <li class="list-group-item">
+    <li>
       <a href="{{ LinkedPages.DetailPage }}?GroupId={{group.Group.Id}}" class="js-group-item" data-toggle="tooltip" data-placement="top" title="{{ group.GroupType }}">
         {{ group.Group.Name }} <small>({{ group.Role }}{{ isLeaderIcon }})</small>
       </a>
@@ -24,6 +33,7 @@
     {% endfor %}
   </ul>
 
+</div>
 </div>
 
 <script type="text/javascript">

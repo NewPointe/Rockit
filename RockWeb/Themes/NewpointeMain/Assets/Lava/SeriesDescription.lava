@@ -1,0 +1,19 @@
+﻿
+
+  <div class="col-xs-12 col-md-8">
+    {% assign v1 = Pagination.UrlTemplate | Replace:'/', '' %}
+    {% assign v2 = v1 | Replace 'message-archivemessage?Page=PageNum', '' %}
+    {% assign v3 = v2 | Replace '-', '' %}
+    {% assign v4 = v3 | Replace '=', '' %}
+
+    {{v4}}
+
+    {% for item in Items %}
+    {% assign seriesid = '36' %}
+    {% if Pagination.UrlTemplate contains seriesid -%}
+    test:  {{ item.Title }} {{item.Content}}
+    {% endif -%}
+
+    {% endfor -%}
+
+  </div>
