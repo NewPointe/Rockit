@@ -24,7 +24,7 @@
   {% for item in Items %}
   <div class="col-xs-12 col-sm-6 col-md-3" style="padding:15px; max-width:300px">
 
-    <a href="{{LinkedPages.DetailPage}}?SeriesID={{item.Id}}">
+    <a href="{{LinkedPages.DetailPage}}/series/{{item.Id}}">
       <div class="overlay">
         {{item.SermonGraphic}}
       </div>

@@ -132,8 +132,8 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-  $( "div.message" ).first().show();
-  $(".seriesButton").first().addClass('active');
+  $( "div.message" ).last().show();
+  $(".seriesButton").last().addClass('active');
 
   $('span.series-title').text( $('h3.hidden-title').text());
   });
