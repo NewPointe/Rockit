@@ -33,7 +33,7 @@ public partial class Plugins_org_newpointe_CustomMenu_CustomMenu : RockBlock
     protected void Page_Load(object sender, EventArgs e)
     {
         var rc = new RockContext();
-        var customer = rc.Database.SqlQuery<Aaron>("EXEC GetAaronData").ToList();
+        var customer = rc.Database.SqlQuery<Aaron>("EXEC newpointe_GetMenuData").ToList();
         rptMenuLinks.DataSource = customer;
         rptMenuLinks.DataBind();
         rptMenuDivs.DataSource = customer;

@@ -17,7 +17,7 @@ using System.ComponentModel;
 
 
 using Rock;
- 
+using Rock.SystemGuid;
 
 
 namespace RockWeb.Plugins.org_newpointe.Staff 
@@ -32,13 +32,12 @@ namespace RockWeb.Plugins.org_newpointe.Staff
         {
 
             Guid? rootGroupGuid = GetAttributeValue("RootGroup").AsGuidOrNull();
-            //Guid? rootGroupGuid = Guid.Parse("CB75E90B-C187-4A58-8E0F-E325B694E72D");
             GroupService gs = new GroupService(new RockContext());
 
             if (rootGroupGuid != null)
             {
                 var staffGroup = gs.Get(rootGroupGuid.Value);
-                var groupMembers = staffGroup.Members.Select(m => m.Person).OrderBy(m => m.LastName).ThenBy(m => m.FirstName).ToList();
+                var groupMembers = staffGroup.Members.OrderByDescending(g => g.GroupMemberStatus).Select(m => m.Person).OrderBy(m => m.LastName).ThenBy(m => m.FirstName).ToList();
                 var groupName = staffGroup.Name.ToString();
                 this.lblGroupName.Text = groupName;
 

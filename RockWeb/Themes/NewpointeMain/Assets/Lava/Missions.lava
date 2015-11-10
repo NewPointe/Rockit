@@ -20,7 +20,7 @@
         <div class="gray-bg">
           <h4>
             {{ item.Title}}</h4>
-            {{ item.Description }}
+            {{ item.Content }}
         </div>
     </div>
       

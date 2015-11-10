@@ -21,21 +21,23 @@
 
 
   {% for item in Items %}
-
-  <div class="col-sm-6 col-md-4">
-        <div class="job-listing">
-          <h4>
-            {{ item.Title}}</h4>
-
-              <p>
-                <a href="{{ item | Attribute: 'ApplicationLink', 'RawValue' }}" class="btn btn-newpointe" target="_blank">Apply Here</a>
-              </p>
-
-              <p>
-                <a href="/GetFile.ashx?guid={{ item | Attribute: 'Description', 'RawValue' }}" class="btn btn-newpointe" target="_blank">View the full job description</a>
-              </p>
-            </div>
-      </div>
+  <div class="col-sm-12 col-md-12">
+	  <div class="col-sm-12 col-md-12 job-listing">
+				<div class="col-md-5">
+					<h4>{{ item.Title}}<br /><small>{{item.EmploymentType}}</small></h4>
+				</div>
+				<div class="col-md-4">
+				  <p>
+					<a href="/GetFile.ashx?guid={{ item | Attribute: 'Description', 'RawValue' }}" class="btn btn-newpointe" target="_blank">View Job Description</a>
+				  </p>
+				</div>
+				<div class="col-md-3">
+				  <p>
+					<a href="/employmentapplication?position={{ campusName.Campus }} - {{ item.Title}}" class="btn btn-newpointe" target="_blank">Apply Here</a>
+				  </p>
+				</div>
+			 </div>
+		  </div>
 
   {% endfor %}
 

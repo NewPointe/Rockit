@@ -7,15 +7,9 @@
       {% else -%}
       <div class="item">
         {% endif -%}
-        <!--<a href="{{ LinkedPages.DetailPage }}?Item={{ item.Id }}">{{ item.Image }}</a>-->
+        
         {% if item.CustomLink != '' -%}
-        <a href="{{item.CustomLink}}">{{item.Image}}</a>
-        {% elseif item.PageLink -%}
-          {% if item.PageLink contains 'Item.Detail' -%}
-            <a href="{{item.PageLink}}?Item={{item.Id}}">{{item.Image}}</a>
-          {% else -%}
-            <a href="{{item.PageLink}}">{{item.Image}}</a>
-          {% endif -%}
+        <a href="{{item.CustomLink | 'StripHtml'}}">{{item.Image}}</a>
         {% else -%}
         {{item.Image}}
         {% endif -%}

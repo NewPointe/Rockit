@@ -45,7 +45,7 @@
   {% assign messagenotes = item | Attribute:'MessageNotes','Url' %}
   {% assign talkitover = item | Attribute:'TalkItOver','Url' %}
   {% assign podcastaudio = item | Attribute:'PodcastAudio','Url' %}
-  {% assign podcastlink = item | Attribute:'PodcastURL','RawValue  ' %}
+  {% assign podcastlink = item | Attribute:'PodcastURL','StripHtml' %}
 
 
 

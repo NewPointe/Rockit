@@ -6625,3 +6625,21 @@ table.gsc-search-box tbody tr td * {
   height: 75px !important;
   background-color: #404040;
 }
+.label-campus-akr {
+  background-color: #2a316c;
+}
+.label-campus-can {
+  background-color: #2ca9e0;
+}
+.label-campus-cos {
+  background-color: #f15b26;
+}
+.label-campus-dov {
+  background-color: #8bc540;
+}
+.label-campus-mil {
+  background-color: #eb2227;
+}
+.label-campus-wst {
+  background-color: #f4d61e;
+}
