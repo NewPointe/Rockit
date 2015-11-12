@@ -17,8 +17,10 @@
     {% assign messageIndex = 'NoTitle' %}
 
     {% for item in Items %}
-    {% if Pagination.UrlTemplate contains item.SeriesID -%}
 
+
+    {% capture messageUnder %}/series/{{ item.SeriesID }}?{% endcapture %}
+    {% if Pagination.UrlTemplate contains messageUnder -%}
 
     {% if messageIndex == 'NoTitle'-%}
     {% assign messageIndex = item | Attribute:'SeriesTitle' %}
@@ -40,18 +42,20 @@
   {% endcomment %}
 
   {% for item in Items %}
-  {% if Pagination.UrlTemplate contains item.SeriesID -%}
+
+  {% capture messageUnder2 %}/series/{{ item.SeriesID }}?{% endcapture %}
+  {% if Pagination.UrlTemplate contains messageUnder2 -%}
 
   {% assign messagenotes = item | Attribute:'MessageNotes','Url' %}
   {% assign talkitover = item | Attribute:'TalkItOver','Url' %}
   {% assign podcastaudio = item | Attribute:'PodcastAudio','Url' %}
-  {% assign podcastlink = item | Attribute:'PodcastURL','StripHtml' %}
+  {% assign podcastlink = item | Attribute:'PodcastURL','RawValue' %}
 
 
 
   <div id="message-{{item.Id}}" class="message" style="display:none;">
 
-   
+
 
     <div class="col-xs-12 col-md-8">
       <div class="embed-container">
@@ -81,12 +85,12 @@
         <h4>Audio:</h4>
         <audio controls="">
           <source src="{{ item | Attribute:'PodcastAudio','Url' }}" type="audio/mpeg" />
-           </audio>
+        </audio>
         {% elseif podcastlink != '' %}
         <h4>Audio:</h4>
-      <audio controls="">
-        <source src="{{ podcastlink }}" type="audio/mpeg" />
-      </audio>
+        <audio controls="">
+          <source src="{{ podcastlink }}" type="audio/mpeg" />
+        </audio>
         {% else %}
         <h4>Audio Unavailable</h4>
         {% endif %}

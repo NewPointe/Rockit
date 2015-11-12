@@ -5720,9 +5720,6 @@ header .navbar {
 .navbar-toggle {
   margin-top: 15px;
 }
-#announcement-rotator {
-  margin-top: -12px !important;
-}
 #announcement-rotator .item img {
   width: 100%;
 }
@@ -6291,6 +6288,9 @@ strong {
   header .mobile-page-menu .nav.navbar-nav > li {
     font-size: 2em;
   }
+  #announcement-rotator {
+    margin-top: -12px !important;
+  }
   .divLogin {
     float: right;
     top: 0px;
@@ -6369,6 +6369,9 @@ strong {
 }
 /* medium only*/
 @media (min-width: 992px) AND (max-width: 1199px) {
+  #announcement-rotator {
+    margin-top: -25px !important;
+  }
   footer h2.give {
     font-size: 75px;
   }
