@@ -20,7 +20,10 @@ namespace Rock.Jobs
     public class CalendarJsonJob : IJob
     {
         private const string _baseUrl = "http://api.serviceu.com";
-        private const string _calendarApi = "rest/events/occurrences?departmentids={1}&nextDays={2}&orgkey={0}&format=json";
+        private const string _calendarApi = "rest/events/occurrences?startDate={2}&endDate={3}&departmentids={1}&orgkey={0}&format=json";
+
+        private DateTime today = DateTime.Today;
+        
 
         public CalendarJsonJob()
         {
@@ -38,11 +41,20 @@ namespace Rock.Jobs
             createCalendarJsonFle(System.Web.Hosting.HostingEnvironment.MapPath("~/Assets/calendar-full.json"),900);
         }
         private void createCalendarJsonFle(string filename, int days){
+            //Get Start and End Dates
+            var firstDay = new DateTime(today.Year, today.Month, 1);
+            var lastDay = firstDay.AddYears(1);
+
+            string formattedFirstDay = string.Format("{0:MM/dd/yyyy}", firstDay);
+            string formattedLastDay = string.Format("{0:MM/dd/yyyy}", lastDay);
+
+
+
             //new restsharp 
             var client = new RestClient(_baseUrl);
             ArrayList jsonCalendar = new ArrayList();
             //get calendar data from my service u
-            var request = new RestRequest(string.Format(_calendarApi, org.newpointe.SampleProject.Properties.Settings.Default.ServiceUKey, org.newpointe.SampleProject.Properties.Settings.Default.departmentIds, days));
+            var request = new RestRequest(string.Format(_calendarApi, org.newpointe.SampleProject.Properties.Settings.Default.ServiceUKey, org.newpointe.SampleProject.Properties.Settings.Default.departmentIds, formattedFirstDay, formattedLastDay));
             var response = client.Execute<List<Calendar>>(request);
 
             //Delete Old File.
