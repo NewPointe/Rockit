@@ -165,8 +165,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
                                            {
                                                Id = x.Person.Aliases.FirstOrDefault().Id,
                                                FirstName = x.Person.FirstName,
-                                               LastName = x.Person.LastName,
-                                               Note = x.Group.Name
+                                               LastName = x.Person.LastName
                                            })).SelectMany(x => x);
 
             var allAssignedPeople = assignedGroupPeopleData.Count() > 0 ? assignedWorkerData.Union(assignedGroupPeopleData, new ShallowPersonDataComparer()) : assignedWorkerData;

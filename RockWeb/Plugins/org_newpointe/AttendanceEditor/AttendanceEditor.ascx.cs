@@ -84,8 +84,11 @@ namespace RockWeb.Plugins.org_newpointe.AttendanceEditor
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            doCheckinGroupStuff();
-            doStuff();
+            if (!IsPostBack)
+            {
+                doCheckinGroupStuff();
+                doStuff();
+            }
         }
 
         protected void doCheckinGroupStuff()
