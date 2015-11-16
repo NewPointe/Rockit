@@ -2,45 +2,44 @@
 
 <script type="text/javascript">
     
-    $(window).bind('resize load postback', function pageLoad() {
-        var PersonData = <%= PersonData %>;
-        var SavedCardPresent = <%= SavedCardPresent %>;
+    $(window).bind('resize', function () {
+        checkRollup();
+    }); 
 
-        if ($(this).width() < 768 && PersonData == true) {
-            $('#<%= PersonalInfoClass %>').removeClass('in');
-            $('#<%= PersonalInfoClass %>').addClass('out');
+    function checkRollup() {
+        $.fn.collapse.Constructor.DEFAULTS.toggle = false;
+
+        var PersonData = $('#CollapsePersonData').val();
+        var SavedCardPresent = $('#CollapseCardData').val();
+
+        if ($(this).width() < 768 && PersonData == "true") {
+            $('#collapseOne').collapse('hide');
             document.getElementById("PersonalInfoSmallText").innerHTML = "Touch to Change";
         } else {
-            $('#<%= PersonalInfoClass %>').removeClass('out');
-            $('#<%= PersonalInfoClass %>').addClass('in');
+            $('#collapseOne').collapse('show');
             document.getElementById("PersonalInfoSmallText").innerHTML = "";
         }
 
-        if ($(this).width() < 768 && SavedCardPresent == true) {
-            $('#collapseTwo').removeClass('in');
-            $('#collapseTwo').addClass('out');
+        if ($(this).width() < 768 && SavedCardPresent == "true") {
+            $('#collapseTwo').collapse('hide');
             document.getElementById("SavedCardSmallText").innerHTML = "Touch to Change";
             document.getElementById("SavedCardName").innerHTML = "<%= SavedCardName %>";
         } else {
-            $('#collapseTwo').removeClass('out');
-            $('#collapseTwo').addClass('in');
+            $('#collapseTwo').collapse('show');
             document.getElementById("SavedCardSmallText").innerHTML = "";   
             document.getElementById("SavedCardName").innerHTML = "";
         }
-    }); 
+    }
 
-</script>
-
-<script type="text/javascript">
-    var prm = Sys.WebForms.PageRequestManager.getInstance();
-    prm.add_endRequest(function (s, e) {
-        alert('Postback!');
-    });
 </script>
 
 
 <asp:UpdatePanel ID="upPayment" runat="server">
     <ContentTemplate>
+        
+        <asp:HiddenField ID="CollapsePersonData" ClientIDMode="Static" runat="server" />
+        <asp:HiddenField ID="CollapseCardData" ClientIDMode="Static" runat="server" />
+
 
         <asp:Panel ID="pnlPaymentInfo" CssClass="panel panel-block" runat="server">
 
@@ -106,19 +105,19 @@
                         
                     <div class="panel-group" id="accordion">
                         <div class="panel panel-default contribution-personal">
-                            <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#<%= PersonalInfoClass %>" style="text-decoration: none"><asp:Literal ID="lPersonalInfoTitle" runat="server" /> <small id="PersonalInfoSmallText"></small></a></h3></div>
-                            <div id="collapseOne" class="panel-collapse collapse in" runat="server">
-                            <div class="panel-body" id="PersonDetails">
-                                <fieldset>
-                                    <Rock:RockLiteral ID="txtCurrentName" runat="server" Label="Name" Visible="true" />
-                                    <Rock:RockTextBox ID="txtFirstName" runat="server" Label="First Name"></Rock:RockTextBox>
-                                    <Rock:RockTextBox ID="txtLastName" runat="server" Label="Last Name"></Rock:RockTextBox>
-                                    <Rock:PhoneNumberBox ID="pnbPhone" runat="server" Label="Phone"></Rock:PhoneNumberBox>
-                                    <Rock:RockTextBox ID="txtEmail" runat="server" Label="Email"></Rock:RockTextBox>
-                                    <Rock:AddressControl ID="acAddress" runat="server" UseStateAbbreviation="true" UseCountryAbbreviation="false" />
-                                </fieldset>
-                            </div>
+                            <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" style="text-decoration: none"><asp:Literal ID="lPersonalInfoTitle" runat="server" /> <small id="PersonalInfoSmallText"></small></a></h3></div>
+                            <div id="collapseOne" class="panel-collapse collapse <%= CollapsePersonData.Value == "true" ? "out" : "in" %>">
+                                <div class="panel-body" id="PersonDetails">
+                                    <fieldset>
+                                        <Rock:RockLiteral ID="txtCurrentName" runat="server" Label="Name" Visible="true" />
+                                        <Rock:RockTextBox ID="txtFirstName" runat="server" Label="First Name"></Rock:RockTextBox>
+                                        <Rock:RockTextBox ID="txtLastName" runat="server" Label="Last Name"></Rock:RockTextBox>
+                                        <Rock:PhoneNumberBox ID="pnbPhone" runat="server" Label="Phone"></Rock:PhoneNumberBox>
+                                        <Rock:RockTextBox ID="txtEmail" runat="server" Label="Email"></Rock:RockTextBox>
+                                        <Rock:AddressControl ID="acAddress" runat="server" UseStateAbbreviation="true" UseCountryAbbreviation="false" />
+                                    </fieldset>
                                 </div>
+                            </div>
                         </div>
                     </div>
 
@@ -135,8 +134,16 @@
 
                     <asp:HiddenField ID="hfPaymentTab" runat="server" />
 
-                    <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo" style="text-decoration: none"><asp:Literal ID="lPaymentInfoTitle" runat="server"/> <small id="SavedCardSmallText"></small></h3><span id="SavedCardName" style="text-decoration: none; color: #000"></span></a></div>
-                    <div id="collapseTwo" class="panel-collapse collapse in">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo" style="text-decoration: none">
+                                <asp:Literal ID="lPaymentInfoTitle" runat="server" />
+                                <small id="SavedCardSmallText"></small>
+                                <span id="SavedCardName" style="text-decoration: none; color: #000; font-size:14px; font-weight: normal;"></span>
+                            </a>
+                        </h3>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse <%= CollapseCardData.Value == "true" ? "out" : "in" %>">
                     <div class="panel-body">   
                         <asp:PlaceHolder ID="phPills" runat="server" Visible="false">
                             <ul class="nav nav-pills">

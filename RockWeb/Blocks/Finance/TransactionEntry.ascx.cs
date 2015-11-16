@@ -117,8 +117,6 @@ namespace RockWeb.Blocks.Finance
         private GatewayComponent _achGateway;
 
         public string PersonalInfoClass;
-        public string PersonData = "";
-        public string SavedCardPresent = "";
         public string SavedCardName = "";
 
         #endregion
@@ -232,6 +230,8 @@ namespace RockWeb.Blocks.Finance
         protected override void OnInit( EventArgs e )
         {
             base.OnInit( e );
+
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "jsKey_rollup", "checkRollup();", true);
             
             if ( !Page.IsPostBack )
             {
@@ -578,16 +578,14 @@ namespace RockWeb.Blocks.Finance
 
 
                 //Personal info panel
-                HtmlGenericControl d1 = (HtmlGenericControl)FindControl("collapseOne");
-                PersonalInfoClass = d1.ClientID.ToString();
-                if (TargetPerson != null)
-                {
-                    if (TargetPerson.FirstName != null && TargetPerson.LastName != null && TargetPerson.Email != null && acAddress != null)
-                    {
-                        //collapseOne.Attributes["class"] = "panel-collapse collapse out";
-                        PersonData = "true";
-                    }
-                }
+                CollapsePersonData.Value = (
+                    TargetPerson != null &&
+                    TargetPerson.FirstName != null &&
+                    TargetPerson.LastName != null &&
+                    TargetPerson.Email != null &&
+                    acAddress != null
+                    ) ? "true" : "false";
+
 
             }
             else
@@ -1093,7 +1091,11 @@ namespace RockWeb.Blocks.Finance
                         {
                             rblSavedCC.Items.Add( new ListItem( "Use a different card", "0" ) );
                             SavedCardName = rblSavedCC.Items[0].Text.ToString();
-                            SavedCardPresent = "true";
+                            CollapseCardData.Value = "true";
+                        }
+                        else
+                        {
+                            CollapseCardData.Value = "false";
                         }
                     }
                 }
