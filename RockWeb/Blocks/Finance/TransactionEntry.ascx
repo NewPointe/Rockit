@@ -1,33 +1,45 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeFile="TransactionEntry.ascx.cs" Inherits="RockWeb.Blocks.Finance.TransactionEntry" %>
 
 <script type="text/javascript">
-    
+
     $(window).bind('resize', function () {
+        // Update rollup state
         checkRollup();
-    }); 
-
+    });
+    function onASPReload() {
+        // Set initial rollup state
+        $('#collapseOne').addClass($(this).width() < 768 && $('#CollapsePersonData').val() == "true" ? "collapse" : "in");
+        $('#collapseTwo').addClass($(this).width() < 768 && $('#CollapseCardData').val() == "true" ? "collapse" : "in");
+        // Update rollup state
+        checkRollup();
+        // Fix for page jumping on ButtonDropDownList selection
+        $('.button-drop-down-list a').each(function (i, e) {
+            e.removeAttribute("href");
+        })
+    }
     function checkRollup() {
-        $.fn.collapse.Constructor.DEFAULTS.toggle = false;
-
         var PersonData = $('#CollapsePersonData').val();
         var SavedCardPresent = $('#CollapseCardData').val();
 
+
+        $('#collapseOne').collapse({ toggle: false });
         if ($(this).width() < 768 && PersonData == "true") {
             $('#collapseOne').collapse('hide');
-            document.getElementById("PersonalInfoSmallText").innerHTML = "Touch to Change";
+            $('#PersonalInfoSmallText').html("Touch to Change");
         } else {
             $('#collapseOne').collapse('show');
-            document.getElementById("PersonalInfoSmallText").innerHTML = "";
+            $('#PersonalInfoSmallText').html("");
         }
 
+        $('#collapseTwo').collapse({ toggle: false });
         if ($(this).width() < 768 && SavedCardPresent == "true") {
             $('#collapseTwo').collapse('hide');
-            document.getElementById("SavedCardSmallText").innerHTML = "Touch to Change";
-            document.getElementById("SavedCardName").innerHTML = "<%= SavedCardName %>";
+            $('#SavedCardSmallText').html("Touch to Change");
+            $('#SavedCardName').html("<%= SavedCardName %>");
         } else {
             $('#collapseTwo').collapse('show');
-            document.getElementById("SavedCardSmallText").innerHTML = "";   
-            document.getElementById("SavedCardName").innerHTML = "";
+            $('#SavedCardSmallText').html("");
+            $('#SavedCardName').html("");
         }
     }
 
@@ -36,7 +48,7 @@
 
 <asp:UpdatePanel ID="upPayment" runat="server">
     <ContentTemplate>
-        
+
         <asp:HiddenField ID="CollapsePersonData" ClientIDMode="Static" runat="server" />
         <asp:HiddenField ID="CollapseCardData" ClientIDMode="Static" runat="server" />
 
@@ -106,7 +118,7 @@
                     <div class="panel-group" id="accordion">
                         <div class="panel panel-default contribution-personal">
                             <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" style="text-decoration: none"><asp:Literal ID="lPersonalInfoTitle" runat="server" /> <small id="PersonalInfoSmallText"></small></a></h3></div>
-                            <div id="collapseOne" class="panel-collapse collapse <%= CollapsePersonData.Value == "true" ? "out" : "in" %>">
+                            <div id="collapseOne" class="panel-collapse">
                                 <div class="panel-body" id="PersonDetails">
                                     <fieldset>
                                         <Rock:RockLiteral ID="txtCurrentName" runat="server" Label="Name" Visible="true" />
@@ -143,7 +155,7 @@
                             </a>
                         </h3>
                     </div>
-                    <div id="collapseTwo" class="panel-collapse collapse <%= CollapseCardData.Value == "true" ? "out" : "in" %>">
+                    <div id="collapseTwo" class="panel-collapse collapse">
                     <div class="panel-body">   
                         <asp:PlaceHolder ID="phPills" runat="server" Visible="false">
                             <ul class="nav nav-pills">

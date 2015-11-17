@@ -231,7 +231,7 @@ namespace RockWeb.Blocks.Finance
         {
             base.OnInit( e );
 
-            ScriptManager.RegisterStartupScript(Page, this.GetType(), "jsKey_rollup", "checkRollup();", true);
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "jsKey_onASPReload", "onASPReload();", true);
             
             if ( !Page.IsPostBack )
             {
@@ -1840,5 +1840,5 @@ namespace RockWeb.Blocks.Finance
         #endregion
 
         #endregion
-    }
+}
 }
