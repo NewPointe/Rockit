@@ -2,28 +2,62 @@
 
 <script type="text/javascript">
 
+    var isSmall = true;
     $(window).bind('resize', function () {
-        // Update rollup state
-        checkRollup();
+        oldIsSmall = isSmall;
+        isSmall = $(this).width() < 768;
+        if (isSmall != oldIsSmall) {
+            // Update rollup state
+            checkRollup();
+        }
     });
+    $(document).click('#ButtonDropDown_btnFrequency .dropdown-menu', function () {
+        if (isSmall) {
+            $('#FrequencyText').html((tmp = $('#hfSelectedItemText_btnFrequency').val()) != "" ? tmp : getButtonDropDownListVal('btnFrequency'));
+        }
+        console.log(isSmall);
+    });
+
     function onASPReload() {
+        isSmall = $(this).width() < 768;
+
         // Set initial rollup state
-        $('#collapseOne').addClass($(this).width() < 768 && $('#CollapsePersonData').val() == "true" ? "collapse" : "in");
-        $('#collapseTwo').addClass($(this).width() < 768 && $('#CollapseCardData').val() == "true" ? "collapse" : "in");
+        $('#collapseZero').addClass(isSmall ? "collapse" : "in");
+        $('#collapseOne').addClass(isSmall && $('#CollapsePersonData').val() == "true" ? "collapse" : "in");
+        $('#collapseTwo').addClass(isSmall && $('#CollapseCardData').val() == "true" ? "collapse" : "in");
+
         // Update rollup state
         checkRollup();
+
         // Fix for page jumping on ButtonDropDownList selection
         $('.button-drop-down-list a').each(function (i, e) {
             e.removeAttribute("href");
         })
+
+        // Enable number mode for input
+        $('.currency-box .account-amount input').each(function () {
+            this.type = "number";
+        });
     }
+
     function checkRollup() {
         var PersonData = $('#CollapsePersonData').val();
         var SavedCardPresent = $('#CollapseCardData').val();
 
 
+        $('#collapseZero').collapse({ toggle: false });
+        if (isSmall) {
+            $('#collapseZero').collapse('hide');
+            $('#FrequencySmallText').html("Touch to Change<br />");
+            $('#FrequencyText').html((tmp = $('#hfSelectedItemText_btnFrequency').val()) != "" ? tmp : getButtonDropDownListVal('btnFrequency'));
+        } else {
+            $('#collapseZero').collapse('show');
+            $('#FrequencySmallText').html("");
+            $('#FrequencyText').html("");
+        }
+
         $('#collapseOne').collapse({ toggle: false });
-        if ($(this).width() < 768 && PersonData == "true") {
+        if (isSmall && PersonData == "true") {
             $('#collapseOne').collapse('hide');
             $('#PersonalInfoSmallText').html("Touch to Change");
         } else {
@@ -32,20 +66,52 @@
         }
 
         $('#collapseTwo').collapse({ toggle: false });
-        if ($(this).width() < 768 && SavedCardPresent == "true") {
+        if (isSmall && SavedCardPresent == "true") {
             $('#collapseTwo').collapse('hide');
-            $('#SavedCardSmallText').html("Touch to Change");
+            $('#SavedCardSmallText').html("Touch to Change<br />");
             $('#SavedCardName').html("<%= SavedCardName %>");
         } else {
             $('#collapseTwo').collapse('show');
             $('#SavedCardSmallText').html("");
             $('#SavedCardName').html("");
         }
+
+        if (isSmall && PersonData == "true" && SavedCardPresent == "true") {
+            $('#divActions2').removeClass("hidden");
+        }
+        else {
+            $('#divActions2').addClass("hidden");
+        }
+    }
+    function getButtonDropDownListVal(id) {
+        val = $('#hfSelectedItemId_' + id).val()
+        names = $('#ButtonDropDown_' + id + ' .dropdown-menu a').map( function(){
+            return [$(this).data('id') + "", $(this).html()];
+        }).get();
+        return names[names.indexOf(val) + 1];
     }
 
 </script>
-
-
+<style>
+    #fundadd .button-drop-down-list,
+    #fundadd .button-drop-down-list .controls
+    {
+        display: inline-block;
+    }
+    #fundadd .button-drop-down-list:nth-child(2),
+    #fundadd .button-drop-down-list:nth-child(2) .controls
+    {
+        min-width: 225px;
+    }
+    .button-drop-down-list a{
+        cursor: pointer;
+    }
+    .panel-default .panel-heading {
+        color: #333333;
+        background-color: #eeeeee;
+        border-color: #d5d5d5;
+    }
+</style>
 <asp:UpdatePanel ID="upPayment" runat="server">
     <ContentTemplate>
 
@@ -71,13 +137,19 @@
                             <div class="panel-body">
                                 <fieldset>
 
+                                    <div id="fundadd">
+                                        <Rock:ButtonDropDownList ID="btnCamp" runat="server" CssClass="btn btn-primary" Visible="false" Label=" "
+                                            DataTextField="Name" DataValueField="Id" OnSelectionChanged="btnCamp_SelectionChanged" />
+                                        <Rock:ButtonDropDownList ID="btnAddAccount" runat="server" CssClass="btn btn-primary" Visible="false" Label=" "
+                                            DataTextField="PublicName" DataValueField="Id" OnSelectionChanged="btnAddAccount_SelectionChanged" AutoPostBack="true"/>
+                                    </div>
+
                                     <asp:Repeater ID="rptAccountList" runat="server">
                                         <ItemTemplate>
-                                            <Rock:CurrencyBox ID="txtAccountAmount" runat="server" Label='<%# Eval("PublicName") %>' Text='<%# ((decimal)Eval("Amount")).ToString("N2") %>' Placeholder="0.00" CssClass="account-amount" />
+                                            <Rock:CurrencyBox ID="txtAccountAmount" runat="server" Label='<%# Eval("PublicName") %>' Text='<%# ((decimal)Eval("Amount") != 0) ? ((decimal)Eval("Amount")).ToString("N2") : "" %>' Placeholder="0.00" CssClass="account-amount" />
                                         </ItemTemplate>
                                     </asp:Repeater>
-                                    <Rock:ButtonDropDownList ID="btnAddAccount" runat="server" CssClass="btn btn-primary" Visible="false" Label=" "
-                                        DataTextField="PublicName" DataValueField="Id" OnSelectionChanged="btnAddAccount_SelectionChanged" />
+
 
                                     <div class="form-group contribution-total">
                                         <label>Total:</label>
@@ -88,8 +160,22 @@
                             </div>
                         </div>
 
+        <div id="divActions2" class="actions clearfix margin-b-lg hidden">
+            <asp:LinkButton ID="LinkButton1" runat="server" Text="Previous" CssClass="btn btn-link" OnClick="btnPrev_Click" Visible="false" />
+            <asp:LinkButton ID="LinkButton2" runat="server" Text="Next" CssClass="btn btn-primary pull-right" OnClick="btnNext_Click"/>
+        </div>
+                        
+                    <div class="panel-group" id="accordion0">
                         <div class="panel panel-default contribution-info">
-                            <div class="panel-heading"><h3 class="panel-title">Frequency</h3></div>
+                            <a data-toggle="collapse" data-parent="#accordion0" href="#collapseZero" style="text-decoration: none"><div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Frequency
+                                <small id="FrequencySmallText"></small>
+                                <span id="FrequencyText" style="text-decoration: none; color: #000; font-size:14px; font-weight: normal;"></span>
+                                </h3>
+
+                                                       </div></a>
+                            <div id="collapseZero" class="panel-collapse">
                             <div class="panel-body">
                                 <fieldset>
 
@@ -107,7 +193,9 @@
 
                                 </fieldset>
                             </div>
+                            </div>
                         </div>
+                    </div>
 
                     <% if ( FluidLayout )
                     { %>

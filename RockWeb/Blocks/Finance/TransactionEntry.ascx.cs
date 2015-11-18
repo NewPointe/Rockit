@@ -917,6 +917,8 @@ namespace RockWeb.Blocks.Finance
                         }
                     }
                 }
+
+                setupAccountList();
             }
         }
 
@@ -928,9 +930,42 @@ namespace RockWeb.Blocks.Finance
             rptAccountList.DataSource = SelectedAccounts.ToList();
             rptAccountList.DataBind();
 
-            btnAddAccount.Visible = AvailableAccounts.Any();
-            btnAddAccount.DataSource = AvailableAccounts;
-            btnAddAccount.DataBind();
+            btnCamp.Visible = AvailableAccounts.Any();
+            List<Campus> camps = new List<Campus>();
+            foreach (Campus camp in (new CampusService(new RockContext())).Queryable().Where(x => x.Id != 7 && x.Id != 8).SortBy("Name"))
+            {
+                if (AvailableAccounts.Select(y => y.CampusId).Contains(camp.Id))
+                {
+                    camps.Add(camp);
+                }
+            }
+            btnCamp.DataSource = camps;
+            btnCamp.DataBind();
+
+            int campFilter = int.TryParse(btnCamp.SelectedValue, out campFilter) ? campFilter : (CurrentPerson != null ? CurrentPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1);
+            btnCamp.SelectedValue = campFilter.ToString();
+
+
+            //btnAddAccount.Visible = AvailableAccounts.Any();
+            //btnAddAccount.DataSource = AvailableAccounts.Where(x => x.CampusId == campFilter);
+            //btnAddAccount.DataBind();
+        }
+
+        private void setupAccountList()
+        {
+            int campFilter = int.TryParse(btnCamp.SelectedValue, out campFilter) ? campFilter : (CurrentPerson != null ? CurrentPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1);
+            var spAccnt = AvailableAccounts.Where(x => x.CampusId == 7);
+            var avAccnt = AvailableAccounts.Where(x => x.CampusId == campFilter && x.CampusId != 7);
+
+            SelectedAccounts.Clear();
+            foreach (var acct in avAccnt)
+            {
+                SelectedAccounts.Add(acct);
+            }
+            foreach (var acct in spAccnt)
+            {
+                SelectedAccounts.Add(acct);
+            }
         }
 
         /// <summary>
@@ -1840,5 +1875,11 @@ namespace RockWeb.Blocks.Finance
         #endregion
 
         #endregion
-}
+
+        protected void btnCamp_SelectionChanged(object sender, EventArgs e)
+        {
+            setupAccountList();
+            BindAccounts();
+        }
+    }
 }
