@@ -2,29 +2,23 @@
 <%--<link rel="stylesheet" href="/Styles/plus.css" type="text/css">--%>
 <link rel="stylesheet" href="/Themes/NewpointeMain/Styles/calendar.min.css" />
 
-    <h1>Upcoming Events</h1>
+    <h1>Event Calendar</h1>
 
     <%--Search box--%>
 
 
 <asp:HiddenField ID="hdnEventId" runat="server" />
 <asp:HiddenField ID="hdnCampus" runat="server" />
-<div class="container nopadding">
+<div class="container nopadding" style="height: 125px;">
     <div class="col-xs-12 col-md-8">
-        <input type="text" id="calendar-search" name="calendar-search" placeholder="Search Here" class="element text large" />
+        <input type="text" id="calendar-search" name="calendar-search" placeholder="Search for Events Here" class="element text large" />
     </div>
     <div class="col-xs-12 col-md-4"></div>
-    <%-- Filter Options --%>
-    <div class="col-xs-12 col-md-8 text-center" style="margin-top: 10px;">
-        <a class="btn btn-primary" type="button" id="collapse-Button">Filter Events</a>
-    </div>
+    <div id="collapseFilter" class="collapsed-filter">
 
+        <div id="CampusButtons" class="hidden-xs col-md-7">
 
-    <div id="collapseFilter" class="collapsed-filter" style="display: none;">
-
-        <div id="CampusButtons" class="hidden-xs col-md-12">
-
-            <h3>Choose a campus</h3>
+            <h4>Choose a campus</h4>
             <a href="#" class="campusButton btn btn-block-xs btn-akron" data-fullname="Akron" data-shortname="AKR" data-campusid="67713">AKR</a>
             <a href="#" class="campusButton btn btn-block-xs btn-canton" data-fullname="Canton" data-shortname="CAN" data-campusid="53103">CAN</a>
             <a href="#" class="campusButton btn btn-block-xs btn-coshocton" data-fullname="Coshocton" data-shortname="COS" data-campusid="62004">COS</a>
@@ -48,8 +42,8 @@
             </asp:DropDownList>
         </div>
 
-        <div id="CategoryButtons" class="hidden-xs col-md-12">
-            <h3>Choose a category</h3>
+        <div id="CategoryButtons" class="hidden-xs col-md-5">
+            <h4>Choose a category</h4>
             <a href="#" class="categoryButton btn btn-cm" data-categoryid="13399" data-hovername="CM| BIRTH-5TH GRADE" data-shortname="CM">CM</a>
             <a href="#" class="categoryButton btn btn-sm" data-categoryid="13405" data-hovername="SM| 6TH-12TH GRADE" data-shortname="SM">SM</a>
             <a href="#" class="categoryButton btn btn-ya" data-categoryid="21205" data-hovername="YA| 19-29 YEARS" data-shortname="YA">YA</a>
@@ -72,6 +66,8 @@
     </div>
 
 </div>
+
+
 <div class="row">
     <div class="col-md-4 col-md-push-8 top-cal">
         <%--<div class="col-md-12 hidden-xs hidden-sm col-spacer"></div>--%>
