@@ -41,7 +41,7 @@ public class Calendar : IHttpHandler
                 sid = Convert.ToInt32(id);
             }
 
-            var calevent = calendarEvents.Select(c => new
+            var calevent = calendarEvents.Where(c => (c.id.ToString() + '-' + FromMS(Convert.ToInt64(c.start)).ToShortDateString() == id || c.id == sid) && FromMS(Convert.ToInt64(c.start)) > DateTime.Now).Select(c => new
             {
                 c.id,
                 c.title,
@@ -60,7 +60,7 @@ public class Calendar : IHttpHandler
                 c.locationzip,
                 c.locationname
             })
-                .Where(c => (c.id.ToString() + '-' + c.start.ToShortDateString() == id || c.id == sid) && c.start > DateTime.Now).OrderBy(c => c.start).Take(1);
+                .OrderBy(c => c.start).Take(1);
             context.Response.Write(JsonConvert.SerializeObject(calevent));
         }
         else if (!string.IsNullOrEmpty(date))
@@ -68,7 +68,7 @@ public class Calendar : IHttpHandler
             try
             {
                 var searchDate = Convert.ToDateTime(date);
-                var matches = calendarEvents.Select(c => new
+                var matches = calendarEvents.Where(c => FromMS(Convert.ToInt64(c.start)).ToShortDateString() == searchDate.ToShortDateString()).Select(c => new
                 {
                     c.id,
                     c.title,
@@ -86,7 +86,7 @@ public class Calendar : IHttpHandler
                     c.locationstate,
                     c.locationzip,
                     c.locationname
-                }).Where(c => c.start.ToShortDateString() == searchDate.ToShortDateString()).OrderBy(x => x.start);
+                }).OrderBy(x => x.start);
                 context.Response.Write(JsonConvert.SerializeObject(matches));
             }
             catch (Exception ex)
