@@ -103,7 +103,7 @@
                                 daysMin = Math.round(Math.abs(new Date() - new Date(dateMax)) / 8.64e7);
                                 daysMax = Math.round(Math.abs(new Date(dateMax) - new Date(dateMin)) / 8.64e7);
                                 drawChart("workflowChart1", "Histogram", {
-                                    title: 'Workflows by Age (Days)',
+                                    title: 'Workflows by Time Spent Open (Days)',
                                     //legend: { position: 'none' },
                                     //colors: ['#5C3292', '#1A8763', '#871B47', '#999999'],
                                     interpolateNulls: false,
@@ -116,24 +116,26 @@
                                         minValue: daysMin,
                                         maxValue: daysMax,
                                         maxAlternation: 1,
-                                        slantedText: false
+                                        slantedText: false,
+                                        title: "Days spent Open"
                                     },
                                     vAxis: {
                                         minValue: 0,
-                                        maxValue: 50
+                                        maxValue: 50,
+                                        title: "# of Workflows"
                                     }
                                 });
                                 drawChart("workflowChart2", "PieChart", {
-                                    title: 'Campus Distribution'
+                                    title: 'Workflows by Campus'
                                 });
                                 drawChart("workflowChart3", "PieChart", {
-                                    title: 'Workflow Distribution'
+                                    title: 'Workflows by Type'
                                 });
                                 drawChart("workflowChart4", "PieChart", {
-                                    title: 'Status Distribution'
+                                    title: 'Workflows by Status'
                                 });
                                 drawChart("workflowChart5", "PieChart", {
-                                    title: 'Worker Distribution'
+                                    title: 'Workflows by Worker'
                                 });
 
                             }

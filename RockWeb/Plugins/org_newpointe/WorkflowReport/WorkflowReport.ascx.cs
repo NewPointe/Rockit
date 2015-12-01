@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 
 using Rock;
 using Rock.Data;
+using Rock.Security;
 using Rock.Model;
 using Rock.Web.UI.Controls;
 
@@ -27,6 +28,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
         WorkflowService workServ = null;
         WorkflowActivityService workActServ = null;
         CampusService campServ = null;
+        CategoryService catServ = null;
 
         protected string workflowChartData1;
         protected string workflowChartData2;
@@ -43,6 +45,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             workTypeServ = new WorkflowTypeService(_rockContext);
             workActServ = new WorkflowActivityService(_rockContext);
             campServ = new CampusService(_rockContext);
+            catServ = new CategoryService(_rockContext);
 
             dateRange.UpperValue = DateTime.Now;
             dateRange.LowerValue = DateTime.Parse("4/15/2015");// DateTime.Now.AddYears(-1);
@@ -64,6 +67,24 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
                 doStuff();
             }
 
+        }
+
+        public class adjWorkflowType : WorkflowType
+        {
+            public override ISecured ParentAuthority {
+                get
+                {
+                    return Category != null ? Category : base.ParentAuthority;
+                }
+ 	        }
+        }
+
+        protected bool checkPerms(WorkflowType type)
+        {
+            adjWorkflowType awt = new adjWorkflowType();
+            awt.CopyPropertiesFrom(type);
+            awt.Category = catServ.Get(awt.CategoryId ?? -1);
+            return awt.IsAuthorized("View", CurrentPerson);
         }
 
         protected void doStuff()
@@ -91,7 +112,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             // Workflow Type
             var allWorkflowTypes = workTypeServ.Queryable();
 
-            var viewableWorkflowTypes = allWorkflowTypes.ToList().Where(awt => awt.IsAuthorized("View", CurrentPerson));
+            var viewableWorkflowTypes = allWorkflowTypes.ToList().Where(awt => checkPerms(awt));
 
             bindNameAndId(wftListBox, viewableWorkflowTypes.OrderBy(x => x.Name).ToList(), workflowTypeFilter.ToString());
             workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
