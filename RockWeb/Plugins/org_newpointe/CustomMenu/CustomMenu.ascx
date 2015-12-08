@@ -112,7 +112,7 @@
 </style>
 
 
-<nav class="navbar-fixed-top affix-top" data-spy="affix" data-offset-top="90">
+<nav class="navbar-fixed-top" data-spy="affix" data-offset-top="90">
     <div class="container">
 
 
@@ -121,18 +121,18 @@
             <div id="divCustomInterior" class="col-md-12" style="background-color: #fff;">
                 <div id="NPSearch" style="display: none;" class="col-xs-12">
                     <script>
-                      (function() {
-                        var cx = '001784362343258229631:fdnsp4tdlfa';
-                        var gcse = document.createElement('script');
-                        gcse.type = 'text/javascript';
-                        gcse.async = true;
-                        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-                            '//cse.google.com/cse.js?cx=' + cx;
-                        var s = document.getElementsByTagName('script')[0];
-                        s.parentNode.insertBefore(gcse, s);
-                      })();
+                        (function () {
+                            var cx = '001784362343258229631:fdnsp4tdlfa';
+                            var gcse = document.createElement('script');
+                            gcse.type = 'text/javascript';
+                            gcse.async = true;
+                            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+                                '//cse.google.com/cse.js?mob=1&cx=' + cx;
+                            var s = document.getElementsByTagName('script')[0];
+                            s.parentNode.insertBefore(gcse, s);
+                        })();
                     </script>
-                    <gcse:searchbox-only resultsurl="https://newpointe.org/SearchResults"></gcse:searchbox-only>
+                    <gcse:searchbox-only resultsurl="searchResults"></gcse:searchbox-only>
                 </div>
                 <div id="NPMenu">
                     <div id="CustomMenuLogo" class="col-md-1 customMenuContainer">

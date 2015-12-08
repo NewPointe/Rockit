@@ -31,7 +31,7 @@
                     s.parentNode.insertBefore(gcse, s);
                 })();
             </script>
-             <gcse:searchbox-only resultsurl="https://newpointe.org/SearchResults"></gcse:searchbox-only>
+             <gcse:searchbox-only resultsurl="http://nprock.rmrdevelopment.com/searchResults"></gcse:searchbox-only>
         </div>
 
     </ContentTemplate>
