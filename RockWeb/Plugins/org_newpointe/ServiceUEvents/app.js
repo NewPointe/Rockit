@@ -14,6 +14,18 @@
         campusID = 'ALL'
     }
 
+    function filterCampus(d) {
+        if (calclass == "" && campus == "ALL") {
+            return d
+        } else if (calclass == "" && campus != "ALL") {
+            return d.departmentname.split('|').map(function (s) { return s.trim(); }).indexOf(campus) > -1;
+        } else if (calclass != "" && campus == "ALL") {
+            return d.class == calclass;
+        } else {
+            return d.departmentname.split('|').map(function (s) { return s.trim(); }).indexOf(campus) > -1 && d.class == calclass;
+        }
+    }
+
     function getCampusId(cmp) {
         switch (cmp) {
             case "Akron Campus":
@@ -89,17 +101,7 @@
     function bindCalendar(json) {
         jsonData = json;
 
-        searchData = $.grep(json, function (d) {
-            if (calclass == "" && campus == "ALL") {
-                return d
-            } else if (calclass == "" && campus != "ALL") {
-                return d.departmentname == campus;
-            } else if (calclass != "" && campus == "ALL") {
-                return d.class == calclass;
-            } else {
-                return d.departmentname == campus && d.class == calclass;
-            }
-        });
+        searchData = $.grep(json, filterCampus);
 
 
 
@@ -203,17 +205,7 @@
         $.getJSON(search, function (data) {
             //filter out based on campus if this isn't a drop down list saerch
             if (id == undefined) {
-                searchData = $.grep(data, function (d) {
-                    if (calclass == "" && campus == "ALL") {
-                        return data
-                    } else if (calclass == "" && campus != "ALL") {
-                        return d.departmentname == campus;
-                    } else if (calclass != "" && campus == "ALL") {
-                        return d.class == calclass;
-                    } else {
-                        return d.departmentname == campus && d.class == calclass;
-                    }
-                });
+                searchData = $.grep(data, filterCampus);
             } else {
                 searchData = data;
                 if (data.length > 0) {
@@ -232,7 +224,7 @@
                 start = new Date(searchData[key].start);
                 end = new Date(searchData[key].end);
                 eventList.append('<div class="col-sm-12 events nopadding"  data-id="' + searchData[key].id + '" ><i class="fa fa-plus-square"></i><i class="fa fa-info-circle" style="display:none;"></i><strong>' + searchData[key].startTime + '-' + searchData[key].endtime + '</strong> ' + searchData[key].title + '</div><div class="col-sm-12 event-description  parent-' + searchData[key].id + '" style="display:none;">' + searchData[key].description + '</div>');
-    
+
 
             });
             if (searchData.length == 0) {
@@ -259,7 +251,7 @@
 
             }
 
- 
+
         });
     }
 

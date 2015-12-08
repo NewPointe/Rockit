@@ -72,7 +72,7 @@
     <div class="col-md-4 col-md-push-8 top-cal">
         <%--<div class="col-md-12 hidden-xs hidden-sm col-spacer"></div>--%>
         <h2 class="text-center" id="event-date">Event Details</h2>
-        <div id="events-list" data-key="na"></div>
+        <div id="events-list" data-key="na"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
         <div id="event-description"></div>
     </div>
     <div class="col-md-8 col-md-pull-4">
@@ -103,5 +103,5 @@
 <script src="/Scripts/compenents/underscore.min.js"></script>
 <script src="/Scripts/compenents/jstz.min.js"></script>
 <script src="/Scripts/compenents/calendar.js"></script>
-<script src="/Plugins/org_newpointe/ServiceUevents/app.min.js"></script>
+<script src="/Plugins/org_newpointe/ServiceUevents/app.js"></script>
 
