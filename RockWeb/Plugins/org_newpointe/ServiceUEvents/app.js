@@ -328,7 +328,7 @@
                 $(campusName).text("Upcoming events for Dover campus");
                 break;
             default:
-                $(".btn-campus-all").addClass('active');
+                $(".btn-campus-all").addClass("active");
                 campus = "ALL"
                 $(dropdownlist).val(eventID);
                 $(campusName).text("Upcoming events for all campuses");
