@@ -4,3 +4,5 @@
 <div id="divCampusTimes" class="hidden-xs hidden-sm hidden-md col-lg-12">
     <h5 class="pull-right"><%= LiveServiceText %></h5>
 </div>
+
+<!-- TODO: Show fullscreen popup when a service is live -->
