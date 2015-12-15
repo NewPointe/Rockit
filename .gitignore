@@ -5,3 +5,5 @@ wwwroot.7z
 RockWeb/App_Data/Logs/RockExceptions.csv
 RockWeb/App_Data/Logs/RockExceptions.csv
 RockWeb/App_Data/Logs/RockExceptions.csv
+RockWeb/Bin/org.newpointe.Giving.dll
+RockWeb/Bin/org.newpointe.ServiceUCalendar.dll
