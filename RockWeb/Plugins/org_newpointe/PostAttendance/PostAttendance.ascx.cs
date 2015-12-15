@@ -142,8 +142,8 @@ public partial class PostAttendance : Rock.Web.UI.RockBlock
                 }
                 else if (Session["campusName"].ToString() == "Canton Campus")
                 {
-                    nbWarningMessage.Text = "Discover Groups (Combined) is not available at this Campus.";
-                    nbWarningMessage.Visible = true;
+                    Session["group"] = 60035;
+                    Session["location"] = 18;
                 }
                 else if (Session["campusName"].ToString() == "Coshocton Campus")
                 {

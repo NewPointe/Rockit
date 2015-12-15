@@ -1,6 +1,6 @@
 using System;
 
-namespace org.newpointe.SampleProject.SystemGuid
+namespace org.newpointe.ServiceUCalendar.SystemGuid
 {
     /// <summary>
     /// System Defined Types
@@ -10,6 +10,6 @@ namespace org.newpointe.SampleProject.SystemGuid
         /// <summary>
         /// Type's of Referral Agencies
         /// </summary>
-        public const string REFERRAL_AGENCY_TYPE = "150478D4-3709-4543-906F-1F9496B4E7D0";
+        //public const string REFERRAL_AGENCY_TYPE = "150478D4-3709-4543-906F-1F9496B4E7D0";
     }
 }

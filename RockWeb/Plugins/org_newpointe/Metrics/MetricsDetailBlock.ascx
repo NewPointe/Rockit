@@ -4,7 +4,7 @@
 
 <div class="row">
 <div class='col-md-4'>
-    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #8BC540;">
+    <div class='col-md-12' style=" border-radius: 4px; border: 1px solid #e7e7e7; border-top: 4px solid #8BC540; box-shadow: 2px 2px 0px 1px rgba(0,0,0,0.05)">
         <div class='col-md-12 text-center'>
             <h4>Weekend Attendance<small style="color: slategray;"> (<%= SundayDate %>)</small></h4>
         </div>
@@ -34,7 +34,7 @@
 </div>
 
 <div class='col-md-4'>
-    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #800000;">
+    <div class='col-md-12' style=" border-radius: 4px; border: 1px solid #e7e7e7; border-top: 4px solid #800000; box-shadow: 2px 2px 0px 1px rgba(0,0,0,0.05)">
         <div class='col-md-12 text-center'>
             <h4>Commitments & Baptisms</h4>
         </div>
@@ -64,7 +64,7 @@
 </div>
 
 <div class='col-md-4'>
-    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #d2691e;">
+    <div class='col-md-12' style=" border-radius: 4px; border: 1px solid #e7e7e7; border-top: 4px solid #d2691e; box-shadow: 2px 2px 0px 1px rgba(0,0,0,0.05)">
         <div class='col-md-12 text-center'>
             <h4>Involvement</h4>
         </div>
@@ -94,7 +94,7 @@
 </div>
 <div class="row" style="padding-top: 10px;">
 <div class='col-md-3'>
-    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #8AC007;">
+    <div class='col-md-12' style=" border-radius: 4px; border: 1px solid #e7e7e7; border-top: 4px solid #8AC097; box-shadow: 2px 2px 0px 1px rgba(0,0,0,0.05)">
         <div class='col-md-12 text-center'>
             <h4>New Here Guests</h4>
         </div>
@@ -122,7 +122,7 @@
 </div>
 
 <div class='col-md-2'>
-    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #0000cd;">
+    <div class='col-md-12' style=" border-radius: 4px; border: 1px solid #e7e7e7; border-top: 4px solid #0000cd; box-shadow: 2px 2px 0px 1px rgba(0,0,0,0.05)">
         <div class='col-md-12 text-center'>
             <h4>Baptisms</h4>
         </div>
@@ -150,7 +150,7 @@
 </div>
 
 <div class='col-md-4'>
-    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #ffd700;">
+    <div class='col-md-12' style=" border-radius: 4px; border: 1px solid #e7e7e7; border-top: 4px solid #ffd700; box-shadow: 2px 2px 0px 1px rgba(0,0,0,0.05)">
         <div class='col-md-12 text-center'>
             <h4>Assimilation</h4>
         </div>
@@ -180,7 +180,7 @@
 </div>
     
  <div class='col-md-3'>
-    <div class='col-md-12' style=" border-radius: 15px; border: 2px solid #cd853f;">
+    <div class='col-md-12' style=" border-radius: 4px; border: 1px solid #e7e7e7; border-top: 4px solid #cd853f; box-shadow: 2px 2px 0px 1px rgba(0,0,0,0.05)">
         <div class='col-md-12 text-center'>
             <h4>Inactive Follow-up</h4>
         </div>

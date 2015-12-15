@@ -4806,7 +4806,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #ffffff;
 }
 .btn-link {
-  color: #428bca;
+  color: #4d4d4d;
   font-weight: normal;
   cursor: pointer;
   border-radius: 0;
@@ -8015,7 +8015,7 @@ h1 {
   opacity: 0.33;
 }
 body {
-  background: #B20000 url('../Assets/Images/background.png') top right no-repeat fixed;
+  background: #8bc540 url('../Assets/Images/background.jpg') top right no-repeat fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -8024,8 +8024,8 @@ body {
 }
 @media all and (-webkit-min-device-pixel-ratio: 1.5) {
   body {
-    background-image: url('../Assets/Images/background@2x.png');
-    background-size: cover;
+    background-image: url('../Assets/Images/background@2x.jpg');
+    background-size: 1348px 1024px;
   }
 }
 .checkin-header {
@@ -8133,7 +8133,7 @@ body {
   z-index: 1060;
 }
 .bootbox .modal-content {
-  background-color: #B20000;
+  background-color: #8bc540;
 }
 .bootbox .modal-footer {
   border-top-color: #bbdd8e;
@@ -8506,11 +8506,11 @@ Copyright (c) 2012 Dan Eden*/
 }
 .modal-content {
   border: 0;
-  background-color: #B20000;
+  background-color: #8bc540;
   color: #ffffff;
 }
 .modal-content .modal-header {
-  background-color: #B20000;
+  background-color: #8bc540;
   color: #ffffff;
   padding: 5px 15px;
   min-height: 34px;
@@ -8568,7 +8568,7 @@ Copyright (c) 2012 Dan Eden*/
 .modal-content .modal-footer {
   padding: 8px;
   margin-top: 10px;
-  background-color: #B20000;
+  background-color: #8bc540;
   color: #ffffff;
   border-radius: 0 0 4px 4px;
 }
@@ -8687,7 +8687,7 @@ Copyright (c) 2012 Dan Eden*/
   margin-left: 2px;
 }
 .checkin-footer .checkin-actions a.btn-default {
-  background-color: #B20000;
+  background-color: #8bc540;
   color: #fff;
   border-color: transparent;
 }

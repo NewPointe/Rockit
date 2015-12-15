@@ -34,16 +34,11 @@
     <meta charset="utf-8">
     <title></title>
 
-
-
-
-
+    <!--scripts go here... -->
     <script src="<%# ResolveRockUrl("~/Scripts/modernizr.js", true) %>"></script>
     <script src="<%# ResolveRockUrl("~/Scripts/jquery-1.10.2.min.js", true) %>"></script>
     <script src="<%# ResolveRockUrl("~/Scripts/NewPointe.js", true) %>"></script>
     <script src="<%# ResolveRockUrl("~/Scripts/date.js", true) %>"></script>
-    <%--<script src="<%# ResolveRockUrl("~/Scripts/core.js", true) %>"></script>--%>
-    <%--<script src="<%# ResolveRockUrl("~/Scripts/sugarpak.js", true) %>"></script>--%>
     <script src="<%# ResolveRockUrl("~/Scripts/jquery.fullscreen-popup.min.js", true) %>"></script>
 
 
@@ -246,5 +241,16 @@
     </form>
 
 </body>
+    
+<!--
+  _   _               _____      _       _          _____                                      _ _            _____ _                    _     
+ | \ | |             |  __ \    (_)     | |        / ____|                                    (_) |          / ____| |                  | |    
+ |  \| | _____      _| |__) |__  _ _ __ | |_ ___  | |     ___  _ __ ___  _ __ ___  _   _ _ __  _| |_ _   _  | |    | |__  _   _ _ __ ___| |__  
+ | . ` |/ _ \ \ /\ / /  ___/ _ \| | '_ \| __/ _ \ | |    / _ \| '_ ` _ \| '_ ` _ \| | | | '_ \| | __| | | | | |    | '_ \| | | | '__/ __| '_ \ 
+ | |\  |  __/\ V  V /| |  | (_) | | | | | ||  __/ | |___| (_) | | | | | | | | | | | |_| | | | | | |_| |_| | | |____| | | | |_| | | | (__| | | |
+ |_| \_|\___| \_/\_/ |_|   \___/|_|_| |_|\__\___|  \_____\___/|_| |_| |_|_| |_| |_|\__,_|_| |_|_|\__|\__, |  \_____|_| |_|\__,_|_|  \___|_| |_|
+                                                                                                      __/ |                                    
+                                                                                                     |___/                              
+-->
 </html>
 

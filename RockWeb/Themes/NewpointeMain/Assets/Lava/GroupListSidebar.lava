@@ -1,11 +1,11 @@
 <div style="padding:25px 0;">
   <div class="col-xs-12 resourceMenu">
-    <h3>
+    <h4>
       <a data-toggle="collapse" data-target="#collapseGroupList" aria-expanded="true" aria-controls="collapseExample">
         <i class="fa fa-minus-circle"></i>
         My Groups
       </a>
-    </h3>
+    </h4>
   </div>
   <div class="collapse in gray-bg col-xs-12" id="collapseGroupList">
     

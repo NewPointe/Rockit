@@ -2,9 +2,9 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Web;
 
-using org.newpointe.SampleProject.Model;
+using org.newpointe.ServiceUCalendar.Model;
 
-namespace org.newpointe.SampleProject.Data
+namespace org.newpointe.ServiceUCalendar.Data
 {
     /// <summary>
     /// 
@@ -14,7 +14,7 @@ namespace org.newpointe.SampleProject.Data
 
         #region Models
 
-        public DbSet<ReferralAgency> ReferralAgencies { get; set; }
+        public DbSet<CalendarJsonJob> ReferralAgencies { get; set; }
 
         #endregion
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using org.newpointe.SampleProject.Model;
+using org.newpointe.ServiceUCalendar.Model;
 using Newtonsoft.Json;
 using System.IO;
 

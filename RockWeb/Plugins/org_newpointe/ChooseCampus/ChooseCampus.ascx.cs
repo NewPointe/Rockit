@@ -52,7 +52,7 @@ namespace RockWeb.Plugins.org_newpointe.ChooseCampus
             var url = Eval("URL");
             if (url != null)
             {
-                lnk.NavigateUrl = "http://" + url.ToString().Trim();
+                lnk.NavigateUrl =  url.ToString().Trim();
             }
             lnk.Text = name;
             lnk.CssClass = "btn btn-default btn-block " + name;

@@ -24,7 +24,12 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb", "http://localhost
 		SlnRelativePath = "RockWeb\"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.SampleProject", "org.newpointe.SampleProject\org.newpointe.SampleProject.csproj", "{496EC024-71ED-4AD1-B677-2A3FA60CCD05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ServiceUCalendar", "org.newpointe.SampleProject\org.newpointe.ServiceUCalendar.csproj", "{496EC024-71ED-4AD1-B677-2A3FA60CCD05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35B1409D-555D-4E7D-857D-43CC24426FE6}"
+	ProjectSection(SolutionItems) = preProject
+		WebEssentials2015-Settings.json = WebEssentials2015-Settings.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

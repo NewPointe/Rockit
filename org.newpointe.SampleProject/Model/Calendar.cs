@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace org.newpointe.SampleProject.Model
+namespace org.newpointe.ServiceUCalendar.Model
 {
     public class Calendar : Rock.Data.Model<Calendar>
     {

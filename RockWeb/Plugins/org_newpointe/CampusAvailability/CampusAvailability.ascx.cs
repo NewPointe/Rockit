@@ -22,12 +22,23 @@ namespace RockWeb.Plugins.org_newpointe.CampusAvailability
     [DisplayName("Campus Menu")]
     [Category("Newpointe")]
     [Description("Main menu")]
+    [CampusesField("AvailableCampuses")]
+
 
     public partial class CampusAvailability : RockBlock
 {
     protected void Page_Load(object sender, EventArgs e)
     {
         this.hlblExample1.Text = "test";
-    }
+
+        var selectedCampuses = GetAttributeValue("AvailableCampuses").ToList();
+
+
+        //foreach (Campus c in selectedCampuses)
+        //{
+        //   var test = c.ShortCode.ToString();
+        //}
+
+        }
 }
 }

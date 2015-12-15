@@ -1,16 +1,14 @@
-﻿using Newtonsoft.Json;
-using org.newpointe.SampleProject.Model;
-using Quartz;
-using RestSharp;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Web;
+using Newtonsoft.Json;
+using org.newpointe.ServiceUCalendar.Model;
+using org.newpointe.ServiceUCalendar.Properties;
+using Quartz;
+using RestSharp;
 
-namespace Rock.Jobs
+namespace org.newpointe.ServiceUCalendar.Data
 {
 
     /// <summary>
@@ -35,26 +33,30 @@ namespace Rock.Jobs
 
         public void Execute(IJobExecutionContext context)
         {
-            //create smaller calendar.json file 90 days out
-            createCalendarJsonFle(System.Web.Hosting.HostingEnvironment.MapPath("~/Assets/calendar.json"),90);
-            //create  calendar-full.json file 900 days out
-            createCalendarJsonFle(System.Web.Hosting.HostingEnvironment.MapPath("~/Assets/calendar-full.json"),900);
-        }
-        private void createCalendarJsonFle(string filename, int days){
             //Get Start and End Dates
             var firstDay = new DateTime(today.Year, today.Month, 1);
             var lastDay = firstDay.AddYears(1);
+            var lastDayShort = firstDay.AddMonths(6);
 
             string formattedFirstDay = string.Format("{0:MM/dd/yyyy}", firstDay);
             string formattedLastDay = string.Format("{0:MM/dd/yyyy}", lastDay);
+            string formattedLastDayShort = string.Format("{0:MM/dd/yyyy}", lastDayShort);
 
 
+            //create smaller calendar.json file 6 months out
+            createCalendarJsonFle(System.Web.Hosting.HostingEnvironment.MapPath("~/Assets/calendar.json"), formattedFirstDay, formattedLastDayShort);
+            //create  calendar-full.json file 1 year out
+            createCalendarJsonFle(System.Web.Hosting.HostingEnvironment.MapPath("~/Assets/calendar-full.json"), formattedFirstDay, formattedLastDay);
+        }
 
+
+        private void createCalendarJsonFle(string filename, string firstDay, string lastDay){
+            
             //new restsharp 
             var client = new RestClient(_baseUrl);
             ArrayList jsonCalendar = new ArrayList();
             //get calendar data from my service u
-            var request = new RestRequest(string.Format(_calendarApi, org.newpointe.SampleProject.Properties.Settings.Default.ServiceUKey, org.newpointe.SampleProject.Properties.Settings.Default.departmentIds, formattedFirstDay, formattedLastDay));
+            var request = new RestRequest(string.Format(_calendarApi, Settings.Default.ServiceUKey, Settings.Default.departmentIds, firstDay, lastDay));
             var response = client.Execute<List<Calendar>>(request);
 
             //Delete Old File.
@@ -114,21 +116,50 @@ namespace Rock.Jobs
         /// <returns></returns>
         private string getCssClass(string category)
         {
-            switch (category)
+            //switch (category)
+            //{
+            //    case "Family Life: Children" :
+            //        return "event-important";
+            //    case "Family Life: Students":
+            //        return "event-info";
+            //    case "Family Life: Young Adults":
+            //       return "event-warning";
+            //    default : 
+            //        if (category.Contains("Adults")){
+            //            return "event-success";
+            //        }else{
+            //            return "event-inverse";
+            //        }
+            //}
+
+            if (category.Contains("Adults"))
             {
-                case "Family Life: Children" :
-                    return "event-important";
-                case "Family Life: Students":
-                    return "event-info";
-                case "Family Life: Young Adults":
-                   return "event-warning";
-                default : 
-                    if (category.Contains("Adults")){
-                        return "event-success";
-                    }else{
-                        return "event-inverse";
-                    }
+                return "event-success";
             }
+
+            else if (category.Contains("Children"))
+            {
+                return "event-important";
+            }
+
+            else if (category.Contains("Kids"))
+            {
+                return "event-important";
+            }
+
+            else if (category.Contains("Students"))
+            {
+                return "event-info";
+            }
+
+            else
+            {
+                return "event-inverse";
+            }
+
+
+
+
         }
     }
 

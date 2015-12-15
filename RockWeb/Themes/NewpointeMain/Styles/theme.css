@@ -5105,16 +5105,8 @@ li {
   color: #8bc540;
 }
 .categoryButton {
-  width: 65px;
   text-align: center;
   white-space: nowrap !important;
-}
-.categoryButton:hover {
-  width: 200px;
-  text-align: left;
-  padding-left: 5px;
-  padding-right: 5px;
-  font-size: 14px !important;
 }
 .btn {
   font-family: "GothamBold", Helvetica, Arial, sans-serif;
@@ -5125,7 +5117,6 @@ li {
 .btn.btn-akron,
 .btn.btn-cm {
   background-color: #a7a7a7;
-  padding: 15px;
   font-size: 18px;
   max-height: 80px;
   line-height: 1;
@@ -5142,7 +5133,6 @@ li {
 .btn.btn-canton,
 .btn.btn-sm {
   background-color: #a7a7a7;
-  padding: 15px;
   font-size: 18px;
   max-height: 80px;
   line-height: 1;
@@ -5159,7 +5149,6 @@ li {
 .btn.btn-coshocton,
 .btn.btn-ya {
   background-color: #a7a7a7;
-  padding: 15px;
   font-size: 18px;
   max-height: 80px;
   line-height: 1;
@@ -5174,10 +5163,9 @@ li {
   color: #ffffff;
 }
 .btn.btn-dover,
-.btn.btn-ae,
+.btn.btn-all,
 .btn-campus-all {
   background-color: #a7a7a7;
-  padding: 15px;
   font-size: 18px;
   max-height: 80px;
   line-height: 1;
@@ -5185,17 +5173,16 @@ li {
   margin-bottom: 10px;
 }
 .btn.btn-dover.active,
-.btn.btn-ae.active,
+.btn.btn-all.active,
 .btn-campus-all.active,
 .btn.btn-dover:hover,
-.btn.btn-ae:hover,
+.btn.btn-all:hover,
 .btn-campus-all:hover {
   background-color: #8bc540;
 }
 .btn.btn-millersburg,
 .btn.btn-g {
   background-color: #a7a7a7;
-  padding: 15px;
   font-size: 18px;
   max-height: 80px;
   line-height: 1;
@@ -5210,9 +5197,8 @@ li {
   color: #ffffff;
 }
 .btn.btn-wooster,
-.btn.btn-all {
+.btn.btn-ae {
   background-color: #a7a7a7;
-  padding: 15px;
   font-size: 18px;
   max-height: 80px;
   line-height: 1;
@@ -5220,9 +5206,9 @@ li {
   margin-bottom: 10px;
 }
 .btn.btn-wooster.active,
-.btn.btn-all.active,
+.btn.btn-ae.active,
 .btn.btn-wooster:hover,
-.btn.btn-all:hover {
+.btn.btn-ae:hover {
   background-color: #f4d61e;
   color: #ffffff;
 }
@@ -6689,4 +6675,7 @@ body #error-404 h2 {
   border-top: 0px solid transparent;
   border-left: 90px solid #efefef;
   border-bottom: 50px solid transparent;
+}
+.btn-link {
+  color: #4d4d4d !important;
 }

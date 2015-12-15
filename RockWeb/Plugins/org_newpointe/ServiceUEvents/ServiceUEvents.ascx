@@ -16,15 +16,15 @@
     <div class="col-xs-12 col-md-4"></div>
     <div id="collapseFilter" class="collapsed-filter">
 
-        <div id="CampusButtons" class="hidden-xs col-md-7">
+        <div id="CampusButtons" class="hidden-xs col-md-6">
 
             <h4>Choose a campus</h4>
-            <a href="#" class="campusButton btn btn-block-xs btn-akron" data-fullname="Akron" data-shortname="AKR" data-campusid="67713">AKR</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-canton" data-fullname="Canton" data-shortname="CAN" data-campusid="53103">CAN</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-coshocton" data-fullname="Coshocton" data-shortname="COS" data-campusid="62004">COS</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-dover" data-fullname="Dover" data-shortname="DOV" data-campusid="51773">DOV</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-millersburg" data-fullname="Millersburg" data-shortname="MIL" data-campusid="51774">MIL</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-wooster" data-fullname="Wooster" data-shortname="WST" data-campusid="67714">WST</a>
+            <a href="#" class="campusButton btn btn-block-xs btn-akron" data-fullname="Akron" data-shortname="Akron" data-campusid="67713">Akron</a>
+            <a href="#" class="campusButton btn btn-block-xs btn-canton" data-fullname="Canton" data-shortname="Canton" data-campusid="53103">Canton</a>
+            <a href="#" class="campusButton btn btn-block-xs btn-coshocton" data-fullname="Coshocton" data-shortname="Coshocton" data-campusid="62004">Coshocton</a>
+            <a href="#" class="campusButton btn btn-block-xs btn-dover" data-fullname="Dover" data-shortname="Dover" data-campusid="51773">Dover</a>
+            <a href="#" class="campusButton btn btn-block-xs btn-millersburg" data-fullname="Millersburg" data-shortname="Millersburg" data-campusid="51774">Millersburg</a>
+            <a href="#" class="campusButton btn btn-block-xs btn-wooster" data-fullname="Wooster" data-shortname="Wooster" data-campusid="67714">Wooster</a>
             <a href="#" class="campusButton btn btn-block-xs btn-campus-all" data-fullname="ALL" data-shortname="ALL" data-campusid="ALL">ALL</a>
         </div>
 
@@ -42,13 +42,12 @@
             </asp:DropDownList>
         </div>
 
-        <div id="CategoryButtons" class="hidden-xs col-md-5">
+        <div id="CategoryButtons" class="hidden-xs col-md-6">
             <h4>Choose a category</h4>
-            <a href="#" class="categoryButton btn btn-cm" data-categoryid="13399" data-hovername="CM| BIRTH-5TH GRADE" data-shortname="CM">CM</a>
-            <a href="#" class="categoryButton btn btn-sm" data-categoryid="13405" data-hovername="SM| 6TH-12TH GRADE" data-shortname="SM">SM</a>
-            <a href="#" class="categoryButton btn btn-ya" data-categoryid="21205" data-hovername="YA| 19-29 YEARS" data-shortname="YA">YA</a>
-            <a href="#" class="categoryButton btn btn-g" data-categoryid="11111" data-hovername="G| ADULT GROUPS" data-shortname="G">G</a>
-            <a href="#" class="categoryButton btn btn-ae" data-categoryid="00000" data-hovername="AE| ANYTHING ELSE" data-shortname="AE">AE</a>
+            <a href="#" class="categoryButton btn btn-cm" data-categoryid="13399" data-hovername="Kids" data-shortname="Kids">Kids</a>
+            <a href="#" class="categoryButton btn btn-sm" data-categoryid="13405" data-hovername="Students" data-shortname="Students">Students</a>
+            <a href="#" class="categoryButton btn btn-g" data-categoryid="11111" data-hovername="Adults" data-shortname="Adults">Adults</a><br/>
+            <a href="#" class="categoryButton btn btn-ae" data-categoryid="00000" data-hovername="Everything Else" data-shortname="Everything Else">Everything Else</a>
             <a href="#" class="categoryButton btn btn-all active" data-categoryid="all" data-hovername="ALL" data-shortname="ALL">ALL</a>
         </div>
 
@@ -56,11 +55,10 @@
             <h4>Choose a category</h4>
             <asp:DropDownList ID="ddlCategoryDropdown" CssClass="form-control" runat="server">
                 <asp:ListItem Text="ALL" Value="all" />
-                <asp:ListItem Text="CM| BIRTH-5TH GRADE" Value="13399" />
-                <asp:ListItem Text="SM| 6TH-12TH GRADE" Value="13405" />
-                <asp:ListItem Text="YA| 19-29 YEARS" Value="21205" />
-                <asp:ListItem Text="G| Adult Groups" Value="11111" />
-                <asp:ListItem Text="ANYTHING ELSE" Value="00000" />
+                <asp:ListItem Text="Kids" Value="13399" />
+                <asp:ListItem Text="Students" Value="13405" />
+                <asp:ListItem Text="Adults" Value="11111" />
+                <asp:ListItem Text="Everything Else" Value="00000" />
             </asp:DropDownList>
         </div>
     </div>
@@ -72,7 +70,7 @@
     <div class="col-md-4 col-md-push-8 top-cal">
         <%--<div class="col-md-12 hidden-xs hidden-sm col-spacer"></div>--%>
         <h2 class="text-center" id="event-date">Event Details</h2>
-        <div id="events-list" data-key="na"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
+        <div id="events-list" data-key="na"><i class="fa fa-spinner fa-spin fa-3x text-center"></i></div>
         <div id="event-description"></div>
     </div>
     <div class="col-md-8 col-md-pull-4">

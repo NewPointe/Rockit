@@ -1,6 +1,6 @@
 using Rock.Data;
 
-namespace org.newpointe.SampleProject.Data
+namespace org.newpointe.ServiceUCalendar.Data
 {
     /// <summary>
     /// 

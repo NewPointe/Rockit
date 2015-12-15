@@ -2,7 +2,7 @@
 
 using System;
 using System.Web;
-using org.newpointe.SampleProject.Model;
+using org.newpointe.ServiceUCalendar.Model;
 using Newtonsoft.Json;
 using System.IO;
 using System.Data.SqlClient;

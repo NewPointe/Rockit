@@ -191,7 +191,7 @@
             date = new Date(date);
             $("#event-date").html(monthNames[date.getMonth()] + ' ' + date.getUTCDate());
             search = "/Plugins/org_newpointe/Calendar.ashx?date=" + (date.getUTCMonth() + 1) + "/" + date.getUTCDate() + "/" + date.getUTCFullYear();
-        } else if (id != undefined){
+        } else if (id != undefined) {
             search = "/Plugins/org_newpointe/Calendar.ashx?id=" + id;
         } else {
             return;
@@ -238,7 +238,7 @@
                 $(this).find("i.fa-plus-square").hide();
                 $(".parent-" + $(this).data("id")).slideDown();
             });
-            if ( searchData.length == 1) {
+            if (searchData.length == 1) {
                 $(".parent-" + searchData[0].id).slideDown();
                 $("#CampusButtons a").removeClass("active");
                 //$("a[data-fullname *= " + searchData[0].locationcity + " ]").addClass("active");
@@ -421,7 +421,7 @@
             }
         }).on('focus', function () {
             $(this).val('');
-        } );
+        });
 
     });
 
