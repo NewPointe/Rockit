@@ -31,7 +31,7 @@
                         <Rock:BoolField HeaderText="DidNotOccur" DataField="DidNotOccur" SortExpression="DidNotOccur" />
                         
                         <%--<Rock:EditField OnClick="attendanceEdit_Click" />--%>
-                        <Rock:LinkButtonField OnClick="attendanceDelete_Click" CssClass="btn-danger btn-sm" Text="<i class='fa fa-arrows-h'></i>" />
+                        <Rock:LinkButtonField OnClick="attendanceDelete_Click" CssClass="btn-danger btn-sm grid-delete-button" Text="<i class='fa fa-arrows-h'></i>" />
                     </Columns>
                 </Rock:Grid>
             </div>

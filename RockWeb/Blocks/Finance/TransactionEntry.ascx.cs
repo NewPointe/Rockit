@@ -117,7 +117,6 @@ namespace RockWeb.Blocks.Finance
         private GatewayComponent _achGateway;
 
         public string PersonalInfoClass;
-        public string SavedCardName = "";
 
         #endregion
 
@@ -245,25 +244,17 @@ namespace RockWeb.Blocks.Finance
                 lSaveAcccountTitle.Text = GetAttributeValue( "SaveAccountTitle" );
             }
 
-            
-            // If impersonation is allowed, and a valid person key was used, set the target to that person
-            if ( GetAttributeValue( "Impersonation" ).AsBooleanOrNull() ?? false )
-            {
-                string personKey = PageParameter( "Person" );
-                if ( !string.IsNullOrWhiteSpace( personKey ) )
-                {
-                    TargetPerson = new PersonService( new RockContext() ).GetByUrlEncodedKey( personKey );
-                }
-            }
 
-            // if TargetPerson wasn't set by Impersonation, try to get it from the PersonId parameter (if specified)
-            if (TargetPerson == null)
+            string prefill_pNumber = PageParameter("pn");
+            if (!string.IsNullOrWhiteSpace(prefill_pNumber))
             {
-                int? personId = PageParameter( "PersonId" ).AsIntegerOrNull();
-                if ( personId.HasValue )
-                {
-                    TargetPerson = new PersonService( new RockContext() ).Get( personId.Value );
-                }
+                pnbPhone.Text = prefill_pNumber;
+            }
+            
+            string personKey = PageParameter("pkey");
+            if ( !string.IsNullOrWhiteSpace( personKey ) )
+            {
+                TargetPerson = new PersonService( new RockContext() ).GetByUrlEncodedKey( personKey );
             }
 
             if ( TargetPerson == null )
@@ -271,7 +262,7 @@ namespace RockWeb.Blocks.Finance
                 TargetPerson = CurrentPerson;
             }
 
-            
+            //dbgTst.Text = TargetPerson != null ? TargetPerson.UrlEncodedKey : "";
 
             // Enable payment options based on the configured gateways
             bool ccEnabled = false;
@@ -360,8 +351,15 @@ namespace RockWeb.Blocks.Finance
                         }
 
                         btnFrequency.SelectedValue = oneTimeFrequency.Id.ToString();
-                        dtpStartDate.SelectedDate = RockDateTime.Today;
+                        dtpStartDate.SelectedDate = PageParameter("sdate").AsDateTime() ?? RockDateTime.Today;
                     }
+                }
+
+                int? prefill_frequency = PageParameter("freq").AsIntegerOrNull();
+                if (prefill_frequency.HasValue)
+                {
+
+                    btnFrequency.SetValue(PageParameter("freq"));
                 }
 
                 // Display Options
@@ -403,6 +401,11 @@ namespace RockWeb.Blocks.Finance
                 {
                     rblSavedAch.Visible = false;
                     divNewCard.Style[HtmlTextWriterStyle.Display] = "block";
+                }
+                
+                if (rblSavedAch.SelectedValue == "-1")
+                {
+                    divRecentCheck.Style[HtmlTextWriterStyle.Display] = "block";
                 }
 
                 RegisterScript();
@@ -453,8 +456,8 @@ namespace RockWeb.Blocks.Finance
                     {
                         if ( SelectedAccounts.Count > item.ItemIndex )
                         {
-                            decimal amount = decimal.MinValue;
-                            if ( decimal.TryParse( accountAmount.Text, out amount ) )
+                            decimal amount = 0.0m;
+                            if ( accountAmount.Text == "" || decimal.TryParse( accountAmount.Text, out amount ) )
                             {
                                 SelectedAccounts[item.ItemIndex].Amount = amount;
                             }
@@ -464,6 +467,7 @@ namespace RockWeb.Blocks.Finance
 
                 // Update the total amount
                 lblTotalAmount.Text = SelectedAccounts.Sum( f => f.Amount ).ToString( "F2" );
+
 
                 // Set the frequency date label based on if 'One Time' is selected or not
                 if ( btnFrequency.Items.Count > 0 )
@@ -607,7 +611,7 @@ namespace RockWeb.Blocks.Finance
         protected void btnAddAccount_SelectionChanged( object sender, EventArgs e )
         {
             var selected = AvailableAccounts.Where( a => a.Id == ( btnAddAccount.SelectedValueAsId() ?? 0 ) ).ToList();
-            AvailableAccounts = AvailableAccounts.Except( selected ).ToList();
+            //AvailableAccounts = AvailableAccounts.Except( selected ).ToList();
             SelectedAccounts.AddRange( selected );
 
             BindAccounts();
@@ -931,6 +935,7 @@ namespace RockWeb.Blocks.Finance
             rptAccountList.DataBind();
 
             btnCamp.Visible = AvailableAccounts.Any();
+
             List<Campus> camps = new List<Campus>();
             foreach (Campus camp in (new CampusService(new RockContext())).Queryable().Where(x => x.Id != 7 && x.Id != 8).SortBy("Name"))
             {
@@ -942,30 +947,85 @@ namespace RockWeb.Blocks.Finance
             btnCamp.DataSource = camps;
             btnCamp.DataBind();
 
-            int campFilter = int.TryParse(btnCamp.SelectedValue, out campFilter) ? campFilter : (CurrentPerson != null ? CurrentPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1);
+            int campFilter = int.TryParse(btnCamp.SelectedValue, out campFilter) ? campFilter : (TargetPerson != null ? TargetPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1);
             btnCamp.SelectedValue = campFilter.ToString();
 
+            if (!string.IsNullOrWhiteSpace(PageParameter("act")) && !IsPostBack)
+            {
+                btnCamp.ClearSelection();
+                //string spacing = string.Concat(Enumerable.Repeat("&nbsp;", 20));
+                btnCamp.Items.Insert(0, "");
+                btnCamp.SelectedValue = "";
+            }
 
-            //btnAddAccount.Visible = AvailableAccounts.Any();
-            //btnAddAccount.DataSource = AvailableAccounts.Where(x => x.CampusId == campFilter);
-            //btnAddAccount.DataBind();
         }
 
         private void setupAccountList()
         {
-            int campFilter = int.TryParse(btnCamp.SelectedValue, out campFilter) ? campFilter : (CurrentPerson != null ? CurrentPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1);
-            var spAccnt = AvailableAccounts.Where(x => x.CampusId == 7);
-            var avAccnt = AvailableAccounts.Where(x => x.CampusId == campFilter && x.CampusId != 7);
 
+            var oldSelectedAccounts = SelectedAccounts.Where(x => x.Amount > 0).ToList();
             SelectedAccounts.Clear();
-            foreach (var acct in avAccnt)
+
+            string prefill_accounts = PageParameter("act");
+            string prefill_amounts = PageParameter("amt");
+
+            foreach (var acct in oldSelectedAccounts)
             {
-                SelectedAccounts.Add(acct);
+                if (!SelectedAccounts.Exists(x => x.Id == acct.Id))
+                    SelectedAccounts.Add(acct);
             }
-            foreach (var acct in spAccnt)
+
+            if (string.IsNullOrWhiteSpace(prefill_accounts) || IsPostBack)
             {
-                SelectedAccounts.Add(acct);
+                int campFilter = int.TryParse(btnCamp.SelectedValue, out campFilter) ? campFilter : (CurrentPerson != null ? CurrentPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1);
+                var spAccnt = AvailableAccounts.Where(x => x.CampusId == 7);
+                var avAccnt = AvailableAccounts.Where(x => x.CampusId == campFilter && x.CampusId != 7);
+
+                foreach (var acct in avAccnt)
+                {
+                    if (!oldSelectedAccounts.Exists(x => x.Id == acct.Id))
+                        SelectedAccounts.Add(acct);
+                }
+                foreach (var acct in spAccnt)
+                {
+                    if (!oldSelectedAccounts.Exists(x => x.Id == acct.Id))
+                        SelectedAccounts.Add(acct);
+                }
             }
+
+
+            if (!string.IsNullOrWhiteSpace(prefill_accounts))
+            {
+                FinancialAccountService acctServ = new FinancialAccountService(new RockContext());
+                string[] pAccounts = prefill_accounts.Split(',');
+                string[] pAmounts = prefill_amounts.Split(',');
+
+                for (int i = 0; i < pAccounts.Count(); i++)
+                {
+                    int? aId = pAccounts[i].AsIntegerOrNull();
+                    decimal amt = (i < pAmounts.Count()) ? pAmounts[i].AsDecimal() : 0;
+                    if (aId.HasValue)
+                    {
+                        AccountItem acct = AvailableAccounts.Where(x => x.Id == aId.Value).FirstOrDefault();
+                        if (acct != null)
+                        {
+                            acct.Amount = amt;
+                            if (!IsPostBack)
+                            {
+                                SelectedAccounts.RemoveAll(x => x.Id == acct.Id);
+                                SelectedAccounts.Add(acct);
+                            }
+                            else
+                            {
+                                if (!SelectedAccounts.Exists(x => x.Id == acct.Id))
+                                    SelectedAccounts.Add(acct);
+                            }
+                        }
+                    }
+                }
+            }
+
+            lblTotalAmount.Text = SelectedAccounts.Sum(f => f.Amount).ToString("F2");
         }
 
         /// <summary>
@@ -1100,7 +1160,8 @@ namespace RockWeb.Blocks.Finance
         {
             rblSavedCC.Items.Clear();
 
-            if ( TargetPerson != null )
+            //if (TargetPerson != null && ((GetAttributeValue("Impersonation").AsBooleanOrNull() ?? false) || (CurrentUser != null && CurrentUser.IsAuthenticated)))
+            if (TargetPerson != null)
             {
                 // Get the saved accounts for the currently logged in user
                 var savedAccounts = new FinancialPersonSavedAccountService( new RockContext() )
@@ -1125,12 +1186,7 @@ namespace RockWeb.Blocks.Finance
                         if ( rblSavedCC.Items.Count > 0 )
                         {
                             rblSavedCC.Items.Add( new ListItem( "Use a different card", "0" ) );
-                            SavedCardName = rblSavedCC.Items[0].Text.ToString();
                             CollapseCardData.Value = "true";
-                        }
-                        else
-                        {
-                            CollapseCardData.Value = "false";
                         }
                     }
                 }
@@ -1151,11 +1207,49 @@ namespace RockWeb.Blocks.Finance
                                 Name = "Use " + a.Name + " (" + a.MaskedAccountNumber + ")"
                             } ).ToList();
                         rblSavedAch.DataBind();
+
+                        divRecentCheck.Style[HtmlTextWriterStyle.Display] = "none";
+
+                        var aliasIds = /*new int[] { 31301 };*/ TargetPerson.Aliases.Select(y => y.Id).ToList();
+                        var prevChecks = new FinancialTransactionService(new RockContext()).Queryable().Where(x => aliasIds.Contains(x.AuthorizedPersonAliasId ?? -1)).Where(x => x.CheckMicrEncrypted != null).SortBy("CreatedDateTime Desc").Take(3).ToList().Select(x => (Rock.Security.Encryption.DecryptString(x.CheckMicrEncrypted) ?? "").Split('_')).Select(x => x.ElementAtOrDefault(0) + "_" + x.ElementAtOrDefault(1));
+                        if (prevChecks.Distinct().Count() == 1 && prevChecks.FirstOrDefault() != "_")
+                        {
+                            rblSavedAch.Items.Add(new ListItem("Use recent check", "-1"));
+                            var achDat = prevChecks.FirstOrDefault().Split('_');
+                            if (achDat.Count() == 2)
+                            {
+                                if (!IsPostBack)
+                                {
+                                    txtCheckRoutingNumber.Text = achDat[0];
+                                    txtCheckAccountNumber.Text = achDat[1];
+                                }
+                            }
+                            if (PageParameter("flc") == "1" && !IsPostBack)
+                            {
+                                hfPaymentTab.Value = "ACH";
+                                rblSavedAch.SelectedValue = "-1";
+                            }
+
+                        }
+                        
+                        if ( rblSavedCC.Items.Count > 0 )
+                        {
+                            rblSavedCC.Items.Add( new ListItem( "Use a different card", "0" ) );
+                            CollapseCardData.Value = "true";
+                        }
+
                         if ( rblSavedAch.Items.Count > 0 )
                         {
                             rblSavedAch.Items.Add( new ListItem( "Use a different bank account", "0" ) );
+                            CollapseCardData.Value = "true";
                         }
+
                     }
+                }
+
+                if (rblSavedCC.Items.Count <= 0 && rblSavedAch.Items.Count > 0)
+                {
+                    hfPaymentTab.Value = "ACH";
                 }
             }
         }
@@ -1231,19 +1325,39 @@ namespace RockWeb.Blocks.Finance
                 }
                 else
                 {
-                    if ( string.IsNullOrWhiteSpace( txtBankName.Text ) )
+                    if ((rblSavedAch.SelectedValueAsInt() ?? 0) == -1)
                     {
-                        errorMessages.Add( "Make sure to enter a bank name" );
-                    }
+                        if (string.IsNullOrWhiteSpace(txtCheckBankName.Text))
+                        {
+                            errorMessages.Add("Make sure to enter a bank name");
+                        }
 
-                    if ( string.IsNullOrWhiteSpace( txtRoutingNumber.Text ) )
-                    {
-                        errorMessages.Add( "Make sure to enter a valid routing number" );
-                    }
+                        if (string.IsNullOrWhiteSpace(txtCheckRoutingNumber.Text))
+                        {
+                            errorMessages.Add("Make sure to enter a valid routing number");
+                        }
 
-                    if ( string.IsNullOrWhiteSpace( txtAccountNumber.Text ) )
+                        if (string.IsNullOrWhiteSpace(txtCheckAccountNumber.Text))
+                        {
+                            errorMessages.Add("Make sure to enter a valid account number");
+                        }
+                    }
+                    else
                     {
-                        errorMessages.Add( "Make sure to enter a valid account number" );
+                        if (string.IsNullOrWhiteSpace(txtBankName.Text))
+                        {
+                            errorMessages.Add("Make sure to enter a bank name");
+                        }
+
+                        if (string.IsNullOrWhiteSpace(txtRoutingNumber.Text))
+                        {
+                            errorMessages.Add("Make sure to enter a valid routing number");
+                        }
+
+                        if (string.IsNullOrWhiteSpace(txtAccountNumber.Text))
+                        {
+                            errorMessages.Add("Make sure to enter a valid account number");
+                        }
                     }
                 }
             }
@@ -1410,9 +1524,18 @@ namespace RockWeb.Blocks.Finance
         /// <returns></returns>
         private ACHPaymentInfo GetACHInfo()
         {
-            var ach = new ACHPaymentInfo( txtAccountNumber.Text, txtRoutingNumber.Text, rblAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking );
-            ach.BankName = txtBankName.Text;
-            return ach;
+            if (rblSavedAch.SelectedValue == "-1")
+            {
+                var ach = new ACHPaymentInfo(txtCheckAccountNumber.Text, txtCheckRoutingNumber.Text, rblCheckAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking);
+                ach.BankName = txtCheckBankName.Text;
+                return ach;
+            }
+            else
+            {
+                var ach = new ACHPaymentInfo( txtAccountNumber.Text, txtRoutingNumber.Text, rblAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking );
+                ach.BankName = txtBankName.Text;
+                return ach;
+            }
         }
 
         /// <summary>
@@ -1665,6 +1788,49 @@ namespace RockWeb.Blocks.Finance
                     pnlSaveAccount.Visible = false;
                 }
 
+                if (PageParameter("argsd") == "1")
+                {
+                    var rc = new RockContext();
+                    var ats = new AttributeService(rc);
+                    var argsd = ats.Queryable().Where(x => x.Key == "AutomatedRecurringGiftSetupDate").FirstOrDefault();
+                    if (argsd == null)
+                    {
+                        argsd = new Rock.Model.Attribute();
+                        argsd.FieldTypeId = 85;
+                        argsd.EntityTypeId = 15;
+                        argsd.Key = "AutomatedRecurringGiftSetupDate";
+                        argsd.Name = "Automated Recurring Gift Setup Date";
+                        argsd.Guid = Guid.NewGuid();
+                        argsd.CreatedDateTime = argsd.ModifiedDateTime = DateTime.Now;
+                        ats.Add(argsd);
+                        rc.SaveChanges();
+                        rc = new RockContext();
+                        ats = new AttributeService(rc);
+                        argsd = ats.Queryable().Where(x => x.Key == "AutomatedRecurringGiftSetupDate").FirstOrDefault();
+                    }
+                    if (argsd != null)
+                    {
+                        var atvs = new AttributeValueService(rc);
+                        var argsdVal = atvs.Queryable().Where(x => x.AttributeId == argsd.Id && x.EntityId == person.Id).FirstOrDefault();
+                        if (argsdVal == null)
+                        {
+                            argsdVal = new Rock.Model.AttributeValue();
+                            argsdVal.AttributeId = argsd.Id;
+                            argsdVal.EntityId = person.Id;
+                            argsdVal.Value = DateTime.Now.ToString("o");
+                            argsdVal.Guid = Guid.NewGuid();
+                            argsdVal.CreatedDateTime = argsdVal.ModifiedDateTime = DateTime.Now;
+
+                            atvs.Add(argsdVal);
+                            rc.SaveChanges();
+                        }
+                        else
+                        {
+                            argsdVal.Value = DateTime.Now.ToString("o");
+                            rc.SaveChanges();
+                        }
+                    }
+                }
                 return true;
             }
             else
@@ -1804,10 +1970,10 @@ namespace RockWeb.Blocks.Finance
         $('div.radio-content').prev('.form-group').find('input:radio').unbind('click').on('click', function () {{
             var $content = $(this).parents('div.form-group:first').next('.radio-content')
             var radioDisplay = $content.css('display');
-            if ($(this).val() == 0 && radioDisplay == 'none') {{
+            if (($(this).val() == 0 || $(this).val() == -1) && radioDisplay == 'none') {{
                 $content.slideToggle();
             }}
-            else if ($(this).val() != 0 && radioDisplay != 'none') {{
+            else if ($(this).val() != 0 && $(this).val() != -1 && radioDisplay != 'none') {{
                 $content.slideToggle();
             }}
         }});
