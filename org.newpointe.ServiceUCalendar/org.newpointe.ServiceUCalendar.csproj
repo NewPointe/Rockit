@@ -7,8 +7,8 @@
     <ProjectGuid>{496EC024-71ED-4AD1-B677-2A3FA60CCD05}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.newpointe.SampleProject</RootNamespace>
-    <AssemblyName>org.newpointe.SampleProject</AssemblyName>
+    <RootNamespace>org.newpointe.ServiceUCalendar</RootNamespace>
+    <AssemblyName>org.newpointe.ServiceUCalendar</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
