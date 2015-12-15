@@ -45,7 +45,8 @@ public partial class Plugins_org_newpointe_CampusMenu_CampusMenu : RockBlock
 
         if (isLive.ToLower() == "true")
         {
-            LiveServiceText = "<a href='http://live.newpointe.org'>WATCH LIVE NOW! <i class='fa fa-laptop'></i></a>";
+            LiveServiceText = "<a href='http://live.newpointe.org'>WATCH LIVE NOW! <i class='fa fa-video-camera'></i></a>";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
             //popup.Style["display"] = "block";
         }
 
