@@ -7,7 +7,9 @@ using System.Net;
 using Newtonsoft.Json;
 using Quartz;
 using RestSharp;
+using Rock;
 using Rock.Data;
+using Rock.Model;
 
 namespace org.newpointe.LiveService.Data
 {
@@ -26,9 +28,6 @@ namespace org.newpointe.LiveService.Data
 
         public LiveServiceJsonJob()
         {
-            //
-            // TODO: Add constructor logic here
-            //
 
         }
 
@@ -46,16 +45,30 @@ namespace org.newpointe.LiveService.Data
 
             string isLive = isServiceLive.response.item.isLive.ToString();
 
-            rockContext.Database.ExecuteSqlCommand("UPDATE [rock-production].[dbo].[AttributeValue] SET [Value] = @value WHERE AttributeId = 16493;", new SqlParameter("@value", isLive));
-            Rock.Web.Cache.GlobalAttributesCache.Flush();
+            // specify which attributeId we want to work with
+            //var attributeId = 15762;  //testing
+            var attributeId = 16493;  //production
 
+            var attributeValueService = new AttributeValueService(rockContext);
+
+            // specify NULL as the EntityId since this is a GlobalAttribute
+            var globalAttributeValue = attributeValueService.GetByAttributeIdAndEntityId(attributeId, null);
+
+            if (globalAttributeValue != null)
+            {
+                // save updated value to database
+                globalAttributeValue.Value = isLive;
+                rockContext.SaveChanges();
+
+                // flush the attributeCache for this attribute so it gets reloaded from the database
+                Rock.Web.Cache.AttributeCache.Flush(attributeId);
+
+                // flush the GlobalAttributeCache since this attribute is a GlobalAttribute
+                Rock.Web.Cache.GlobalAttributesCache.Flush();
+            }
 
         }
 
-
-
-
     }
-
 
 }
