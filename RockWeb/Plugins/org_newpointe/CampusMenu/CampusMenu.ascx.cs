@@ -25,29 +25,28 @@ using Newtonsoft.Json;
 
 public partial class Plugins_org_newpointe_CampusMenu_CampusMenu : RockBlock
 {
-    public string LiveServiceText = "WATCH LIVE EVERY WEEK! SUNDAYS AT 9 & 11 A.M.";
-    public string LivePlatformUrlJson;
+    public string LiveServiceText;
+    public string LiveAttribute = Rock.Web.Cache.GlobalAttributesCache.Value("LiveService");
+    public string LiveTextLive = Rock.Web.Cache.GlobalAttributesCache.Value("LiveServiceTextLive");
+    public string LiveTextNotLive = Rock.Web.Cache.GlobalAttributesCache.Value("LiveServiceTextNotLive");
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        string sessionLive = (string)Session["livePopup"] ?? "false";
 
-        //Check ChurchOnline Platform API to see if there is a live event
-        string livePlatformUrl = "http://live.newpointe.org/api/v1/events/current";
-
-        using (WebClient wc = new WebClient())
+        if (LiveAttribute.ToLower() == "true")
         {
-            LivePlatformUrlJson = wc.DownloadString(livePlatformUrl);
+            LiveServiceText = LiveTextLive;
+            if (sessionLive != "true")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+                Session["livePopup"] = "true";
+            }
+            
         }
-
-        dynamic isServiceLive = JsonConvert.DeserializeObject(LivePlatformUrlJson);
-
-        string isLive = isServiceLive.response.item.isLive.ToString();
-
-        if (isLive.ToLower() == "true")
+        else
         {
-            LiveServiceText = "<a href='http://live.newpointe.org'>WATCH LIVE NOW! <i class='fa fa-video-camera'></i></a>";
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
-            //popup.Style["display"] = "block";
+            LiveServiceText = LiveTextNotLive;
         }
 
 
