@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Quartz;
 using RestSharp;
 using Rock;
+using Rock.Attribute;
 using Rock.Data;
 using Rock.Model;
 
@@ -18,14 +19,12 @@ namespace org.newpointe.LiveService.Data
     /// Summary description for CustomJob
     /// </summary>
     /// 
+    [UrlLinkField("ChurchOnline API Address","The URL to check for the ChurchOnline API",true, "http://live.newpointe.org/api/v1/events/current","General",1,"Address")]
     public class LiveServiceJsonJob : IJob
     {
-        private const string _baseUrl = "http://live.newpointe.org/api/v1/events/current";
-        private DateTime today = DateTime.Today;
         public string LivePlatformUrlJson;
         RockContext rockContext = new RockContext();
-
-
+        
         public LiveServiceJsonJob()
         {
 
@@ -33,8 +32,12 @@ namespace org.newpointe.LiveService.Data
 
         public void Execute(IJobExecutionContext context)
         {
+
+            JobDataMap dataMap = context.JobDetail.JobDataMap;
+            string livePlatformUrl = dataMap.GetString("Address") ?? "http://live.newpointe.org/api/v1/events/current";
+
+
             //Check ChurchOnline Platform API to see if there is a live event
-            string livePlatformUrl = "http://live.newpointe.org/api/v1/events/current";
 
             using (WebClient wc = new WebClient())
             {
@@ -45,14 +48,13 @@ namespace org.newpointe.LiveService.Data
 
             string isLive = isServiceLive.response.item.isLive.ToString();
 
-            // specify which attributeId we want to work with
-            //var attributeId = 15762;  //testing
-            var attributeId = 16493;  //production
+            // specify which attribute key we want to work with
+            var attributeKey = "LiveService";  //production
 
             var attributeValueService = new AttributeValueService(rockContext);
 
             // specify NULL as the EntityId since this is a GlobalAttribute
-            var globalAttributeValue = attributeValueService.GetByAttributeIdAndEntityId(attributeId, null);
+            var globalAttributeValue = attributeValueService.GetGlobalAttributeValue(attributeKey);
 
             if (globalAttributeValue != null)
             {
@@ -61,7 +63,7 @@ namespace org.newpointe.LiveService.Data
                 rockContext.SaveChanges();
 
                 // flush the attributeCache for this attribute so it gets reloaded from the database
-                Rock.Web.Cache.AttributeCache.Flush(attributeId);
+                //Rock.Web.Cache.AttributeCache.Flush();
 
                 // flush the GlobalAttributeCache since this attribute is a GlobalAttribute
                 Rock.Web.Cache.GlobalAttributesCache.Flush();
