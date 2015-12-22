@@ -20,18 +20,21 @@
             <asp:PlaceHolder ID="phContent" runat="server"></asp:PlaceHolder>
             <hr />
             <script>
-                (function () {
-                    var cx = '001784362343258229631:fdnsp4tdlfa';
-                    var gcse = document.createElement('script');
-                    gcse.type = 'text/javascript';
-                    gcse.async = true;
-                    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-                        '//cse.google.com/cse.js?mob=1&cx=' + cx;
-                    var s = document.getElementsByTagName('script')[0];
-                    s.parentNode.insertBefore(gcse, s);
-                })();
+                if (!window.gcseInjected) {
+                    window.gcseInjected = true;
+                    (function () {
+                        var cx = '001784362343258229631:fdnsp4tdlfa';
+                        var gcse = document.createElement('script');
+                        gcse.type = 'text/javascript';
+                        gcse.async = true;
+                        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+                            '//cse.google.com/cse.js?mob=1&cx=' + cx;
+                        var s = document.getElementsByTagName('script')[0];
+                        s.parentNode.insertBefore(gcse, s);
+                    })();
+                }
             </script>
-             <gcse:searchbox-only resultsurl="http://nprock.rmrdevelopment.com/searchResults"></gcse:searchbox-only>
+             <gcse:searchbox-only resultsurl="https://newpointe.org/SearchResults"></gcse:searchbox-only>
         </div>
 
     </ContentTemplate>

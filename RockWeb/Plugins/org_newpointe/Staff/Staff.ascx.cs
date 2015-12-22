@@ -79,7 +79,7 @@ namespace RockWeb.Plugins.org_newpointe.Staff
             if ((e.Item.ItemIndex + 1) % 6 == 0)
             {
                 var p = new Panel();
-                p.CssClass = "visible-lg-block";
+                p.CssClass = "clearfix visible-lg-block";
                 e.Item.Controls.Add(p);
             }
             if ((e.Item.ItemIndex + 1) % 4 == 0)

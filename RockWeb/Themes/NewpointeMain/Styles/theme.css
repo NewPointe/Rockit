@@ -5055,7 +5055,7 @@ main {
 }
 img {
   display: block;
-  width: 100% \9;
+  /*width: 100% \9;*/
   max-width: 100%;
   height: auto;
 }
@@ -5476,8 +5476,9 @@ table.striped tr {
   margin-top: -15px;
 }
 #CustomMenuLogo {
-  height: 70px;
+  height: 68px;
   padding: 0px;
+  margin-top: 0px;
 }
 #GreenDiv {
   background-color: #8BC540;
@@ -5486,14 +5487,14 @@ table.striped tr {
 #divCustomMenu {
   border-top: #8BC540 1px solid;
   border-bottom: #404040 1px solid;
-  margin-top: -16px;
+  margin-top: -1px;
 }
 .NPMenu {
   margin-top: -20px;
 }
 .npCustomMenu {
   list-style-type: none;
-  padding: 30px 0 20px;
+  padding: 23px 0 20px;
   margin: 0px;
 }
 .npCustomMenu .menuItemActive a {
@@ -5611,7 +5612,7 @@ li.menuLink.menuItemActive:after {
   bottom: 0;
   content: "";
   left: 50%;
-  top: 25px;
+  top: 30px;
   margin-left: -30px;
   position: absolute;
 }
@@ -6212,7 +6213,7 @@ strong {
     top: -90px;
   }
   header {
-    padding-bottom: 100px;
+    padding-bottom: 85px;
   }
   .divCampusMenu {
     background-color: #fff !important;
@@ -6606,12 +6607,12 @@ table.gsc-search-box tbody tr td * {
   font-size: 25px!important;
 }
 #NPSearch table.gsc-search-box td {
-  padding-top: 10px !important;
+  /*padding-top: 10px !important;
   vertical-align: top;
-  padding-bottom: 10px !important;
+  padding-bottom: 10px !important;*/
 }
 #NPSearch {
-  height: 75px !important;
+  height: 68px !important;
   background-color: #404040;
 }
 .label-campus-akr {
