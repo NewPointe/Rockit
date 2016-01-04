@@ -146,34 +146,43 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 
           var metricTest = rockContext.MetricValues.SqlQuery("SET DATEFIRST 1; SELECT * FROM dbo.MetricValue WHERE DATEPART(week, MetricValueDateTime) = DATEPART(week, GETDATE()) - 1 AND (MetricId = 2 OR MetricId = 3 OR MetricId = 4 OR MetricId = 5) ORDER BY MetricValueDateTime DESC;").ToList();
 
-          //Add key/values to dictionary in case they aren't in SQL lookup
-          dictionary.Add("ORG2015",0);
+            //Add key/values to dictionary in case they aren't in SQL lookup
+           dictionary.Add("ORG2016", 0);
+           dictionary.Add("ORG2015",0);
           dictionary.Add("ORG2014", 0);
           dictionary.Add("ORG2013", 0);
           dictionary.Add("ORG2012", 0);
           dictionary.Add("ORG2011", 0);
-          dictionary.Add("12015", 0);
+            dictionary.Add("12016", 0);
+            dictionary.Add("12015", 0);
           dictionary.Add("12014", 0);
           dictionary.Add("12013", 0);
-          dictionary.Add("22015", 0);
+            dictionary.Add("22016", 0);
+            dictionary.Add("22015", 0);
           dictionary.Add("22014", 0);
           dictionary.Add("22013", 0);
-          dictionary.Add("32015", 0);
+            dictionary.Add("32016", 0);
+            dictionary.Add("32015", 0);
           dictionary.Add("32014", 0);
           dictionary.Add("32013", 0);
-          dictionary.Add("42015", 0);
+            dictionary.Add("42016", 0);
+            dictionary.Add("42015", 0);
           dictionary.Add("42014", 0);
           dictionary.Add("42013", 0);
-          dictionary.Add("52015", 0);
+            dictionary.Add("52016", 0);
+            dictionary.Add("52015", 0);
           dictionary.Add("52014", 0);
           dictionary.Add("52013", 0);
-          dictionary.Add("62015", 0);
+            dictionary.Add("62016", 0);
+            dictionary.Add("62015", 0);
           dictionary.Add("62014", 0);
           dictionary.Add("62013", 0);
-          dictionary.Add("72015", 0);
+            dictionary.Add("72016", 0);
+            dictionary.Add("72015", 0);
           dictionary.Add("72014", 0);
           dictionary.Add("72013", 0);
-          dictionary.Add("82015", 0);
+            dictionary.Add("82016", 0);
+            dictionary.Add("82015", 0);
           dictionary.Add("82014", 0);
           dictionary.Add("82013", 0);
 
@@ -203,7 +212,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 
           //find the percent increase/decrease
 
-          decimal difference = dictionary["ORG2015"] / dictionary["ORG2014"];
+          decimal difference = dictionary["ORG2016"] / dictionary["ORG2015"];
           decimal percentDifference = (difference - 1) * 100;
 
           if (percentDifference >= 0)
@@ -490,7 +499,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 
 
           string emailBodyMerged = string.Format(emailBody, currentDateString);
-          string emailAttendanceMerged = string.Format(emailAttendance, weeknumber, currentSundayDate, dateLastYear, date2YrsAgo, Convert.ToInt32(dictionary["ORG2015"]), Convert.ToInt32(dictionary["ORG2014"]), Convert.ToInt32(dictionary["ORG2013"]), Convert.ToInt32(dictionary["62015"]), Convert.ToInt32(dictionary["62014"]), Convert.ToInt32(dictionary["62013"]), Convert.ToInt32(dictionary["22015"]), Convert.ToInt32(dictionary["22014"]), Convert.ToInt32(dictionary["22013"]), Convert.ToInt32(dictionary["32015"]), Convert.ToInt32(dictionary["32014"]), Convert.ToInt32(dictionary["32013"]), Convert.ToInt32(dictionary["12015"]), Convert.ToInt32(dictionary["12014"]), Convert.ToInt32(dictionary["12013"]), Convert.ToInt32(dictionary["42015"]), Convert.ToInt32(dictionary["42014"]), Convert.ToInt32(dictionary["42013"]), Convert.ToInt32(dictionary["52015"]), Convert.ToInt32(dictionary["52014"]), Convert.ToInt32(dictionary["52013"]), Convert.ToInt32(dictionary["82015"]), Convert.ToInt32(dictionary["82014"]), Convert.ToInt32(dictionary["82013"]), attendancePercentage);
+          string emailAttendanceMerged = string.Format(emailAttendance, weeknumber, currentSundayDate, dateLastYear, date2YrsAgo, Convert.ToInt32(dictionary["ORG2016"]), Convert.ToInt32(dictionary["ORG2015"]), Convert.ToInt32(dictionary["ORG2014"]), Convert.ToInt32(dictionary["62016"]), Convert.ToInt32(dictionary["62015"]), Convert.ToInt32(dictionary["62014"]), Convert.ToInt32(dictionary["22016"]), Convert.ToInt32(dictionary["22015"]), Convert.ToInt32(dictionary["22014"]), Convert.ToInt32(dictionary["32016"]), Convert.ToInt32(dictionary["32015"]), Convert.ToInt32(dictionary["32014"]), Convert.ToInt32(dictionary["12016"]), Convert.ToInt32(dictionary["12015"]), Convert.ToInt32(dictionary["12014"]), Convert.ToInt32(dictionary["42016"]), Convert.ToInt32(dictionary["42015"]), Convert.ToInt32(dictionary["42014"]), Convert.ToInt32(dictionary["52016"]), Convert.ToInt32(dictionary["52015"]), Convert.ToInt32(dictionary["52014"]), Convert.ToInt32(dictionary["82016"]), Convert.ToInt32(dictionary["82015"]), Convert.ToInt32(dictionary["82014"]), attendancePercentage);
 
           return emailHeader + emailBodyMerged + emailAttendanceMerged + emailFooter;
       }
