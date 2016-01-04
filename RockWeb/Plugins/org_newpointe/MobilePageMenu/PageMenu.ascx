@@ -2,23 +2,31 @@
 
 <style>
             .mobile-page-menu table.gsc-search-box td {
-            padding-top: 13px;
-            vertical-align: top;
+            /*padding-top: 13px;
+            vertical-align: top;*/
         }
 
         .mobile-page-menu .gsc-search-box {
             height: 100px !important;
         }
 
-        .mobile-page-menu table.gsc-search-box tbody tr td *{
-            font-size:28px !important;
+        .mobile-page-menu table.gsc-search-box tbody tr td * {
+            font-size:20px !important;
+        }
+        .mobile-page-menu table.gsc-search-box tbody tr td table {
+            height: 100% !important;
+        }
+        .mobile-page-menu table.gsc-search-box tbody tr td input {
+            border: solid 1px rgb(238, 238, 238) !important;
+        }
+
+        .gsc-input-box table {
         }
 </style>
 <asp:UpdatePanel ID="upContent" runat="server">
     <ContentTemplate>
         <div class="hidden-lg">
             <asp:PlaceHolder ID="phContent" runat="server"></asp:PlaceHolder>
-            <hr />
             <script>
                 if (!window.gcseInjected) {
                     window.gcseInjected = true;
