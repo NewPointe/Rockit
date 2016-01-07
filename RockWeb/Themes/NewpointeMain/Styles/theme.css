@@ -5882,6 +5882,7 @@ footer .give-row span.larger {
 .vertical-center {
   position: relative;
   top: 50%;
+  -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
 }
 .height-100 {
