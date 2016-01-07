@@ -23,6 +23,9 @@
         } else if ($('#rblSavedAch input:checked').val() == 0) {
             $('#divNewBank').show();
             $('#divRecentCheck').hide();
+        } else {
+            $('#divNewBank').show();
+            $('#divRecentCheck').hide();
         }
     }
 
