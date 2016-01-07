@@ -165,6 +165,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 	            WHERE BatchStartDateTime >= @p0 + ' 00:00:00' AND BatchStartDateTime <= @p1 + ' 23:59:59'
 	            AND fa.Name LIKE '%General%'; ", FinancialStartDate, FinancialEndDate).ToList<decimal>()[0].ToString("C0");
 
+            //Giving 2 Weeks Ago - All Campuses
+            //ToDo !!
+
             //Giving YTD - All Campuses
             GivingYtd = rockContext.Database.SqlQuery<decimal>(@"	SELECT SUM(Amount) as 'Total Giving' FROM FinancialTransaction ft
 		        RIGHT JOIN FinancialTransactionDetail ftd ON ftd.TransactionId = ft.Id
@@ -200,6 +203,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 		        JOIN FinancialBatch fb ON ft.BatchId = fb.Id 
 	            WHERE BatchStartDateTime >= @p0 + ' 00:00:00' AND BatchStartDateTime <= @p1 + ' 23:59:59'
 	            AND fa.Name LIKE '%General%' AND fa.CampusId = @p2; ", FinancialStartDate, FinancialEndDate, SelectedCampusId).ToList<decimal>()[0].ToString("C0");
+
+            //Giving 2 Weeks Ago - All Campuses
+            //ToDo !!
 
             //Giving YTD - Selected Campus
             GivingYtdCampus = rockContext.Database.SqlQuery<decimal>(@"	SELECT SUM(Amount) as 'Total Giving' FROM FinancialTransaction ft
