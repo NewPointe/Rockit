@@ -76,7 +76,7 @@
         <header>
 
             <!-- Brand Bar -->
-            <nav class="navbar navbar-inverse navbar-static-top">
+            <nav class="navbar navbar-fixed-top affix">
                 <div class="container">
                     <div class="navbar-header">
                         <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".divMainMenu">

@@ -354,7 +354,9 @@ table.striped tr {
 }
 
 
-
+    header .page-menu, header .mobile-page-menu {
+        border-top: 1px solid @accent-bold-color;
+    }
 
 // NewPointe Campus Menu
 #npCampusMenu {
@@ -838,6 +840,9 @@ a:hover i.fs {
 // 3. Theme Styling
 // -------------------------
 header {
+
+    padding-bottom: 68px;
+
     .page-menu,
     .login-status, .mobile-page-menu {
         float: right;
@@ -845,7 +850,14 @@ header {
 
     .navbar {
         background-color: @header-bg;
+        border-color: #000;
+        position: fixed;
     }
+}
+
+    
+.navbar-collapse.divMainMenu {
+    border: none;
 }
 
 .navbar-brand {
@@ -866,6 +878,11 @@ header {
 .navbar-toggle {
     margin-top: 15px;
 }
+
+.main-feature {
+    margin-bottom: 10px;
+}
+
 // homepage items
 #announcement-rotator {
     //margin: 0 -@grid-gutter-width/2 @spacing-lg-px;
@@ -1429,9 +1446,6 @@ strong {
 // default styling should be for phones 767px or less
 // Small devices (tablets, 768px and up)
 @media (min-width: @screen-sm-min) {
-    #announcement-rotator {
-        margin: 10px 0;
-    }
 
     .navbar-brand {
         display: inherit;
@@ -1442,7 +1456,7 @@ strong {
     }
 
     header .page-menu, header .mobile-page-menu {
-        padding: 10px 80px;
+        padding: 0px 80px;
         border-top: 1px solid @accent-bold-color;
         border-bottom: 1px solid @accent-semibold-color;
     }
@@ -1453,6 +1467,13 @@ strong {
 
     header .page-menu .nav.navbar-nav > li a, header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 5px 17px;
+    }
+    
+    header .navbar {
+        border: none;
+    }
+    header .navbar-header {
+        padding-bottom: 5px;
     }
 
     .subnav li {
@@ -1524,21 +1545,22 @@ strong {
         top: -90px;
     }
 
-    header {
-        padding-bottom: 35px;
-    }
-
     .divCampusMenu {
         background-color: #fff !important;
+    }
+
+    header {
+        padding-bottom: 10px;
+    }
+    
+    header .navbar {
+        position: static;
+        transform: none;
     }
 
     #npCampusMenu {
         float: right;
         text-align: left;
-    }
-
-    header .mobile-page-menu {
-        border: none;
     }
 
     header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
@@ -1552,6 +1574,7 @@ strong {
     header .page-menu .nav.navbar-nav > li a, header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 8px 22px;
     }
+    
 
     .subnav li {
         font-size: 1.4em;
@@ -1600,11 +1623,15 @@ strong {
 @media (min-width: @screen-lg-min) {
 
     header {
-        padding-bottom: 85px;
+        padding-bottom: 106px;
     }
 
     header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
         font-size: 2em;
+    }
+    
+    header .mobile-page-menu {
+        border: none;
     }
 
     #announcement-rotator {
@@ -1678,6 +1705,12 @@ strong {
 }
 /*small screens only*/
 @media(min-width: @screen-sm-min) AND (max-width: @screen-sm-max) {
+    
+    header .navbar .container {
+        width: 100%;
+        padding: 0;
+    }
+
     .sm-border-right {
         border-right: 1px solid #fff;
     }
@@ -1707,10 +1740,11 @@ strong {
 /* medium only*/
 @media(min-width:@screen-md-min) AND (max-width:@screen-md-max) {
 
-    #announcement-rotator {
-        margin-top: -25px !important;
+    
+    header .navbar .container {
+        width: 100%;
+        padding: 0;
     }
-
 
     footer h2.give {
         font-size: 75px;
@@ -1943,6 +1977,7 @@ strong {
 @media (max-width: 1199px) {
     .navbar-header {
         float: none;
+        background-color: #404040;
     }
 
     .navbar-toggle {

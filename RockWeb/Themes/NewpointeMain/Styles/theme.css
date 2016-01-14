@@ -5314,6 +5314,10 @@ table.striped td {
 table.striped tr {
   background-color: #efefef;
 }
+header .page-menu,
+header .mobile-page-menu {
+  border-top: 1px solid #8BC540;
+}
 #npCampusMenu {
   background-color: transparent;
   z-index: 2500;
@@ -5684,6 +5688,9 @@ a:hover i.fs {
   background-color: #404040;
   border-color: #404040;
 }
+header {
+  padding-bottom: 68px;
+}
 header .page-menu,
 header .login-status,
 header .mobile-page-menu {
@@ -5691,6 +5698,11 @@ header .mobile-page-menu {
 }
 header .navbar {
   background-color: #FFF;
+  border-color: #000;
+  position: fixed;
+}
+.navbar-collapse.divMainMenu {
+  border: none;
 }
 .navbar-brand {
   height: auto;
@@ -5706,6 +5718,9 @@ header .navbar {
 }
 .navbar-toggle {
   margin-top: 15px;
+}
+.main-feature {
+  margin-bottom: 10px;
 }
 #announcement-rotator .item img {
   width: 100%;
@@ -6139,9 +6154,6 @@ strong {
   width: 100%;
 }
 @media (min-width: 768px) {
-  #announcement-rotator {
-    margin: 10px 0;
-  }
   .navbar-brand {
     display: inherit;
   }
@@ -6150,7 +6162,7 @@ strong {
   }
   header .page-menu,
   header .mobile-page-menu {
-    padding: 10px 80px;
+    padding: 0px 80px;
     border-top: 1px solid #8BC540;
     border-bottom: 1px solid #404040;
   }
@@ -6161,6 +6173,12 @@ strong {
   header .page-menu .nav.navbar-nav > li a,
   header .mobile-page-menu .nav.navbar-nav > li a {
     padding: 5px 17px;
+  }
+  header .navbar {
+    border: none;
+  }
+  header .navbar-header {
+    padding-bottom: 5px;
   }
   .subnav li {
     display: inline-block;
@@ -6213,18 +6231,19 @@ strong {
     position: absolute;
     top: -90px;
   }
-  header {
-    padding-bottom: 35px;
-  }
   .divCampusMenu {
     background-color: #fff !important;
+  }
+  header {
+    padding-bottom: 10px;
+  }
+  header .navbar {
+    position: static;
+    transform: none;
   }
   #npCampusMenu {
     float: right;
     text-align: left;
-  }
-  header .mobile-page-menu {
-    border: none;
   }
   header .page-menu .nav.navbar-nav > li,
   header .mobile-page-menu .nav.navbar-nav > li {
@@ -6273,11 +6292,14 @@ strong {
 }
 @media (min-width: 1200px) {
   header {
-    padding-bottom: 85px;
+    padding-bottom: 106px;
   }
   header .page-menu .nav.navbar-nav > li,
   header .mobile-page-menu .nav.navbar-nav > li {
     font-size: 2em;
+  }
+  header .mobile-page-menu {
+    border: none;
   }
   #announcement-rotator {
     margin-top: -12px !important;
@@ -6336,6 +6358,10 @@ strong {
 }
 /*small screens only*/
 @media (min-width: 768px) AND (max-width: 991px) {
+  header .navbar .container {
+    width: 100%;
+    padding: 0;
+  }
   .sm-border-right {
     border-right: 1px solid #fff;
   }
@@ -6360,8 +6386,9 @@ strong {
 }
 /* medium only*/
 @media (min-width: 992px) AND (max-width: 1199px) {
-  #announcement-rotator {
-    margin-top: -25px !important;
+  header .navbar .container {
+    width: 100%;
+    padding: 0;
   }
   footer h2.give {
     font-size: 75px;
@@ -6547,6 +6574,7 @@ strong {
 @media (max-width: 1199px) {
   .navbar-header {
     float: none;
+    background-color: #404040;
   }
   .navbar-toggle {
     display: block;
