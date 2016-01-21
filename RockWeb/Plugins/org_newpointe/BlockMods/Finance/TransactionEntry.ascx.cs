@@ -1262,8 +1262,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                             }).ToList();
 
                         rblSavedCC.DataBind();
-                        dbgText.Text = savedAccounts.ToJson();
-                        dbgText.Text += _ccGateway.Id + "|" + ccCurrencyType.Id;
                         if (rblSavedCC.Items.Count > 0)
                         {
                             rblSavedCC.Items.Add(new ListItem("Use a different card", "0"));
