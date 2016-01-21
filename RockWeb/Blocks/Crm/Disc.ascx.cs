@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -401,11 +401,6 @@ namespace Rockweb.Blocks.Crm
             {
                 mergeFields.Add( "Person", _targetPerson );
             }
-
-            Rock.Web.Cache.GlobalAttributesCache.Read().AttributeValues
-                .ToList()
-                .ForEach( v => mergeFields.Add( v.Key, v.Value ) );
-
             lInstructions.Text = GetAttributeValue( "Instructions" ).ResolveMergeFields( mergeFields );
         }
 

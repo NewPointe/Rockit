@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ScheduledPaymentDownload.ascx.cs" Inherits="RockWeb.Blocks.Finance.ScheduledPaymentDownload" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ScheduledPaymentDownload.ascx.cs" Inherits="RockWeb.Blocks.Finance.ScheduledPaymentDownload" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -14,7 +14,7 @@
 
             <div class="panel-body">
 
-                <Rock:ComponentPicker ID="cpGateway" runat="server" Label="Payment Gateway" Required="true" ContainerType="Rock.Financial.GatewayContainer"  />
+                <Rock:FinancialGatewayPicker ID="gpGateway" runat="server" Label="Payment Gateway" Required="true" />
                 <Rock:DateRangePicker ID="drpDates" runat="server" Label="Date Range" Required="true" />
 
                 <div class="actions">

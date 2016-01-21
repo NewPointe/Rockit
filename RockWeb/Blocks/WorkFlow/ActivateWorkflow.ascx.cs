@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,7 +66,7 @@ and then redirect the user to a page with the Workflow Entry block. Because the 
 supports setting attribute values from query string parameters, the Activate Workflow block is no 
 longer needed.<br/><br/>Please update any place that links to page ID: {1}, to instead link directly to the Workflow 
 Entry page (Page ID: {2}).", RockPage.Site.Name, RockPage.PageId, pageReference.PageId );
-                Rock.Communication.Email.NotifyAdmins( subject, message );
+                Rock.Communication.Email.NotifyAdmins( subject, message, string.Empty, string.Empty, false );
             }
             catch ( Exception ex )
             {

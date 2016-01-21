@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -305,6 +305,8 @@ namespace RockWeb.Blocks.Cms
                 BlockPageId = a.Block.PageId,
                 BlockLayoutId = a.Block.LayoutId,
             } );
+
+            gContentList.EntityTypeId = EntityTypeCache.Read<HtmlContent>().Id;
 
             // Filter by Site
             if ( ddlSiteFilter.SelectedIndex > 0 )

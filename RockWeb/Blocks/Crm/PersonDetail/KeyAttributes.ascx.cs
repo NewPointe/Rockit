@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -464,8 +464,16 @@ namespace RockWeb.Blocks.Crm.PersonDetail
                             div.Controls.Add( new LiteralControl( " " + attribute.Name ) );
                         }
                         else
-                        {
-                            formattedValue = attribute.FieldType.Field.FormatValueAsHtml( fsAttributes, attributeValue, attribute.QualifierValues, false );
+                        {                            
+                            if ( attribute.FieldType.Class == typeof( Rock.Field.Types.ImageFieldType ).FullName )
+                            {
+                                formattedValue = attribute.FieldType.Field.FormatValueAsHtml( fsAttributes, attributeValue, attribute.QualifierValues, true );
+                            }
+                            else
+                            {
+                                formattedValue = attribute.FieldType.Field.FormatValueAsHtml( fsAttributes, attributeValue, attribute.QualifierValues, false );
+                            }
+                            
                             if ( !string.IsNullOrWhiteSpace( formattedValue ) )
                             {
                                 fsAttributes.Controls.Add( new RockLiteral { Label = attribute.Name, Text = formattedValue } );

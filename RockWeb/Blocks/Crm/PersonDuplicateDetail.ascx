@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PersonDuplicateDetail.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonDuplicateDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PersonDuplicateDetail.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonDuplicateDetail" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -10,8 +10,9 @@
             </div>
             <div class="panel-body">
 
+                <Rock:NotificationBox ID="nbNoDuplicatesMessage" CssClass="alert-grid" runat="server" NotificationBoxType="Success" Text="No duplicates found for this person." />
+
                 <div class="grid grid-panel">
-                    <Rock:NotificationBox ID="nbNoDuplicatesMessage" runat="server" NotificationBoxType="Success" Text="No duplicates found for this person." />
                     <Rock:Grid ID="gList" runat="server" AllowSorting="True" OnRowDataBound="gList_RowDataBound" PersonIdField="PersonId">
                         <Columns>
                             <Rock:SelectField ShowHeader="false" />

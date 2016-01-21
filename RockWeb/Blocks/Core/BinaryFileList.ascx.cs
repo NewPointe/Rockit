@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -143,8 +143,17 @@ namespace RockWeb.Blocks.Core
                     return;
                 }
 
+                Guid guid = binaryFile.Guid;
+                bool clearDeviceCache = binaryFile.BinaryFileType.Guid.Equals( Rock.SystemGuid.BinaryFiletype.CHECKIN_LABEL.AsGuid() );
+
                 binaryFileService.Delete( binaryFile );
                 rockContext.SaveChanges();
+
+                if ( clearDeviceCache )
+                {
+                    Rock.CheckIn.KioskDevice.FlushAll();
+                    Rock.CheckIn.KioskLabel.Flush( guid );
+                }
             }
 
             BindGrid();

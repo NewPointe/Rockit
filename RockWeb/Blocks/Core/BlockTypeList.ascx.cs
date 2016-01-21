@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ using Rock.Attribute;
 using Rock.Data;
 using Rock.Model;
 using Rock.Security;
+using Rock.Web.Cache;
 using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 
@@ -279,6 +280,7 @@ namespace RockWeb.Blocks.Core
                 gBlockTypes.DataSource = selectQry.OrderBy( b => b.Name ).ToList();
             }
 
+            gBlockTypes.EntityTypeId = EntityTypeCache.Read<Rock.Model.BlockType>().Id;
             gBlockTypes.DataBind();
         }
 

@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -222,6 +222,7 @@ namespace RockWeb.Blocks.Communication
                 gEmailTemplates.DataSource = systemEmails.OrderBy( a => a.Category.Name ).ThenBy( a => a.Title ).ToList();
             }
 
+            gEmailTemplates.EntityTypeId = EntityTypeCache.Read<Rock.Model.SystemEmail>().Id;
             gEmailTemplates.DataBind();
         }
 

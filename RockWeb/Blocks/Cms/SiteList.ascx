@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SiteList.ascx.cs" Inherits="RockWeb.Blocks.Cms.SiteList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SiteList.ascx.cs" Inherits="RockWeb.Blocks.Cms.SiteList" %>
 
 <asp:UpdatePanel ID="upSites" runat="server">
     <ContentTemplate>
@@ -20,7 +20,6 @@
                             <Rock:RockBoundField HeaderText="Theme" DataField="Theme" SortExpression="Theme" />
                             <Rock:BoolField DataField="IsSystem" HeaderText="System" SortExpression="IsSystem" />
                             <Rock:SecurityField TitleField="Name" />
-                            <Rock:DeleteField OnClick="gSites_Delete" />
                         </Columns>
                     </Rock:Grid>
                 </div>

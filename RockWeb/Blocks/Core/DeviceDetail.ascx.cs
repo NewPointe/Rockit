@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -182,6 +182,8 @@ namespace RockWeb.Blocks.Core
 
             rockContext.SaveChanges();
 
+            Rock.CheckIn.KioskDevice.Flush( Device.Id );
+            
             NavigateToParentPage();
         }
 
@@ -260,6 +262,7 @@ namespace RockWeb.Blocks.Core
                 }
                 Locations.Add( location.Id, path );
             }
+
             BindLocations();
 
             hfAddLocationId.Value = string.Empty;

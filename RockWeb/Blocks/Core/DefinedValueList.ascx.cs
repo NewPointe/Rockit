@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -432,7 +432,7 @@ namespace RockWeb.Blocks.Core
 
             definedValue.LoadAttributes();
             phDefinedValueAttributes.Controls.Clear();
-            Rock.Attribute.Helper.AddEditControls( definedValue, phDefinedValueAttributes, setValues );
+            Rock.Attribute.Helper.AddEditControls( definedValue, phDefinedValueAttributes, setValues, BlockValidationGroup );
 
             SetValidationGroup( phDefinedValueAttributes.Controls, modalValue.ValidationGroup );
 

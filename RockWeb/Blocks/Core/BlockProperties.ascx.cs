@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,7 @@ using Rock.Web.Cache;
 using Rock.Web.UI;
 using Rock.Security;
 using Rock.Data;
+using System.Web;
 
 namespace RockWeb.Blocks.Core
 {
@@ -118,7 +119,7 @@ namespace RockWeb.Blocks.Core
             }
             catch ( SystemException ex )
             {
-                DisplayError( ex.Message, "<pre>" + ex.StackTrace + "</pre>" );
+                DisplayError( ex.Message, "<pre>" + HttpUtility.HtmlEncode( ex.StackTrace ) + "</pre>" );
             }
 
             base.OnInit( e );
@@ -142,7 +143,10 @@ namespace RockWeb.Blocks.Core
                 tbCssClass.Text = _block.CssClass;
                 cePreHtml.Text = _block.PreHtml;
                 cePostHtml.Text = _block.PostHtml;
-                tbCacheDuration.Text = _block.OutputCacheDuration.ToString();
+
+                // Hide the Cache duration block for now;
+                tbCacheDuration.Visible = false;
+                //tbCacheDuration.Text = _block.OutputCacheDuration.ToString();
             }
 
             base.OnLoad( e );
@@ -187,7 +191,7 @@ namespace RockWeb.Blocks.Core
                 block.CssClass = tbCssClass.Text;
                 block.PreHtml = cePreHtml.Text;
                 block.PostHtml = cePostHtml.Text;
-                block.OutputCacheDuration = Int32.Parse( tbCacheDuration.Text );
+                block.OutputCacheDuration = 0; //Int32.Parse( tbCacheDuration.Text );
                 rockContext.SaveChanges();
 
                 Rock.Attribute.Helper.GetEditValues( phAttributes, block );

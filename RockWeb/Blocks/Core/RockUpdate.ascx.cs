@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,7 +50,7 @@ namespace RockWeb.Blocks.Core
         IEnumerable<IPackage> _availablePackages = null;
         SemanticVersion _installedVersion = new SemanticVersion( "0.0.0" );
         private int _numberOfAvailablePackages = 0;
-
+        private bool _isOkToProceed = false;
         #endregion
 
         #region Properties
@@ -58,6 +58,9 @@ namespace RockWeb.Blocks.Core
         /// <summary>
         /// Obtains a WebProjectManager from the Global "UpdateServerUrl" Attribute.
         /// </summary>
+        /// <value>
+        /// The NuGet service or null if no valid service could be found using the UpdateServerUrl.
+        /// </value>
         protected WebProjectManager NuGetService
         {
             get
@@ -70,8 +73,17 @@ namespace RockWeb.Blocks.Core
                     {
                         nbRepoWarning.Visible = true;
                     }
-                    string siteRoot = Request.MapPath( "~/" );
-                    nuGetService = new WebProjectManager( packageSource, siteRoot );
+
+                    // Since you can use a URL or a local path, we can't just check for valid URI
+                    try
+                    {
+                        string siteRoot = Request.MapPath( "~/" );
+                        nuGetService = new WebProjectManager( packageSource, siteRoot );
+                    }
+                    catch
+                    {
+                        // if caught, we will return a null nuGetService
+                    }
                 }
                 return nuGetService;
             }
@@ -112,22 +124,41 @@ namespace RockWeb.Blocks.Core
             DisplayRockVersion();
             if ( !IsPostBack )
             {
-                try
+                if ( NuGetService == null )
                 {
-                    _availablePackages = NuGetService.SourceRepository.FindPackagesById( _rockPackageId ).OrderByDescending( p => p.Version );
-                    if ( IsUpdateAvailable() )
-                    {
-                        pnlUpdatesAvailable.Visible = true;
-                        pnlNoUpdates.Visible = false;
-                        cbIncludeStats.Visible = true;
-                        BindGrid();
-                    }
-
-                    RemoveOldRDeleteFiles();
+                    pnlNoUpdates.Visible = false;
+                    pnlError.Visible = true;
+                    nbErrors.Text = string.Format( "Your UpdateServerUrl is not valid. It is currently set to: {0}", GlobalAttributesCache.Read().GetValue( "UpdateServerUrl" ) );
                 }
-                catch ( System.InvalidOperationException ex )
+                else
                 {
-                    HandleNuGetException( ex );
+                    try
+                    {
+                    	if ( CheckSqlServerVersion() )
+                    	{
+                        	_isOkToProceed = true;
+                    	}
+                	    else
+            	        {
+        	                nbVersionIssue.Visible = true;
+    	                    nbBackupMessage.Visible = false;
+	                    }
+	                    
+                        _availablePackages = NuGetService.SourceRepository.FindPackagesById( _rockPackageId ).OrderByDescending( p => p.Version );
+                        if ( IsUpdateAvailable() )
+                        {
+                            pnlUpdatesAvailable.Visible = true;
+                            pnlNoUpdates.Visible = false;
+                            cbIncludeStats.Visible = true;
+                            BindGrid();
+                        }
+
+                        RemoveOldRDeleteFiles();
+                    }
+                    catch ( System.InvalidOperationException ex )
+                    {
+                        HandleNuGetException( ex );
+                    }
                 }
             }
         }
@@ -208,6 +239,15 @@ namespace RockWeb.Blocks.Core
                         lbInstall.AddCssClass( "btn-default" );
                         divPanel.AddCssClass( "panel-block" );
                     }
+
+                    if ( ! _isOkToProceed )
+                    {
+                        lbInstall.Enabled = false;
+                        lbInstall.AddCssClass( "btn-danger" );
+                        lbInstall.AddCssClass( "small" );
+                        lbInstall.AddCssClass( "btn-xs" );
+                        lbInstall.Text = "Requirements not met";
+                    }
                 }
             }
         }
@@ -226,6 +266,38 @@ namespace RockWeb.Blocks.Core
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Checks the SQL server version and returns false if not at the needed
+        /// level to proceed.
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckSqlServerVersion()
+        {
+            bool isOk = false;
+            string sqlVersion = "";
+            try
+            {
+                sqlVersion = Rock.Data.DbService.ExecuteScaler( "SELECT SERVERPROPERTY('productversion')" ).ToString();
+                string[] versionParts = sqlVersion.Split( '.' );
+
+                int majorVersion = -1;
+                Int32.TryParse( versionParts[0], out majorVersion );
+
+                if ( majorVersion >= 11 )
+                {
+                    isOk = true;
+                }
+            }
+            catch
+            {
+                // This would be pretty bad, but regardless we'll just
+                // return the isOk (not) and let the caller proceed.
+            }
+
+            return isOk;
+        }
+
         /// <summary>
         /// Updates an existing Rock package to the given version and returns true if successful.
         /// </summary>

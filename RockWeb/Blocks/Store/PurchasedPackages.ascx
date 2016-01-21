@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PurchasedPackages.ascx.cs" Inherits="RockWeb.Blocks.Store.PurchasedPackages" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PurchasedPackages.ascx.cs" Inherits="RockWeb.Blocks.Store.PurchasedPackages" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -17,6 +17,7 @@
                                 <div class="col-md-4">
                                     <div class="margin-b-md" style="
                                         background: url('<%# Eval( "PackageIconBinaryFile.ImageUrl" ) %>') no-repeat center;
+                                        background-size: cover;
                                         width: 100%;
                                         height: 140px;">
                                         </div>

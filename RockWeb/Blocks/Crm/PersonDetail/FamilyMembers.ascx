@@ -22,7 +22,7 @@
 
                                 <asp:Repeater ID="rptrMembers" runat="server">
                                     <ItemTemplate>
-                                        <li class='<%# FormatPersonCssClass( (bool?)Eval("Person.IsDeceased") ) %>'>
+                                        <li class='<%# FormatPersonCssClass( (bool)Eval("Person.IsDeceased") ) %>'>
                                             <a href='<%# FormatPersonLink(Eval("PersonId").ToString()) %>'>
                                                 <div class="person-image" id="divPersonImage" runat="server"></div>
                                                 <div class="person-info">
@@ -53,8 +53,11 @@
                                                 <%# Eval("Location.FormattedHtmlAddress") %>
                                             </div>
                                             <div class="pull-left rollover-item">
-                                                <asp:LinkButton ID="lbVerify" runat="server">
+                                                <asp:LinkButton ID="lbVerify" runat="server" CommandName="verify" ToolTip="Verify Address">
                                                     <i class="fa fa-globe"></i>
+                                                </asp:LinkButton>
+                                                <asp:LinkButton ID="lbLocationSettings" runat="server" CommandName="settings" ToolTip="Configure Location">
+                                                    <i class="fa fa-gear"></i>
                                                 </asp:LinkButton>
                                             </div>
                                         </li>

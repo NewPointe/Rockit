@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -240,18 +240,6 @@ namespace RockWeb.Blocks.Finance
 
                 rockContext.SaveChanges();
 
-                // Every business should have an alias record with same id.  If it's missing, create it
-                if ( !business.Aliases.Any( a => a.AliasPersonId == business.Id ) )
-                {
-                    // refetch the business to make sure we have an Id
-                    business = personService.Get( business.Id );
-                    if ( business != null )
-                    {
-                        business.Aliases.Add( new PersonAlias { AliasPersonId = business.Id, AliasPersonGuid = business.Guid } );
-                        rockContext.SaveChanges();
-                    }
-                }
-
                 // Location
                 int workLocationTypeId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.GROUP_LOCATION_TYPE_WORK ).Id;
 
@@ -289,6 +277,7 @@ namespace RockWeb.Blocks.Finance
                         workLocation.GroupLocationTypeValueId = workLocationTypeId;
                     }
                     workLocation.Location = newLocation;
+                    workLocation.IsMailingLocation = true;
 
                     History.EvaluateChange( changes, "Address", oldValue, newLocation.ToString() );
                 }

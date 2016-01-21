@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PageProperties.ascx.cs" Inherits="RockWeb.Blocks.Administration.PageProperties" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PageProperties.ascx.cs" Inherits="RockWeb.Blocks.Administration.PageProperties" %>
 
 <asp:UpdatePanel id="upPanel" runat="server">
     <Triggers>
@@ -11,7 +11,7 @@
 
     <asp:PlaceHolder ID="phContent" runat="server">
 
-        <ul class="nav nav-pills" >
+        <ul class="nav nav-pills margin-b-md" >
             <asp:Repeater ID="rptProperties" runat="server" >
                 <ItemTemplate >
                     <li class='<%# GetTabClass(Container.DataItem) %>'>

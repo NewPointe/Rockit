@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -134,8 +134,11 @@ namespace RockWeb.Blocks.Core
 
             rockContext.SaveChanges();
 
+            Rock.CheckIn.KioskDevice.FlushAll();
+
             var qryParams = new Dictionary<string, string>();
             qryParams["ScheduleId"] = schedule.Id.ToString();
+            qryParams["ExpandedIds"] = PageParameter( "ExpandedIds" );
             NavigateToPage( RockPage.Guid, qryParams );
         }
 
@@ -206,6 +209,7 @@ namespace RockWeb.Blocks.Core
                         qryParams["CategoryId"] = categoryId.ToString();
                     }
 
+                    qryParams["ExpandedIds"] = PageParameter( "ExpandedIds" );
                     NavigateToPage( RockPage.Guid, qryParams );
                 }
             }
@@ -403,8 +407,15 @@ namespace RockWeb.Blocks.Core
                 }
             }
 
+            var friendlyText = schedule.ToFriendlyScheduleText();
+            if ( schedule.HasScheduleWarning() )
+            {
+                friendlyText = string.Format( "<label class='label label-warning'>{0}</label> <i class='fa fa-exclamation-triangle text-warning'></i>", friendlyText );
+            }
+            
             DescriptionList descriptionList = new DescriptionList()
                 .Add( "Description", schedule.Description ?? string.Empty )
+                .Add( "Schedule", friendlyText )
                 .Add( "Next Occurrence", occurrenceText )
                 .Add( "Category", schedule.Category != null ? schedule.Category.Name : string.Empty );
 

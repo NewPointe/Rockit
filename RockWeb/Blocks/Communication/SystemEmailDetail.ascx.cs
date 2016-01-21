@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -161,6 +161,8 @@ namespace RockWeb.Blocks.Communication
 
             string globalFrom = globalAttributes.GetValue( "OrganizationEmail" );
             tbFrom.Help = string.Format( "If a From Address value is not entered the 'Organization Email' Global Attribute value of '{0}' will be used when this template is sent.", globalFrom );
+
+            tbTo.Help = "You can specify multiple email addresses by separating them with commas or semi-colons.";
 
             SystemEmailService emailTemplateService = new SystemEmailService( new RockContext() );
             SystemEmail emailTemplate = emailTemplateService.Get( emailTemplateId );

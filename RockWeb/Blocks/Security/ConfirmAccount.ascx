@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ConfirmAccount.ascx.cs" Inherits="RockWeb.Blocks.Security.ConfirmAccount" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ConfirmAccount.ascx.cs" Inherits="RockWeb.Blocks.Security.ConfirmAccount" %>
 <asp:UpdatePanel ID="upnlContent" runat="server">
 <ContentTemplate>
 
@@ -44,6 +44,10 @@
 
     <asp:Panel ID="pnlResetSuccess" runat="server" Visible="false" CssClass="alert alert-success success">
         <asp:Literal ID="lResetSuccess" runat="server"></asp:Literal>
+    </asp:Panel>
+
+    <asp:Panel ID="pnlResetUnavailable" runat="server" CssClass="alert alert-danger error">
+        <asp:Literal ID="lResetUnavailable" runat="server" ></asp:Literal> 
     </asp:Panel>
 
     <asp:Panel ID="pnlDelete" runat="server" Visible="false">

@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -229,6 +229,7 @@ namespace RockWeb.Blocks.Finance
                                 .Select( p => p.Person.LastName + ", " + p.Person.NickName)
             } );
 
+            gBusinessList.EntityTypeId = EntityTypeCache.Read<Person>().Id;
             gBusinessList.DataSource = businessList.ToList();
             gBusinessList.DataBind();
         }

@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,10 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
-
 using Rock;
 using Rock.Data;
 using Rock.Model;
+using Rock.Web.Cache;
 using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 
@@ -129,6 +129,7 @@ namespace RockWeb.Blocks.Security
                 personViewedList = personViewedList.OrderByDescending( p => p.ViewDateTime ).ToList();
             }
 
+            gViewDetails.EntityTypeId = EntityTypeCache.Read<PersonViewed>().Id;
             gViewDetails.DataSource = personViewedList;
             gViewDetails.DataBind();
         }

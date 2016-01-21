@@ -1,11 +1,20 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="FamilySelect.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.FamilySelect" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="FamilySelect.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.FamilySelect" %>
+
+<script type="text/javascript">
+    Sys.Application.add_load(function () {
+        $('a.btn-checkin-select').click(function () {
+            $(this).siblings().attr('onclick', 'return false;');
+        });
+    });
+</script>
+
 <asp:UpdatePanel ID="upContent" runat="server">
 <ContentTemplate>
 
     <Rock:ModalAlert ID="maWarning" runat="server" />
 
     <div class="checkin-header">
-        <h1>Select Your Family</h1>
+        <h1>Families</h1>
     </div>
                 
     <div class="checkin-body">
@@ -14,6 +23,7 @@
             <div class="scroller">
 
                 <div class="control-group checkin-body-container">
+                    <label class="control-label">Select Your Family</label>
                     <div class="controls">
                         <asp:Repeater ID="rSelection" runat="server" OnItemCommand="rSelection_ItemCommand">
                             <ItemTemplate>
@@ -35,11 +45,6 @@
             <asp:LinkButton CssClass="btn btn-default" ID="lbCancel" runat="server" OnClick="lbCancel_Click" Text="Cancel" />
         </div>
     </div>
-
-    <div id="npcc-scroll">
-        <span>SCROLL FOR MORE <i class="fa fa-arrows-v"></i></span>
- 	</div>
-
 
 </ContentTemplate>
 </asp:UpdatePanel>

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttributeCategories.ascx.cs" Inherits="RockWeb.Blocks.Core.AttributeCategories" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttributeCategories.ascx.cs" Inherits="RockWeb.Blocks.Core.AttributeCategories" %>
 
 <asp:UpdatePanel ID="upPanel" runat="server">
     <ContentTemplate>
@@ -20,13 +20,13 @@
                             <Columns>
                                 <Rock:ReorderField />
                                 <Rock:RockBoundField DataField="Name" HeaderText="Category" />
-                                <Rock:RockBoundField DataField="IconCssClass" HeaderText="Icon Class" />
                                 <Rock:RockTemplateField>
                                     <HeaderTemplate>Entity Type</HeaderTemplate>
                                     <ItemTemplate>
                                         <asp:Literal ID="lEntityType" runat="server"></asp:Literal>
                                     </ItemTemplate>
                                 </Rock:RockTemplateField>
+                                <Rock:RockBoundField DataField="IconCssClass" HeaderText="Icon Class" />
                                 <Rock:DeleteField OnClick="rGrid_Delete" />
                             </Columns>
                         </Rock:Grid>

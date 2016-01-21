@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -141,7 +141,7 @@ namespace RockWeb.Blocks.Core
                     }
                     category.LoadAttributes();
                     phAttributes.Controls.Clear();
-                    Rock.Attribute.Helper.AddEditControls( category, phAttributes, false );
+                    Rock.Attribute.Helper.AddEditControls( category, phAttributes, false, BlockValidationGroup );
 
                     mdDetails.Show();
                 }
@@ -222,9 +222,12 @@ namespace RockWeb.Blocks.Core
                 string errorMessage = string.Empty;
                 if ( service.CanDelete( category, out errorMessage ) )
                 {
+                    int categoryId = category.Id;
 
                     service.Delete( category );
                     rockContext.SaveChanges();
+
+                    CategoryCache.Flush( categoryId );
                 }
                 else
                 {
@@ -262,8 +265,13 @@ namespace RockWeb.Blocks.Core
             var categories = GetCategories( rockContext );
             if ( categories != null )
             {
-                new CategoryService( rockContext ).Reorder( categories.ToList(), e.OldIndex, e.NewIndex );
+                var changedIds = new CategoryService( rockContext ).Reorder( categories.ToList(), e.OldIndex, e.NewIndex );
                 rockContext.SaveChanges();
+
+                foreach ( int id in changedIds )
+                {
+                    CategoryCache.Flush( id );
+                }
             }
 
             BindGrid();
@@ -332,6 +340,8 @@ namespace RockWeb.Blocks.Core
                     category.SaveAttributeValues( rockContext );
                 } );
 
+                CategoryCache.Flush( category.Id );
+
                 hfIdValue.Value = string.Empty;
                 mdDetails.Hide();
 
@@ -358,6 +368,7 @@ namespace RockWeb.Blocks.Core
                     ChildCount = c.ChildCategories.Count()
                 } ).ToList();
 
+            gCategories.EntityTypeId = EntityTypeCache.Read<Rock.Model.Category>().Id;
             gCategories.DataBind();
         }
 
@@ -417,7 +428,7 @@ namespace RockWeb.Blocks.Core
 
             category.LoadAttributes();
             phAttributes.Controls.Clear();
-            Rock.Attribute.Helper.AddEditControls( category, phAttributes, true );
+            Rock.Attribute.Helper.AddEditControls( category, phAttributes, true, BlockValidationGroup );
 
             hfIdValue.Value = categoryId.ToString();
             mdDetails.Show();

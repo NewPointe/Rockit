@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="false" CodeFile="HtmlContentDetail.ascx.cs" Inherits="RockWeb.Blocks.Cms.HtmlContentDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="HtmlContentDetail.ascx.cs" Inherits="RockWeb.Blocks.Cms.HtmlContentDetail" %>
 
 <asp:UpdatePanel runat="server" ID="upnlHtmlContent" ChildrenAsTriggers="false" UpdateMode="Conditional">
     <ContentTemplate>
@@ -8,7 +8,7 @@
 
         <%-- Edit Panel --%>
         <asp:Panel ID="pnlEditModel" runat="server" Visible="false">
-            <Rock:ModalDialog ID="mdEdit" runat="server" OnSaveClick="lbSave_Click" Title="Edit Html">
+            <Rock:ModalDialog ID="mdEdit" runat="server" OnSaveClick="lbSave_Click" Title="Edit HTML">
                 <Content>
 
                     <asp:UpdatePanel runat="server" ID="upnlEdit">
@@ -20,7 +20,7 @@
                                 <asp:UpdatePanel ID="upnlApproval" runat="server">
                                     <ContentTemplate>
 
-                                        <div class="alert alert-action">
+                                        <div class="alert alert-info">
 
                                             <asp:Label ID="lblApprovalStatus" runat="server" />
 

@@ -1,11 +1,11 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupContextSetter.ascx.cs" Inherits="RockWeb.Blocks.Core.GroupContextSetter" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupContextSetter.ascx.cs" Inherits="RockWeb.Blocks.Core.GroupContextSetter" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
 
         <Rock:NotificationBox runat="server" ID="nbSelectGroupTypeWarning" NotificationBoxType="Warning" Text="Select a group type or root group from the block settings" />
 
-        <ul class="nav navbar-nav group-context-setter">
+        <ul class="nav navbar-nav contextsetter group-context-setter">
             <li class="dropdown">
 
                 <a class="dropdown-toggle navbar-link" href="#" data-toggle="dropdown">
@@ -22,9 +22,7 @@
                         </ItemTemplate>
                     </asp:Repeater>
                 </ul>
-
             </li>
         </ul>
-
     </ContentTemplate>
 </asp:UpdatePanel>

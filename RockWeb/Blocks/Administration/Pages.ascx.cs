@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,6 +71,7 @@ namespace RockWeb.Blocks.Administration
                     rGrid.Actions.ShowAdd = true;
                     rGrid.Actions.AddClick += rGrid_GridAdd;
                     rGrid.Actions.ShowExcelExport = false;
+                    rGrid.Actions.ShowMergeTemplate = false;
                     rGrid.GridReorder += new GridReorderEventHandler( rGrid_GridReorder );
                     rGrid.GridRebind += new GridRebindEventHandler( rGrid_GridRebind );
                 }
@@ -304,7 +305,7 @@ namespace RockWeb.Blocks.Administration
                     PageCache.Flush( page.Id );
                     if ( _page != null )
                     {
-                        Rock.Security.Authorization.CopyAuthorization( _page, page );
+                        Rock.Security.Authorization.CopyAuthorization( _page, page, rockContext );
                         _page.FlushChildPages();
                     }
 

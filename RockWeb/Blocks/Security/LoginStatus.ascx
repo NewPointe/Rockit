@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="LoginStatus.ascx.cs" Inherits="RockWeb.Blocks.Security.LoginStatus" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="LoginStatus.ascx.cs" Inherits="RockWeb.Blocks.Security.LoginStatus" %>
 
 <ul class="nav navbar-nav loginstatus">    
     <li class="dropdown" ID="liDropdown" runat="server">
@@ -26,6 +26,7 @@
                     <asp:HyperLink ID="hlMyProfile" runat="server" Text="My Profile" />
                 </li>
             </asp:PlaceHolder>
+            <asp:Literal ID="lDropdownItems" runat="server" />
             <li class="divider"></li>
             <li><asp:LinkButton ID="lbLoginLogout" runat="server" OnClick="lbLoginLogout_Click" CausesValidation="false"></asp:LinkButton></li>
         </ul>

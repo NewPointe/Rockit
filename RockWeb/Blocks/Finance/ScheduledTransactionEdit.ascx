@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ScheduledTransactionEdit.ascx.cs" Inherits="RockWeb.Blocks.Finance.ScheduledTransactionEdit" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ScheduledTransactionEdit.ascx.cs" Inherits="RockWeb.Blocks.Finance.ScheduledTransactionEdit" %>
 
 <asp:UpdatePanel ID="upPayment" runat="server">
     <ContentTemplate>
@@ -6,7 +6,7 @@
         <div class=" panel panel-block">
 
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-calendar"></i> <asp:Literal ID="lPanelTitle" runat="server" />/h1>
+                <h1 class="panel-title"><i class="fa fa-calendar"></i> <asp:Literal ID="lPanelTitle" runat="server" /></h1>
             </div>
             <div class="panel-body">
 
@@ -30,7 +30,7 @@
                                                 <Rock:CurrencyBox ID="txtAccountAmount" runat="server" Label='<%# Eval("PublicName") %>' Text='<%# Eval("AmountFormatted") %>' Placeholder="0.00" CssClass="account-amount" />
                                             </ItemTemplate>
                                         </asp:Repeater>
-                                        <Rock:ButtonDropDownList ID="btnAddAccount" runat="server" CssClass="btn btn-primary" Visible="false" Label=" "
+                                        <Rock:ButtonDropDownList ID="btnAddAccount" runat="server" Visible="false" Label=" "
                                             DataTextField="PublicName" DataValueField="Id" OnSelectionChanged="btnAddAccount_SelectionChanged" />
 
                                         <div class="form-group">
@@ -141,7 +141,7 @@
                                 <Rock:TermDescription runat="server" />
                                 <asp:Repeater ID="rptAccountListConfirmation" runat="server">
                                     <ItemTemplate>
-                                        <Rock:TermDescription ID="tdAddress" runat="server" Term='<%# Eval("Name") %>' Description='<%# ((decimal)Eval("Amount")).ToString("C2") %>' />
+                                        <Rock:TermDescription ID="tdAddress" runat="server" Term='<%# Eval("Name") %>' Description='<%# this.FormatValueAsCurrency((decimal)Eval("Amount")) %>' />
                                     </ItemTemplate>
                                 </asp:Repeater>
                                 <Rock:TermDescription ID="tdTotal" runat="server" Term="Total" />

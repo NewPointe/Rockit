@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,7 +108,11 @@ namespace RockWeb.Blocks.CheckIn
 ", lbSelect.ClientID, hfTimes.ClientID );
                         Page.ClientScript.RegisterClientScriptBlock( this.GetType(), "SelectTime", script );
 
-                        rSelection.DataSource = availSchedules.OrderBy( s => s.StartTime );
+                        rSelection.DataSource = availSchedules
+                            .OrderBy( s => s.StartTime.Value.TimeOfDay )
+                            .ThenBy( s => s.Schedule.Name )
+                            .ToList();
+
                         rSelection.DataBind();
                     }
                 }

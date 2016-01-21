@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="DefinedTypeList.ascx.cs" Inherits="RockWeb.Blocks.Core.DefinedTypeList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="DefinedTypeList.ascx.cs" Inherits="RockWeb.Blocks.Core.DefinedTypeList" %>
 
 <asp:UpdatePanel ID="upSettings" runat="server">
     <ContentTemplate>
@@ -18,7 +18,6 @@
                             <Rock:RockBoundField DataField="Category" HeaderText="Category" SortExpression="Category.Name" />
                             <Rock:RockBoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
                             <Rock:RockBoundField DataField="Description" HeaderText="Description" SortExpression="Description" />
-                            <Rock:RockBoundField DataField="FieldTypeName" HeaderText="Field Type" SortExpression="FieldTypeName" />
                             <Rock:DeleteField OnClick="gDefinedType_Delete" />
                         </Columns>
                     </Rock:Grid>

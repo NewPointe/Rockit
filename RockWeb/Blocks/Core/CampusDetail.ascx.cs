@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,7 +66,7 @@ namespace RockWeb.Blocks.Core
                     }
                     campus.LoadAttributes();
                     phAttributes.Controls.Clear();
-                    Rock.Attribute.Helper.AddEditControls( campus, phAttributes, false );
+                    Rock.Attribute.Helper.AddEditControls( campus, phAttributes, false, BlockValidationGroup );
                 }
             }
         }
@@ -210,7 +210,7 @@ namespace RockWeb.Blocks.Core
 
             campus.LoadAttributes();
             phAttributes.Controls.Clear();
-            Rock.Attribute.Helper.AddEditControls( campus, phAttributes, true );
+            Rock.Attribute.Helper.AddEditControls( campus, phAttributes, true, BlockValidationGroup );
 
             // render UI based on Authorized and IsSystem
             bool readOnly = false;
