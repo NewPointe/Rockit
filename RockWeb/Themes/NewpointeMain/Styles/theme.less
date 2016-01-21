@@ -40,9 +40,6 @@ body {
 }
 
 
-
-
-
 @font-face {
     font-family: 'Gotham';
     src: url('../Assets/Fonts/Gotham/gotham-light-webfont.eot');
@@ -121,9 +118,6 @@ video {
 }
 
 p, dd, li {
-    /*font-family: @font-family-serif;
-    font-size: 20px;
-    line-height: 1.5;*/
     font-size: @font-size-large;
     line-height: @line-height-base;
 }
@@ -148,14 +142,21 @@ p, dd, li {
     color: @btn-default-color;
 }
 
-.btn.btn-akron, .btn.btn-cm {
+.btn-templ(){
     background-color: @btn-default-bg;
-    //padding: @btn-padding;
     font-size: @font-size-large;
     max-height: 80px;
     line-height: 1;
     white-space: inherit;
     margin-bottom: 10px;
+}
+.btn-templ-pad() {
+    .btn-templ;
+    padding: @btn-padding;
+    }
+
+.btn.btn-akron, .btn.btn-cm {
+    .btn-templ;
 
     &.active, &:hover {
         background-color: @btn-purple-bg;
@@ -164,13 +165,7 @@ p, dd, li {
 }
 
 .btn.btn-canton, .btn.btn-sm {
-    background-color: @btn-default-bg;
-    //padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
+    .btn-templ;
 
     &.active, &:hover {
         background-color: @btn-blue-bg;
@@ -179,13 +174,7 @@ p, dd, li {
 }
 
 .btn.btn-coshocton, .btn.btn-ya {
-    background-color: @btn-default-bg;
-    //padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
+    .btn-templ;
 
     &.active, &:hover {
         background-color: @btn-orange-bg;
@@ -194,13 +183,7 @@ p, dd, li {
 }
 
 .btn.btn-dover, .btn.btn-all, .btn-campus-all {
-    background-color: @btn-default-bg;
-    //padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
+    .btn-templ;
 
     &.active, &:hover {
         background-color: @btn-primary-bg;
@@ -208,13 +191,7 @@ p, dd, li {
 }
 
 .btn.btn-millersburg, .btn.btn-g {
-    background-color: @btn-default-bg;
-//padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
+    .btn-templ;
 
     &.active, &:hover {
         background-color: @btn-red-bg;
@@ -223,13 +200,7 @@ p, dd, li {
 }
 
 .btn.btn-wooster, .btn.btn-ae {
-    background-color: @btn-default-bg;
-    //padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
+    .btn-templ;
 
     &.active, &:hover {
         background-color: @btn-yellow-bg;
@@ -238,78 +209,44 @@ p, dd, li {
 }
 
 .btn.btn-newpointe, .btn.btn-green {
+    .btn-templ-pad;
     background-color: @btn-primary-bg;
-    padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
 }
 
 .btn.btn-purple {
+    .btn-templ-pad;
     background-color: @btn-purple-bg;
     color: @btn-purple-color;
-    padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
 }
 
 .btn.btn-orange {
+    .btn-templ-pad;
     background-color: @btn-orange-bg;
     color: @btn-orange-color;
-    padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
 }
 
 .btn.btn-blue {
+    .btn-templ-pad;
     background-color: @btn-blue-bg;
     color: @btn-blue-color;
-    padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
 }
 
 .btn.btn-red {
+    .btn-templ-pad;
     background-color: @btn-red-bg;
     color: @btn-red-color;
-    padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
 }
 
 .btn.btn-yellow {
+    .btn-templ-pad;
     background-color: @btn-yellow-bg;
     color: @btn-yellow-color;
-    padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
-    margin-bottom: 10px;
 }
 
 .btn.btn-black {
+    .btn-templ-pad;
     background-color: @btn-black-bg;
     color: @btn-black-color;
-    padding: @btn-padding;
-    font-size: @font-size-large;
-    max-height: 80px;
-    line-height: 1;
-    white-space: inherit;
 }
 
 .btn.btn-nav {
@@ -326,8 +263,7 @@ p, dd, li {
     line-height: 1;
 }
 
-
-.btn.btn-newpointe:hover, .btn.btn-purple:hover, .btn.btn-orange:hover {
+.btn.btn-newpointe:hover, .btn.btn-purple:hover, .btn.btn-orange:hover, .btn.btn-newpoint-xs:hover {
     color: @text-color;
 }
 
@@ -353,290 +289,271 @@ table.striped tr {
     background-color: @table-row-background-color;
 }
 
-
-
-
-// NewPointe Campus Menu
-#npCampusMenu {
-    background-color: transparent;
-    z-index: 2500;
-    float: none;
-    text-align: left;
-
-    li {
-        background-color: transparent;
-        padding-bottom: 0px;
-    }
-
-    li:hover .dropdown-menu {
-        display: block;
-    }
-
-    a {
-        background-color: transparent;
-        border: none;
-        color: #8BC540;
-    }
-
-    .dropdown-menu {
-        margin-left: 15px;
-
-        li {
-            margin-left: 0px;
-        }
-
-        li:hover {
-            background-color: #202020;
-        }
-
-
-
-        a {
-            border-bottom: 1px solid gray;
-            color: #fff;
-            padding: 10px;
-        }
-
-        a:hover {
-            color: #8BC540;
-        }
-    }
-}
-
-.divTime {
-    background-color: #fff !important;
-    text-align: center;
-
-    h5 {
-        color: #404040;
-        font-family: "GothamBold";
-        font-size: 12px;
-        text-transform: uppercase;
-    }
-}
-
-// NewPointe Mobile Campus Menu
-.divCampusMenu {
-    background-color: #e3e3e3 !important;
-}
-
-#mobileCampusMenu {
-    color: #777;
-    background-color: #e3e3e3;
-
-    span {
-    }
-
-    ul:first-child li {
-        border-bottom: dashed 1px #777;
-        list-style-type: none;
-        padding-top: 10px;
-    }
-
-    .ulCampusList {
-        margin-left: 15px;
-
-        li {
-            list-style-type: none;
-            padding: 10px;
-            border-bottom: dashed 1px #777;
-        }
-
-        a {
-            color: #777;
-        }
-
-        a:hover {
-            color: #8BC540;
-        }
-    }
-}
-
-#divCampusTimes {
-    h5 {
-        color: #404040;
-        font-family: "GothamBold";
-        text-transform: uppercase;
-        margin: 0px;
-        letter-spacing: .1px;
-        margin-top: 50px;
-    }
-}
-
-/*.main-feature .row div {
-    padding: 0px;
-}*/ 
-
-#npCampusMenu {
-    background-color: transparent;
-    z-index: 2500;
-    float: none; 
-    text-align: left;
-
-    li {
-        background-color: transparent;
-        padding-bottom: 0px;
-    }
-
-    li:hover .dropdown-menu {
-        display: block;
-    }
-
-    a {
-        background-color: transparent;
-        border: none;
-        color: #8BC540;
-    }
-
-    .dropdown-menu {
-        margin-left: 15px;
-
-        li {
-            margin-left: 0px;
-        }
-
-        li:hover {
-            background-color: #202020;
-        }
-
-
-
-        a {
-            border-bottom: 1px solid gray;
-            color: #fff;
-            padding: 10px;
-        }
-
-        a:hover {
-            color: #8BC540;
-        }
-    }
-}
-
-.divTime {
-    background-color: #fff !important;
-    text-align: center;
-
-    h5 {
-        color: #404040;
-        font-family: "GothamBold";
-        font-size: 12px;
-        text-transform: uppercase;
-    }
-}
-
-// NewPointe Mobile Campus Menu
-.divCampusMenu {
-    background-color: #e3e3e3 !important;
-}
-
-#mobileCampusMenu {
-    color: #777;
-    background-color: #e3e3e3;
-
-    span {
-    }
-
-    ul:first-child li {
-        border-bottom: dashed 1px #777;
-        list-style-type: none;
-        padding-top: 10px;
-    }
-
-    .ulCampusList {
-        margin-left: 15px;
-
-        li {
-            list-style-type: none;
-            padding: 10px;
-            border-bottom: dashed 1px #777;
-        }
-
-        a {
-            color: #777;
-        }
-
-        a:hover {
-            color: #8BC540;
-        }
-    }
-}
-
-#divCampusTimes {
-    h5 {
-        color: #404040;
-        font-family: "GothamBold";
-        text-transform: uppercase;
-        margin: 0px;
-        letter-spacing: .1px;
-        margin-top: -15px;
-    }
-}
-
-// Custom Newpointe Menu
-#CustomMenuLogo {
-    height: 68px;
-    padding: 0px;
-    margin-top: 0px;
-}
-
-#GreenDiv {
-    background-color: #8BC540;
-    height: 100%;
-}
-
-#divCustomMenu {
-    border-top: #8BC540 1px solid;
-    border-bottom: #404040 1px solid;
-    margin-top: -1px;
-}
-
-.NPMenu {
-    margin-top: -20px;
-}
-
-.npCustomMenu {
-    list-style-type: none;
-    padding: 23px 0 20px;
-    margin: 0px;
-
-    .menuItemActive a {
-        color: #8BC540 !important;
-        text-decoration: none !important;
-    }
-
-    .menuLink {
-        display: inline-block;
-        position: relative;
-
-        a {
-            color: #404040;
-            font-family: "GothamBold";
-            font-size: 23px;
-            letter-spacing: -1px;
-            line-height: 0;
-            margin: 0 26px;
-            padding: 35px 0 !important;
-            text-transform: uppercase;
-            text-decoration: none !important;
-            /*font-weight: bold;*/
-        }
-
-        a:hover {
-            color: #8BC540;
-        }
-    }
-
-    .menuLinkActive:after {
-    }
-}
-
 .divider-no-line {
     height: 20px;
 }
 
+.bordered {
+    border: solid 1px #fff;
+    padding: 5px;
+    margin-bottom: 15px;
+
+    a:hover {
+        color: #8BC540 !important;
+    }
+}
+
+.divider-bottom {
+    height: 1px;
+    border-bottom: solid #fff 1px;
+    margin-bottom: 10px;
+}
+
+// 2. Bootstrap Overrides
+// -------------------------
+.navbar {
+    position: static; // default is relative which causes the dropdowns to go under the other navbars dispite having a higher z-index - JME 9/9/2013
+    // using fontawesome nav toggle button instead of the BS default
+    .navbar-toggle {
+        padding: 6px 10px;
+        border: none;
+        margin-top: 15px;
+
+        i {
+            color: @navbar-inverse-toggle-icon-bar-bg;
+            font-size: 1.5em;
+        }
+    }
+
+    .navbar-brand {
+        font-family: @headings-font-family;
+        text-transform: uppercase;
+
+        @media (max-width: @screen-xs-max) {
+            font-size: 97%;
+        }
+    }
+}
+
+.navbar-collapse {
+    li {
+        padding-bottom: 5px;
+
+        a {
+            border-bottom: solid 1px #e3e3e3;
+        }
+    }
+}
+
+.navbar-collapse {
+    ul:last-child {
+        padding-bottom: 0;
+    }
+}
+
+.dropdown-menu li {
+    margin-left: 10px;
+    padding-bottom: 5px;
+
+    a {
+        font-size: .8em;
+        border-bottom: dashed 1px #222;
+    }
+}
+
+a:hover i.fs {
+    text-decoration: none;
+}
+
+.form-control {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    color: #404040;
+    background-color: #8BC540;
+    border-color: #8BC540;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    color: #8BC540;
+    background-color: #404040;
+    border-color: #404040;
+}
 
 
+//--------------------------//
+//     3. Theme Styling     //
+//--------------------------//
+
+
+//
+//  Header
+//
+
+.fullWidthHeader(@useFullWidthHeader) when (@useFullWidthHeader = true) {
+    header .navbar .container {
+        width: 100%;
+        padding: 0;
+    }
+}
+
+
+// Header Container
+header {
+    padding-bottom: 61px;
+
+    .page-menu,
+    .login-status, .mobile-page-menu {
+        float: right;
+    }
+
+    .navbar {
+        background-color: @header-bg;
+        position: fixed;
+        
+        .container .divMainMenu {
+            max-height: calc(~"100vh - 70px");
+        }
+
+        .container > div {
+            background-color: @navbar-nav-bg;
+            border: none;
+            //border-bottom: solid 1px #ededed;
+        }
+
+        .container > div:first-child {
+            border: none;
+        }
+
+        div.divMainMenu, div.divLogin {
+            border-top: 1px solid @accent-bold-color;
+        }
+    }
+}
+
+// Logo
+.logo-container, .logo-full, .logo-small {
+    display: inline;
+    float: left;
+    margin-left: @spacing-md-px;
+}
+
+// Watch Live Times
+#divCampusTimes {
+    h5 {
+        color: @accent-semibold-color;
+        font-family: "GothamBold";
+        text-transform: uppercase;
+        margin: 0px;
+        letter-spacing: .1px;
+    }
+}
+
+// Login Menu
+header .custom-login-status {
+    width: 100%;
+    padding: 10px;
+    .nav.navbar-nav {
+        margin-right: 15px;
+    }
+    .nav.navbar-nav > li > a {
+        padding: 0px;
+    }
+}
+
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    background-color: @gray-dark !important;
+    color: #8bc540;
+}
+
+.nav .npMenu > a:hover, .nav .npMenu > a:focus {
+    background-color: @gray-dark;
+}
+
+// Mobile Nav Menu
+header .mobile-page-menu {
+    width: 100%;
+    padding: 10px;
+
+
+    .nav.navbar-nav {
+        float: none;
+        text-align: center;
+
+        li {
+            font-family: "Gotham";
+            font-weight: 600;
+            font-size: 1em;
+            text-transform: uppercase;
+            text-align: left;
+            float: none;
+        }
+
+        a {
+            font-weight: 600;
+            padding: 5px;
+        }
+    }
+}
+
+// custom login
+.divLogin {
+    background-color: transparent;
+    font-size: 1em;
+
+    a {
+        color: @accent-bold-color !important;
+        border: none !important;
+
+        &:hover, &:focus {
+            color: darken(@accent-bold-color, 10%);
+            text-decoration: none;
+        }
+    }
+
+    .loginstatus .dropdown {
+        a {
+            background-color: transparent !important;
+            border: none;
+        }
+
+        .divider {
+            background-color: #404040;
+        }
+    }
+
+    .loginstatus .dropdown-menu {
+        background-color: #404040 !important;
+        z-index: 99999;
+        margin-top: 15px;
+    }
+    .loginstatus > li li {
+        text-align: right;
+
+        a {
+            padding-right:20px;
+        }
+    }
+}
+
+.main-feature {
+    margin-bottom: 10px;
+}
+
+//
+// Floating Nav Menu
+//
+
+// Nav Menu Container
+#divCustomMenu {
+    border-top: @brand-primary 1px solid;
+    border-bottom: @accent-semibold-color 1px solid;
+    margin-top: -1px;
+}
+
+// Nav Menu Content
 #divCustomInterior {
 
     .pop-over {
@@ -663,7 +580,6 @@ table.striped tr {
 
         .popover-border {
             border-right: 1px solid #fff;
-            //margin-right: 30px;
             padding-right: 25px;
         }
 
@@ -693,7 +609,6 @@ table.striped tr {
             color: #fff;
             letter-spacing: 0;
             margin-bottom: 10px;
-            font-family: "GothamBold";
             margin-top: 0px;
         }
 
@@ -722,22 +637,52 @@ table.striped tr {
     }
 }
 
-.bordered {
-    border: solid 1px #fff;
-    padding: 5px;
-    margin-bottom: 15px;
+// Logo
+#CustomMenuLogo {
+    height: 68px;
+    padding: 0px;
+    margin-top: 0px;
+}
+ // Logo BG
+#GreenDiv {
+    background-color: @brand-primary;
+    height: 100%;
+}
 
-    a:hover {
-        color: #8BC540 !important;
+// Menu
+.npCustomMenu {
+    list-style-type: none;
+    padding: 23px 0 20px;
+    margin: 0px;
+
+    .menuItemActive a {
+        color: @brand-primary !important;
+        text-decoration: none !important;
+    }
+
+    .menuLink {
+        display: inline-block;
+        position: relative;
+
+        a {
+            color: @accent-semibold-color;
+            font-family: "GothamBold";
+            font-size: 23px;
+            letter-spacing: -1px;
+            line-height: 0;
+            margin: 0 26px;
+            padding: 35px 0 !important;
+            text-transform: uppercase;
+            text-decoration: none !important;
+        }
+
+        a:hover {
+            color: @brand-primary;
+        }
     }
 }
 
-.divider-bottom {
-    height: 1px;
-    border-bottom: solid #fff 1px;
-    margin-bottom: 10px;
-}
-
+// Active Nav Item
 li.menuLink.menuItemActive:after {
     border-left: 25px solid transparent;
     border-right: 25px solid transparent;
@@ -752,120 +697,10 @@ li.menuLink.menuItemActive:after {
     margin-left: -30px;
     position: absolute;
 }
-// 2. Bootstrap Overrides
-// -------------------------
-.navbar {
-    position: static; // default is relative which causes the dropdowns to go under the other navbars dispite having a higher z-index - JME 9/9/2013
-    // using fontawesome nav toggle button instead of the BS default
-    .navbar-toggle {
-        padding: 6px 10px;
-        border: none;
 
-        i {
-            color: @navbar-inverse-toggle-icon-bar-bg;
-            font-size: 1.5em;
-        }
-    }
 
-    .navbar-brand {
-        font-family: @headings-font-family;
-        text-transform: uppercase;
 
-        @media (max-width: @screen-xs-max) {
-            font-size: 97%;
-        }
-    }
-}
 
-.navbar-collapse {
-    background-color: @navbar-nav-bg;
-
-    li {
-        padding-bottom: 5px;
-
-        a {
-            border-bottom: solid 1px #e3e3e3;
-        }
-    }
-}
-
-.navbar-collapse {
-    ul:last-child {
-        padding-bottom: 0;
-    }
-}
-
-.dropdown-menu li {
-    margin-left: 10px;
-    padding-bottom: 5px;
-
-    a {
-        font-size: .8em;
-        border-bottom: dashed 1px #222;
-    }
-}
-
-.navbar-inverse {
-    .navbar-nav {
-        li {
-            a {
-                color: @navbar-nav-color;
-            }
-        }
-    }
-}
-
-a:hover i.fs {
-    text-decoration: none;
-}
-
-.form-control {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
-    color: #404040;
-    background-color: #8BC540;
-    border-color: #8BC540;
-}
-
-.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
-    color: #8BC540;
-    background-color: #404040;
-    border-color: #404040;
-}
-// 3. Theme Styling
-// -------------------------
-header {
-    .page-menu,
-    .login-status, .mobile-page-menu {
-        float: right;
-    }
-
-    .navbar {
-        background-color: @header-bg;
-    }
-}
-
-.navbar-brand {
-    height: auto;
-    padding-bottom: 0;
-    display: none;
-}
-
-.navbar-brand.navbar-brand-icon {
-    display: inherit;
-}
-
-.navbar-brand img {
-    max-height: 55px;
-    width: auto;
-}
-
-.navbar-toggle {
-    margin-top: 15px;
-}
 // homepage items
 #announcement-rotator {
     //margin: 0 -@grid-gutter-width/2 @spacing-lg-px;
@@ -899,55 +734,6 @@ header {
     }
 }
 
-header .page-menu {
-    width: 100%;
-    padding: 0;
-
-    .nav.navbar-nav {
-        float: none;
-        text-align: center;
-
-        li {
-            font-family: "Gotham";
-            font-weight: 600;
-            font-size: 1em;
-            text-transform: uppercase;
-            text-align: center;
-            /*display: inline-block;*/
-            float: none;
-        }
-
-        a {
-            font-weight: 600;
-            padding: 5px;
-        }
-    }
-}
-
-header .mobile-page-menu {
-    width: 100%;
-    padding: 10px;
-
-    .nav.navbar-nav {
-        float: none;
-        text-align: center;
-
-        li {
-            font-family: "Gotham";
-            font-weight: 600;
-            font-size: 1em;
-            text-transform: uppercase;
-            text-align: left;
-            /*display: inline-block;*/
-            float: none;
-        }
-
-        a {
-            font-weight: 600;
-            padding: 5px;
-        }
-    }
-}
 
 .navbar-nav {
     margin: 0;
@@ -1429,9 +1215,6 @@ strong {
 // default styling should be for phones 767px or less
 // Small devices (tablets, 768px and up)
 @media (min-width: @screen-sm-min) {
-    #announcement-rotator {
-        margin: 10px 0;
-    }
 
     .navbar-brand {
         display: inherit;
@@ -1442,17 +1225,23 @@ strong {
     }
 
     header .page-menu, header .mobile-page-menu {
-        padding: 10px 80px;
-        border-top: 1px solid @accent-bold-color;
+        padding: 0px 80px;
         border-bottom: 1px solid @accent-semibold-color;
     }
 
-    header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
+    header .mobile-page-menu .nav.navbar-nav > li {
         font-size: 1.3em;
     }
 
-    header .page-menu .nav.navbar-nav > li a, header .mobile-page-menu .nav.navbar-nav > li a {
+    header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 5px 17px;
+    }
+    
+    header .navbar {
+        border: none;
+    }
+    header .navbar-header {
+        padding-bottom: 5px;
     }
 
     .subnav li {
@@ -1524,21 +1313,22 @@ strong {
         top: -90px;
     }
 
-    header {
-        padding-bottom: 35px;
-    }
-
     .divCampusMenu {
         background-color: #fff !important;
+    }
+
+    header {
+        padding-bottom: 10px;
+    }
+    
+    header .navbar {
+        position: static;
+        transform: none;
     }
 
     #npCampusMenu {
         float: right;
         text-align: left;
-    }
-
-    header .mobile-page-menu {
-        border: none;
     }
 
     header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
@@ -1552,6 +1342,7 @@ strong {
     header .page-menu .nav.navbar-nav > li a, header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 8px 22px;
     }
+    
 
     .subnav li {
         font-size: 1.4em;
@@ -1600,36 +1391,68 @@ strong {
 @media (min-width: @screen-lg-min) {
 
     header {
-        padding-bottom: 85px;
+        padding-bottom: 107px;
+    }
+
+    header .navbar .container > div {
+        background-color: transparent;
+        border: none;
+    }
+
+    // Login Menu
+    header .custom-login-status {
+        border-top: none;
+        padding: 0px;
+        .nav.navbar-nav {
+            margin-right: 0px;
+        }
+        .nav.navbar-nav > li > a {
+            padding: 15px;
+        }
     }
 
     header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
         font-size: 2em;
     }
-
-    #announcement-rotator {
-        margin-top: -12px !important;
+    
+    header .mobile-page-menu {
+        border: none;
     }
+    
 
-    .divLogin {
-        //position: absolute;
-        float: right;
-        top: 0px;
-        //right: 20%;
-        z-index: 999999;
-
-        a { 
-            font-size: 1em;
-        }
-    }
-
-    header .page-menu .nav.navbar-nav > li a, header .mobile-page-menu .nav.navbar-nav > li a {
+    header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 10px 40px;
     }
 
     .subnav li {
         font-size: 1.6em;
     }
+    
+    .divLogin {
+        margin-bottom: -15px;
+        z-index: 999999;
+
+        .loginstatus .dropdown-menu {
+            margin-top: -15px;
+        }
+
+        a { 
+            font-size: 1em;
+        }
+        .loginstatus > li li {
+            text-align: left;
+        }
+    }
+    .right-stacked-lg {
+        float: right;
+        clear: both;
+    }
+
+    #announcement-rotator {
+        margin-top: -12px !important;
+    }
+
+
 
     footer .container {
         max-width: 1140px;
@@ -1653,6 +1476,10 @@ strong {
 }
 /*xs screens only*/
 @media (max-width: @screen-xs-max) {
+    
+    .marginfix-xs {
+        margin: 0 -15px;
+    }
 
     div.give-row div[class*='col-'] {
         height: 95px;
@@ -1678,6 +1505,9 @@ strong {
 }
 /*small screens only*/
 @media(min-width: @screen-sm-min) AND (max-width: @screen-sm-max) {
+    
+    .fullWidthHeader(false)
+
     .sm-border-right {
         border-right: 1px solid #fff;
     }
@@ -1707,10 +1537,7 @@ strong {
 /* medium only*/
 @media(min-width:@screen-md-min) AND (max-width:@screen-md-max) {
 
-    #announcement-rotator {
-        margin-top: -25px !important;
-    }
-
+    .fullWidthHeader(true)
 
     footer h2.give {
         font-size: 75px;
@@ -1934,16 +1761,7 @@ strong {
     list-style-type: none;
 }
 
-@media (max-width: @screen-md-max) {
-    .navbar-collapse {
-        background-color: @navbar-nav-bg;
-    }
-}
-
 @media (max-width: 1199px) {
-    .navbar-header {
-        float: none;
-    }
 
     .navbar-toggle {
         display: block;
@@ -1986,38 +1804,6 @@ strong {
     }
 }
 
-// custom login
-.divLogin {
-    background-color: transparent;
-    font-size: 1em;
-
-    a {
-        color: @accent-bold-color !important;
-        border: none !important;
-
-        &:hover, &:focus {
-            color: darken(@accent-bold-color, 10%);
-            text-decoration: none;
-        }
-    }
-
-    .loginstatus .dropdown {
-        a {
-            background-color: transparent !important;
-            border: none;
-        }
-
-        .divider {
-            background-color: #404040;
-        }
-    }
-
-    .loginstatus .dropdown-menu {
-        background-color: #404040 !important;
-        z-index: 99999;
-        margin-top: -15px;
-    }
-}
 
 
 
