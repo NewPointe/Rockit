@@ -279,7 +279,7 @@
                                                         <ul class="card-logos list-unstyled">
                                                             <li class="card-visa"></li>
                                                             <li class="card-mastercard"></li>
-                                                            <li class="card-amex"></li>
+                                                            <!--<li class="card-amex"></li>-->
                                                             <li class="card-discover"></li>
                                                         </ul>
 
