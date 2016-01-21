@@ -48,9 +48,7 @@
 
   {% assign messagenotes = item | Attribute:'MessageNotes','Url' %}
   {% assign talkitover = item | Attribute:'TalkItOver','Url' %}
-  {% assign podcastaudio = item | Attribute:'PodcastAudio','Url' %}
-  {% assign podcastlink = item | Attribute:'PodcastURL','RawValue' %}
-
+  {% assign binaryFile = item | Attribute:'PodcastAudio','object' %}
 
 
   <div id="message-{{item.Id}}" class="message" style="display:none;">
@@ -81,19 +79,11 @@
       <hr />
 
       <div class="col-xs-12">
-        {% if podcastaudio != '' %}
+       
         <h4>Audio:</h4>
         <audio controls="">
-          <source src="{{ item | Attribute:'PodcastAudio','Url' }}" type="audio/mpeg" />
+          <source src="{{ binaryFile.Path }}" type="audio/mpeg" />
         </audio>
-        {% elseif podcastlink != '' %}
-        <h4>Audio:</h4>
-        <audio controls="">
-          <source src="{{ podcastlink }}" type="audio/mpeg" />
-        </audio>
-        {% else %}
-        <h4>Audio Unavailable</h4>
-        {% endif %}
       </div>
 
       <div class="col-xs-12">

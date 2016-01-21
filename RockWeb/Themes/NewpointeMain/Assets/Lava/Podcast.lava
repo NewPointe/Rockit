@@ -4,8 +4,7 @@
 
   {% for item in Items %}
 
-  {% assign podcastaudio = item | Attribute:'PodcastAudio','Url' %}
-  {% assign podcastlink = item | Attribute:'PodcastURL','RawValue' %}
+  {% assign binaryFile = item| Attribute:'PodcastAudio','object' %}
   <div class="row" style="padding-bottom:15px;">
 
     <div class="hidden-xs col-sm-3 col-md-2">
@@ -29,15 +28,10 @@
           <i class="fa fa-music fa-2x"></i>
         </a>
         <span style="padding-left: 10px;"></span>
-        {% if podcastaudio != '' %}
-        <a href="{{ item | Attribute:'PodcastAudio','Url' }}">
+
+        <a href="{{ binaryFile.Path }}">
           <i class="fa fa-cloud-download fa-2x"></i>
         </a>
-        {% elseif podcastlink != '' %}
-        <a href="{{ podcastlink }}">
-          <i class="fa fa-cloud-download fa-2x"></i>
-        </a>
-        {% endif %}
 
       </p>
     </div>
