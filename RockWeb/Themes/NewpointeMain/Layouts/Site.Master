@@ -78,7 +78,7 @@
             <!-- Brand Bar -->
             <nav class="navbar navbar-fixed-top affix">
                 <div class="container">
-                    
+
                     <!-- Mobile Header and Logos -->
                     <div class="marginfix-xs clearfix">
 
@@ -109,6 +109,15 @@
                             <button class="navbar-toggle" type="button" onclick="location.href='/GiveNow';">
                                 <i class="fa fa-usd"></i>
                             </button>
+
+                        <asp:PlaceHolder runat="server">
+                            <% if(Rock.Web.Cache.GlobalAttributesCache.Value("LiveService").ToLower() == "true") { %>
+                                <button class="navbar-toggle" type="button" onclick="location.href='http://live.newpointe.org';">
+                                    <i class="fa fa-video-camera"></i>
+                                </button>
+                            <% } %>
+                        </asp:PlaceHolder>
+						
                         </div>
                     </div>
 
@@ -229,10 +238,10 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 text-xs-center text-sm-left">
-                        <a href="jobs">EMPLOYMENT</a> | <a href="contact">CONTACT US</a>
+                        <a href="~/jobs">EMPLOYMENT</a> | <a href="~/contact">CONTACT US</a>
                     </div>
                     <div class="col-xs-12 col-sm-6 text-xs-center text-sm-right">
-                        <div class="copyright">&copy; 2016 NewPointe Community Church | All Rights Reserved</div>
+                        <div class="copyright">&copy; 2016 NewPointe Community Church | All Rights Reserved</div> 
                     </div>
                 </div>
             </div>
