@@ -2,6 +2,8 @@
   <!-- Wrapper for slides -->
   <div class="carousel-inner">
     {% for item in Items %}
+    {% assign binaryFile = item| Attribute:'Image','object' %}
+    
     {% if forloop.index == 1 -%}
     <div class="item active">
       {% else -%}
@@ -9,9 +11,11 @@
         {% endif -%}
         
         {% if item.CustomLink != '' -%}
-        <a href="{{item.CustomLink | 'StripHtml'}}">{{item.Image}}</a>
+        <a href="{{item.CustomLink | 'StripHtml'}}">
+          <img src="{{ binaryFile.Path }}" />
+        </a>
         {% else -%}
-        {{item.Image}}
+        <img src="{{ binaryFile.Path }}" />
         {% endif -%}
       </div>
       {% endfor %}
