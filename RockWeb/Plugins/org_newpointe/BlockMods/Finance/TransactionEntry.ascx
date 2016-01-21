@@ -189,6 +189,7 @@
                                                     <div class="col-md-6">
                                                         <Rock:DatePicker ID="dtpStartDate" runat="server" Label="First Payment" />
                                                     </div>
+                                                    <Rock:RockTextBox ID="txtCommentEntry" runat="server" Required="true" Label="Comment" />
                                                 </div>
                                             </div>
                                         </fieldset>
