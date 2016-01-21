@@ -5411,12 +5411,19 @@ header .navbar {
   background-color: #FFF;
   position: fixed;
 }
+header .navbar .container .divMainMenu {
+  max-height: calc(100vh - 70px);
+}
 header .navbar .container > div {
   background-color: #404040;
   border: none;
 }
 header .navbar .container > div:first-child {
   border: none;
+}
+header .navbar div.divMainMenu,
+header .navbar div.divLogin {
+  border-top: 1px solid #8BC540;
 }
 .logo-container,
 .logo-full,
@@ -5433,7 +5440,6 @@ header .navbar .container > div:first-child {
   letter-spacing: .1px;
 }
 header .custom-login-status {
-  border-top: 1px solid #8BC540;
   width: 100%;
   padding: 10px;
 }
@@ -5443,8 +5449,17 @@ header .custom-login-status .nav.navbar-nav {
 header .custom-login-status .nav.navbar-nav > li > a {
   padding: 0px;
 }
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+  background-color: #333333 !important;
+  color: #8bc540;
+}
+.nav .npMenu > a:hover,
+.nav .npMenu > a:focus {
+  background-color: #333333;
+}
 header .mobile-page-menu {
-  border-top: 1px solid #8BC540;
   width: 100%;
   padding: 10px;
 }
@@ -5463,6 +5478,37 @@ header .mobile-page-menu .nav.navbar-nav li {
 header .mobile-page-menu .nav.navbar-nav a {
   font-weight: 600;
   padding: 5px;
+}
+.divLogin {
+  background-color: transparent;
+  font-size: 1em;
+}
+.divLogin a {
+  color: #8BC540 !important;
+  border: none !important;
+}
+.divLogin a:hover,
+.divLogin a:focus {
+  color: #70a131;
+  text-decoration: none;
+}
+.divLogin .loginstatus .dropdown a {
+  background-color: transparent !important;
+  border: none;
+}
+.divLogin .loginstatus .dropdown .divider {
+  background-color: #404040;
+}
+.divLogin .loginstatus .dropdown-menu {
+  background-color: #404040 !important;
+  z-index: 99999;
+  margin-top: 15px;
+}
+.divLogin .loginstatus > li li {
+  text-align: right;
+}
+.divLogin .loginstatus > li li a {
+  padding-right: 20px;
 }
 .main-feature {
   margin-bottom: 10px;
@@ -6145,8 +6191,14 @@ strong {
     margin-bottom: -15px;
     z-index: 999999;
   }
+  .divLogin .loginstatus .dropdown-menu {
+    margin-top: -15px;
+  }
   .divLogin a {
     font-size: 1em;
+  }
+  .divLogin .loginstatus > li li {
+    text-align: left;
   }
   .right-stacked-lg {
     float: right;
@@ -6430,31 +6482,6 @@ strong {
   .collapsing {
     overflow: hidden !important;
   }
-}
-.divLogin {
-  background-color: transparent;
-  font-size: 1em;
-}
-.divLogin a {
-  color: #8BC540 !important;
-  border: none !important;
-}
-.divLogin a:hover,
-.divLogin a:focus {
-  color: #70a131;
-  text-decoration: none;
-}
-.divLogin .loginstatus .dropdown a {
-  background-color: transparent !important;
-  border: none;
-}
-.divLogin .loginstatus .dropdown .divider {
-  background-color: #404040;
-}
-.divLogin .loginstatus .dropdown-menu {
-  background-color: #404040 !important;
-  z-index: 99999;
-  margin-top: -15px;
 }
 table.gsc-search-box tbody tr td * {
   height: 100%!important;

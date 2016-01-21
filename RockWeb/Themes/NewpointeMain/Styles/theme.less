@@ -413,6 +413,10 @@ header {
         background-color: @header-bg;
         position: fixed;
         
+        .container .divMainMenu {
+            max-height: calc(~"100vh - 70px");
+        }
+
         .container > div {
             background-color: @navbar-nav-bg;
             border: none;
@@ -421,6 +425,10 @@ header {
 
         .container > div:first-child {
             border: none;
+        }
+
+        div.divMainMenu, div.divLogin {
+            border-top: 1px solid @accent-bold-color;
         }
     }
 }
@@ -445,7 +453,6 @@ header {
 
 // Login Menu
 header .custom-login-status {
-    border-top: 1px solid @accent-bold-color;
     width: 100%;
     padding: 10px;
     .nav.navbar-nav {
@@ -456,11 +463,20 @@ header .custom-login-status {
     }
 }
 
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    background-color: @gray-dark !important;
+    color: #8bc540;
+}
+
+.nav .npMenu > a:hover, .nav .npMenu > a:focus {
+    background-color: @gray-dark;
+}
+
 // Mobile Nav Menu
 header .mobile-page-menu {
-    border-top: 1px solid @accent-bold-color;
     width: 100%;
     padding: 10px;
+
 
     .nav.navbar-nav {
         float: none;
@@ -482,6 +498,45 @@ header .mobile-page-menu {
     }
 }
 
+// custom login
+.divLogin {
+    background-color: transparent;
+    font-size: 1em;
+
+    a {
+        color: @accent-bold-color !important;
+        border: none !important;
+
+        &:hover, &:focus {
+            color: darken(@accent-bold-color, 10%);
+            text-decoration: none;
+        }
+    }
+
+    .loginstatus .dropdown {
+        a {
+            background-color: transparent !important;
+            border: none;
+        }
+
+        .divider {
+            background-color: #404040;
+        }
+    }
+
+    .loginstatus .dropdown-menu {
+        background-color: #404040 !important;
+        z-index: 99999;
+        margin-top: 15px;
+    }
+    .loginstatus > li li {
+        text-align: right;
+
+        a {
+            padding-right:20px;
+        }
+    }
+}
 
 .main-feature {
     margin-bottom: 10px;
@@ -1377,11 +1432,17 @@ strong {
         margin-bottom: -15px;
         z-index: 999999;
 
+        .loginstatus .dropdown-menu {
+            margin-top: -15px;
+        }
+
         a { 
             font-size: 1em;
         }
+        .loginstatus > li li {
+            text-align: left;
+        }
     }
-
     .right-stacked-lg {
         float: right;
         clear: both;
@@ -1743,38 +1804,6 @@ strong {
     }
 }
 
-// custom login
-.divLogin {
-    background-color: transparent;
-    font-size: 1em;
-
-    a {
-        color: @accent-bold-color !important;
-        border: none !important;
-
-        &:hover, &:focus {
-            color: darken(@accent-bold-color, 10%);
-            text-decoration: none;
-        }
-    }
-
-    .loginstatus .dropdown {
-        a {
-            background-color: transparent !important;
-            border: none;
-        }
-
-        .divider {
-            background-color: #404040;
-        }
-    }
-
-    .loginstatus .dropdown-menu {
-        background-color: #404040 !important;
-        z-index: 99999;
-        margin-top: -15px;
-    }
-}
 
 
 
