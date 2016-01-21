@@ -29,7 +29,7 @@ namespace RockWeb.Plugins.org_newpointe.AttendanceEditor
     /// Template block for a TreeView.
     /// </summary>
     [DisplayName("Attendance Editor")]
-    [Category("Newpointe.org Attendance")]
+    [Category("Newpointe Attendance")]
     [Description("Attendance Editor.")]
 
     public partial class AttendanceEditor : Rock.Web.UI.RockBlock

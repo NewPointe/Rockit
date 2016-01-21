@@ -21,7 +21,7 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
     /// Template block for a TreeView.
     /// </summary>
     [DisplayName("Check-in Group Tree View")]
-    [Category("Newpointe.org -> Check-in")]
+    [Category("Newpointe Check-in")]
     [Description("A tree view of the Check-in Groups")]
     [GroupTypeField("Check-in Type", required: false, key: "GroupTypeTemplate", groupTypePurposeValueGuid: Rock.SystemGuid.DefinedValue.GROUPTYPE_PURPOSE_CHECKIN_TEMPLATE)]
     public partial class CheckinGroupTreeView : Rock.Web.UI.RockBlock

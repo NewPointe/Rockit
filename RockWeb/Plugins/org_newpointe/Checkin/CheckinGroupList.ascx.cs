@@ -37,7 +37,7 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
     /// Template block for developers to use to start a new block.
     /// </summary>
     [DisplayName("Check-in Group List")]
-    [Category("Check-in")]
+    [Category("Newpointe Check-in")]
     [Description("Lists checkin areas and their groups based off a parent checkin configuration group type.")]
     [GroupTypeField("Check-inType", required: false, key: "GroupTypeTemplate", groupTypePurposeValueGuid: Rock.SystemGuid.DefinedValue.GROUPTYPE_PURPOSE_CHECKIN_TEMPLATE)]
     [LinkedPage("Group Detail Page", "Link to the group details page", false)]
