@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,6 +59,7 @@ public class BundleConfig
         bundles.Add( new ScriptBundle( "~/Scripts/Bundles/RockUi" ).Include(
             "~/Scripts/Rock/dialogs.js",
             "~/Scripts/Rock/settings.js",
+            "~/Scripts/Rock/utility.js",
             "~/Scripts/Rock/Controls/*.js" ) );
 
         bundles.Add( new ScriptBundle( "~/Scripts/Bundles/RockValidation" ).Include(

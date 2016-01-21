@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -147,13 +147,20 @@ namespace RockWeb
                         ContentChannelItemService contentService = new ContentChannelItemService( rockContext );
 
                         var content = contentService.Queryable( "ContentChannelType" )
-                                        .Where( c => c.ContentChannelId == channel.Id && c.Status == ContentChannelItemStatus.Approved && c.StartDateTime <= RockDateTime.Now )
+                                        .Where( c => c.ContentChannelId == channel.Id && (c.Status == ContentChannelItemStatus.Approved || c.ContentChannel.RequiresApproval == false) && c.StartDateTime <= RockDateTime.Now )
                                         .OrderByDescending( c => c.StartDateTime )
                                         .Take( rssItemLimit );
 
                         if ( channel.ContentChannelType.DateRangeType == ContentChannelDateType.DateRange )
                         {
-                            content = content.Where( c => c.ExpireDateTime >= RockDateTime.Now );
+                            if ( channel.ContentChannelType.IncludeTime )
+                            {
+                                content = content.Where( c => c.ExpireDateTime >= RockDateTime.Now );
+                            }
+                            else
+                            {
+                                content = content.Where( c => c.ExpireDateTime > RockDateTime.Today );
+                            }
                         }
 
                         foreach ( var item in content )

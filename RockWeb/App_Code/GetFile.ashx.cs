@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -222,7 +222,10 @@ namespace RockWeb
             context.Response.Clear();
             context.Response.Buffer = false;
             context.Response.Headers["Accept-Ranges"] = "bytes";
-            context.Response.AddHeader( "content-disposition", string.Format( "inline;filename={0}", fileName ) );
+
+            bool sendAsAttachment = context.Request.QueryString["attachment"].AsBooleanOrNull() ?? false;
+
+            context.Response.AddHeader( "content-disposition", string.Format( "{1};filename={0}", fileName.MakeValidFileName(), sendAsAttachment ? "attachment" : "inline" ) );
             context.Response.AddHeader( "content-length", responseLength.ToString() );
             context.Response.Cache.SetCacheability( HttpCacheability.Public ); // required for etag output
 
