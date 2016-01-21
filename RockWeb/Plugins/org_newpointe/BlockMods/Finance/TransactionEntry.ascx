@@ -115,7 +115,7 @@
 </style>
 <asp:UpdatePanel ID="upPayment" runat="server">
     <ContentTemplate>
-
+        <Rock:RockLiteral ID="dbgText" runat="server" />
         <asp:HiddenField ID="CollapsePersonData" ClientIDMode="Static" runat="server" Value="false" />
         <asp:HiddenField ID="CollapseCardData" ClientIDMode="Static" runat="server" Value="false"/>
 

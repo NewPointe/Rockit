@@ -46,8 +46,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
     [Category( "Finance" )]
     [Description( "Creates a new financial transaction or scheduled transaction." )]
 
-    [ComponentField( "Rock.Financial.GatewayContainer, Rock", "Credit Card Gateway", "The payment gateway to use for Credit Card transactions", false, "", "", 0, "CCGateway" )]
-    [ComponentField( "Rock.Financial.GatewayContainer, Rock", "ACH Card Gateway", "The payment gateway to use for ACH (bank account) transactions", false, "", "", 1, "ACHGateway" )]
+    [FinancialGatewayField("Credit Card Gateway", "The payment gateway to use for Credit Card transactions", false, "", "", 0, "CCGateway")]
+    [FinancialGatewayField("ACH Card Gateway", "The payment gateway to use for ACH (bank account) transactions", false, "", "", 1, "ACHGateway")]
     [TextField( "Batch Name Prefix", "The batch prefix name to use when creating a new batch", false, "Online Giving", "", 2 )]
     [DefinedValueField( Rock.SystemGuid.DefinedType.FINANCIAL_SOURCE_TYPE, "Source", "The Financial Source Type to use when creating transactions", false, false, 
         Rock.SystemGuid.DefinedValue.FINANCIAL_SOURCE_TYPE_WEBSITE, "", 3 )]
@@ -994,13 +994,13 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     {
                         if ( additionalAccounts )
                         {
-                            AvailableAccounts.Add( accountItem );
+                            //AvailableAccounts.Add( accountItem );
                         }
                     }
                 }
-
-                setupAccountList();
+                AvailableAccounts.Add(accountItem);
             }
+            setupAccountList();
         }
 
         /// <summary>
@@ -1242,11 +1242,11 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 // Get the saved accounts for the currently logged in user
                 var savedAccounts = new FinancialPersonSavedAccountService(new RockContext())
                     .GetByPersonId(TargetPerson.Id);
-
                 if (_ccGateway != null)
                 {
                     var ccGatewayComponent = _ccGateway.GetGatewayComponent();
                     var ccCurrencyType = DefinedValueCache.Read(new Guid(Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD));
+
                     if (ccGatewayComponent != null && ccGatewayComponent.SupportsSavedAccount(ccCurrencyType))
                     {
                         rblSavedCC.DataSource = savedAccounts
@@ -1260,7 +1260,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                                 Id = a.Id,
                                 Name = "Use " + a.Name + " (" + a.FinancialPaymentDetail.AccountNumberMasked + ")"
                             }).ToList();
+
                         rblSavedCC.DataBind();
+                        dbgText.Text = savedAccounts.ToJson();
+                        dbgText.Text += _ccGateway.Id + "|" + ccCurrencyType.Id;
                         if (rblSavedCC.Items.Count > 0)
                         {
                             rblSavedCC.Items.Add(new ListItem("Use a different card", "0"));
@@ -1567,18 +1570,9 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         /// <returns></returns>
         private ACHPaymentInfo GetACHInfo()
         {
-            if (rblSavedAch.SelectedValue == "-1")
-            {
-                var ach = new ACHPaymentInfo(txtCheckAccountNumber.Text, txtCheckRoutingNumber.Text, rblCheckAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking);
-                ach.BankName = txtCheckBankName.Text;
-                return ach;
-            }
-            else
-            {
-                var ach = new ACHPaymentInfo( txtAccountNumber.Text, txtRoutingNumber.Text, rblAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking );
-                ach.BankName = txtBankName.Text;
-                return ach;
-            }
+            var ach = new ACHPaymentInfo( txtAccountNumber.Text, txtRoutingNumber.Text, rblAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking );
+            ach.BankName = txtBankName.Text;
+            return ach;
         }
 
         /// <summary>

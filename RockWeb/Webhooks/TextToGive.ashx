@@ -165,14 +165,13 @@ public class TextToGive : IHttpHandler
                 //Does the person have a saved CC account?
                 var ccCurrencyType = DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD ) );
                 var ccResults =  new FinancialPersonSavedAccountService(new RockContext()).GetByPersonId( (int)thePerson.PrimaryAliasId).Where( a =>
-                            a.CurrencyTypeValueId == ccCurrencyType.Id)
+                            a.FinancialPaymentDetail.CurrencyTypeValueId == ccCurrencyType.Id)
                         .OrderBy( a => a.Name )
                         .Select( a => new
                         {
                             Id = a.Id,
                             Name = a.Name,
-                            CardType = a.CreditCardTypeValue.Value.ToString(),
-                            MaskedAccountNumber = a.MaskedAccountNumber
+                            CardType = a.FinancialPaymentDetail.CreditCardTypeValue.Value.ToString()
                         } ).ToList();
 
                 if ( ccResults.Count == 0 )  {
@@ -186,7 +185,7 @@ public class TextToGive : IHttpHandler
                     {
                         char[] trim = { '*' };
                         responseMessage = ccResults[0].Name + " (" + ccResults[0].CardType + " ending in " +
-                                      ccResults[0].MaskedAccountNumber.TrimStart(trim) + ")";
+                                      1234 + ")";
                     }
                     else
                     {
