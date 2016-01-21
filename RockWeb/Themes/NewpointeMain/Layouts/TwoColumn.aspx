@@ -51,20 +51,17 @@
         </div>
 
         <div class="row ">
-            <div class="col-md-3 col-sm-6  ">
-                <Rock:Zone Name="Section B" runat="server" />
-            </div>
-            <div class="col-md-3 col-sm-6  ">
+            <div class="col-md-4 col-sm-6  ">
                 <Rock:Zone Name="Section C" runat="server" />
             </div>
 
-            <!-- Add the extra clearfix for only the required viewport -->
-            <div class="clearfix visible-sm-block"></div>
+            <!-- Add the extra clearfix for only the required viewport 
+            <div class="clearfix visible-sm-block"></div>-->
 
-            <div class="col-md-3 col-sm-6  ">
+            <div class="col-md-4 col-sm-6  ">
                 <Rock:Zone Name="Section D" runat="server" />
             </div>
-             <div class="col-md-3 col-sm-6  ">
+             <div class="col-md-4 col-sm-6  ">
                 <Rock:Zone Name="Section E" runat="server" />
             </div>
         </div>

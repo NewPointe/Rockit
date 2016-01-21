@@ -76,54 +76,72 @@
         <header>
 
             <!-- Brand Bar -->
-            <nav class="navbar navbar-inverse navbar-static-top">
+            <nav class="navbar navbar-fixed-top affix">
                 <div class="container">
-                    <div class="navbar-header">
-                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".divMainMenu">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                        
-                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".divLogin">
-                            <i class="fa fa-user"></i>
-                        </button>
-                        
-                        <button class="navbar-toggle" type="button" onclick="location.href='/GiveNow';">
-                            <i class="fa fa-usd"></i>
-                        </button>
 
-                        <div class="col-xs-4">
-                            <div class="col-sm-12 hidden-xs npFullLogo" style="position: absolute; width: 500px;">
+                    <!-- Mobile Header and Logos -->
+                    <div class="marginfix-xs clearfix">
+
+                        <!-- Logos -->
+                        <div class="logo-container">
+                            <div class="logo-full hidden-xs" style="position: absolute; width: 500px;">
                                 <a href="/home">
-                                    <asp:Image ImageUrl="~/Content/Central/NewPointeLogo.png" CssClass="hidden-xs" runat="server" /></a>
+                                    <asp:Image ImageUrl="~/Content/Central/NewPointeLogo.png" CssClass="hidden-xs" runat="server" />
+                                </a>
                             </div>
-                            <div class="col-xs-12 hidden-sm hidden-md hidden-lg">
+                            <div class="logo-small hidden-sm hidden-md hidden-lg">
                                 <a href="/home">
-                                    <asp:Image ImageUrl="~/Content/Central/NewPointeLogoSmall.png" runat="server" /></a>
+                                    <asp:Image ImageUrl="~/Content/Central/NewPointeLogoSmall.png" runat="server" />
+                                </a>
                             </div>
                         </div>
+
+                        <!-- Mobile Header Buttons -->
+                        <div>
+                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".divMainMenu">
+                                <i class="fa fa-bars"></i>
+                            </button>
+
+                            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".divLogin">
+                                <i class="fa fa-user"></i>
+                            </button>
+                            
+                            <button class="navbar-toggle" type="button" onclick="location.href='/GiveNow';">
+                                <i class="fa fa-usd"></i>
+                            </button>
+
+                        <asp:PlaceHolder runat="server">
+                            <% if(Rock.Web.Cache.GlobalAttributesCache.Value("LiveService").ToLower() == "true") { %>
+                                <button class="navbar-toggle" type="button" onclick="location.href='http://live.newpointe.org';">
+                                    <i class="fa fa-video-camera"></i>
+                                </button>
+                            <% } %>
+                        </asp:PlaceHolder>
+						
+                        </div>
                     </div>
-                                     
-                    <div class="navbar-collapse collapse divLogin collapsed">
+
+                    <!-- Login Link and Menu -->
+                    <div class="divLogin right-stacked-lg navbar-collapse collapse">
                         <Rock:Zone Name="CustomLogin" runat="server"></Rock:Zone>
                     </div>
 
-                    <div class="navbar-collapse collapse divCampusMenu">
-                        <div>
-                            <Rock:Zone Name="Login" runat="server" />
-                        </div>
+                    <!-- Live Service Times Text -->
+                    <div class="right-stacked-lg hidden-xs hidden-sm hidden-md">
+                        <Rock:Zone Name="Login" runat="server" />
                     </div>
-                    <div class="navbar-collapse collapse divMainMenu">
-                        <!-- Main Navigation -->
+
+                    <!-- Mobile Nav Menu -->
+                    <div class="divMainMenu navbar-collapse collapse">
                         <Rock:Zone Name="Navigation" runat="server" />
                     </div>
 
-                    
                 </div>
             </nav>
 
         </header>
 
-
+        <!-- Floating Menu for large devices -->
         <section class="custom-menu">
             <div class="container">
                 <div class="row">
@@ -220,10 +238,10 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 text-xs-center text-sm-left">
-                        <a href="jobs">EMPLOYMENT</a> | <a href="contact">CONTACT US</a>
+                        <a href="~/jobs">EMPLOYMENT</a> | <a href="~/contact">CONTACT US</a>
                     </div>
                     <div class="col-xs-12 col-sm-6 text-xs-center text-sm-right">
-                        <div class="copyright">&copy; 2015 NewPointe Community Church | All Rights Reserved</div>
+                        <div class="copyright">&copy; 2016 NewPointe Community Church | All Rights Reserved</div> 
                     </div>
                 </div>
             </div>
@@ -251,15 +269,5 @@
 
 </body>
     
-<!--
-  _   _               _____      _       _          _____                                      _ _            _____ _                    _     
- | \ | |             |  __ \    (_)     | |        / ____|                                    (_) |          / ____| |                  | |    
- |  \| | _____      _| |__) |__  _ _ __ | |_ ___  | |     ___  _ __ ___  _ __ ___  _   _ _ __  _| |_ _   _  | |    | |__  _   _ _ __ ___| |__  
- | . ` |/ _ \ \ /\ / /  ___/ _ \| | '_ \| __/ _ \ | |    / _ \| '_ ` _ \| '_ ` _ \| | | | '_ \| | __| | | | | |    | '_ \| | | | '__/ __| '_ \ 
- | |\  |  __/\ V  V /| |  | (_) | | | | | ||  __/ | |___| (_) | | | | | | | | | | | |_| | | | | | |_| |_| | | |____| | | | |_| | | | (__| | | |
- |_| \_|\___| \_/\_/ |_|   \___/|_|_| |_|\__\___|  \_____\___/|_| |_| |_|_| |_| |_|\__,_|_| |_|_|\__|\__, |  \_____|_| |_|\__,_|_|  \___|_| |_|
-                                                                                                      __/ |                                    
-                                                                                                     |___/                              
--->
 </html>
 

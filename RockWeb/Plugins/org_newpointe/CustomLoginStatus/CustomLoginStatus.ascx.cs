@@ -27,8 +27,8 @@ namespace RockWeb.Plugins.org_newpointe.CustomLoginStatus
     /// <summary>
     /// Displays currently logged in user's name along with options to Login, Logout, or manage account.
     /// </summary>
-    [DisplayName( "Custom Login Status" )]
-    [Category( "NewPointe Web Blocks" )]
+    [DisplayName("Custom Login Status")]
+    [Category("NewPointe.org Web Blocks")]
     [Description( "Displays the currently logged in user's name along with options to Login, Logout, or manage account." )]
 
     [LinkedPage( "My Account Page", "Page for user to manage their account (if blank will use 'MyAccount' page route)" )]

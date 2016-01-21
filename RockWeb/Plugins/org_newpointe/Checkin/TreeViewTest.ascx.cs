@@ -21,7 +21,7 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
     /// Template block for a TreeView.
     /// </summary>
     [DisplayName("Tree View Test")]
-    [Category("Check-in")]
+    [Category("Newpointe Check-in")]
     [Description("A test Tree View.")]
     public partial class TreeViewTest : Rock.Web.UI.RockBlock
     {

@@ -351,16 +351,33 @@ namespace RockWeb.Blocks.Finance
                         }
 
                         btnFrequency.SelectedValue = oneTimeFrequency.Id.ToString();
-                        dtpStartDate.SelectedDate = PageParameter("sdate").AsDateTime() ?? RockDateTime.Today;
+
                     }
                 }
+
+
 
                 int? prefill_frequency = PageParameter("freq").AsIntegerOrNull();
                 if (prefill_frequency.HasValue)
                 {
-
                     btnFrequency.SetValue(PageParameter("freq"));
                 }
+
+                DateTime startdate = PageParameter("sdate").AsDateTime() ?? RockDateTime.Today;
+                if (startdate < RockDateTime.Today)
+                {
+                    int fid = btnFrequency.SelectedValueAsInt() ?? -1;
+                    int freq =
+                        fid == 135 ? 30 :
+                        fid == 134 ? 15 :
+                        fid == 133 ? 15 :
+                        fid == 132 ? 7 :
+                        1;
+                    int adit = (int)Math.Ceiling(Math.Abs((startdate - RockDateTime.Today).Days / (double)freq));
+                    startdate = startdate.AddDays(freq * adit);
+                }
+                dtpStartDate.SelectedDate = startdate;
+
 
                 // Display Options
                 btnAddAccount.Title = GetAttributeValue( "AddAccountText" );
@@ -1208,42 +1225,37 @@ namespace RockWeb.Blocks.Finance
                             } ).ToList();
                         rblSavedAch.DataBind();
 
-                        divRecentCheck.Style[HtmlTextWriterStyle.Display] = "none";
 
-                        var aliasIds = /*new int[] { 31301 };*/ TargetPerson.Aliases.Select(y => y.Id).ToList();
-                        var prevChecks = new FinancialTransactionService(new RockContext()).Queryable().Where(x => aliasIds.Contains(x.AuthorizedPersonAliasId ?? -1)).Where(x => x.CheckMicrEncrypted != null).SortBy("CreatedDateTime Desc").Take(3).ToList().Select(x => (Rock.Security.Encryption.DecryptString(x.CheckMicrEncrypted) ?? "").Split('_')).Select(x => x.ElementAtOrDefault(0) + "_" + x.ElementAtOrDefault(1));
-                        if (prevChecks.Distinct().Count() == 1 && prevChecks.FirstOrDefault() != "_")
+                    }
+
+                    divRecentCheck.Style[HtmlTextWriterStyle.Display] = "none";
+
+                    var aliasIds = /*new int[] { 31301 };*/ TargetPerson.Aliases.Select(y => y.Id).ToList();
+                    var prevChecks = new FinancialTransactionService(new RockContext()).Queryable().Where(x => aliasIds.Contains(x.AuthorizedPersonAliasId ?? -1)).Where(x => x.CheckMicrEncrypted != null).SortBy("CreatedDateTime Desc").Take(3).ToList().Select(x => (Rock.Security.Encryption.DecryptString(x.CheckMicrEncrypted) ?? "").Split('_')).Select(x => x.ElementAtOrDefault(0) + "_" + x.ElementAtOrDefault(1));
+                    if (prevChecks.Distinct().Count() == 1 && prevChecks.FirstOrDefault() != "_")
+                    {
+                        rblSavedAch.Items.Add(new ListItem("Use recent check", "-1"));
+                        var achDat = prevChecks.FirstOrDefault().Split('_');
+                        if (achDat.Count() == 2)
                         {
-                            rblSavedAch.Items.Add(new ListItem("Use recent check", "-1"));
-                            var achDat = prevChecks.FirstOrDefault().Split('_');
-                            if (achDat.Count() == 2)
+                            if (!IsPostBack)
                             {
-                                if (!IsPostBack)
-                                {
-                                    txtCheckRoutingNumber.Text = achDat[0];
-                                    txtCheckAccountNumber.Text = achDat[1];
-                                }
+                                txtCheckRoutingNumber.Text = achDat[0];
+                                txtCheckAccountNumber.Text = achDat[1];
                             }
-                            if (PageParameter("flc") == "1" && !IsPostBack)
-                            {
-                                hfPaymentTab.Value = "ACH";
-                                rblSavedAch.SelectedValue = "-1";
-                            }
-
                         }
-                        
-                        if ( rblSavedCC.Items.Count > 0 )
+                        if (PageParameter("flc") == "1" && !IsPostBack)
                         {
-                            rblSavedCC.Items.Add( new ListItem( "Use a different card", "0" ) );
-                            CollapseCardData.Value = "true";
+                            hfPaymentTab.Value = "ACH";
+                            rblSavedAch.SelectedValue = "-1";
                         }
 
-                        if ( rblSavedAch.Items.Count > 0 )
-                        {
-                            rblSavedAch.Items.Add( new ListItem( "Use a different bank account", "0" ) );
-                            CollapseCardData.Value = "true";
-                        }
+                    }
 
+                    if (rblSavedAch.Items.Count > 0)
+                    {
+                        rblSavedAch.Items.Add(new ListItem("Use a different bank account", "0"));
+                        CollapseCardData.Value = "true";
                     }
                 }
 

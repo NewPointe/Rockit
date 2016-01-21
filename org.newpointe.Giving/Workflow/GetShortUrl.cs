@@ -100,7 +100,7 @@ namespace org.newpointe.Giving.Workflow
             string randomShortUrl = Guid.NewGuid().ToString("N").Substring(0, 8).ToLower();
 
             //Construct the URL for the request
-            string theUrl = String.Format("http://npgive.org/yourls-api.php?signature=05e2685fc7&action=shorturl&url={0}&keyword={1}2&format=simple", Uri.EscapeDataString(url), randomShortUrl);
+            string theUrl = String.Format("https://npgive.org/yourls-api.php?signature=05e2685fc7&action=shorturl&url={0}&keyword={1}&format=simple", Uri.EscapeDataString(url), randomShortUrl);
 
             //GET request to API
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(theUrl);
