@@ -12,12 +12,12 @@
 
         <div class='row'>    
             <div class='col-md-6 text-right'>
-                <span style='font-size:50px'> <%= AttendanceLastWeekAll %></span><br /><small style="padding-top: -20px;"></small>
+                <span style='font-size:50px'> <%= AttendanceLastWeekAll %></span><br /><small style="display:block; margin-top: -15px;">Attendance This Week</small>
             </div>
             <div class='col-md-6 text-center' style="font-size: 88%; padding-top: 13px">
                 <br />
                 <strong><%= AttendanceLastWeekLastYearAll %></strong> <br/>
-                This week last year
+                This Week Last Year <br/><br/>
             </div>
         </div>
     </div>
@@ -32,12 +32,12 @@
 
         <div class='row'>    
             <div class='col-md-6 text-right'>
-                <span style='font-size:50px'> <%= AttendanceLastWeekCampus %></span><br /><small style="padding-top: -20px;"></small>
+                <span style='font-size:50px'> <%= AttendanceLastWeekCampus %></span><br /><small style="display:block; margin-top: -15px;">Attendance This Week</small>
             </div>
             <div class='col-md-6 text-center' style="font-size: 88%; padding-top: 13px">
                 <br/>
                 <strong><%= AttendanceLastWeekLastYearCampus %></strong> <br/>
-                This week last year
+                This Week Last Year <br/><br/>
             </div>
         </div>
     </div>
@@ -54,10 +54,11 @@
 
         <div class='row'>    
             <div class='col-md-6 text-right'>
-                <span style='font-size:50px'><%= GivingLastWeek %></span><br /><small style="padding-top: -20px;"></small>
+                <span style='font-size:50px'><%= GivingLastWeek %></span><br /><small style="display:block; margin-top: -15px;">Giving This Week</small>
             </div>
             <div class='col-md-6 text-center' style="font-size: 88%; padding-top: 13px">
-                <br/>
+                <strong><%= GivingTwoWeeksAgo %></strong> <br/>
+                Giving Last Week<br/>
                 <strong><%= GivingYtd %></strong> <br/>
                 Giving Year-to-Date<br />
             </div>
@@ -74,10 +75,11 @@
 
         <div class='row'>    
             <div class='col-md-6 text-right'>
-                <span style='font-size:50px'><%= GivingLastWeekCampus %></span><br /><small style="padding-top: -20px;"></small>
+                <span style='font-size:50px'><%= GivingLastWeekCampus %></span><br /><small style="display:block; margin-top: -15px;">Giving This Week</small>
             </div>
             <div class='col-md-6 text-center' style="font-size: 88%; padding-top: 13px">
-                <br/>
+                <strong><%= GivingTwoWeeksAgoCampus %></strong> <br/>
+                Giving Last Week<br/>
                 <strong><%= GivingYtdCampus %></strong> <br/>
                 Giving Year-to-Date<br />
             </div>
