@@ -2,10 +2,10 @@
 
 <script type="text/javascript">
 
-    var isSmall = true;
+    var PersonData, SavedCardPresent, isSmall = true;
 
     $(window).resize(function (e) {
-        oldIsSmall = isSmall;
+        var oldIsSmall = isSmall;
         isSmall = $(this).width() < 768;
         if (isSmall != oldIsSmall) updateRollup();
     });
@@ -17,25 +17,19 @@
     $(document).on('click', '#rblSavedAch', updateAchDiv);
 
     function updateAchDiv() {
-        if ($('#rblSavedAch input:checked').val() == -1) {
-            $('#divRecentCheck').show();
-            $('#divNewBank').hide();
-        } else if ($('#rblSavedAch input:checked').val() == 0) {
-            $('#divNewBank').show();
-            $('#divRecentCheck').hide();
-        } else {
-            $('#divNewBank').show();
-            $('#divRecentCheck').hide();
-        }
+        $('#divRecentCheck').toggle($('#rblSavedAch input:checked').val() == -1)
+        $('#divNewBank').toggle(!($('#rblSavedAch input:checked').val() == -1));
     }
 
     function onASPReload() {
         isSmall = $(this).width() < 768;
+        PersonData = $('#CollapsePersonData').val() === "true";
+        SavedCardPresent = $('#CollapseCardData').val() === "true";
 
         // Set initial rollup state
         $('#collapse0 .panel-collapse').addClass(isSmall ? "" : "in");
-        $('#collapse1 .panel-collapse').addClass(isSmall && $('#CollapsePersonData').val() === "true" ? "" : "in");
-        $('#collapse2 .panel-collapse').addClass(isSmall && $('#CollapseCardData').val() === "true" ? "" : "in");
+        $('#collapse1 .panel-collapse').addClass(isSmall && PersonData ? "" : "in");
+        $('#collapse2 .panel-collapse').addClass(isSmall && SavedCardPresent ? "" : "in");
 
         // Update rollup state
         updateRollup();
@@ -46,22 +40,17 @@
         })
 
         // Enable number mode for input
-        $('.currency-box .account-amount input').each(function () {
-            this.type = "number";
-        });
+        $('.currency-box .account-amount input').prop("type", "number").prop("step", "any").prop("min", "0");
 
         updateAchDiv();
     }
 
     function updateRollup() {
-        var PersonData = $('#CollapsePersonData').val() === "true";
-        var SavedCardPresent = $('#CollapseCardData').val() === "true";
-
         toggleAccordion('collapse0', isSmall);
         toggleAccordion('collapse1', isSmall && PersonData);
         toggleAccordion('collapse2', isSmall && SavedCardPresent);
 
-        $('#divActions2').toggleClass("hidden", !(isSmall && PersonData && SavedCardPresent));
+        $('#divActions2').toggle(isSmall && PersonData && SavedCardPresent);
 
         updateRollupLabels();
     }
@@ -72,18 +61,14 @@
     }
 
     function updateRollupLabels() {
-        $('#FrequencyText').html((tmp = $('#hfSelectedItemText_btnFrequency').val()) != "" ? tmp : getButtonDropDownListVal('btnFrequency'));
+        $('#FrequencyText').html(getButtonDropDownListVal('btnFrequency'));
         if ((el = $($("#collapse2 .nav-pills .active a")[0].hash + " .radio-list input[type=radio]:checked")[0]) != undefined) {
             $('#SavedCardName').html(el.parentElement.textContent);
         }
     }
 
     function getButtonDropDownListVal(id) {
-        val = $('#hfSelectedItemId_' + id).val()
-        names = $('#ButtonDropDown_' + id + ' .dropdown-menu a').map( function(){
-            return [$(this).data('id') + "", $(this).html()];
-        }).get();
-        return names[names.indexOf(val) + 1];
+        return $('#ButtonDropDown_' + 'btnFrequency' + ' .dropdown-menu a[data-id="' + $('#hfSelectedItemId_' + id).val() + '"]').text();
     }
 
 </script>
@@ -111,14 +96,25 @@
     #thefunds fieldset hr {
         display: none;
     }
-
+    .js-selectionicon.fa.fa-fw {
+            width: 0em;
+    }
+    .js-selectionicon.fa.fa-fw.fa-check {
+            width: 1.28571429em;
+    }
+    .total-amount.has-error {
+        font-weight: 800;
+        color: #b94a48;
+    }
+    #collapse2 .radio-list {
+        margin-bottom: 20px;
+        margin-top: -10px;
+    }
 </style>
 <asp:UpdatePanel ID="upPayment" runat="server">
     <ContentTemplate>
         <asp:HiddenField ID="CollapsePersonData" ClientIDMode="Static" runat="server" Value="false" />
         <asp:HiddenField ID="CollapseCardData" ClientIDMode="Static" runat="server" Value="false"/>
-
-        <Rock:RockLiteral ID="dbgTst" runat="server" />
 
         <asp:Panel ID="pnlPaymentInfo" CssClass="panel panel-block" runat="server">
 
@@ -135,7 +131,7 @@
 
                         <div class="panel panel-default contribution-info">
                             <div class="panel-heading"><h3 class="panel-title"><asp:Literal ID="lContributionInfoTitle" runat="server" /></h3></div>
-                            <div class="panel-body" id="thefunds">
+                            <div id="thefunds" class="panel-body">
                                 <fieldset>
 
                                     <div id="fundadd">
@@ -147,14 +143,13 @@
 
                                     <asp:Repeater ID="rptAccountList" runat="server">
                                         <ItemTemplate>
-                                            <Rock:CurrencyBox ID="txtAccountAmount" runat="server" Label='<%# Eval("PublicName") %>' Text='<%# ((decimal)Eval("Amount") != 0) ? ((decimal)Eval("Amount")).ToString("N2") : "" %>' Placeholder="0.00" CssClass="account-amount" />
+                                            <Rock:CurrencyBox ID="txtAccountAmount" runat="server" Label='<%# Eval("PublicName") %>' Text='<%# ((decimal)Eval("Amount") != 0) ? ((decimal)Eval("Amount")).ToString("N2") : "" %>'  CssClass="account-amount" />
                                             <%# ((decimal)Eval("Amount") != 0) ? "<hr />" : "" %>
                                         </ItemTemplate>
                                     </asp:Repeater>
 
-
-                                    <div class="form-group contribution-total">
-                                        <label>Total:</label>
+                                    <div class="form-group">
+                                        <label>Total</label>
                                         <asp:Label ID="lblTotalAmount" runat="server" CssClass="form-control-static total-amount" />
                                     </div>
 
@@ -162,8 +157,7 @@
                             </div>
                         </div>
 
-                        <div id="divActions2" class="actions clearfix margin-b-lg hidden">
-                            <asp:LinkButton ID="LinkButton1" runat="server" Text="Previous" CssClass="btn btn-link" OnClick="btnPrev_Click" Visible="false" />
+                        <div id="divActions2" class="actions clearfix margin-b-lg" style="display: none;">
                             <asp:LinkButton ID="LinkButton2" runat="server" Text="Next" CssClass="btn btn-primary pull-right" OnClick="btnNext_Click"/>
                         </div>
                         
@@ -173,7 +167,7 @@
                                     <div class="panel-heading">
                                         <h3 class="panel-title">
                                             Frequency <small>Touch to Change<br /></small>
-                                            <span id="FrequencyText" style="text-decoration: none; color: #000; font-size: 14px; font-weight: normal;"></span>
+                                            <span id="FrequencyText" style="color: #000; font-size: 14px;"></span>
                                         </h3>
                                     </div>
                                 </a>
@@ -202,7 +196,7 @@
                     </div>
                     <div class="col-md-6">
                     <% } %>
-                        
+
                         <div id="collapse1" class="panel-group">
                             <div class="panel panel-default contribution-personal">
                                 <a data-toggle="collapse" href="#collapse1 .panel-collapse" style="text-decoration: none">
@@ -234,15 +228,16 @@
                 <div class="row">
                     <div class="col-md-12">
                 <% } %>
-                        
+
                         <div id="collapse2" class="panel-group">
                             <div class="panel panel-default contribution-payment">
+
                                 <asp:HiddenField ID="hfPaymentTab" runat="server" />
                                 <a data-toggle="collapse" href="#collapse2 .panel-collapse" style="text-decoration: none">
                                     <div class="panel-heading">
                                         <h3 class="panel-title">
                                             <asp:Literal ID="lPaymentInfoTitle" runat="server" /> <small>Touch to Change<br /></small>
-                                            <span id="SavedCardName" style="text-decoration: none; color: #000; font-size:14px; font-weight: normal;"></span>
+                                            <span id="SavedCardName" style="color: #000; font-size:14px;"></span>
                                         </h3>
                                     </div>
                                 </a>
@@ -257,7 +252,7 @@
                                         <div class="tab-content">
                                             <div id="divCCPaymentInfo" runat="server" visible="false">
                                                 <fieldset>
-                                                    <Rock:RockRadioButtonList ID="rblSavedCC" runat="server" Label=" " CssClass="radio-list" RepeatDirection="Vertical" DataValueField="Id" DataTextField="Name" ClientIDMode="Static" />
+                                                    <Rock:RockRadioButtonList ID="rblSavedCC" runat="server" CssClass="radio-list" RepeatDirection="Vertical" DataValueField="Id" DataTextField="Name" ClientIDMode="Static" />
                                                     <div id="divNewCard" runat="server" class="radio-content">
                                                         <div class="row">
                                                             <div class="col-md-4">
@@ -286,75 +281,74 @@
                                                         <Rock:RockCheckBox ID="cbBillingAddress" runat="server" Text="Enter a different billing address" CssClass="toggle-input" />
                                                         <div id="divBillingAddress" runat="server" class="toggle-content">
                                                             <Rock:AddressControl ID="acBillingAddress" runat="server" UseStateAbbreviation="true" UseCountryAbbreviation="false" />
-                                                        </div>                                    
+                                                        </div>
                                                     </div>
                                                 </fieldset>
                                             </div>
 
                                             <div id="divACHPaymentInfo" runat="server" visible="false">
                                                 <fieldset>
-                                                    <Rock:RockRadioButtonList ID="rblSavedAch" runat="server" Label=" " CssClass="radio-list" RepeatDirection="Vertical" DataValueField="Id" DataTextField="Name" ClientIDMode="Static"/>
+                                                    <Rock:RockRadioButtonList ID="rblSavedAch" runat="server" CssClass="radio-list" RepeatDirection="Vertical" DataValueField="Id" DataTextField="Name" ClientIDMode="Static"/>
                                                     <div class="radio-content">
-                                                    <div id="divNewBank" runat="server" ClientIDMode="Static">     
-                                                        <div class="row">
-                                                            <Rock:RockTextBox ID="txtBankName" runat="server" Label="Bank Name" Text="Bank" Visible="false"/>
-                                                            <div class="col-md-6">
-                                                                <Rock:RockTextBox ID="txtRoutingNumber" runat="server" Label="Routing Number" />
+                                                        <div id="divNewBank" runat="server" ClientIDMode="Static">     
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <Rock:RockTextBox ID="txtRoutingNumber" runat="server" Label="Routing Number" />
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <Rock:RockTextBox ID="txtAccountNumber" runat="server" Label="Account Number" />
+                                                                </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <Rock:RockTextBox ID="txtAccountNumber" runat="server" Label="Account Number" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-6 col-md-8"> 
-                                                                <Rock:RockRadioButtonList ID="rblAccountType" runat="server" RepeatDirection="Horizontal" Label="Account Type">
-                                                                    <asp:ListItem Text="Checking" Selected="true" />
-                                                                    <asp:ListItem Text="Savings" />
-                                                                </Rock:RockRadioButtonList>
-                                                            </div>
-                                                            <div class="col-sm-6 col-md-4">
-                                                                <asp:Image ID="imgCheck" runat="server" ImageUrl="<%$ Fingerprint:~/Assets/Images/check-image.png %>" />  
-                                                            </div>
-                                                        </div>                                  
-                                                    </div>
-                                                    <div id="divRecentCheck" runat="server" ClientIDMode="Static">
-                                                        <div class="row">                            
-                                                            <Rock:RockTextBox ID="txtCheckBankName" runat="server" Label="Bank Name" Text="Bank" Visible="false"/>
-                                                            <div class="col-md-6">
-                                                                <Rock:RockTextBox ID="txtCheckRoutingNumber" runat="server" Label="Routing Number" />
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <Rock:RockTextBox ID="txtCheckAccountNumber" runat="server" Label="Account Number" />
+                                                            <div class="row">
+                                                                <div class="col-sm-6 col-md-8"> 
+                                                                    <Rock:RockRadioButtonList ID="rblAccountType" runat="server" RepeatDirection="Horizontal" Label="Account Type">
+                                                                        <asp:ListItem Text="Checking" Selected="true" />
+                                                                        <asp:ListItem Text="Savings" />
+                                                                    </Rock:RockRadioButtonList>
+                                                                </div>
+                                                                <div class="col-sm-6 col-md-4">
+                                                                    <asp:Image ID="imgCheck" runat="server" ImageUrl="<%$ Fingerprint:~/Assets/Images/check-image.png %>" />  
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-6 col-md-8"> 
-                                                                <Rock:RockRadioButtonList ID="rblCheckAccountType" runat="server" RepeatDirection="Horizontal" Label="Account Type">
-                                                                    <asp:ListItem Text="Checking" Selected="true" />
-                                                                    <asp:ListItem Text="Savings" />
-                                                                </Rock:RockRadioButtonList>
+                                                        <div id="divRecentCheck" runat="server" ClientIDMode="Static">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <Rock:RockTextBox ID="txtCheckRoutingNumber" runat="server" Label="Routing Number" />
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <Rock:RockTextBox ID="txtCheckAccountNumber" runat="server" Label="Account Number" />
+                                                                </div>
                                                             </div>
-                                                            <div class="col-sm-6 col-md-4">
-                                                                <asp:Image ID="imgCheck2" runat="server" ImageUrl="<%$ Fingerprint:~/Assets/Images/check-image.png %>" />  
+                                                            <div class="row">
+                                                                <div class="col-sm-6 col-md-8"> 
+                                                                    <Rock:RockRadioButtonList ID="rblCheckAccountType" runat="server" RepeatDirection="Horizontal" Label="Account Type">
+                                                                        <asp:ListItem Text="Checking" Selected="true" />
+                                                                        <asp:ListItem Text="Savings" />
+                                                                    </Rock:RockRadioButtonList>
+                                                                </div>
+                                                                <div class="col-sm-6 col-md-4">
+                                                                    <asp:Image ID="imgCheck2" runat="server" ImageUrl="<%$ Fingerprint:~/Assets/Images/check-image.png %>" />  
+                                                                </div>
                                                             </div>
-                                                        </div>                                  
-                                                    </div>
+                                                        </div>
                                                     </div>
                                                 </fieldset>
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                         </div>
 
                 <% if ( FluidLayout )
                 { %>
                     </div>
-                </div>            
+                </div>
                 <% } %>
 
             </div>
+
         </asp:Panel>
 
         <asp:Panel ID="pnlConfirmation" CssClass="panel panel-block" runat="server" Visible="false">
@@ -378,7 +372,7 @@
                             <Rock:TermDescription runat="server" />
                             <asp:Repeater ID="rptAccountListConfirmation" runat="server">
                                 <ItemTemplate>
-                                    <Rock:TermDescription ID="tdAmount" runat="server" Term='<%# Eval("Name") %>' Description='<%# Eval("AmountFormatted") %>' />
+                                    <Rock:TermDescription ID="tdAmount" runat="server" Term='<%# Eval("PublicName") %>' Description='<%# Eval("AmountFormatted") %>' />
                                 </ItemTemplate>
                             </asp:Repeater>
                             <Rock:TermDescription ID="tdTotalConfirm" runat="server" Term="Total" />
@@ -418,7 +412,7 @@
                     <Rock:TermDescription runat="server" />
                     <asp:Repeater ID="rptAccountListReceipt" runat="server">
 	                    <ItemTemplate>
-		                    <Rock:TermDescription ID="tdAccountAmountReceipt" runat="server" Term='<%# Eval("Name") %>' Description='<%# Eval("AmountFormatted") %>' />
+		                    <Rock:TermDescription ID="tdAccountAmountReceipt" runat="server" Term='<%# Eval("PublicName") %>' Description='<%# Eval("AmountFormatted") %>' />
 	                    </ItemTemplate>
                     </asp:Repeater>
                     <Rock:TermDescription ID="tdTotalReceipt" runat="server" Term="Total" />
@@ -466,7 +460,7 @@
                                 <asp:LinkButton ID="lbSaveAccount" runat="server" Text="Save Account" CssClass="btn btn-primary" OnClick="lbSaveAccount_Click" />
                             </div>
                         </div>
-                    </fieldset>                    
+                    </fieldset>
                 </div>
             </asp:Panel>
 
