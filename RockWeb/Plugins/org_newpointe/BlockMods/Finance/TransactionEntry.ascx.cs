@@ -20,17 +20,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Rock;
 using Rock.Attribute;
 using Rock.Data;
 using Rock.Financial;
+using Rock.Security;
 using Rock.Model;
 using Rock.Web.Cache;
-using Rock.Web.UI;
-using Rock.Web.UI.Controls;
-using Rock.Security;
 using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 using Rock.Communication;
@@ -43,13 +40,12 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
     /// Add a new one-time or scheduled transaction
     /// </summary>
     [DisplayName( "Customised Transaction Entry" )]
-    [Category( "Finance" )]
+    [Category( "Newpointe.org Finance" )]
     [Description( "Creates a new financial transaction or scheduled transaction." )]
-
-    [FinancialGatewayField("Credit Card Gateway", "The payment gateway to use for Credit Card transactions", false, "", "", 0, "CCGateway")]
-    [FinancialGatewayField("ACH Card Gateway", "The payment gateway to use for ACH (bank account) transactions", false, "", "", 1, "ACHGateway")]
+    [FinancialGatewayField( "Credit Card Gateway", "The payment gateway to use for Credit Card transactions", false, "", "", 0, "CCGateway" )]
+    [FinancialGatewayField( "ACH Card Gateway", "The payment gateway to use for ACH (bank account) transactions", false, "", "", 1, "ACHGateway" )]
     [TextField( "Batch Name Prefix", "The batch prefix name to use when creating a new batch", false, "Online Giving", "", 2 )]
-    [DefinedValueField( Rock.SystemGuid.DefinedType.FINANCIAL_SOURCE_TYPE, "Source", "The Financial Source Type to use when creating transactions", false, false, 
+    [DefinedValueField( Rock.SystemGuid.DefinedType.FINANCIAL_SOURCE_TYPE, "Source", "The Financial Source Type to use when creating transactions", false, false,
         Rock.SystemGuid.DefinedValue.FINANCIAL_SOURCE_TYPE_WEBSITE, "", 3 )]
     [BooleanField( "Impersonation", "Allow (only use on an internal page used by staff)", "Don't Allow",
         "Should the current user be able to view and edit other people's transactions?  IMPORTANT: This should only be enabled on an internal page that is secured to trusted users", false, "", 4 )]
@@ -68,48 +64,46 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
     // Text Options
 
     [TextField( "Panel Title", "The text to display in panel heading", false, "Gifts", "Text Options", 13 )]
-
     [TextField( "Contribution Info Title", "The text to display as heading of section for selecting account and amount.", false, "Contribution Information", "Text Options", 14 )]
     [TextField( "Add Account Text", "The button text to display for adding an additional account", false, "Add Another Account", "Text Options", 15 )]
-
     [TextField( "Personal Info Title", "The text to display as heading of section for entering personal information.", false, "Personal Information", "Text Options", 16 )]
-
     [TextField( "Payment Info Title", "The text to display as heading of section for entering credit card or bank account information.", false, "Payment Information", "Text Options", 17 )]
-
     [TextField( "Confirmation Title", "The text to display as heading of section for confirming information entered.", false, "Confirm Information", "Text Options", 18 )]
-    [CodeEditorField( "Confirmation Header", "The text (HTML) to display at the top of the confirmation section.  <span class='tip tip-lava'></span> <span class='tip tip-html'></span>", 
+    [CodeEditorField( "Confirmation Header", "The text (HTML) to display at the top of the confirmation section.  <span class='tip tip-lava'></span> <span class='tip tip-html'></span>",
         CodeEditorMode.Html, CodeEditorTheme.Rock, 200, true, @"
 <p>
-    Please confirm the information below. Once you have confirmed that the information is 
+    Please confirm the information below. Once you have confirmed that the information is
     accurate click the 'Finish' button to complete your transaction.
 </p>
 ", "Text Options", 19 )]
-    [CodeEditorField( "Confirmation Footer", "The text (HTML) to display at the bottom of the confirmation section. <span class='tip tip-lava'></span> <span class='tip tip-html'></span>", 
+    [CodeEditorField( "Confirmation Footer", "The text (HTML) to display at the bottom of the confirmation section. <span class='tip tip-lava'></span> <span class='tip tip-html'></span>",
         CodeEditorMode.Html, CodeEditorTheme.Rock, 200, true, @"
 <div class='alert alert-info'>
-    By clicking the 'finish' button below I agree to allow {{ OrganizationName }} 
+    By clicking the 'finish' button below I agree to allow {{ OrganizationName }}
     to transfer the amount above from my account. I acknowledge that I may
-    update the transaction information at any time by returning to this website. Please 
+    update the transaction information at any time by returning to this website. Please
     call the Finance Office if you have any additional questions.
 </div>
 ", "Text Options", 20 )]
-
     [TextField( "Success Title", "The text to display as heading of section for displaying details of gift.", false, "Gift Information", "Text Options", 21 )]
-    [CodeEditorField( "Success Header", "The text (HTML) to display at the top of the success section. <span class='tip tip-lava'></Fspan> <span class='tip tip-html'></span>", 
+    [CodeEditorField( "Success Header", "The text (HTML) to display at the top of the success section. <span class='tip tip-lava'></Fspan> <span class='tip tip-html'></span>",
         CodeEditorMode.Html, CodeEditorTheme.Rock, 200, true, @"
 <p>
     Thank you for your generous contribution.  Your support is helping {{ OrganizationName }} actively
     achieve our mission.  We are so grateful for your commitment.
 </p>
 ", "Text Options", 22 )]
-    [CodeEditorField( "Success Footer", "The text (HTML) to display at the bottom of the success section. <span class='tip tip-lava'></span> <span class='tip tip-html'></span>", 
+    [CodeEditorField( "Success Footer", "The text (HTML) to display at the bottom of the success section. <span class='tip tip-lava'></span> <span class='tip tip-html'></span>",
         CodeEditorMode.Html, CodeEditorTheme.Rock, 200, true, @"
 ", "Text Options", 23 )]
-
     [TextField( "Save Account Title", "The text to display as heading of section for saving payment information.", false, "Make Giving Even Easier", "Text Options", 24 )]
-
     [DefinedValueField( "2E6540EA-63F0-40FE-BE50-F2A84735E600", "Connection Status", "The connection status to use for new individuals (default: 'Web Prospect'.)", true, false, "368DD475-242C-49C4-A42C-7278BE690CC2", "", 25 )]
     [DefinedValueField( "8522BADD-2871-45A5-81DD-C76DA07E2E7E", "Record Status", "The record status to use for new individuals (default: 'Pending'.)", true, false, "283999EC-7346-42E3-B807-BCE9B2BABB49", "", 26 )]
+
+    [SystemEmailField( "Receipt Email", "The system email to use to send the receipt.", false, "", "Email Templates", 27 )]
+    [TextField( "Payment Comment", "The comment to include with the payment transaction when sending to Gateway", false, "Online Contribution", "", 28 )]
+    [BooleanField( "Enable Comment Entry", "Allows the guest to enter the the value that's put into the comment field (will be appended to the 'Payment Comment' setting)", false, "", 29 )]
+    [TextField("Comment Entry Label", "The label to use on the comment edit field (e.g. Trip Name to give to a specific trip).", false, "Comment", "", 30)]
     #endregion
 
     public partial class TransactionEntry : Rock.Web.UI.RockBlock
@@ -120,8 +114,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         private bool _showCommmentEntry = false;
         private FinancialGateway _ccGateway;
         private FinancialGateway _achGateway;
-
-        public string PersonalInfoClass;
 
         #endregion
 
@@ -146,7 +138,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         /// <value>
         /// The group location identifier.
         /// </value>
-        protected int? GroupLocationId 
+        protected int? GroupLocationId
         {
             get { return ViewState["GroupLocationId"] as int?; }
             set { ViewState["GroupLocationId"] = value; }
@@ -267,8 +259,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 TargetPerson = CurrentPerson;
             }
 
-            //dbgTst.Text = TargetPerson != null ? TargetPerson.UrlEncodedKey : "";
-
             // Enable payment options based on the configured gateways
             bool ccEnabled = false;
             bool achEnabled = false;
@@ -276,37 +266,37 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             GatewayComponent achGatewayComponent = null;
             var supportedFrequencies = new List<DefinedValueCache>();
 
-            _showCommmentEntry = GetAttributeValue("EnableCommentEntry").AsBoolean();
-            txtCommentEntry.Label = GetAttributeValue("CommentEntryLabel");
+            _showCommmentEntry = GetAttributeValue( "EnableCommentEntry" ).AsBoolean();
+            txtCommentEntry.Label = GetAttributeValue( "CommentEntryLabel" );
             txtCommentEntry.Visible = _showCommmentEntry;
-            
-            using (var rockContext = new RockContext())
+
+            using ( var rockContext = new RockContext() )
             {
                 // If impersonation is allowed, and a valid person key was used, set the target to that person
-                if (GetAttributeValue("Impersonation").AsBooleanOrNull() ?? false)
+                if ( GetAttributeValue( "Impersonation" ).AsBooleanOrNull() ?? false )
                 {
-                    string personKey = PageParameter("Person");
-                    if (!string.IsNullOrWhiteSpace(personKey))
+                    string personKey = PageParameter( "Person" );
+                    if ( !string.IsNullOrWhiteSpace( personKey ) )
                     {
-                        TargetPerson = new PersonService(rockContext).GetByUrlEncodedKey(personKey);
+                        TargetPerson = new PersonService( rockContext ).GetByUrlEncodedKey( personKey );
                     }
                 }
 
-                if (TargetPerson == null)
+                if ( TargetPerson == null )
                 {
                     TargetPerson = CurrentPerson;
                 }
 
-                var financialGatewayService = new FinancialGatewayService(rockContext);
-                Guid? ccGatewayGuid = GetAttributeValue("CCGateway").AsGuidOrNull();
-                if (ccGatewayGuid.HasValue)
+                var financialGatewayService = new FinancialGatewayService( rockContext );
+                Guid? ccGatewayGuid = GetAttributeValue( "CCGateway" ).AsGuidOrNull();
+                if ( ccGatewayGuid.HasValue )
                 {
-                    _ccGateway = financialGatewayService.Get(ccGatewayGuid.Value);
-                    if (_ccGateway != null)
+                    _ccGateway = financialGatewayService.Get( ccGatewayGuid.Value );
+                    if ( _ccGateway != null )
                     {
-                        _ccGateway.LoadAttributes(rockContext);
+                        _ccGateway.LoadAttributes( rockContext );
                         ccGatewayComponent = _ccGateway.GetGatewayComponent();
-                        if (ccGatewayComponent != null)
+                        if ( ccGatewayComponent != null )
                         {
                             ccEnabled = true;
                             txtCardFirstName.Visible = ccGatewayComponent.SplitNameOnCard;
@@ -317,13 +307,13 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     }
                 }
 
-                Guid? achGatewayGuid = GetAttributeValue("ACHGateway").AsGuidOrNull();
-                if (achGatewayGuid.HasValue)
+                Guid? achGatewayGuid = GetAttributeValue( "ACHGateway" ).AsGuidOrNull();
+                if ( achGatewayGuid.HasValue )
                 {
-                    _achGateway = financialGatewayService.Get(achGatewayGuid.Value);
-                    if (_achGateway != null)
+                    _achGateway = financialGatewayService.Get( achGatewayGuid.Value );
+                    if ( _achGateway != null )
                     {
-                        _achGateway.LoadAttributes(rockContext);
+                        _achGateway.LoadAttributes( rockContext );
                         achGatewayComponent = _achGateway.GetGatewayComponent();
                         achEnabled = achGatewayComponent != null;
                     }
@@ -355,7 +345,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     phPills.Visible = true;
 
                     // If CC and ACH gateways are different, only allow frequencies supported by both payment gateways (if different)
-                    if ( _ccGateway.TypeId != _achGateway.TypeId )
+                    if ( ccGatewayComponent.TypeId != _achGateway.TypeId )
                     {
                         supportedFrequencies = ccGatewayComponent.SupportedPaymentSchedules
                             .Where( c =>
@@ -374,8 +364,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                 if ( supportedFrequencies.Any() )
                 {
-                    bool allowScheduled = false;
-                    if ( bool.TryParse( GetAttributeValue( "AllowScheduled" ), out allowScheduled ) && allowScheduled )
+                    bool allowScheduled = GetAttributeValue( "AllowScheduled" ).AsBoolean();
+                    if ( allowScheduled )
                     {
                         _showRepeatingOptions = true;
                         var oneTimeFrequency = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.TRANSACTION_FREQUENCY_ONE_TIME );
@@ -394,7 +384,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                         dtpStartDate.SelectedDate = RockDateTime.Today;
                     }
                 }
-
 
 
                 int? prefill_frequency = PageParameter("freq").AsIntegerOrNull();
@@ -479,7 +468,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 txtCreditCard.Text = "5105105105105100";
                 txtCVV.Text = "023";
 
-                txtBankName.Text = "Test Bank";
                 txtRoutingNumber.Text = "111111118";
                 txtAccountNumber.Text = "1111111111";
                  */
@@ -520,7 +508,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                 // Update the total amount
                 lblTotalAmount.Text = SelectedAccounts.Sum( f => f.Amount ).ToString( "F2" );
-
 
                 // Set the frequency date label based on if 'One Time' is selected or not
                 if ( btnFrequency.Items.Count > 0 )
@@ -579,12 +566,12 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                         var personService = new PersonService( rockContext );
 
-                        bool displayPhone = false;
-                        if ( bool.TryParse( GetAttributeValue( "DisplayPhone" ), out displayPhone ) && displayPhone )
+                        bool displayPhone = GetAttributeValue( "DisplayPhone" ).AsBoolean();
+                        if ( displayPhone )
                         {
                             var phoneNumber = personService.GetPhoneNumber( person, DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME ) ) );
 
-                            // If person did not have a home phone number, read the cell phone number (which would then 
+                            // If person did not have a home phone number, read the cell phone number (which would then
                             // get saved as a home number also if they don't change it, which is ok ).
                             if ( phoneNumber == null || string.IsNullOrWhiteSpace( phoneNumber.Number ) )
                             {
@@ -626,9 +613,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                         txtFirstName.Visible = true;
                         txtLastName.Visible = true;
                     }
-
-                    
-
 
                     SetPage( 1 );
                 }
@@ -766,20 +750,20 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        protected void lbSaveAccount_Click(object sender, EventArgs e)
+        protected void lbSaveAccount_Click( object sender, EventArgs e )
         {
-            if (string.IsNullOrWhiteSpace(TransactionCode))
+            if ( string.IsNullOrWhiteSpace( TransactionCode ) )
             {
                 nbSaveAccount.Text = "Sorry, the account information cannot be saved as there's not a valid transaction code to reference";
                 nbSaveAccount.Visible = true;
                 return;
             }
 
-            using (var rockContext = new RockContext())
+            using ( var rockContext = new RockContext() )
             {
-                if (phCreateLogin.Visible)
+                if ( phCreateLogin.Visible )
                 {
-                    if (string.IsNullOrWhiteSpace(txtUserName.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
+                    if ( string.IsNullOrWhiteSpace( txtUserName.Text ) || string.IsNullOrWhiteSpace( txtPassword.Text ) )
                     {
                         nbSaveAccount.Title = "Missing Informaton";
                         nbSaveAccount.Text = "A username and password are required when saving an account";
@@ -788,7 +772,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                         return;
                     }
 
-                    if (new UserLoginService(rockContext).GetByUserName(txtUserName.Text) != null)
+                    if ( new UserLoginService( rockContext ).GetByUserName( txtUserName.Text ) != null )
                     {
                         nbSaveAccount.Title = "Invalid Username";
                         nbSaveAccount.Text = "The selected Username is already being used.  Please select a different Username";
@@ -797,7 +781,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                         return;
                     }
 
-                    if (txtPasswordConfirm.Text != txtPassword.Text)
+                    if ( txtPasswordConfirm.Text != txtPassword.Text )
                     {
                         nbSaveAccount.Title = "Invalid Password";
                         nbSaveAccount.Text = "The password and password confirmation do not match";
@@ -807,19 +791,19 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(txtSaveAccount.Text))
+                if ( !string.IsNullOrWhiteSpace( txtSaveAccount.Text ) )
                 {
                     GatewayComponent gateway = null;
                     var financialGateway = hfPaymentTab.Value == "ACH" ? _achGateway : _ccGateway;
-                    if (financialGateway != null)
+                    if ( financialGateway != null )
                     {
                         gateway = financialGateway.GetGatewayComponent();
                     }
 
-                    if (gateway != null)
+                    if ( gateway != null )
                     {
-                        var ccCurrencyType = DefinedValueCache.Read(new Guid(Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD));
-                        var achCurrencyType = DefinedValueCache.Read(new Guid(Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_ACH));
+                        var ccCurrencyType = DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD ) );
+                        var achCurrencyType = DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_ACH ) );
 
                         string errorMessage = string.Empty;
 
@@ -827,63 +811,63 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                         string referenceNumber = string.Empty;
                         int? currencyTypeValueId = hfPaymentTab.Value == "ACH" ? achCurrencyType.Id : ccCurrencyType.Id;
 
-                        if (string.IsNullOrWhiteSpace(ScheduleId))
+                        if ( string.IsNullOrWhiteSpace( ScheduleId ) )
                         {
-                            var transaction = new FinancialTransactionService(rockContext).GetByTransactionCode(TransactionCode);
-                            if (transaction != null && transaction.AuthorizedPersonAlias != null)
+                            var transaction = new FinancialTransactionService( rockContext ).GetByTransactionCode( TransactionCode );
+                            if ( transaction != null && transaction.AuthorizedPersonAlias != null )
                             {
                                 authorizedPersonAlias = transaction.AuthorizedPersonAlias;
-                                if (transaction.FinancialGateway != null)
+                                if ( transaction.FinancialGateway != null )
                                 {
-                                    transaction.FinancialGateway.LoadAttributes(rockContext);
+                                    transaction.FinancialGateway.LoadAttributes( rockContext );
                                 }
-                                referenceNumber = gateway.GetReferenceNumber(transaction, out errorMessage);
+                                referenceNumber = gateway.GetReferenceNumber( transaction, out errorMessage );
                             }
                         }
                         else
                         {
-                            var scheduledTransaction = new FinancialScheduledTransactionService(rockContext).GetByScheduleId(ScheduleId);
-                            if (scheduledTransaction != null)
+                            var scheduledTransaction = new FinancialScheduledTransactionService( rockContext ).GetByScheduleId( ScheduleId );
+                            if ( scheduledTransaction != null )
                             {
                                 authorizedPersonAlias = scheduledTransaction.AuthorizedPersonAlias;
-                                if (scheduledTransaction.FinancialGateway != null)
+                                if ( scheduledTransaction.FinancialGateway != null )
                                 {
-                                    scheduledTransaction.FinancialGateway.LoadAttributes(rockContext);
+                                    scheduledTransaction.FinancialGateway.LoadAttributes( rockContext );
                                 }
-                                referenceNumber = gateway.GetReferenceNumber(scheduledTransaction, out errorMessage);
+                                referenceNumber = gateway.GetReferenceNumber( scheduledTransaction, out errorMessage );
                             }
                         }
 
-                        if (authorizedPersonAlias != null && authorizedPersonAlias.Person != null)
+                        if ( authorizedPersonAlias != null && authorizedPersonAlias.Person != null )
                         {
-                            if (phCreateLogin.Visible)
+                            if ( phCreateLogin.Visible )
                             {
                                 var user = UserLoginService.Create(
                                     rockContext,
                                     authorizedPersonAlias.Person,
                                     Rock.Model.AuthenticationServiceType.Internal,
-                                    EntityTypeCache.Read(Rock.SystemGuid.EntityType.AUTHENTICATION_DATABASE.AsGuid()).Id,
+                                    EntityTypeCache.Read( Rock.SystemGuid.EntityType.AUTHENTICATION_DATABASE.AsGuid() ).Id,
                                     txtUserName.Text,
                                     txtPassword.Text,
-                                    false);
+                                    false );
 
-                                var mergeObjects = GlobalAttributesCache.GetMergeFields(null);
-                                mergeObjects.Add("ConfirmAccountUrl", RootPath + "ConfirmAccount");
+                                var mergeObjects = GlobalAttributesCache.GetMergeFields( null );
+                                mergeObjects.Add( "ConfirmAccountUrl", RootPath + "ConfirmAccount" );
 
                                 var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;
-                                mergeObjects.Add("Person", personDictionary);
+                                mergeObjects.Add( "Person", personDictionary );
 
-                                mergeObjects.Add("User", user);
+                                mergeObjects.Add( "User", user );
 
                                 var recipients = new List<Rock.Communication.RecipientData>();
-                                recipients.Add(new Rock.Communication.RecipientData(authorizedPersonAlias.Person.Email, mergeObjects));
+                                recipients.Add( new Rock.Communication.RecipientData( authorizedPersonAlias.Person.Email, mergeObjects ) );
 
-                                Rock.Communication.Email.Send(GetAttributeValue("ConfirmAccountTemplate").AsGuid(), recipients, ResolveRockUrl("~/"), ResolveRockUrl("~~/"), false);
+                                Rock.Communication.Email.Send( GetAttributeValue( "ConfirmAccountTemplate" ).AsGuid(), recipients, ResolveRockUrl( "~/" ), ResolveRockUrl( "~~/" ), false );
                             }
 
                             var paymentInfo = GetPaymentInfo();
 
-                            if (errorMessage.Any())
+                            if ( errorMessage.Any() )
                             {
                                 nbSaveAccount.Title = "Invalid Transaction";
                                 nbSaveAccount.Text = "Sorry, the account information cannot be saved. " + errorMessage;
@@ -892,7 +876,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                             }
                             else
                             {
-                                if (authorizedPersonAlias != null)
+                                if ( authorizedPersonAlias != null )
                                 {
                                     var savedAccount = new FinancialPersonSavedAccount();
                                     savedAccount.PersonAliasId = authorizedPersonAlias.Id;
@@ -901,10 +885,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                                     savedAccount.TransactionCode = TransactionCode;
                                     savedAccount.FinancialGatewayId = financialGateway.Id;
                                     savedAccount.FinancialPaymentDetail = new FinancialPaymentDetail();
-                                    savedAccount.FinancialPaymentDetail.SetFromPaymentInfo(paymentInfo, gateway, rockContext);
+                                    savedAccount.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, gateway, rockContext );
 
-                                    var savedAccountService = new FinancialPersonSavedAccountService(rockContext);
-                                    savedAccountService.Add(savedAccount);
+                                    var savedAccountService = new FinancialPersonSavedAccountService( rockContext );
+                                    savedAccountService.Add( savedAccount );
                                     rockContext.SaveChanges();
 
                                     cbSaveAccount.Visible = false;
@@ -960,21 +944,17 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             var selectedGuids = GetAttributeValues( "Accounts" ).Select( Guid.Parse ).ToList();
             bool showAll = !selectedGuids.Any();
 
-            bool additionalAccounts = true;
-            if ( !bool.TryParse( GetAttributeValue( "AdditionalAccounts" ), out additionalAccounts ) )
-            {
-                additionalAccounts = true;
-            }
+            bool additionalAccounts = GetAttributeValue( "AdditionalAccounts" ).AsBoolean( true );
 
             SelectedAccounts = new List<AccountItem>();
             AvailableAccounts = new List<AccountItem>();
 
-            // Enumerate through all active accounts that have a public name
+            // Enumerate through all active accounts that are public
             foreach ( var account in new FinancialAccountService( rockContext ).Queryable()
                 .Where( f =>
                     f.IsActive &&
-                    f.PublicName != null &&
-                    f.PublicName.Trim() != string.Empty &&
+                    f.IsPublic.HasValue &&
+                    f.IsPublic.Value &&
                     ( f.StartDate == null || f.StartDate <= RockDateTime.Today ) &&
                     ( f.EndDate == null || f.EndDate >= RockDateTime.Today ) )
                 .OrderBy( f => f.Order ) )
@@ -982,23 +962,22 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 var accountItem = new AccountItem( account.Id, account.Order, account.Name, account.CampusId, account.PublicName );
                 if ( showAll )
                 {
-                    SelectedAccounts.Add( accountItem );
+                    AvailableAccounts.Add( accountItem );
                 }
                 else
                 {
                     if ( selectedGuids.Contains( account.Guid ) )
                     {
-                        SelectedAccounts.Add( accountItem );
+                        AvailableAccounts.Add( accountItem );
                     }
                     else
                     {
                         if ( additionalAccounts )
                         {
-                            //AvailableAccounts.Add( accountItem );
+                            AvailableAccounts.Add( accountItem );
                         }
                     }
                 }
-                AvailableAccounts.Add(accountItem);
             }
             setupAccountList();
         }
@@ -1021,6 +1000,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     camps.Add(camp);
                 }
             }
+
             btnCamp.DataSource = camps;
             btnCamp.DataBind();
 
@@ -1196,8 +1176,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     }
                     phone.CountryCode = PhoneNumber.CleanNumber( pnbPhone.CountryCode );
                     phone.Number = PhoneNumber.CleanNumber( pnbPhone.Number );
-                } 
-                
+                }
+
                 if ( familyGroup == null )
                 {
                     var groupLocationService = new GroupLocationService( rockContext );
@@ -1237,62 +1217,94 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         {
             rblSavedCC.Items.Clear();
 
-            if (TargetPerson != null)
+            if ( TargetPerson != null )
             {
                 // Get the saved accounts for the currently logged in user
-                var savedAccounts = new FinancialPersonSavedAccountService(new RockContext())
-                    .GetByPersonId(TargetPerson.Id);
-                if (_ccGateway != null)
+                var savedAccounts = new FinancialPersonSavedAccountService( new RockContext() )
+                    .GetByPersonId( TargetPerson.Id );
+
+                if ( _ccGateway != null )
                 {
                     var ccGatewayComponent = _ccGateway.GetGatewayComponent();
-                    var ccCurrencyType = DefinedValueCache.Read(new Guid(Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD));
-
-                    if (ccGatewayComponent != null && ccGatewayComponent.SupportsSavedAccount(ccCurrencyType))
+                    var ccCurrencyType = DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD ) );
+                    if ( ccGatewayComponent != null && ccGatewayComponent.SupportsSavedAccount( ccCurrencyType ) )
                     {
                         rblSavedCC.DataSource = savedAccounts
-                            .Where(a =>
+                            .Where( a =>
                                 a.FinancialGatewayId == _ccGateway.Id &&
                                 a.FinancialPaymentDetail != null &&
-                                a.FinancialPaymentDetail.CurrencyTypeValueId == ccCurrencyType.Id)
-                            .OrderBy(a => a.Name)
-                            .Select(a => new
+                                a.FinancialPaymentDetail.CurrencyTypeValueId == ccCurrencyType.Id )
+                            .OrderBy( a => a.Name )
+                            .Select( a => new
                             {
                                 Id = a.Id,
                                 Name = "Use " + a.Name + " (" + a.FinancialPaymentDetail.AccountNumberMasked + ")"
-                            }).ToList();
-
+                            } ).ToList();
                         rblSavedCC.DataBind();
-                        if (rblSavedCC.Items.Count > 0)
+                        if ( rblSavedCC.Items.Count > 0 )
                         {
-                            rblSavedCC.Items.Add(new ListItem("Use a different card", "0"));
+                            rblSavedCC.Items.Add( new ListItem( "Use a different card", "0" ) );
+                            CollapseCardData.Value = "true";
                         }
                     }
                 }
 
-                if (_achGateway != null)
+                if ( _achGateway != null )
                 {
                     var achGatewayComponent = _ccGateway.GetGatewayComponent();
-                    var achCurrencyType = DefinedValueCache.Read(new Guid(Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_ACH));
-                    if (achGatewayComponent != null && achGatewayComponent.SupportsSavedAccount(achCurrencyType))
+                    var achCurrencyType = DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_ACH ) );
+                    if ( achGatewayComponent != null && achGatewayComponent.SupportsSavedAccount( achCurrencyType ) )
                     {
                         rblSavedAch.DataSource = savedAccounts
-                            .Where(a =>
+                            .Where( a =>
                                 a.FinancialGatewayId == _achGateway.Id &&
                                 a.FinancialPaymentDetail != null &&
-                                a.FinancialPaymentDetail.CurrencyTypeValueId == achCurrencyType.Id)
-                            .OrderBy(a => a.Name)
-                            .Select(a => new
+                                a.FinancialPaymentDetail.CurrencyTypeValueId == achCurrencyType.Id )
+                            .OrderBy( a => a.Name )
+                            .Select( a => new
                             {
                                 Id = a.Id,
                                 Name = "Use " + a.Name + " (" + a.FinancialPaymentDetail.AccountNumberMasked + ")"
-                            }).ToList();
+                            } ).ToList();
                         rblSavedAch.DataBind();
-                        if (rblSavedAch.Items.Count > 0)
+
+                    }
+
+                    divRecentCheck.Style[HtmlTextWriterStyle.Display] = "none";
+
+                    var aliasIds = TargetPerson.Aliases.Select( y => y.Id ).ToList();
+                    var prevChecks = new FinancialTransactionService( new RockContext() ).Queryable().Where( x => aliasIds.Contains( x.AuthorizedPersonAliasId ?? -1 ) ).Where( x => x.CheckMicrParts != null ).SortBy( "CreatedDateTime Desc" ).Take( 3 ).ToList().Select( x => (Rock.Security.Encryption.DecryptString( x.CheckMicrParts ) ?? "").Split( '_' ) ).Select( x => x.ElementAtOrDefault( 0 ) + "_" + x.ElementAtOrDefault( 1 ) );
+                    if ( prevChecks.Distinct().Count() == 1 && prevChecks.FirstOrDefault() != "_" )
+                    {
+                        rblSavedAch.Items.Add( new ListItem( "Use recent check", "-1" ) );
+                        var achDat = prevChecks.FirstOrDefault().Split( '_' );
+                        if ( achDat.Count() == 2 )
                         {
-                            rblSavedAch.Items.Add(new ListItem("Use a different bank account", "0"));
+                            if ( !IsPostBack )
+                            {
+                                txtCheckRoutingNumber.Text = achDat[0];
+                                txtCheckAccountNumber.Text = achDat[1];
+                            }
                         }
+                        if ( PageParameter( "flc" ) == "1" && !IsPostBack )
+                        {
+                            hfPaymentTab.Value = "ACH";
+                            rblSavedAch.SelectedValue = "-1";
+                        }
+
+                    }
+
+                    if ( rblSavedAch.Items.Count > 0 )
+                    {
+                        rblSavedAch.Items.Add( new ListItem( "Use a different bank account", "0" ) );
+                        CollapseCardData.Value = "true";
                     }
                 }
+                if ( rblSavedCC.Items.Count <= 0 && rblSavedAch.Items.Count > 0 )
+                {
+                    hfPaymentTab.Value = "ACH";
+                }
+
             }
         }
 
@@ -1311,6 +1323,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             if ( SelectedAccounts.Sum( a => a.Amount ) <= 0 )
             {
                 errorMessages.Add( "Make sure you've entered an amount for at least one account" );
+                lblTotalAmount.CssClass += " has-error";
             }
 
             // Validate that no negative amounts were entered
@@ -1325,37 +1338,58 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             if ( schedule != null )
             {
                 // Make sure a repeating payment starts in the future
+                dtpStartDate.FormGroupCssClass = "";
                 if ( schedule.StartDate <= RockDateTime.Today )
                 {
                     errorMessages.Add( "When scheduling a repeating payment, make sure the First Gift date is in the future (after today)" );
+                    dtpStartDate.FormGroupCssClass = "has-error";
+                }
+            }
+            else
+            {
+                dtpStartDate.FormGroupCssClass = "";
+                if ( dtpStartDate.SelectedDate < RockDateTime.Today )
+                {
+                    errorMessages.Add( "Make sure the date is not in the past" );
+                    dtpStartDate.FormGroupCssClass = "has-error";
                 }
             }
 
             if ( txtFirstName.Visible == true )
             {
+                txtFirstName.FormGroupCssClass = "";
+                txtLastName.FormGroupCssClass = "";
                 if ( string.IsNullOrWhiteSpace( txtFirstName.Text ) || string.IsNullOrWhiteSpace( txtLastName.Text ) )
                 {
                     errorMessages.Add( "Make sure to enter both a first and last name" );
+                    txtFirstName.FormGroupCssClass = "has-error";
+                    txtLastName.FormGroupCssClass = "has-error";
                 }
             }
 
+            pnbPhone.FormGroupCssClass = "";
             bool displayPhone = GetAttributeValue( "DisplayPhone" ).AsBoolean();
             if ( displayPhone && string.IsNullOrWhiteSpace( pnbPhone.Number ) )
             {
                 errorMessages.Add( "Make sure to enter a valid phone number.  A phone number is required for us to process this transaction" );
+                pnbPhone.FormGroupCssClass = "has-error";
             }
 
+            txtEmail.FormGroupCssClass = "";
             bool displayEmail = GetAttributeValue( "DisplayEmail" ).AsBoolean();
             if ( displayEmail && string.IsNullOrWhiteSpace( txtEmail.Text ) )
             {
                 errorMessages.Add( "Make sure to enter a valid email address.  An email address is required for us to send you a payment confirmation" );
+                txtEmail.FormGroupCssClass = "has-error";
             }
 
+            acAddress.FormGroupCssClass = "";
             var location = new Location();
             acAddress.GetValues( location );
-            if ( string.IsNullOrWhiteSpace( location.Street1 )  )
+            if ( string.IsNullOrWhiteSpace( location.Street1 ) )
             {
                 errorMessages.Add( "Make sure to enter a valid address.  An address is required for us to process this transaction" );
+                acAddress.FormGroupCssClass = "has-error";
             }
 
             if ( hfPaymentTab.Value == "ACH" )
@@ -1369,36 +1403,34 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 {
                     if ((rblSavedAch.SelectedValueAsInt() ?? 0) == -1)
                     {
-                        if (string.IsNullOrWhiteSpace(txtCheckBankName.Text))
-                        {
-                            errorMessages.Add("Make sure to enter a bank name");
-                        }
-
+                        txtCheckRoutingNumber.FormGroupCssClass = "";
                         if (string.IsNullOrWhiteSpace(txtCheckRoutingNumber.Text))
                         {
                             errorMessages.Add("Make sure to enter a valid routing number");
+                            txtCheckRoutingNumber.FormGroupCssClass = "has-error";
                         }
 
+                        txtCheckAccountNumber.FormGroupCssClass = "";
                         if (string.IsNullOrWhiteSpace(txtCheckAccountNumber.Text))
                         {
                             errorMessages.Add("Make sure to enter a valid account number");
+                            txtCheckAccountNumber.FormGroupCssClass = "has-error";
                         }
                     }
                     else
                     {
-                        if (string.IsNullOrWhiteSpace(txtBankName.Text))
+                        txtRoutingNumber.FormGroupCssClass = "";
+                        if ( string.IsNullOrWhiteSpace( txtRoutingNumber.Text ) )
                         {
-                            errorMessages.Add("Make sure to enter a bank name");
+                            errorMessages.Add( "Make sure to enter a valid routing number" );
+                            txtRoutingNumber.FormGroupCssClass = "has-error";
                         }
 
-                        if (string.IsNullOrWhiteSpace(txtRoutingNumber.Text))
+                        txtAccountNumber.FormGroupCssClass = "";
+                        if ( string.IsNullOrWhiteSpace( txtAccountNumber.Text ) )
                         {
-                            errorMessages.Add("Make sure to enter a valid routing number");
-                        }
-
-                        if (string.IsNullOrWhiteSpace(txtAccountNumber.Text))
-                        {
-                            errorMessages.Add("Make sure to enter a valid account number");
+                            errorMessages.Add( "Make sure to enter a valid account number" );
+                            txtAccountNumber.FormGroupCssClass = "has-error";
                         }
                     }
                 }
@@ -1413,36 +1445,48 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 else
                 {
                     var ccGatewayComponent = _ccGateway.GetGatewayComponent();
-                    if (ccGatewayComponent != null && ccGatewayComponent.SplitNameOnCard)
+                    if ( ccGatewayComponent != null && ccGatewayComponent.SplitNameOnCard )
                     {
-                        if (string.IsNullOrWhiteSpace(txtCardFirstName.Text) || string.IsNullOrWhiteSpace(txtCardLastName.Text))
+                        txtCardFirstName.FormGroupCssClass = "";
+                        txtCardLastName.FormGroupCssClass = "";
+                        if ( string.IsNullOrWhiteSpace( txtCardFirstName.Text ) || string.IsNullOrWhiteSpace( txtCardLastName.Text ) )
                         {
-                            errorMessages.Add("Make sure to enter a valid first and last name as it appears on your credit card");
+                            errorMessages.Add( "Make sure to enter a valid first and last name as it appears on your credit card" );
+                            txtCardFirstName.FormGroupCssClass = "has-error";
+                            txtCardLastName.FormGroupCssClass = "has-error";
                         }
                     }
                     else
                     {
-                        if (string.IsNullOrWhiteSpace(txtCardName.Text))
+                        txtCardName.FormGroupCssClass = "";
+                        if ( string.IsNullOrWhiteSpace( txtCardName.Text ) )
                         {
-                            errorMessages.Add("Make sure to enter a valid name as it appears on your credit card");
+                            errorMessages.Add( "Make sure to enter a valid name as it appears on your credit card" );
+                            txtCardName.FormGroupCssClass = "has-error";
                         }
                     }
 
-                    if (string.IsNullOrWhiteSpace(txtCreditCard.Text))
+                    txtCreditCard.FormGroupCssClass = "";
+                    if ( string.IsNullOrWhiteSpace( txtCreditCard.Text ) )
                     {
-                        errorMessages.Add("Make sure to enter a valid credit card number");
+                        errorMessages.Add( "Make sure to enter a valid credit card number" );
+                        txtCreditCard.FormGroupCssClass = "has-error";
                     }
 
+                    mypExpiration.FormGroupCssClass = "";
                     var currentMonth = RockDateTime.Today;
-                    currentMonth = new DateTime(currentMonth.Year, currentMonth.Month, 1);
-                    if (!mypExpiration.SelectedDate.HasValue || mypExpiration.SelectedDate.Value.CompareTo(currentMonth) < 0)
+                    currentMonth = new DateTime( currentMonth.Year, currentMonth.Month, 1 );
+                    if ( !mypExpiration.SelectedDate.HasValue || mypExpiration.SelectedDate.Value.CompareTo( currentMonth ) < 0 )
                     {
-                        errorMessages.Add("Make sure to enter a valid credit card expiration date");
+                        errorMessages.Add( "Make sure to enter a valid credit card expiration date" );
+                        mypExpiration.FormGroupCssClass = "has-error";
                     }
 
-                    if (string.IsNullOrWhiteSpace(txtCVV.Text))
+                    txtCVV.FormGroupCssClass = "";
+                    if ( string.IsNullOrWhiteSpace( txtCVV.Text ) )
                     {
-                        errorMessages.Add("Make sure to enter a valid credit card security code");
+                        errorMessages.Add( "Make sure to enter a valid credit card security code" );
+                        txtCVV.FormGroupCssClass = "has-error";
                     }
                 }
             }
@@ -1536,7 +1580,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         private CreditCardPaymentInfo GetCCInfo()
         {
             var ccGatewayComponent = _ccGateway.GetGatewayComponent();
-            var cc = new CreditCardPaymentInfo(txtCreditCard.Text, txtCVV.Text, mypExpiration.SelectedDate.Value);
+            var cc = new CreditCardPaymentInfo( txtCreditCard.Text, txtCVV.Text, mypExpiration.SelectedDate.Value );
             cc.NameOnCard = ccGatewayComponent != null && ccGatewayComponent.SplitNameOnCard ? txtCardFirstName.Text : txtCardName.Text;
             cc.LastNameOnCard = txtCardLastName.Text;
 
@@ -1568,9 +1612,14 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         /// <returns></returns>
         private ACHPaymentInfo GetACHInfo()
         {
-            var ach = new ACHPaymentInfo( txtAccountNumber.Text, txtRoutingNumber.Text, rblAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking );
-            ach.BankName = txtBankName.Text;
-            return ach;
+            if ( rblSavedAch.SelectedValue == "-1" )
+            {
+                return new ACHPaymentInfo( txtCheckAccountNumber.Text, txtCheckRoutingNumber.Text, rblCheckAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking );
+            }
+            else
+            {
+                return new ACHPaymentInfo( txtAccountNumber.Text, txtRoutingNumber.Text, rblAccountType.SelectedValue == "Savings" ? BankAccountType.Savings : BankAccountType.Checking );
+            }
         }
 
         /// <summary>
@@ -1601,7 +1650,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             {
                 // If a one-time gift was selected for today's date, then treat as a onetime immediate transaction (not scheduled)
                 int oneTimeFrequencyId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.TRANSACTION_FREQUENCY_ONE_TIME ).Id;
-                if ( btnFrequency.SelectedValue == oneTimeFrequencyId.ToString() && dtpStartDate.SelectedDate == RockDateTime.Today )
+                if ( btnFrequency.SelectedValue == oneTimeFrequencyId.ToString() && dtpStartDate.SelectedDate <= RockDateTime.Today )
                 {
                     // one-time immediate payment
                     return null;
@@ -1633,39 +1682,39 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         /// </summary>
         /// <param name="errorMessage">The error message.</param>
         /// <returns></returns>
-        private bool ProcessConfirmation(out string errorMessage)
+        private bool ProcessConfirmation( out string errorMessage )
         {
             var rockContext = new RockContext();
-            if (string.IsNullOrWhiteSpace(TransactionCode))
+            if ( string.IsNullOrWhiteSpace( TransactionCode ) )
             {
                 GatewayComponent gateway = null;
                 var financialGateway = hfPaymentTab.Value == "ACH" ? _achGateway : _ccGateway;
-                if (financialGateway != null)
+                if ( financialGateway != null )
                 {
                     gateway = financialGateway.GetGatewayComponent();
                 }
 
-                if (gateway == null)
+                if ( gateway == null )
                 {
                     errorMessage = "There was a problem creating the payment gateway information";
                     return false;
                 }
 
-                Person person = GetPerson(true);
-                if (person == null)
+                Person person = GetPerson( true );
+                if ( person == null )
                 {
                     errorMessage = "There was a problem creating the person information";
                     return false;
                 }
 
-                if (!person.PrimaryAliasId.HasValue)
+                if ( !person.PrimaryAliasId.HasValue )
                 {
                     errorMessage = "There was a problem creating the person's primary alias";
                     return false;
                 }
 
                 PaymentInfo paymentInfo = GetPaymentInfo();
-                if (paymentInfo == null)
+                if ( paymentInfo == null )
                 {
                     errorMessage = "There was a problem creating the payment information";
                     return false;
@@ -1676,75 +1725,75 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     paymentInfo.LastName = person.LastName;
                 }
 
-                if (paymentInfo.CreditCardTypeValue != null)
+                if ( paymentInfo.CreditCardTypeValue != null )
                 {
                     CreditCardTypeValueId = paymentInfo.CreditCardTypeValue.Id;
                 }
 
-                if (_showCommmentEntry)
+                if ( _showCommmentEntry )
                 {
-                    paymentInfo.Comment1 = !string.IsNullOrWhiteSpace(GetAttributeValue("PaymentComment")) ? string.Format("{0}: {1}", GetAttributeValue("PaymentComment"), txtCommentEntry.Text) : txtCommentEntry.Text;
+                    paymentInfo.Comment1 = !string.IsNullOrWhiteSpace( GetAttributeValue( "PaymentComment" ) ) ? string.Format( "{0}: {1}", GetAttributeValue( "PaymentComment" ), txtCommentEntry.Text ) : txtCommentEntry.Text;
                 }
                 else
                 {
-                    paymentInfo.Comment1 = GetAttributeValue("PaymentComment");
+                    paymentInfo.Comment1 = GetAttributeValue( "PaymentComment" );
                 }
-
+                
 
                 PaymentSchedule schedule = GetSchedule();
-                if (schedule != null)
+                if ( schedule != null )
                 {
                     schedule.PersonId = person.Id;
 
-                    var scheduledTransaction = gateway.AddScheduledPayment(financialGateway, schedule, paymentInfo, out errorMessage);
-                    if (scheduledTransaction != null)
+                    var scheduledTransaction = gateway.AddScheduledPayment( financialGateway, schedule, paymentInfo, out errorMessage );
+                    if ( scheduledTransaction != null )
                     {
                         scheduledTransaction.TransactionFrequencyValueId = schedule.TransactionFrequencyValue.Id;
                         scheduledTransaction.AuthorizedPersonAliasId = person.PrimaryAliasId.Value;
                         scheduledTransaction.FinancialGatewayId = financialGateway.Id;
 
-                        if (scheduledTransaction.FinancialPaymentDetail == null)
+                        if ( scheduledTransaction.FinancialPaymentDetail == null )
                         {
                             scheduledTransaction.FinancialPaymentDetail = new FinancialPaymentDetail();
                         }
-                        scheduledTransaction.FinancialPaymentDetail.SetFromPaymentInfo(paymentInfo, gateway, rockContext);
+                        scheduledTransaction.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, gateway, rockContext );
 
                         var changeSummary = new StringBuilder();
-                        changeSummary.AppendFormat("{0} starting {1}", schedule.TransactionFrequencyValue.Value, schedule.StartDate.ToShortDateString());
+                        changeSummary.AppendFormat( "{0} starting {1}", schedule.TransactionFrequencyValue.Value, schedule.StartDate.ToShortDateString() );
                         changeSummary.AppendLine();
-                        changeSummary.Append(paymentInfo.CurrencyTypeValue.Value);
-                        if (paymentInfo.CreditCardTypeValue != null)
+                        changeSummary.Append( paymentInfo.CurrencyTypeValue.Value );
+                        if ( paymentInfo.CreditCardTypeValue != null )
                         {
-                            changeSummary.AppendFormat(" - {0}", paymentInfo.CreditCardTypeValue.Value);
+                            changeSummary.AppendFormat( " - {0}", paymentInfo.CreditCardTypeValue.Value );
                         }
-                        changeSummary.AppendFormat(" {0}", paymentInfo.MaskedNumber);
+                        changeSummary.AppendFormat( " {0}", paymentInfo.MaskedNumber );
                         changeSummary.AppendLine();
 
-                        foreach (var account in SelectedAccounts.Where(a => a.Amount > 0))
+                        foreach ( var account in SelectedAccounts.Where( a => a.Amount > 0 ) )
                         {
                             var transactionDetail = new FinancialScheduledTransactionDetail();
                             transactionDetail.Amount = account.Amount;
                             transactionDetail.AccountId = account.Id;
-                            scheduledTransaction.ScheduledTransactionDetails.Add(transactionDetail);
-                            changeSummary.AppendFormat("{0}: {1}", account.Name, account.Amount.FormatAsCurrency());
+                            scheduledTransaction.ScheduledTransactionDetails.Add( transactionDetail );
+                            changeSummary.AppendFormat( "{0}: {1}", account.Name, account.Amount.FormatAsCurrency() );
                             changeSummary.AppendLine();
                         }
 
-                        var transactionService = new FinancialScheduledTransactionService(rockContext);
-                        transactionService.Add(scheduledTransaction);
+                        var transactionService = new FinancialScheduledTransactionService( rockContext );
+                        transactionService.Add( scheduledTransaction );
                         rockContext.SaveChanges();
 
                         // Add a note about the change
-                        var noteType = NoteTypeCache.Read(Rock.SystemGuid.NoteType.SCHEDULED_TRANSACTION_NOTE.AsGuid());
-                        if (noteType != null)
+                        var noteType = NoteTypeCache.Read( Rock.SystemGuid.NoteType.SCHEDULED_TRANSACTION_NOTE.AsGuid() );
+                        if ( noteType != null )
                         {
-                            var noteService = new NoteService(rockContext);
+                            var noteService = new NoteService( rockContext );
                             var note = new Note();
                             note.NoteTypeId = noteType.Id;
                             note.EntityId = scheduledTransaction.Id;
                             note.Caption = "Created Transaction";
                             note.Text = changeSummary.ToString();
-                            noteService.Add(note);
+                            noteService.Add( note );
                         }
                         rockContext.SaveChanges();
 
@@ -1758,86 +1807,86 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 }
                 else
                 {
-                    var transaction = gateway.Charge(financialGateway, paymentInfo, out errorMessage);
-                    if (transaction != null)
+                    var transaction = gateway.Charge( financialGateway, paymentInfo, out errorMessage );
+                    if ( transaction != null )
                     {
                         var txnChanges = new List<string>();
-                        txnChanges.Add("Created Transaction");
+                        txnChanges.Add( "Created Transaction" );
 
-                        History.EvaluateChange(txnChanges, "Transaction Code", string.Empty, transaction.TransactionCode);
+                        History.EvaluateChange( txnChanges, "Transaction Code", string.Empty, transaction.TransactionCode );
 
                         transaction.AuthorizedPersonAliasId = person.PrimaryAliasId;
-                        History.EvaluateChange(txnChanges, "Person", string.Empty, person.FullName);
+                        History.EvaluateChange( txnChanges, "Person", string.Empty, person.FullName );
 
                         transaction.TransactionDateTime = RockDateTime.Now;
-                        History.EvaluateChange(txnChanges, "Date/Time", null, transaction.TransactionDateTime);
+                        History.EvaluateChange( txnChanges, "Date/Time", null, transaction.TransactionDateTime );
 
                         transaction.FinancialGatewayId = financialGateway.Id;
-                        History.EvaluateChange(txnChanges, "Gateway", string.Empty, financialGateway.Name);
+                        History.EvaluateChange( txnChanges, "Gateway", string.Empty, financialGateway.Name );
 
-                        var txnType = DefinedValueCache.Read(new Guid(Rock.SystemGuid.DefinedValue.TRANSACTION_TYPE_CONTRIBUTION));
+                        var txnType = DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.TRANSACTION_TYPE_CONTRIBUTION ) );
                         transaction.TransactionTypeValueId = txnType.Id;
-                        History.EvaluateChange(txnChanges, "Type", string.Empty, txnType.Value);
+                        History.EvaluateChange( txnChanges, "Type", string.Empty, txnType.Value );
 
-                        if (transaction.FinancialPaymentDetail == null)
+                        if ( transaction.FinancialPaymentDetail == null )
                         {
                             transaction.FinancialPaymentDetail = new FinancialPaymentDetail();
                         }
-                        transaction.FinancialPaymentDetail.SetFromPaymentInfo(paymentInfo, gateway, rockContext, txnChanges);
+                        transaction.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, gateway, rockContext, txnChanges );
 
                         Guid sourceGuid = Guid.Empty;
-                        if (Guid.TryParse(GetAttributeValue("Source"), out sourceGuid))
+                        if ( Guid.TryParse( GetAttributeValue( "Source" ), out sourceGuid ) )
                         {
-                            var source = DefinedValueCache.Read(sourceGuid);
-                            if (source != null)
+                            var source = DefinedValueCache.Read( sourceGuid );
+                            if ( source != null )
                             {
                                 transaction.SourceTypeValueId = source.Id;
-                                History.EvaluateChange(txnChanges, "Source", string.Empty, source.Value);
+                                History.EvaluateChange( txnChanges, "Source", string.Empty, source.Value );
                             }
                         }
 
-                        foreach (var account in SelectedAccounts.Where(a => a.Amount > 0))
+                        foreach ( var account in SelectedAccounts.Where( a => a.Amount > 0 ) )
                         {
                             var transactionDetail = new FinancialTransactionDetail();
                             transactionDetail.Amount = account.Amount;
                             transactionDetail.AccountId = account.Id;
-                            transaction.TransactionDetails.Add(transactionDetail);
-                            History.EvaluateChange(txnChanges, account.Name, 0.0M.FormatAsCurrency(), transactionDetail.Amount.FormatAsCurrency());
+                            transaction.TransactionDetails.Add( transactionDetail );
+                            History.EvaluateChange( txnChanges, account.Name, 0.0M.FormatAsCurrency(), transactionDetail.Amount.FormatAsCurrency() );
                         }
 
-                        var batchService = new FinancialBatchService(rockContext);
+                        var batchService = new FinancialBatchService( rockContext );
 
                         // Get the batch
                         var batch = batchService.Get(
-                            GetAttributeValue("BatchNamePrefix"),
+                            GetAttributeValue( "BatchNamePrefix" ),
                             paymentInfo.CurrencyTypeValue,
                             paymentInfo.CreditCardTypeValue,
                             transaction.TransactionDateTime.Value,
-                            financialGateway.GetBatchTimeOffset());
+                            financialGateway.GetBatchTimeOffset() );
 
                         var batchChanges = new List<string>();
 
-                        if (batch.Id == 0)
+                        if ( batch.Id == 0 )
                         {
-                            batchChanges.Add("Generated the batch");
-                            History.EvaluateChange(batchChanges, "Batch Name", string.Empty, batch.Name);
-                            History.EvaluateChange(batchChanges, "Status", null, batch.Status);
-                            History.EvaluateChange(batchChanges, "Start Date/Time", null, batch.BatchStartDateTime);
-                            History.EvaluateChange(batchChanges, "End Date/Time", null, batch.BatchEndDateTime);
+                            batchChanges.Add( "Generated the batch" );
+                            History.EvaluateChange( batchChanges, "Batch Name", string.Empty, batch.Name );
+                            History.EvaluateChange( batchChanges, "Status", null, batch.Status );
+                            History.EvaluateChange( batchChanges, "Start Date/Time", null, batch.BatchStartDateTime );
+                            History.EvaluateChange( batchChanges, "End Date/Time", null, batch.BatchEndDateTime );
                         }
 
                         decimal newControlAmount = batch.ControlAmount + transaction.TotalAmount;
-                        History.EvaluateChange(batchChanges, "Control Amount", batch.ControlAmount.FormatAsCurrency(), newControlAmount.FormatAsCurrency());
+                        History.EvaluateChange( batchChanges, "Control Amount", batch.ControlAmount.FormatAsCurrency(), newControlAmount.FormatAsCurrency() );
                         batch.ControlAmount = newControlAmount;
 
                         transaction.BatchId = batch.Id;
-                        batch.Transactions.Add(transaction);
+                        batch.Transactions.Add( transaction );
 
                         rockContext.SaveChanges();
 
                         HistoryService.SaveChanges(
                             rockContext,
-                            typeof(FinancialBatch),
+                            typeof( FinancialBatch ),
                             Rock.SystemGuid.Category.HISTORY_FINANCIAL_BATCH.AsGuid(),
                             batch.Id,
                             batchChanges
@@ -1845,16 +1894,16 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                         HistoryService.SaveChanges(
                             rockContext,
-                            typeof(FinancialBatch),
+                            typeof( FinancialBatch ),
                             Rock.SystemGuid.Category.HISTORY_FINANCIAL_TRANSACTION.AsGuid(),
                             batch.Id,
                             txnChanges,
                             person.FullName,
-                            typeof(FinancialTransaction),
+                            typeof( FinancialTransaction ),
                             transaction.Id
                         );
 
-                        SendReceipt(transaction.Id);
+                        SendReceipt( transaction.Id );
 
                         TransactionCode = transaction.TransactionCode;
                     }
@@ -1865,20 +1914,20 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 }
 
                 tdTransactionCodeReceipt.Description = TransactionCode;
-                tdTransactionCodeReceipt.Visible = !string.IsNullOrWhiteSpace(TransactionCode);
+                tdTransactionCodeReceipt.Visible = !string.IsNullOrWhiteSpace( TransactionCode );
 
                 tdScheduleId.Description = ScheduleId;
-                tdScheduleId.Visible = !string.IsNullOrWhiteSpace(ScheduleId);
+                tdScheduleId.Visible = !string.IsNullOrWhiteSpace( ScheduleId );
 
                 tdNameReceipt.Description = paymentInfo.FullName;
                 tdPhoneReceipt.Description = paymentInfo.Phone;
                 tdEmailReceipt.Description = paymentInfo.Email;
-                tdAddressReceipt.Description = string.Format("{0} {1}, {2} {3}", paymentInfo.Street1, paymentInfo.City, paymentInfo.State, paymentInfo.PostalCode);
+                tdAddressReceipt.Description = string.Format( "{0} {1}, {2} {3}", paymentInfo.Street1, paymentInfo.City, paymentInfo.State, paymentInfo.PostalCode );
 
-                rptAccountListReceipt.DataSource = SelectedAccounts.Where(a => a.Amount != 0);
+                rptAccountListReceipt.DataSource = SelectedAccounts.Where( a => a.Amount != 0 );
                 rptAccountListReceipt.DataBind();
 
-                tdTotalReceipt.Description = paymentInfo.Amount.ToString("C");
+                tdTotalReceipt.Description = paymentInfo.Amount.ToString( "C" );
 
                 tdPaymentMethodReceipt.Description = paymentInfo.CurrencyTypeValue.Description;
                 tdAccountNumberReceipt.Description = paymentInfo.MaskedNumber;
@@ -1886,20 +1935,63 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                 // If there was a transaction code returned and this was not already created from a previous saved account,
                 // show the option to save the account.
-                if (!(paymentInfo is ReferencePaymentInfo) && !string.IsNullOrWhiteSpace(TransactionCode) && gateway.SupportsSavedAccount(paymentInfo.CurrencyTypeValue))
+                if ( !( paymentInfo is ReferencePaymentInfo ) && !string.IsNullOrWhiteSpace( TransactionCode ) && gateway.SupportsSavedAccount( paymentInfo.CurrencyTypeValue ) )
                 {
                     cbSaveAccount.Visible = true;
                     pnlSaveAccount.Visible = true;
                     txtSaveAccount.Visible = true;
 
                     // If current person does not have a login, have them create a username and password
-                    phCreateLogin.Visible = !new UserLoginService(rockContext).GetByPersonId(person.Id).Any();
+                    phCreateLogin.Visible = !new UserLoginService( rockContext ).GetByPersonId( person.Id ).Any();
                 }
                 else
                 {
                     pnlSaveAccount.Visible = false;
                 }
 
+                if ( PageParameter( "argsd" ) == "1" )
+                {
+                    var rc = new RockContext();
+                    var ats = new AttributeService( rc );
+                    var argsd = ats.Queryable().Where( x => x.Key == "AutomatedRecurringGiftSetupDate" ).FirstOrDefault();
+                    if ( argsd == null )
+                    {
+                        argsd = new Rock.Model.Attribute();
+                        argsd.FieldTypeId = 85;
+                        argsd.EntityTypeId = 15;
+                        argsd.Key = "AutomatedRecurringGiftSetupDate";
+                        argsd.Name = "Automated Recurring Gift Setup Date";
+                        argsd.Guid = Guid.NewGuid();
+                        argsd.CreatedDateTime = argsd.ModifiedDateTime = DateTime.Now;
+                        ats.Add( argsd );
+                        rc.SaveChanges();
+                        rc = new RockContext();
+                        ats = new AttributeService( rc );
+                        argsd = ats.Queryable().Where( x => x.Key == "AutomatedRecurringGiftSetupDate" ).FirstOrDefault();
+                    }
+                    if ( argsd != null )
+                    {
+                        var atvs = new AttributeValueService( rc );
+                        var argsdVal = atvs.Queryable().Where( x => x.AttributeId == argsd.Id && x.EntityId == person.Id ).FirstOrDefault();
+                        if ( argsdVal == null )
+                        {
+                            argsdVal = new Rock.Model.AttributeValue();
+                            argsdVal.AttributeId = argsd.Id;
+                            argsdVal.EntityId = person.Id;
+                            argsdVal.Value = DateTime.Now.ToString( "o" );
+                            argsdVal.Guid = Guid.NewGuid();
+                            argsdVal.CreatedDateTime = argsdVal.ModifiedDateTime = DateTime.Now;
+
+                            atvs.Add( argsdVal );
+                            rc.SaveChanges();
+                        }
+                        else
+                        {
+                            argsdVal.Value = DateTime.Now.ToString( "o" );
+                            rc.SaveChanges();
+                        }
+                    }
+                }
                 return true;
             }
             else
@@ -1911,15 +2003,15 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             }
         }
 
-        private void SendReceipt(int transactionId)
+        private void SendReceipt( int transactionId )
         {
-            Guid? recieptEmail = GetAttributeValue("ReceiptEmail").AsGuidOrNull();
-            if (recieptEmail.HasValue)
+            Guid? recieptEmail = GetAttributeValue( "ReceiptEmail" ).AsGuidOrNull();
+            if ( recieptEmail.HasValue )
             {
                 // Queue a transaction to send reciepts
                 var newTransactionIds = new List<int> { transactionId };
-                var sendPaymentRecieptsTxn = new Rock.Transactions.SendPaymentReciepts(recieptEmail.Value, newTransactionIds);
-                Rock.Transactions.RockQueue.TransactionQueue.Enqueue(sendPaymentRecieptsTxn);
+                var sendPaymentRecieptsTxn = new Rock.Transactions.SendPaymentReciepts( recieptEmail.Value, newTransactionIds );
+                Rock.Transactions.RockQueue.TransactionQueue.Enqueue( sendPaymentRecieptsTxn );
             }
         }
 
@@ -1978,8 +2070,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
             string scriptFormat = @"
     Sys.Application.add_load(function () {{
-
-
         // As amounts are entered, validate that they are numeric and recalc total
         $('.account-amount').on('change', function() {{
             var totalAmt = Number(0);
@@ -2001,20 +2091,30 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     $(this).parents('div.input-group').removeClass('has-error');
                 }}
             }});
-            $('.total-amount').html('$ ' + totalAmt.toFixed(2));
+            $('.total-amount').html('{3}' + totalAmt.toFixed(2));
             return false;
         }});
 
-
-       
-    
-
-
         // Set the date prompt based on the frequency value entered
         $('#ButtonDropDown_btnFrequency .dropdown-menu a').click( function () {{
-            var $when = $(this).parents('div.form-group:first').next();
+            var $when = $(this).parents('div.form-group:first').parent().next();
             if ($(this).attr('data-id') == '{2}') {{
                 $when.find('label:first').html('When');
+
+                // Set date to tomorrow if it is less than today's date
+                var $dateInput = $when.find('input');
+                var dt = new Date(Date.parse($dateInput.val()));
+                var curr = new Date();
+                var x = (dt-curr);
+                if ( (dt-curr) < 0 || ((dt-curr) <= (1000*60*60*24) && FreqHadPrevDate)) {{
+                    FreqHadPrevDate = false;
+                    curr.setDate(curr.getDate());
+                    var dd = curr.getDate();
+                    var mm = curr.getMonth()+1;
+                    var yy = curr.getFullYear();
+                    $dateInput.val(mm+'/'+dd+'/'+yy);
+                    $dateInput.parent().data('datepicker').update();
+                }}
             }} else {{
                 $when.find('label:first').html('First Gift');
 
@@ -2028,7 +2128,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     var mm = curr.getMonth()+1;
                     var yy = curr.getFullYear();
                     $dateInput.val(mm+'/'+dd+'/'+yy);
-                    $dateInput.data('datepicker').update();
+                    $dateInput.parent().data('datepicker').update();
+                    FreqHadPrevDate = true;
                 }}
             }};
         }});
@@ -2048,13 +2149,13 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         $('.credit-card').creditCardTypeDetector({{ 'credit_card_logos': '.card-logos' }});
 
         // Toggle credit card display if saved card option is available
-        $('div.radio-content').prev('.form-group').find('input:radio').unbind('click').on('click', function () {{
-            var $content = $(this).parents('div.form-group:first').next('.radio-content')
+        $('div.radio-content').prev('.form-group, .radio-list').find('input:radio').unbind('click').on('click', function () {{
+            var $content = $(this).parents('div.form-group:first, div.radio-list:first').next('.radio-content')
             var radioDisplay = $content.css('display');
             if (($(this).val() == 0 || $(this).val() == -1) && radioDisplay == 'none') {{
                 $content.slideToggle();
             }}
-            else if ($(this).val() != 0 && $(this).val() != -1 && radioDisplay != 'none') {{
+            else if (($(this).val() != 0 && $(this).val() != -1) && radioDisplay != 'none') {{
                 $content.slideToggle();
             }}
         }});
@@ -2073,9 +2174,15 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 			}});
         }});
     }});
-
 ";
-            string script = string.Format( scriptFormat, divCCPaymentInfo.ClientID, hfPaymentTab.ClientID, oneTimeFrequencyId );
+            string script = string.Format(
+                scriptFormat,
+                divCCPaymentInfo.ClientID, // {0} 
+                hfPaymentTab.ClientID, // {1}
+                oneTimeFrequencyId,// {2}
+                GlobalAttributesCache.Value( "CurrencySymbol" ) // {3)
+            ); 
+
             ScriptManager.RegisterStartupScript( upPayment, this.GetType(), "giving-profile", script, true );
         }
 
@@ -2105,7 +2212,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             {
                 get
                 {
-                    return Amount > 0 ? Amount.ToString( "C2" ) : string.Empty;
+                    return Amount > 0 ? Amount.FormatAsCurrency() : string.Empty;
                 }
             }
 
