@@ -17,11 +17,11 @@ using System.IO;
 
 namespace org.newpointe.Giving.Workflow
 {
-    [Description("Gets the UrlEncodedKey for a Person.")]
+    [Description("Gets the Short URL.")]
     [Export(typeof(ActionComponent))]
-    [ExportMetadata("ComponentName", "Get UrlEncodedKey")]
+    [ExportMetadata("ComponentName", "Get Short URL")]
 
-    [WorkflowAttribute("Attribute", "The workflow attribute to store the key in.", true, "", "", 0, null, new string[] { "Rock.Field.Types.TextFieldType" })]
+    [WorkflowAttribute("Attribute", "The workflow attribute to store the short URL in.", true, "", "", 0, null, new string[] { "Rock.Field.Types.TextFieldType" })]
     [WorkflowTextOrAttribute("URL", "URL", "Workflow attribute that contains the url to shorten.", true, "", "", 1, "URL", new string[] { "Rock.Field.Types.TextFieldType" })]
     public class GetShortUrl : ActionComponent
     {
