@@ -4,9 +4,7 @@
     Have you heard a great message at NewPointe and want to discuss it with someone else? 
     Each week we post a discussion guide for our messages. Small Groups are encouraged to 
     use these guides to bridge the gap between the message on Sunday and application during the week.
-    If you are leading a group through this guide, don’t feel like you have to answer every question. 
-    Pick out the questions that will stir up conversation and action among your group.
-  </p>
+    </p>
   {% for item in Items %}
   {% assign talkitover = item | Attribute:'TalkItOver','Url' %}
   {% if talkitover != '' %}
@@ -15,7 +13,7 @@
         <h4>{{ item.Date }}</h4>
       </div>
       <div class="col-md-7">
-        <h4>{{ item.SeriesTitle }} <small>{{ item.Title}}</small></h4>
+        <h4>{{ item.Title }}<br /><small>{{ item.SeriesTitle }}</small></h4>
       </div>
       <div class="col-md-2">
         <a href="{{ talkitover }}" class="seriesButton btn btn-primary active" style="margin-top: 2px;">Download Now</a>
