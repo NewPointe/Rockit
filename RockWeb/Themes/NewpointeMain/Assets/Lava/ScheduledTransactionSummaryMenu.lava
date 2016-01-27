@@ -6,6 +6,7 @@
    {% else %}
 
    {% if CurrentPerson == null %}
+   {% if theUrl contains "GiveNow" -%}
    <div class="col-md-12 hidden-xs">
      <p class="text-center">
        <small>
@@ -30,7 +31,7 @@
      $('#give_CreateAccount').get()[0].href = "/NewAccount?returnurl=" + encodeURIComponent(window.location.pathname + window.location.search)
      $('#give_CreateAccount2').get()[0].href = "/NewAccount?returnurl=" + encodeURIComponent(window.location.pathname + window.location.search)
    </script>
-
+  {% endif %}
    {% else %}
 
    <div class="row margin-b-md">
