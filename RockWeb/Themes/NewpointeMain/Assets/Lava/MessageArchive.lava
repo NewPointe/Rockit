@@ -19,11 +19,13 @@
   }
 </style>
 
+ 
+
 <div class="col-xs-12">
   {% if Pagination.CurrentPage == 1 %}
   <h3>OTHER SERIES:</h3>
   {% endif %}
-  
+
   {% for item in Items %}
   <div class="col-xs-6 col-sm-6 col-md-3" style="padding:15px; max-width:300px">
 
@@ -33,37 +35,37 @@
       </div>
     </a>
   </div>
-  
+
   {% endfor -%}
   <div class="clearfix">
-  {% assign nextPageString = Pagination.NextPage | ToString %}
-  {% assign prevPageString = Pagination.PreviousPage | ToString %}
+    {% assign nextPageString = Pagination.NextPage | ToString %}
+    {% assign prevPageString = Pagination.PreviousPage | ToString %}
 
 
 
-  {% if {{Pagination.NextPage == -1 }} %}
-  <div class="btn btn-default pull-left">
-    <i class="fa fa-chevron-left"></i> Older Series
+    {% if {{Pagination.NextPage == -1 }} %}
+    <div class="btn btn-default pull-left">
+      <i class="fa fa-chevron-left"></i> Older Series
+    </div>
+    {% else %}
+    <a class="btn btn-primary pull-left" href="{{Pagination.UrlTemplate | Replace:'PageNum', nextPageString}}">
+      <i class="fa fa-chevron-left"></i> Older Series
+    </a>
+    {% endif %}
+
+
+    {% if {{Pagination.PreviousPage == -1 }} %}
+    <div class="btn btn-default pull-right">
+      Newer Series <i class="fa fa-chevron-right"></i>
+    </div>
+    {% else %}
+    <a class="btn btn-primary pull-right" href="{{Pagination.UrlTemplate | Replace:'PageNum', prevPageString}}">
+      Newer Series <i class="fa fa-chevron-right"></i>
+    </a>
+    {% endif %}
+
   </div>
-  {% else %}
-  <a class="btn btn-primary pull-left" href="{{Pagination.UrlTemplate | Replace:'PageNum', nextPageString}}">
-    <i class="fa fa-chevron-left"></i> Older Series
-  </a>
-  {% endif %}
-
-
-  {% if {{Pagination.PreviousPage == -1 }} %}
-  <div class="btn btn-default pull-right">
-    Newer Series <i class="fa fa-chevron-right"></i>
-  </div>
-  {% else %}
-  <a class="btn btn-primary pull-right" href="{{Pagination.UrlTemplate | Replace:'PageNum', prevPageString}}">
-    Newer Series <i class="fa fa-chevron-right"></i>
-  </a>
-  {% endif %}
-
-</div>
-<br /><br />
+  <br /><br />
 
 </div>
 

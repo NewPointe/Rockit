@@ -9,6 +9,7 @@
   </div>
 
   <div class="col-xs-12 col-md-8">
+    {% assign theUrl = 'Global' | Page:'Url'  %}
     {% comment %}
     Build the series buttons. Need to loop through all messages and grab the ones with the correct series id in url.
     Create title variable and set it something we can test
@@ -59,6 +60,11 @@
       <div class="embed-container">
         <iframe src="https://player.vimeo.com/video/{{item.VideoId}}?wmode=transparent" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
       </div>
+      <p>
+        Share:
+        <span class='st_facebook' displayText='Facebook' st_title='{{item.Title}} - Message from NewPointe Community Church' st_url='{{ theUrl }}'></span>
+        <span class='st_twitter' displayText='Twitter' st_title='{{item.Title}} - Message from NewPointe Community Church' st_url='{{ theUrl }}'></span>
+      </p>
     </div>
 
     <div class="col-xs-12 col-md-4">
@@ -102,6 +108,7 @@
             <i class="fa fa-comment"></i> Talk It Over Guide
           </a>
         </p>
+       
         {% endif %}
         <p>
           <br />
@@ -143,3 +150,7 @@
   $(btn).addClass("active");
   }
 </script>
+
+
+<script type="text/javascript" src="https://ws.sharethis.com/button/buttons.js"></script>
+<script type="text/javascript">stLight.options({publisher: "53d2d03d-7535-41a8-bd99-99551c612054", doNotHash: false, doNotCopy: false, hashAddressBar: true});</script> 
