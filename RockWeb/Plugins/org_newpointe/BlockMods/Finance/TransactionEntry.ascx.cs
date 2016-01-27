@@ -2149,8 +2149,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         $('.credit-card').creditCardTypeDetector({{ 'credit_card_logos': '.card-logos' }});
 
         // Toggle credit card display if saved card option is available
-        $('div.radio-content').prev('.form-group').find('input:radio').unbind('click').on('click', function () {{
-            var $content = $(this).parents('div.form-group:first').next('.radio-content')
+        $('div.radio-content').prev('.form-group, .radio-list').find('input:radio').unbind('click').on('click', function () {{
+            var $content = $(this).parents('div.form-group:first, div.radio-list:first').next('.radio-content')
             var radioDisplay = $content.css('display');
             if (($(this).val() == 0 || $(this).val() == -1) && radioDisplay == 'none') {{
                 $content.slideToggle();
