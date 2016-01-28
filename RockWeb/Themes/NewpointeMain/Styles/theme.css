@@ -6707,6 +6707,7 @@ th.dow {
 td.day.new {
   color: #808080 !important;
 }
+.datepicker.datepicker-dropdown:before,
 .datepicker.datepicker-dropdown:after {
   border-bottom-color: #404040;
 }

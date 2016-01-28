@@ -542,6 +542,9 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                 // Show save account info based on if checkbox is checked
                 divSaveAccount.Style[HtmlTextWriterStyle.Display] = cbSaveAccount.Checked ? "block" : "none";
+                if(!lbSaveAccount.Visible && cbSaveAccount.Checked){
+                    lbSaveAccount.Visible = true;
+                }
 
                 if ( !Page.IsPostBack )
                 {
@@ -791,8 +794,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                     }
                 }
 
-                if ( !string.IsNullOrWhiteSpace( txtSaveAccount.Text ) )
-                {
                     GatewayComponent gateway = null;
                     var financialGateway = hfPaymentTab.Value == "ACH" ? _achGateway : _ccGateway;
                     if ( financialGateway != null )
@@ -863,42 +864,67 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                                 recipients.Add( new Rock.Communication.RecipientData( authorizedPersonAlias.Person.Email, mergeObjects ) );
 
                                 Rock.Communication.Email.Send( GetAttributeValue( "ConfirmAccountTemplate" ).AsGuid(), recipients, ResolveRockUrl( "~/" ), ResolveRockUrl( "~~/" ), false );
-                            }
 
-                            var paymentInfo = GetPaymentInfo();
 
-                            if ( errorMessage.Any() )
-                            {
-                                nbSaveAccount.Title = "Invalid Transaction";
-                                nbSaveAccount.Text = "Sorry, the account information cannot be saved. " + errorMessage;
-                                nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
-                                nbSaveAccount.Visible = true;
-                            }
-                            else
-                            {
-                                if ( authorizedPersonAlias != null )
+                                if ( divSaveAccount.Style[HtmlTextWriterStyle.Display] == "none" )
                                 {
-                                    var savedAccount = new FinancialPersonSavedAccount();
-                                    savedAccount.PersonAliasId = authorizedPersonAlias.Id;
-                                    savedAccount.ReferenceNumber = referenceNumber;
-                                    savedAccount.Name = txtSaveAccount.Text;
-                                    savedAccount.TransactionCode = TransactionCode;
-                                    savedAccount.FinancialGatewayId = financialGateway.Id;
-                                    savedAccount.FinancialPaymentDetail = new FinancialPaymentDetail();
-                                    savedAccount.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, gateway, rockContext );
-
-                                    var savedAccountService = new FinancialPersonSavedAccountService( rockContext );
-                                    savedAccountService.Add( savedAccount );
-                                    rockContext.SaveChanges();
-
-                                    cbSaveAccount.Visible = false;
-                                    txtSaveAccount.Visible = false;
-                                    phCreateLogin.Visible = false;
-                                    divSaveActions.Visible = false;
-
                                     nbSaveAccount.Title = "Success";
-                                    nbSaveAccount.Text = "The account has been saved for future use";
+                                    nbSaveAccount.Text = "Your user account has been created.";
                                     nbSaveAccount.NotificationBoxType = NotificationBoxType.Success;
+                                    nbSaveAccount.Visible = true;
+                                }
+                            }
+
+
+                            if ( divSaveAccount.Style[HtmlTextWriterStyle.Display] == "block" )
+                            {
+                                if ( !string.IsNullOrWhiteSpace( txtSaveAccount.Text ) )
+                                {
+
+                                    var paymentInfo = GetPaymentInfo();
+
+                                    if ( errorMessage.Any() )
+                                    {
+                                        nbSaveAccount.Title = "Invalid Transaction";
+                                        nbSaveAccount.Text = "Sorry, the account information cannot be saved. " + errorMessage;
+                                        nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
+                                        nbSaveAccount.Visible = true;
+                                    }
+                                    else
+                                    {
+                                        if ( authorizedPersonAlias != null )
+                                        {
+                                            var savedAccount = new FinancialPersonSavedAccount();
+                                            savedAccount.PersonAliasId = authorizedPersonAlias.Id;
+                                            savedAccount.ReferenceNumber = referenceNumber;
+                                            savedAccount.Name = txtSaveAccount.Text;
+                                            savedAccount.TransactionCode = TransactionCode;
+                                            savedAccount.FinancialGatewayId = financialGateway.Id;
+                                            savedAccount.FinancialPaymentDetail = new FinancialPaymentDetail();
+                                            savedAccount.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, gateway, rockContext );
+
+                                            var savedAccountService = new FinancialPersonSavedAccountService( rockContext );
+                                            savedAccountService.Add( savedAccount );
+                                            rockContext.SaveChanges();
+
+                                            cbSaveAccount.Visible = false;
+                                            txtSaveAccount.Visible = false;
+                                            phCreateLogin.Visible = false;
+                                            divSaveActions.Visible = false;
+
+                                            nbSaveAccount.Title = "Success";
+                                            nbSaveAccount.Text = "The account has been saved for future use";
+                                            nbSaveAccount.NotificationBoxType = NotificationBoxType.Success;
+                                            nbSaveAccount.Visible = true;
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    nbSaveAccount.Title = "Missing Account Name";
+                                    nbSaveAccount.Text = "Please enter a name to use for this account.";
+                                    nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
                                     nbSaveAccount.Visible = true;
                                 }
                             }
@@ -918,14 +944,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                         nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
                         nbSaveAccount.Visible = true;
                     }
-                }
-                else
-                {
-                    nbSaveAccount.Title = "Missing Account Name";
-                    nbSaveAccount.Text = "Please enter a name to use for this account.";
-                    nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
-                    nbSaveAccount.Visible = true;
-                }
             }
         }
 
@@ -1943,6 +1961,13 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                     // If current person does not have a login, have them create a username and password
                     phCreateLogin.Visible = !new UserLoginService( rockContext ).GetByPersonId( person.Id ).Any();
+                }
+                else if ( !new UserLoginService( rockContext ).GetByPersonId( person.Id ).Any() )
+                {
+                    pnlSaveAccount.Visible = true;
+                    phCreateLogin.Visible = true;
+                    cbSaveAccount.Visible = false;
+                    txtSaveAccount.Visible = false;
                 }
                 else
                 {
