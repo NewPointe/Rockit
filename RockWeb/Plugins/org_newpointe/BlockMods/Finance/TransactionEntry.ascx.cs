@@ -253,7 +253,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             {
                 TargetPerson = new PersonService( new RockContext() ).GetByUrlEncodedKey( pKey );
             }
-
+            
             if ( TargetPerson == null )
             {
                 TargetPerson = CurrentPerson;
@@ -841,92 +841,102 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                         if ( authorizedPersonAlias != null && authorizedPersonAlias.Person != null )
                         {
-                            if ( phCreateLogin.Visible )
+                            if ( divSaveAccount.Style[HtmlTextWriterStyle.Display] == "none" || (divSaveAccount.Style[HtmlTextWriterStyle.Display] == "block" && !string.IsNullOrWhiteSpace( txtSaveAccount.Text )))
                             {
-                                var user = UserLoginService.Create(
-                                    rockContext,
-                                    authorizedPersonAlias.Person,
-                                    Rock.Model.AuthenticationServiceType.Internal,
-                                    EntityTypeCache.Read( Rock.SystemGuid.EntityType.AUTHENTICATION_DATABASE.AsGuid() ).Id,
-                                    txtUserName.Text,
-                                    txtPassword.Text,
-                                    false );
-
-                                var mergeObjects = GlobalAttributesCache.GetMergeFields( null );
-                                mergeObjects.Add( "ConfirmAccountUrl", RootPath + "ConfirmAccount" );
-
-                                var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;
-                                mergeObjects.Add( "Person", personDictionary );
-
-                                mergeObjects.Add( "User", user );
-
-                                var recipients = new List<Rock.Communication.RecipientData>();
-                                recipients.Add( new Rock.Communication.RecipientData( authorizedPersonAlias.Person.Email, mergeObjects ) );
-
-                                Rock.Communication.Email.Send( GetAttributeValue( "ConfirmAccountTemplate" ).AsGuid(), recipients, ResolveRockUrl( "~/" ), ResolveRockUrl( "~~/" ), false );
-
-
-                                if ( divSaveAccount.Style[HtmlTextWriterStyle.Display] == "none" )
+                                if ( !phCreateLogin.Visible || (phCreateLogin.Visible && UserLoginService.IsPasswordValid( txtPassword.Text )) )
                                 {
-                                    nbSaveAccount.Title = "Success";
-                                    nbSaveAccount.Text = "Your user account has been created.";
-                                    nbSaveAccount.NotificationBoxType = NotificationBoxType.Success;
-                                    nbSaveAccount.Visible = true;
-                                }
-                            }
-
-
-                            if ( divSaveAccount.Style[HtmlTextWriterStyle.Display] == "block" )
-                            {
-                                if ( !string.IsNullOrWhiteSpace( txtSaveAccount.Text ) )
-                                {
-
-                                    var paymentInfo = GetPaymentInfo();
-
-                                    if ( errorMessage.Any() )
+                                    if ( phCreateLogin.Visible )
                                     {
-                                        nbSaveAccount.Title = "Invalid Transaction";
-                                        nbSaveAccount.Text = "Sorry, the account information cannot be saved. " + errorMessage;
-                                        nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
-                                        nbSaveAccount.Visible = true;
-                                    }
-                                    else
-                                    {
-                                        if ( authorizedPersonAlias != null )
+                                        var user = UserLoginService.Create(
+                                            rockContext,
+                                            authorizedPersonAlias.Person,
+                                            Rock.Model.AuthenticationServiceType.Internal,
+                                            EntityTypeCache.Read( Rock.SystemGuid.EntityType.AUTHENTICATION_DATABASE.AsGuid() ).Id,
+                                            txtUserName.Text,
+                                            txtPassword.Text,
+                                            false );
+
+                                        var mergeObjects = GlobalAttributesCache.GetMergeFields( null );
+                                        mergeObjects.Add( "ConfirmAccountUrl", RootPath + "ConfirmAccount" );
+
+                                        var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;
+                                        mergeObjects.Add( "Person", personDictionary );
+
+                                        mergeObjects.Add( "User", user );
+
+                                        var recipients = new List<Rock.Communication.RecipientData>();
+                                        recipients.Add( new Rock.Communication.RecipientData( authorizedPersonAlias.Person.Email, mergeObjects ) );
+
+                                        Rock.Communication.Email.Send( GetAttributeValue( "ConfirmAccountTemplate" ).AsGuid(), recipients, ResolveRockUrl( "~/" ), ResolveRockUrl( "~~/" ), false );
+
+
+                                        if ( divSaveAccount.Style[HtmlTextWriterStyle.Display] == "none" )
                                         {
-                                            var savedAccount = new FinancialPersonSavedAccount();
-                                            savedAccount.PersonAliasId = authorizedPersonAlias.Id;
-                                            savedAccount.ReferenceNumber = referenceNumber;
-                                            savedAccount.Name = txtSaveAccount.Text;
-                                            savedAccount.TransactionCode = TransactionCode;
-                                            savedAccount.FinancialGatewayId = financialGateway.Id;
-                                            savedAccount.FinancialPaymentDetail = new FinancialPaymentDetail();
-                                            savedAccount.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, gateway, rockContext );
-
-                                            var savedAccountService = new FinancialPersonSavedAccountService( rockContext );
-                                            savedAccountService.Add( savedAccount );
-                                            rockContext.SaveChanges();
-
-                                            cbSaveAccount.Visible = false;
-                                            txtSaveAccount.Visible = false;
-                                            phCreateLogin.Visible = false;
-                                            divSaveActions.Visible = false;
-
                                             nbSaveAccount.Title = "Success";
-                                            nbSaveAccount.Text = "The account has been saved for future use";
+                                            nbSaveAccount.Text = "Your user account has been created.";
                                             nbSaveAccount.NotificationBoxType = NotificationBoxType.Success;
                                             nbSaveAccount.Visible = true;
+                                            phCreateLogin.Visible = false;
+                                            lbSaveAccount.Visible = cbSaveAccount.Visible;
                                         }
                                     }
 
+
+                                    if ( divSaveAccount.Style[HtmlTextWriterStyle.Display] == "block" )
+                                    {
+                                        var paymentInfo = GetPaymentInfo();
+
+                                        if ( errorMessage.Any() )
+                                        {
+                                            nbSaveAccount.Title = "Invalid Transaction";
+                                            nbSaveAccount.Text = "Sorry, the account information cannot be saved. " + errorMessage;
+                                            nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
+                                            nbSaveAccount.Visible = true;
+                                        }
+                                        else
+                                        {
+                                            if ( authorizedPersonAlias != null )
+                                            {
+                                                var savedAccount = new FinancialPersonSavedAccount();
+                                                savedAccount.PersonAliasId = authorizedPersonAlias.Id;
+                                                savedAccount.ReferenceNumber = referenceNumber;
+                                                savedAccount.Name = txtSaveAccount.Text;
+                                                savedAccount.TransactionCode = TransactionCode;
+                                                savedAccount.FinancialGatewayId = financialGateway.Id;
+                                                savedAccount.FinancialPaymentDetail = new FinancialPaymentDetail();
+                                                savedAccount.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, gateway, rockContext );
+
+                                                var savedAccountService = new FinancialPersonSavedAccountService( rockContext );
+                                                savedAccountService.Add( savedAccount );
+                                                rockContext.SaveChanges();
+
+                                                cbSaveAccount.Visible = false;
+                                                txtSaveAccount.Visible = false;
+                                                phCreateLogin.Visible = false;
+                                                divSaveActions.Visible = false;
+
+                                                nbSaveAccount.Title = "Success";
+                                                nbSaveAccount.Text = "The account has been saved for future use";
+                                                nbSaveAccount.NotificationBoxType = NotificationBoxType.Success;
+                                                nbSaveAccount.Visible = true;
+                                            }
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    nbSaveAccount.Title = "Missing Account Name";
-                                    nbSaveAccount.Text = "Please enter a name to use for this account.";
+                                    nbSaveAccount.Title = "Invalid Password";
+                                    nbSaveAccount.Text = UserLoginService.FriendlyPasswordRules();
                                     nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
                                     nbSaveAccount.Visible = true;
                                 }
+                            }
+                            else
+                            {
+                                nbSaveAccount.Title = "Missing Account Name";
+                                nbSaveAccount.Text = "Please enter a name to use for this account.";
+                                nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
+                                nbSaveAccount.Visible = true;
                             }
                         }
                         else
