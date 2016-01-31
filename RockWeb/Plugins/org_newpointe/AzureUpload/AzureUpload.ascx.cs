@@ -38,7 +38,7 @@ namespace RockWeb.Plugins.org_newpointe.AzureUpload
             var thePath = rockContext.Database.SqlQuery<string>(@"SELECT TOP 1 Path FROM BinaryFile WHERE ID = @fileId
                 ", new SqlParameter("fileId", fileId)).ToList<string>()[0].ToString();
 
-            var theGuid = rockContext.Database.SqlQuery<string>(@"SELECT TOP 1 convert(nvarchar(50),Guid) as Guid FROM BinaryFile WHERE ID = 31977
+            var theGuid = rockContext.Database.SqlQuery<string>(@"SELECT TOP 1 convert(nvarchar(50),Guid) as Guid FROM BinaryFile WHERE ID = @fileId
                 ", new SqlParameter("fileId", fileId)).ToList<string>()[0].ToString();
 
 
