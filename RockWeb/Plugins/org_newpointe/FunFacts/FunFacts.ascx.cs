@@ -2,11 +2,6 @@
 using System;
 using System.ComponentModel;
 
-
-using Rock;
-using Rock.SystemGuid;
-
-
 namespace RockWeb.Plugins.org_newpointe.FunFacts
 {
     [DisplayName("FunFacts")]
@@ -16,34 +11,23 @@ namespace RockWeb.Plugins.org_newpointe.FunFacts
     public partial class FunFacts : RockBlock
     {
 
-
-
         public string RockFunFacts = Rock.Web.Cache.GlobalAttributesCache.Value("RockFunFacts");
         public string TheFactTitle = "";
         public string TheFact = "";
 
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            string v1 = "";
-            string v2 = "";
-
-            string[] mfParams = RockFunFacts.TrimEnd('|').Split('|');
-            var mfParamsLength = mfParams.Length;
+            string[] funFactArray = RockFunFacts.TrimEnd('|').Split('|');
 
 
-            var test = mfParams[new Random().Next(0, mfParams.Length)];
+            var test = funFactArray[new Random().Next(0, funFactArray.Length)];
 
             string[] theFact = test.Split('^');
 
             TheFactTitle = theFact[0];
             TheFact = theFact[1];
-
-
         }
 
-   
-
-        }
+    }
         
 }
