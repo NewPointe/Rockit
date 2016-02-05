@@ -315,7 +315,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
 
             System.Web.Script.Serialization.JavaScriptSerializer jsSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
 
-            List<object[]> campusCount = workflowData.GroupBy(wd => wd.CampusId).Select(wd => new object[] { campServ.Get(wd.FirstOrDefault().CampusId).Name, wd.Count() }).ToList();
+            List<object[]> campusCount = workflowData.GroupBy(wd => wd.CampusId).Select(wd => new object[] { (campServ.Get(wd.FirstOrDefault().CampusId) != null) ? campServ.Get(wd.FirstOrDefault().CampusId).Name : "None", wd.Count() }).ToList();
             campusCount.Insert(0, new string[] { "Campus", "Count" });
             workflowChartData2 = jsSerializer.Serialize(campusCount).EncodeHtml();
 
