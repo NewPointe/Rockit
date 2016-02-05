@@ -65,11 +65,7 @@ namespace RockWeb.Plugins.org_newpointe.Geocodio
 
             var locationService = new LocationService(rockContext);
 
-            locationService.
-
-
-
-
+        
 
 
             var person = personService.Get(personAddress);
