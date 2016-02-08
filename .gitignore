@@ -7,3 +7,5 @@ RockWeb/Bin/org.newpointe.Giving.dll
 RockWeb/Bin/org.newpointe.ServiceUCalendar.dll
 /RockWeb/Assets/calendar-full.json
 /RockWeb/Assets/calendar.json
+/*/bin/
+/*/obj/
