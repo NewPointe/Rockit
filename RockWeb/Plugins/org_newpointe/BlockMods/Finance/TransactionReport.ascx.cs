@@ -22,7 +22,6 @@ using System.Linq;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
 using Rock;
 using Rock.Data;
 using Rock.Model;
@@ -146,8 +145,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             string currentPersonGivingId = CurrentPerson.GivingId;
 
             var qry = transService.Queryable( "TransactionDetails.Account,FinancialPaymentDetail" )
-                        .Where( t => 
-                            t.TransactionDetails.Any() && 
+                        .Where( t =>
+                            t.TransactionDetails.Any(d => d.AccountId != 263) &&
                             t.AuthorizedPersonAlias != null &&
                             t.AuthorizedPersonAlias.Person != null &&
                             t.AuthorizedPersonAlias.Person.GivingId == currentPersonGivingId );
