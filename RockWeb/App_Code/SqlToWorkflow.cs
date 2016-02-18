@@ -76,7 +76,7 @@ namespace org.newpointe.SqlToWorkflow
 
 
             List<string> errorMessages;
-            if (_workflow.Process(_rockContext, null, out errorMessages))
+            if (_workflowService.Process(_workflow, out errorMessages))
             {
                 // If the workflow type is persisted, save the workflow
                 if (_workflow.IsPersisted || _workflowType.IsPersisted)

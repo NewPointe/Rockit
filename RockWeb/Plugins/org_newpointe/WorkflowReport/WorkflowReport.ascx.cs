@@ -192,7 +192,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             var allAssignedPeople = assignedGroupPeopleData.Count() > 0 ? assignedWorkerData.Union(assignedGroupPeopleData, new ShallowPersonDataComparer()) : assignedWorkerData;
 
 
-            bindNameAndId(assignWork, allAssignedPeople.OrderBy("LastName").ToList(), workerFilter.ToString());
+            bindNameAndId(assignWork, allAssignedPeople.OrderBy("FirstName").ToList(), workerFilter.ToString());
             workerFilter = int.TryParse(assignWork.SelectedValue, out workerFilter) ? workerFilter : -1;
 
             
