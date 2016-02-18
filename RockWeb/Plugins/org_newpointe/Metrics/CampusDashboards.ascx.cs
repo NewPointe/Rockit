@@ -18,20 +18,22 @@ using Rock.Web.UI.Controls;
 using System.Data.SqlClient;
 
 
-namespace RockWeb.Plugins.org_newpointe.Reporting
+namespace RockWeb.Plugins.org_newpointe.Metrics
 {
 
     /// <summary>
     /// Template block for developers to use to start a new block.
     /// </summary>
-    [DisplayName("Metrics Dashboard Block")]
-    [Category("NewPointe Reporting")]
-    [Description("Adds a Date Picker that places a StartDate and EndDate in the URL querystring.")]
+    [DisplayName("Campus Dashboards")]
+    [Category("NewPointe Metrics")]
+    [Description("Campus Dashboards")]
     [DateField("Fiscal Year Start Date","Select the date the Fiscal Year starts", true)]
 
 
-    public partial class MetricsDetailBlock : Rock.Web.UI.RockBlock
+    public partial class CampusDashboards : Rock.Web.UI.RockBlock
     {
+
+
         public string FiscalYearStartDate;
         public string SelectedCampus = string.Empty;
         public int SelectedCampusId;
@@ -63,14 +65,56 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
         public string InactiveFollowupColor;
 
 
+        public string SundayDateSQLFormatted;
+        public string AttendanceLastWeekCampus;
+        public string AttendanceLastWeekLastYearAll;
+        public string AttendanceLastWeekLastYearCampus;
+
+        public string GivingLastWeek;
+        public string GivingYtd; 
+        public string GivingLastWeekCampus;
+        public string GivingYtdCampus;
+
+        public string GivingTwoWeeksAgo;
+        public string GivingTwoWeeksAgoCampus;
+
+
+        public string FinancialStartDate;
+        public string FinancialEndDate;
+        public string FinancialStartDateLastWeek;
+        public string FinancialEndDateLastWeek;
+
+
+
         RockContext rockContext = new RockContext();
 
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            FiscalYearStartDate = GetAttributeValue("FiscalYearStartDate");
+
             //Set Last Sunday Date
+            DateTime now = DateTime.Now;
             DateTime dt = DateTime.Now.StartOfWeek(DayOfWeek.Sunday);
             SundayDate = dt.ToShortDateString();
+            SundayDateSQLFormatted = dt.Date.ToString("yyyy-MM-dd");
+
+            DateTime lastTuesday = DateTime.Now.AddDays(-1);
+            while (lastTuesday.DayOfWeek != DayOfWeek.Wednesday)
+                lastTuesday = lastTuesday.AddDays(-1);
+
+            DateTime lastWednesday = DateTime.Now.AddDays(-1);
+            while (lastWednesday.DayOfWeek != DayOfWeek.Wednesday)
+                lastWednesday = lastWednesday.AddDays(-1);
+
+            FinancialStartDate = lastTuesday.AddDays(-7).ToString("yyyy-MM-dd");
+            FinancialEndDate = lastWednesday.ToString("yyyy-MM-dd");
+
+            FinancialStartDateLastWeek = lastTuesday.AddDays(-14).ToString("yyyy-MM-dd");
+            FinancialEndDateLastWeek = lastWednesday.AddDays(-7).ToString("yyyy-MM-dd");
+
+
 
 
             if (!Page.IsPostBack)
@@ -79,70 +123,22 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 FiscalYearStartDate = GetAttributeValue("FiscalYearStartDate").ToString();
 
                 //Generate Campus List
-                string[] eventList = {"All Org", "Akron Campus", "Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
-                cpCampus.DataSource = eventList;
+                string[] campusList = {"Akron Campus", "Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
+                cpCampus.DataSource = campusList;
                 cpCampus.DataBind();
 
+                //Get the campus of the currently logged in person
                 PersonService personService = new PersonService(rockContext);
-                GroupService groupService = new GroupService(rockContext);
-                GroupMemberService groupMemberService = new GroupMemberService(rockContext);
                 var personObject = personService.Get(CurrentPerson.Guid);
-
-                 //Is Person in Akron Campus?
-                if (groupMemberService.GetByGroupIdAndPersonId(74786, (int)CurrentPersonId).Any() == true)
-                {
-                    SelectedCampusId = 5;
-                    cpCampus.SelectedValue = "Akron Campus";
-                    SelectedCampus = "Akron Campus";
-                }
-                //Is Person in Canton Campus?
-                if (groupMemberService.GetByGroupIdAndPersonId(74787, (int)CurrentPersonId).Any() == true)
-                {
-                    SelectedCampusId = 2;
-                    cpCampus.SelectedValue = "Canton Campus";
-                    SelectedCampus = "Canton Campus";
-                }
-                //Is Person in Coshocton Campus?
-                if (groupMemberService.GetByGroupIdAndPersonId(74788, (int)CurrentPersonId).Any() == true)
-                {
-                    SelectedCampusId = 3;
-                    cpCampus.SelectedValue = "Coshocton Campus";
-                    SelectedCampus = "Coshocton Campus";
-                }
-                //Is Person in Dover Campus?
-                if (groupMemberService.GetByGroupIdAndPersonId(74789, (int)CurrentPersonId).Any() == true)
-                {
-                    SelectedCampusId = 1;
-                    cpCampus.SelectedValue = "Dover Campus";
-                    SelectedCampus = "Dover Campus";
-                }
-                //Is Person in Millersburg Campus?
-                if (groupMemberService.GetByGroupIdAndPersonId(74790, (int)CurrentPersonId).Any() == true)
-                {
-                    SelectedCampusId = 4;
-                    cpCampus.SelectedValue = "Millersburg Campus";
-                    SelectedCampus = "Millersburg Campus";
-                }
-                //Is Person in Wooster Campus?
-                if (groupMemberService.GetByGroupIdAndPersonId(74791, (int)CurrentPersonId).Any() == true)
-                {
-                    SelectedCampusId = 6;
-                    cpCampus.SelectedValue = "Wooster Campus";
-                    SelectedCampus = "Wooster Campus";
-                }
-                //Is Person in Central?
-                if (groupMemberService.GetByGroupIdAndPersonId(74785, (int)CurrentPersonId).Any() == true)
-                {
-                    cpCampus.SelectedValue = "All Org";
-                    SelectedCampus = "All Org";
-                    SelectedCampusId = 0;
-                }
-
-
+                var campus = personObject.GetFamilies().FirstOrDefault().Campus ?? new Campus();
+                SelectedCampusId = campus.Id;
+                cpCampus.SelectedValue = campus.Name;
+                SelectedCampus = campus.Name;
+                
 
             }
 
-                DoSQL();
+            DoSQL();
 
         }
 
@@ -170,9 +166,6 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                     break;
                 case "Wooster Campus":
                     SelectedCampusId = 5;
-                    break;
-                case "All Org":
-                    SelectedCampusId = 0;
                     break;
             }
 
@@ -342,6 +335,22 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 14) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
 
+            //Partners
+            if (SelectedCampusId == 0)
+            {
+                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricId = 20
+				ORDER BY MetricValueDateTime DESC;").ToList<int?>()[0].ToString();
+            }
+            else
+            {
+                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricId = 20 AND mv.EntityId = @CampusId
+				ORDER BY MetricValueDateTime DESC; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+            }
+
             //Small Group Leaders
             if (SelectedCampusId == 0)
             {
@@ -497,25 +506,6 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 ) s", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
 
-
-            //Partners
-            if (SelectedCampusId == 0)
-            {
-                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
-                FROM MetricValue mv 
-                WHERE mv.MetricId = 20
-				ORDER BY MetricValueDateTime DESC;").ToList<int?>()[0].ToString();
-            }
-            else
-            {
-                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
-                FROM MetricValue mv 
-                WHERE mv.MetricId = 20 AND mv.EntityId = @CampusId
-				ORDER BY MetricValueDateTime DESC; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
-            }
-
-
-
             //Inactive Follow-up
             if (SelectedCampusId == 0)
             {
@@ -558,7 +548,7 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
             InactiveFollowup = totalFollowups.ToString();
             if (InactiveFollowup != "0")
             {
-                followupPercent = (decimal.Parse(InactiveFollowupComplete)/decimal.Parse(InactiveFollowup))*100;
+                followupPercent = (decimal.Parse(InactiveFollowupComplete) / decimal.Parse(InactiveFollowup)) * 100;
                 InactiveFollowupPercentage = followupPercent.ToString();
             }
             else
