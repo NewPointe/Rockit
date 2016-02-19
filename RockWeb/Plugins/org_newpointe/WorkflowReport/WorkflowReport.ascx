@@ -221,7 +221,7 @@
                         <Columns>
                             <%--<asp:BoundField HeaderText="Workflow Id" DataField="Id" SortExpression="Id" />--%>
                             <asp:BoundField HeaderText="Name" DataField="AssignedEntityName" SortExpression="AssignedEntityName" />
-                            <asp:BoundField HeaderText="Workflow" DataField="WorkflowTypeName" SortExpression="WorkflowTypeName" />
+                            <asp:BoundField HeaderText="Workflow Name" DataField="WorkflowTypeName" SortExpression="WorkflowTypeName" />
                             <asp:BoundField HeaderText="Title" DataField="Name" SortExpression="Name" />
                             <asp:BoundField HeaderText="Date Started" DataField="CreatedDateTime" SortExpression="CreatedDateTime" />
                             <asp:BoundField HeaderText="Status" DataField="Status" SortExpression="Status" />

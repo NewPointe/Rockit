@@ -134,16 +134,16 @@ namespace RockWeb.Blocks.Core
                 {
                     try
                     {
-                    	if ( CheckSqlServerVersion() )
-                    	{
-                        	_isOkToProceed = true;
-                    	}
-                	    else
-            	        {
-        	                nbVersionIssue.Visible = true;
-    	                    nbBackupMessage.Visible = false;
-	                    }
-	                    
+                        if ( CheckSqlServerVersion() )
+                        {
+                            _isOkToProceed = true;
+                        }
+                        else
+                        {
+                            nbVersionIssue.Visible = true;
+                            nbBackupMessage.Visible = false;
+                        }
+
                         _availablePackages = NuGetService.SourceRepository.FindPackagesById( _rockPackageId ).OrderByDescending( p => p.Version );
                         if ( IsUpdateAvailable() )
                         {
@@ -175,7 +175,7 @@ namespace RockWeb.Blocks.Core
             rptPackageVersions.DataSource = _availablePackages;
             rptPackageVersions.DataBind();
         }
-        
+
         /// <summary>
         /// Wraps the install or update process in some guarded code while putting the app in "offline"
         /// mode and then back "online" when it's complete.
@@ -188,7 +188,7 @@ namespace RockWeb.Blocks.Core
             {
                 pnlUpdatesAvailable.Visible = false;
 
-                if ( ! UpdateRockPackage( version ) )
+                if ( !UpdateRockPackage( version ) )
                 {
                     pnlError.Visible = true;
                     pnlUpdateSuccess.Visible = false;
@@ -203,7 +203,7 @@ namespace RockWeb.Blocks.Core
             catch ( Exception ex )
             {
                 pnlError.Visible = true;
-                pnlUpdateSuccess.Visible = false; 
+                pnlUpdateSuccess.Visible = false;
                 nbErrors.Text = string.Format( "Something went wrong.  Although the errors were written to the error log, they are listed for your review:<br/>{0}", ex.Message );
                 LogException( ex );
             }
@@ -219,14 +219,14 @@ namespace RockWeb.Blocks.Core
         {
             if ( e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem )
             {
-                IPackage package = e.Item.DataItem as IPackage;
+                IPackage package = e.Item.DataItem as IPackage; 
                 if ( package != null )
                 {
-                    Boolean isExactPackageInstalled = NuGetService.IsPackageInstalled( package );
                     LinkButton lbInstall = e.Item.FindControl( "lbInstall" ) as LinkButton;
                     var divPanel = e.Item.FindControl( "divPanel" ) as HtmlGenericControl;
-                    // Only the last item in the list is the primary
-                    if ( e.Item.ItemIndex == _numberOfAvailablePackages - 1 )
+                    
+                    var requiredVersion = ExtractRequiredVersionFromTags( package );
+                    if ( requiredVersion >= _installedVersion )
                     {
                         lbInstall.Enabled = true;
                         lbInstall.AddCssClass( "btn-info" );
@@ -240,7 +240,7 @@ namespace RockWeb.Blocks.Core
                         divPanel.AddCssClass( "panel-block" );
                     }
 
-                    if ( ! _isOkToProceed )
+                    if ( !_isOkToProceed )
                     {
                         lbInstall.Enabled = false;
                         lbInstall.AddCssClass( "btn-danger" );
@@ -310,7 +310,7 @@ namespace RockWeb.Blocks.Core
             {
                 var update = NuGetService.SourceRepository.FindPackage( _rockPackageId, ( version != null ) ? SemanticVersion.Parse( version ) : null, false, false );
                 var installed = NuGetService.GetInstalledPackage( _rockPackageId );
-                
+
                 if ( installed == null )
                 {
                     errors = NuGetService.InstallPackage( update );
@@ -343,7 +343,7 @@ namespace RockWeb.Blocks.Core
                 errors = errors.Concat( new[] { string.Format( "There is a problem installing v{0}. It looks like your website ran out of memory. Check out <a href='http://www.rockrms.com/Rock/UpdateIssues#outofmemory'>this page for some assistance</a>", version ) } );
                 LogException( ex );
             }
-            catch( System.Xml.XmlException ex )
+            catch ( System.Xml.XmlException ex )
             {
                 errors = errors.Concat( new[] { string.Format( "There is a problem installing v{0}. It looks one of the standard XML files ({1}) may have been customized which prevented us from updating it. Check out <a href='http://www.rockrms.com/Rock/UpdateIssues#customizedxml'>this page for some assistance</a>", version, ex.Message ) } );
                 LogException( ex );
@@ -381,7 +381,7 @@ namespace RockWeb.Blocks.Core
             lRockVersion.Text = string.Format( "<b>Current Version: </b> {0}", VersionInfo.GetRockProductVersionFullName() );
             lNoUpdateVersion.Text = VersionInfo.GetRockProductVersionFullName();
         }
-        
+
         /// <summary>
         /// Determines if there is an update available to install and
         /// puts the valid ones (that is those that meet the requirements)
@@ -419,7 +419,7 @@ namespace RockWeb.Blocks.Core
                     //    // so we clear it out and keep processing.
                     //    if ( requiredVersion > _installedVersion )
                     //    {
-                            
+
                     //        verifiedPackages.Clear();
                     //    }
                     //}
@@ -439,7 +439,7 @@ namespace RockWeb.Blocks.Core
                 lMessage.Text = string.Format( "<div class='alert alert-danger'>There is a problem with the packaging system. {0}</p>", ex.Message );
             }
 
-            if (verifiedPackages.Count > 0 )
+            if ( verifiedPackages.Count > 0 )
             {
                 return true;
             }
@@ -502,7 +502,7 @@ namespace RockWeb.Blocks.Core
             }
             catch ( Exception )
             {
-                if ( ! File.Exists( offlineFile ) )
+                if ( !File.Exists( offlineFile ) )
                 {
                     CreateOfflineFileFromScratch( offlineFile );
                 }
@@ -647,7 +647,7 @@ namespace RockWeb.Blocks.Core
                 int numberOfActiveRecords = new PersonService( rockContext ).Queryable( includeDeceased: false, includeBusinesses: false ).Count();
 
                 if ( numberOfActiveRecords > 100 || !Rock.Web.SystemSettings.GetValue( SystemSettingKeys.SAMPLEDATA_DATE ).AsDateTime().HasValue )
-                { 
+                {
                     string organizationName = string.Empty;
                     ImpactLocation organizationLocation = null;
                     string publicUrl = string.Empty;
@@ -677,7 +677,7 @@ namespace RockWeb.Blocks.Core
                         numberOfActiveRecords = 0;
                     }
 
-                    var environmentData = GetEnvDataAsJson();
+                    var environmentData = Rock.Web.Utilities.RockUpdateHelper.GetEnvDataAsJson( Request, ResolveRockUrl( "~/" ) );
 
                     // now send them to SDN/Rock server
                     SendToSpark( rockInstanceId, version, ipAddress, publicUrl, organizationName, organizationLocation, numberOfActiveRecords, environmentData );
@@ -693,36 +693,6 @@ namespace RockWeb.Blocks.Core
                 }
                 catch { }
             }
-        }
-
-        /// <summary>
-        /// Returns the environment data as json.
-        /// </summary>
-        /// <returns>a JSON formatted string</returns>
-        private string GetEnvDataAsJson()
-        {
-            string sqlVersion = "";
-            try
-            {
-                sqlVersion = Rock.Data.DbService.ExecuteScaler( "SELECT SERVERPROPERTY('productversion')" ).ToString();
-            }
-            catch
-            {
-                // oh well, sorry, I have to move on...
-            }
-
-            EnvData envData = new EnvData()
-            {
-                AppRoot = ResolveRockUrl( "~/" ),
-                Architecture = (IntPtr.Size == 4) ? "32bit" : "64bit",
-                AspNetVersion = Environment.Version.ToString(),
-                IisVersion = Request.ServerVariables["SERVER_SOFTWARE"],
-                //Ram = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory,
-                ServerOs = Environment.OSVersion.ToString(),
-                SqlVersion = sqlVersion
-            };
-
-            return envData.ToJson();
         }
 
         /// <summary>
@@ -785,18 +755,6 @@ namespace RockWeb.Blocks.Core
             }
         }
         #endregion
-}
-
-    [Serializable]
-    public class EnvData
-    {
-        public string AppRoot { get; set; }
-        public string Architecture { get; set; }
-        public string AspNetVersion { get; set; }
-        public string IisVersion { get; set; }
-        public string Ram { get; set; }
-        public string ServerOs { get; set; }
-        public string SqlVersion { get; set; }
     }
 
     [Serializable]

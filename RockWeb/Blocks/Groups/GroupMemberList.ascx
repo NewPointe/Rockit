@@ -36,8 +36,8 @@
                             <Rock:Grid ID="gGroupMembers" runat="server" DisplayType="Full" AllowSorting="true" OnRowSelected="gGroupMembers_Edit" CssClass="js-grid-group-members" >
                                 <Columns>
                                     <Rock:SelectField></Rock:SelectField>
-                                    <Rock:RockBoundField DataField="Name" HeaderText="Name" SortExpression="LastName,NickName" HtmlEncode="false" />
-                                    <Rock:DefinedValueField DataField="ConnectionStatusValueId" HeaderText="Connection Status" SortExpression="ConnectionStatusValue.Value" />
+                                    <Rock:RockBoundField DataField="Name" HeaderText="Name" SortExpression="Person.LastName,Person.NickName" HtmlEncode="false" />
+                                    <Rock:DefinedValueField DataField="ConnectionStatusValueId" HeaderText="Connection Status" SortExpression="Person.ConnectionStatusValue.Value"/>
                                     <Rock:RockTemplateFieldUnselected HeaderText="Registration">
                                         <ItemTemplate>
                                             <asp:Literal ID="lRegistration" runat="server"></asp:Literal>
@@ -51,6 +51,14 @@
                     </div>
                 </div>
             </div>
+
+             <script>
+                Sys.Application.add_load( function () {
+                    $("div.photo-icon").lazyload({
+                        effect: "fadeIn"
+                    });
+                });
+            </script>
 
             <Rock:ModalDialog ID="mdPlaceElsewhere" runat="server" Visible="false" ValidationGroup="vgPlaceElsewhere"
                 Title="<i class='fa fa-share'></i> Place Elsewhere" OnSaveClick="mdPlaceElsewhere_SaveClick"

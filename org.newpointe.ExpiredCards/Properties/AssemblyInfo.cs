@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("org.newpointe.Giving")]
+[assembly: AssemblyTitle("org.newpointe.ExpiredCards")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NewPointe")]
-[assembly: AssemblyProduct("org.newpointe.Giving")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyProduct("org.newpointe.ExpiredCards")]
+[assembly: AssemblyCopyright("Copyright © 2016 NewPointe Community Church")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bf4e4259-94b9-4e5a-bc62-70c93cabcfb0")]
+[assembly: Guid("FD233060-FBD5-4D71-A2D0-172CB63D285C")]
 
 // Version information for an assembly consists of the following four values:
 //

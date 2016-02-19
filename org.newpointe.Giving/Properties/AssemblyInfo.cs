@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NewPointe")]
 [assembly: AssemblyProduct("org.newpointe.Giving")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © 2016 NewPointe Community Church")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
