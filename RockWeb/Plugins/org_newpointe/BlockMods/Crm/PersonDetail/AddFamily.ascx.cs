@@ -180,7 +180,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
             }
 
             var campusi = CampusCache.All().Where(c => (c.IsActive ?? false) && c.Id != 7 && c.Id != 8);
-            cpCampus.Campuses = campusi;
+            cpCampus.Campuses = campusi.ToList();
             cpCampus.Visible = campusi.Any();
             if ( campusi.Count() == 1 )
             {
