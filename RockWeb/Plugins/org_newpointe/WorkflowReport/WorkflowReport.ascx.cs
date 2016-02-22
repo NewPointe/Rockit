@@ -91,6 +91,19 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
         {
 
             int workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
+
+            int? wtfpp = null;
+            if(!IsPostBack)
+            {
+                wtfpp = PageParameter("WorkflowTypeId").AsIntegerOrNull();
+            }
+
+            if(wtfpp.HasValue)
+            {
+                workflowTypeFilter = wtfpp.Value;
+            }
+
+
             int campusFilter = int.TryParse(campusPicker.SelectedValue, out campusFilter) ? campusFilter : -1;
             int workerFilter = int.TryParse(assignWork.SelectedValue, out workerFilter) ? workerFilter : -1;
             SortProperty workflowSort = workflowReportTable.SortProperty;
