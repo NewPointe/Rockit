@@ -26,114 +26,115 @@
         <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">Evangelism</td>
       </tr>
       <tr>
-        <td>Weekend Attendance <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>Weekend Attendance <small><a href="https://rock.newpointe.org/metrics/attendanceDashboard"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= AttendanceLastWeekAll %></td>
-        <td>5000</td>
-        <td>6000</td>
+        <td>95%</td>
+        <td><%= AttendanceGoalCurrent %></td>
+        <td><%= AttendanceGoal2020 %></td>
       </tr>
       <tr>
         <td style="padding-left:30px">Adults</td>
         <td><%= AttendanceLastWeekAud %></td>
         <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= AttendanceAudGoalCurrent %></td>
+        <td><%= AttendanceAudGoal2020 %></td>
       </tr>
       <tr>
         <td style="padding-left:30px">Children</td>
         <td><%= AttendanceLastWeekChild %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= AttendanceChildGoalCurrent %></td>
+        <td><%= AttendanceChildGoal2020 %></td>
       </tr>
       <tr>
         <td style="padding-left:30px">Students</td>
         <td><%= AttendanceLastWeekStudent %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= AttendanceStudentGoalCurrent %></td>
+        <td><%= AttendanceStudentGoal2020 %></td>
       </tr>
       <tr>
-        <td>Commitments <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>Commitments <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td> <%= Commitments %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= CommitmentsGoalCurrent %></td>
+        <td><%= CommitmentsGoal2020 %></td>
       </tr>
       <tr>
-        <td>Re-commitments <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>Re-commitments <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Recommitments %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= RecommitmentsGoalCurrent %></td>
+        <td><%= RecommitmentsGoal2020 %></td>
       </tr>
       <tr>
-        <td>Baptisms <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>Baptisms <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Baptisms %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= BaptismsGoalCurrent %></td>
+        <td><%= BaptismsGoal2020 %></td>
       </tr>
       <tr>
-        <td>New Here Guests <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>New Here Guests <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= NewHere %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= NewHereGoalCurrent %></td>
+        <td><%= NewHereGoal2020 %></td>
       </tr>
       <tr>
         <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">Assimilation</td>
       </tr>
       <tr>
-        <td>New to NewPointe <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>New to NewPointe <small><a href="https://rock.newpointe.org/page/526"><i class="fa fa-bar-chart"></i></a></small></td>
         <td> <%= NewtoNewPointe %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= NewtoNewPointeGoalCurrent %></td>
+        <td><%= NewtoNewPointeGoal2020 %></td>
       </tr>
       <tr>
-        <td>Discover Groups <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>Discover Groups <small><a href="https://rock.newpointe.org/page/526"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= DiscoverGroups %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= DiscoverGroupsGoalCurrent %></td>
+        <td><%= DiscoverGroupsGoal2020 %></td>
       </tr>
       <tr>
         <td>Small Groups</td>
         <td><%= SmallGroupParticipants %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= SmallGroupParticipantsGoalCurrent %></td>
+        <td><%= SmallGroupParticipantsGoal2020 %></td>
       </tr>
       <tr>
         <td>Campus Groups</td>
-        <td>4000</td>
+        <td>NYI</td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td>NYI</td>
+        <td>NYI</td>
       </tr>
       <tr>
       <td>Partners</td>
         <td><%= Partners %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= PartnersGoalCurrent %></td>
+        <td><%= PartnersGoal2020 %></td>
       </tr>
       <tr>
         <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">People</td>
       </tr>
       <tr>
-        <td>Volunteers <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>Volunteers <small><a href="https://rock.newpointe.org/page/551"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Volunteers %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= VolunteersGoalCurrent %></td>
+        <td><%= VolunteersGoal2020 %></td>
       </tr>
       <tr>
-        <td>Small Group Leaders <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
+        <td>Small Group Leaders</td>
         <td><%= SmallGroupLeaders %></td>
           <td>95%</td>
-        <td>5000</td>
-        <td>6000</td>
+        <td><%= SmallGroupLeadersGoalCurrent %></td>
+        <td><%= SmallGroupLeadersGoal2020 %></td>
       </tr>
       <!--<tr>
       <td>Ministry Leaders</td>

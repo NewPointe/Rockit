@@ -43,19 +43,93 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public string AttendanceLastWeekAud;
         public string AttendanceLastWeekChild;
         public string AttendanceLastWeekStudent;
+
+        public string AttendanceGoalCurrent;
+        public string AttendanceGoal2020;
+        public string AttendanceGoalProgress;
+
+        public string AttendanceAudGoalCurrent;
+        public string AttendanceAudGoal2020;
+        public string AttendanceAudGoalProgress;
+
+        public string AttendanceChildGoalCurrent;
+        public string AttendanceChildGoal2020;
+        public string AttendanceChildGoalProgress;
+
+        public string AttendanceStudentGoalCurrent;
+        public string AttendanceStudentGoal2020;
+        public string AttendanceStudentGoalProgress;
+
+        public string AttendanceAllGoalCurrent;
+        public string AttendanceAllGoal2020;
+        public string AttendanceAllGoalProgress;
+        
         public string Baptisms;
+        public string BaptismsGoalCurrent;
+        public string BaptismsGoal2020;
+        public string BaptismsGoalProgress;
+
         public string Commitments;
+        public string CommitmentsGoalCurrent;
+        public string CommitmentsGoal2020;
+        public string CommitmentsGoalProgress;
+
         public string Recommitments;
+        public string RecommitmentsGoalCurrent;
+        public string RecommitmentsGoal2020;
+        public string RecommitmentsGoalProgress;
+
         public string AllCommitments;
+        public string AllCommitmentsGoalCurrent;
+        public string AllCommitmentsGoal2020;
+        public string AllCommitmentsGoalProgress;
+
         public string NewHere;
+        public string NewHereGoalCurrent;
+        public string NewHereGoal2020;
+        public string NewHereGoalProgress;
+
         public string Partners;
+        public string PartnersGoalCurrent;
+        public string PartnersGoal2020;
+        public string PartnersGoalProgress;
+
         public string SmallGroupLeaders;
+        public string SmallGroupLeadersGoalCurrent;
+        public string SmallGroupLeadersGoal2020;
+        public string SmallGroupLeadersGoalProgress;
+
         public string Volunteers;
+        public string VolunteersGoalCurrent;
+        public string VolunteersGoal2020;
+        public string VolunteersGoalProgress;
+
         public string Involvement;
+        public string InvolvementGoalCurrent;
+        public string InvolvementGoal2020;
+        public string InvolvementGoalProgress;
+
         public string NewtoNewPointe;
+        public string NewtoNewPointeGoalCurrent;
+        public string NewtoNewPointeGoal2020;
+        public string NewtoNewPointeGoalProgress;
+
         public string DiscoverGroups;
+        public string DiscoverGroupsGoalCurrent;
+        public string DiscoverGroupsGoal2020;
+        public string DiscoverGroupsGoalProgress;
+
         public string SmallGroupParticipants;
+        public string SmallGroupParticipantsGoalCurrent;
+        public string SmallGroupParticipantsGoal2020;
+        public string SmallGroupParticipantsGoalProgress;
+
         public string Assimilation;
+        public string AssimilationGoalCurrent;
+        public string AssimilationGoal2020;
+        public string AssimilationGoalProgress;
+
+
         public string SundayDate;
 
         public string InactiveFollowup;
@@ -84,6 +158,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public string FinancialStartDateLastWeek;
         public string FinancialEndDateLastWeek;
 
+        public int CurrentMonthInFiscalYear = 1;
+        public float GoalOffset = 1;
+        
 
 
         RockContext rockContext = new RockContext();
@@ -114,8 +191,59 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             FinancialStartDateLastWeek = lastTuesday.AddDays(-14).ToString("yyyy-MM-dd");
             FinancialEndDateLastWeek = lastWednesday.AddDays(-7).ToString("yyyy-MM-dd");
 
+            string sMonth = DateTime.Now.ToString("M");
 
-
+            switch (sMonth)
+            {
+                case "9":
+                    CurrentMonthInFiscalYear = 1;
+                    GoalOffset = CurrentMonthInFiscalYear/12;
+                    break;
+                case "10":
+                    CurrentMonthInFiscalYear = 2;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "11":
+                    CurrentMonthInFiscalYear = 3;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "12":
+                    CurrentMonthInFiscalYear = 4;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "1":
+                    CurrentMonthInFiscalYear = 5;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "2":
+                    CurrentMonthInFiscalYear = 6;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "3":
+                    CurrentMonthInFiscalYear = 7;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "4":
+                    CurrentMonthInFiscalYear = 8;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "5":
+                    CurrentMonthInFiscalYear = 9;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "6":
+                    CurrentMonthInFiscalYear = 10;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "7":
+                    CurrentMonthInFiscalYear = 11;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+                case "8":
+                    CurrentMonthInFiscalYear = 12;
+                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    break;
+            }
 
             if (!Page.IsPostBack)
             {
@@ -123,18 +251,74 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 FiscalYearStartDate = GetAttributeValue("FiscalYearStartDate").ToString();
 
                 //Generate Campus List
-                string[] campusList = {"Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
+                string[] campusList = {"All Org", "Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
                 cpCampus.DataSource = campusList;
                 cpCampus.DataBind();
 
                 //Get the campus of the currently logged in person
+                //PersonService personService = new PersonService(rockContext);
+                //var personObject = personService.Get(CurrentPerson.Guid);
+                //var campus = personObject.GetFamilies().FirstOrDefault().Campus ?? new Campus();
+                //SelectedCampusId = campus.Id;
+                //cpCampus.SelectedValue = campus.Name;
+                //SelectedCampus = campus.Name;
+
+
                 PersonService personService = new PersonService(rockContext);
+                GroupService groupService = new GroupService(rockContext);
+                GroupMemberService groupMemberService = new GroupMemberService(rockContext);
                 var personObject = personService.Get(CurrentPerson.Guid);
-                var campus = personObject.GetFamilies().FirstOrDefault().Campus ?? new Campus();
-                SelectedCampusId = campus.Id;
-                cpCampus.SelectedValue = campus.Name;
-                SelectedCampus = campus.Name;
-                
+
+                //Is Person in Akron Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74786, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 5;
+                    cpCampus.SelectedValue = "Akron Campus";
+                    SelectedCampus = "Akron Campus";
+                }
+                //Is Person in Canton Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74787, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 2;
+                    cpCampus.SelectedValue = "Canton Campus";
+                    SelectedCampus = "Canton Campus";
+                }
+                //Is Person in Coshocton Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74788, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 3;
+                    cpCampus.SelectedValue = "Coshocton Campus";
+                    SelectedCampus = "Coshocton Campus";
+                }
+                //Is Person in Dover Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74789, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 1;
+                    cpCampus.SelectedValue = "Dover Campus";
+                    SelectedCampus = "Dover Campus";
+                }
+                //Is Person in Millersburg Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74790, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 4;
+                    cpCampus.SelectedValue = "Millersburg Campus";
+                    SelectedCampus = "Millersburg Campus";
+                }
+                //Is Person in Wooster Campus?
+                if (groupMemberService.GetByGroupIdAndPersonId(74791, (int)CurrentPersonId).Any() == true)
+                {
+                    SelectedCampusId = 6;
+                    cpCampus.SelectedValue = "Wooster Campus";
+                    SelectedCampus = "Wooster Campus";
+                }
+                //Is Person in Central?
+                if (groupMemberService.GetByGroupIdAndPersonId(74785, (int)CurrentPersonId).Any() == true)
+                {
+                    cpCampus.SelectedValue = "All Org";
+                    SelectedCampus = "All Org";
+                    SelectedCampusId = 0;
+                }
+
 
             }
 
@@ -166,6 +350,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                     break;
                 case "Wooster Campus":
                     SelectedCampusId = 5;
+                    break;
+                case "All Org":
+                    SelectedCampusId = 0;
                     break;
             }
 
@@ -211,6 +398,21 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND(DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE()) - 1)
                 AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId != 8; ")
                     .ToList<int?>()[0].ToString();
+
+                AttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())")
+                    .ToList<int?>()[0].ToString();
+
+                AttendanceGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'")
+                    .ToList<int?>()[0].ToString();
+
+
+
             }
             else
             {
@@ -218,6 +420,16 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND(DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE()) - 1)
                 AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
 
             //Attendance Last Week - Auditorium
@@ -226,13 +438,34 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 AttendanceLastWeekAud = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8").ToList<int?>()[0].ToString();
+
+                AttendanceAudGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 2 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                AttendanceAudGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 2 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
             }
 
             else
             {
                 AttendanceLastWeekAud = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 
+                AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceChildGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
 
             //Attendance Last Week - Rainforest + Velocity
@@ -242,28 +475,81 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 3 OR mv.MetricId = 4) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8")
                     .ToList<int?>()[0].ToString();
+
+                AttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                AttendanceChildGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
             }
             else
             {
                 AttendanceLastWeekChild = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 3 OR mv.MetricId = 4) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 3 OR mv.MetricId = 4) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1
+                AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceChildGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
             }
+
+
+
 
             //Attendance Last Week - The Collective
             if (SelectedCampusId == 0)
             {
                 AttendanceLastWeekStudent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 5) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8")
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 5 OR mv.MetricId = 23) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8")
                     .ToList<int?>()[0].ToString();
+
+                AttendanceStudentGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                AttendanceStudentGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
             }
             else
             {
                 AttendanceLastWeekStudent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue),0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 5) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 5 OR mv.MetricId = 23) AND DATEPART(isowk, mv.MetricValueDateTime) = 
+                DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceStudentGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceStudentGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
+
+
+            //AttendanceGoalCurrent = (Int32.Parse(AttendanceStudentGoalCurrent) + Int32.Parse(AttendanceChildGoalCurrent) + Int32.Parse(AttendanceGoalCurrent)).ToString();
+            //AttendanceGoal2020 = (Int32.Parse(AttendanceStudentGoal2020) + Int32.Parse(AttendanceChildGoal2020) + Int32.Parse(AttendanceGoal2020)).ToString();
+
 
             //Baptisms
             if (SelectedCampusId == 0)
@@ -271,13 +557,38 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 Baptisms = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 11) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+
+                BaptismsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 11 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                BaptismsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 11 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
+
             }
             else
             {
                 Baptisms = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 11) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
-            }
+
+                BaptismsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 11 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                BaptismsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 11 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+             }
+
+
 
             //First Time Commitments
             if (SelectedCampusId == 0)
@@ -285,13 +596,36 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 Commitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+
+                CommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                CommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
+
             }
             else
             {
                 Commitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                CommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                CommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
+
 
             //Re-commitments
             if (SelectedCampusId == 0)
@@ -299,12 +633,35 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 Recommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+
+                RecommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 13 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                RecommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 13 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
+
             }
             else
             {
                 Recommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                RecommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 13 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                RecommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 13 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
             }
 
             //Total Commitments
@@ -327,12 +684,35 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 NewHere = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 14) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+
+                NewHereGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 14 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                NewHereGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 14 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
             }
+
             else
             {
                 NewHere = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 14) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                NewHereGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 14 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                NewHereGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 14 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
             }
 
             //Partners
@@ -342,6 +722,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 FROM MetricValue mv 
                 WHERE mv.MetricId = 20
 				ORDER BY MetricValueDateTime DESC;").ToList<int?>()[0].ToString();
+
+                PartnersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 20 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                PartnersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 20 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
             }
             else
             {
@@ -349,6 +740,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 FROM MetricValue mv 
                 WHERE mv.MetricId = 20 AND mv.EntityId = @CampusId
 				ORDER BY MetricValueDateTime DESC; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                PartnersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 20 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                PartnersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 20 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
             }
 
             //Small Group Leaders
@@ -359,6 +761,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                         @"SELECT TOP 1 CAST(ISNULL(SUM(YValue), 0) as int) as att
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 18) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE())").ToList<int?>()[0].ToString();
+
+                SmallGroupLeadersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 18 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                SmallGroupLeadersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 18 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
             }
             else
             {
@@ -368,6 +781,16 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 18) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) 
                         AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                SmallGroupLeadersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 18 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                SmallGroupLeadersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 18 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
 
             //Volunteers
@@ -379,6 +802,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 16) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) 
                         AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) ").ToList<int?>()[0].ToString();
+
+                VolunteersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 16 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                VolunteersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 16 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
             }
             else
             {
@@ -388,6 +822,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 16) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) 
                         AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                VolunteersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 16 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                VolunteersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 16 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
             }
 
             //Total Involvement
@@ -419,6 +864,16 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                         JOIN [Group] g on a.GroupId = g.Id
                         WHERE (g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR
                         g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01'").ToList<int?>()[0].ToString();
+
+                NewtoNewPointeGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 21 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                NewtoNewPointeGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 21 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
             }
             else
             {
@@ -428,6 +883,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                         JOIN [Group] g on a.GroupId = g.Id
                         WHERE (g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR
                         g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01' AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                NewtoNewPointeGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 21 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                NewtoNewPointeGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 21 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
             }
 
             //Discover Groups
@@ -440,6 +906,16 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
                 OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
                 OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01';").ToList<int?>()[0].ToString();
+
+                DiscoverGroupsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 22 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                DiscoverGroupsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 22 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
             }
             else
             {
@@ -450,6 +926,16 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
                 OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
                 OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01'AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                DiscoverGroupsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 22 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+               DiscoverGroupsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 22 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
 
             //Small Group Participants
@@ -461,6 +947,16 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 17) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) 
                         AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) ").ToList<int?>()[0].ToString();
+
+                SmallGroupParticipantsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 17 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+
+                SmallGroupParticipantsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 17 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
             }
             else
             {
@@ -470,7 +966,19 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 17) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) 
                         AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                SmallGroupParticipantsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 17 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                SmallGroupParticipantsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 17 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
+
+
 
             //All Assimilation
             if (SelectedCampusId == 0)
