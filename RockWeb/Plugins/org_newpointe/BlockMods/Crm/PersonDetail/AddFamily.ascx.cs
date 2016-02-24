@@ -34,12 +34,12 @@ using Rock.Security;
 using Rock.Web.Cache;
 using Rock.Web.UI.Controls;
 
-namespace RockWeb.Plugins.org_newpointe.Checkin
+namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
 {
     /// <summary>
     /// Block for adding new families
     /// </summary>
-    [DisplayName( "Quick Add Family" )]
+    [DisplayName( "Add Family" )]
     [Category( "Newpointe CRM > Person Detail" )]
     [Description( "Allows for adding new families." )]
 
@@ -179,10 +179,10 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                 nfmMemberDiv.AddCssClass( "hide-conStatus" );
             }
 
-            var campusi = CampusCache.All();
-            cpCampus.Campuses = campusi;
+            var campusi = CampusCache.All().Where(c => (c.IsActive ?? false) && c.Id != 7 && c.Id != 8);
+            cpCampus.Campuses = campusi.ToList();
             cpCampus.Visible = campusi.Any();
-            if ( campusi.Count == 1 )
+            if ( campusi.Count() == 1 )
             {
                 cpCampus.SelectedCampusId = campusi.FirstOrDefault().Id;
             }

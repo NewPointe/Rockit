@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AddFamily.ascx.cs" Inherits="RockWeb.Plugins.org_newpointe.Checkin.AddFamily" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AddFamily.ascx.cs" Inherits="RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail.AddFamily" %>
 
 <asp:UpdatePanel ID="upAddFamily" runat="server">
     <ContentTemplate>

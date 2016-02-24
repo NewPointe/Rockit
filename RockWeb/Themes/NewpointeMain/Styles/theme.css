@@ -292,7 +292,7 @@ img.jcrop-preview {
   bottom: 0;
   width: 100%;
   height: 36px;
-  z-index: 999;
+  z-index: 1049;
   position: fixed;
   right: 0;
   margin-right: 0;
@@ -1257,10 +1257,6 @@ tr.row-highlight td {
   margin-left: -15px;
   border-radius: 0;
   margin-bottom: 15px;
-}
-td .photo-icon {
-  opacity: 0.6;
-  min-height: 16px;
 }
 /*
     Used to manage styles for specific blocks.
@@ -5718,6 +5714,11 @@ ul.list-group-panel .list-group-item:first-child,
   width: 35px;
   border-radius: 17.5px;
 }
+.photo-round.photo-round-xs {
+  height: 20px;
+  width: 20px;
+  border-radius: 17.5px;
+}
 .wizard {
   background-color: #eeeeee;
   padding: 8px 0;
@@ -6351,6 +6352,10 @@ header .mobile-page-menu .nav.navbar-nav li {
 header .mobile-page-menu .nav.navbar-nav a {
   font-weight: 600;
   padding: 5px;
+}
+.loginstatus > li > a:hover,
+.loginstatus > li > a:active {
+  background-color: transparent;
 }
 .divLogin {
   background-color: transparent;
