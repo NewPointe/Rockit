@@ -123,7 +123,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 FiscalYearStartDate = GetAttributeValue("FiscalYearStartDate").ToString();
 
                 //Generate Campus List
-                string[] campusList = {"Akron Campus", "Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
+                string[] campusList = {"Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
                 cpCampus.DataSource = campusList;
                 cpCampus.DataBind();
 

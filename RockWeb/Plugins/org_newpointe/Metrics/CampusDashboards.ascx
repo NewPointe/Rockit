@@ -16,13 +16,14 @@
       <tr>
         <th>Item</th>
         <th>Current</th>
+        <th>Progress</th>
         <th>2016 Goal</th>
         <th>2020 Goal</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td colspan="4" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">Evangelism</td>
+        <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">Evangelism</td>
       </tr>
       <tr>
         <td>Weekend Attendance <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
@@ -33,102 +34,117 @@
       <tr>
         <td style="padding-left:30px">Adults</td>
         <td><%= AttendanceLastWeekAud %></td>
+        <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td style="padding-left:30px">Children</td>
         <td><%= AttendanceLastWeekChild %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td style="padding-left:30px">Students</td>
         <td><%= AttendanceLastWeekStudent %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>Commitments <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td> <%= Commitments %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>Re-commitments <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Recommitments %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>Baptisms <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Baptisms %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>New Here Guests <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= NewHere %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
-        <td colspan="4" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">Assimilation</td>
+        <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">Assimilation</td>
       </tr>
       <tr>
         <td>New to NewPointe <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td> <%= NewtoNewPointe %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>Discover Groups <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= DiscoverGroups %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>Small Groups</td>
         <td><%= SmallGroupParticipants %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>Campus Groups</td>
         <td>4000</td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
       <td>Partners</td>
         <td><%= Partners %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
-        <td colspan="4" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">People</td>
+        <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 120%;">People</td>
       </tr>
       <tr>
         <td>Volunteers <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Volunteers %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
       <tr>
         <td>Small Group Leaders <small><a href="#"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= SmallGroupLeaders %></td>
+          <td>95%</td>
         <td>5000</td>
         <td>6000</td>
       </tr>
-      <tr>
+      <!--<tr>
       <td>Ministry Leaders</td>
         <td>0</td>
+        <td>95%</td>
         <td>0</td>
         <td>0</td>
-      </tr>
+      </tr> -->
    <tfoot>
     <tr>
-       <td colspan="4" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 80%;"><em>He must become greater, and I must become less and less.  - John 3:30</em></td>
+       <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 80%;"><em>He must become greater, and I must become less and less.  - John 3:30</em></td>
     </tr>
   </tfoot>
     </tbody>
