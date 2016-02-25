@@ -8,10 +8,10 @@
   <div class="row" style="padding-bottom:15px;">
 
     <div class="hidden-xs col-sm-3 col-md-2">
-      <img src="{{ item | Attribute: 'PodcastImage', 'Url' }}" width="75">
+      <img src="{{ item | Attribute: 'PodcastImage', 'Url' }}" width="75" />
 
     </div>
-    <div class="col-sm-5 col-md-3">
+    <div class="col-xs-6 col-sm-5 col-md-3">
       <p>
         <strong>{{item.Title}}</strong>
       </p>
@@ -19,7 +19,7 @@
         <small>{{item.SeriesTitle}}</small>
       </p>
     </div>
-    <div class="col-sm-4 col-md-3">
+    <div class="col-xs-6 col-sm-4 col-md-3">
       <p class="small">
         <strong>{{item.Date}}</strong>
       </p>
@@ -35,7 +35,7 @@
 
       </p>
     </div>
-    <div class="col-md-4">
+    <div class="col-xs-12 col-sm-12 col-md-4">
       {% if podcastaudio != '' %}
       <h4>Audio:</h4>
       <audio controls="">
@@ -49,7 +49,7 @@
       {% endif %}
     </div>
   </div>
-  <hl /><div class="divider-border"></div>
+  <div class="divider-border"></div>
   {% endfor %}
 
 </div>
