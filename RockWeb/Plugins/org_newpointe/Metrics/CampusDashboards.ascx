@@ -8,7 +8,6 @@
         <h4 style="text-align: center;"><strong>Our mission is to lead people to realize and reach their full potential in Jesus Christ.</strong></h4>
     </div>
    </div>
-    
 
 <div class="container">    
   <table class="table table-striped table-responsive table-condensed">
@@ -28,56 +27,56 @@
       <tr>
         <td>Weekend Attendance <small><a href="https://rock.newpointe.org/metrics/attendanceDashboard"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= AttendanceLastWeekAll %></td>
-        <td>95%</td>
+        <td><%= AttendanceGoalProgress %></td>
         <td><%= AttendanceGoalCurrent %></td>
         <td><%= AttendanceGoal2020 %></td>
       </tr>
       <tr>
         <td style="padding-left:30px">Adults</td>
         <td><%= AttendanceLastWeekAud %></td>
-        <td>95%</td>
+        <td><%= AttendanceAudGoalProgress %></td>
         <td><%= AttendanceAudGoalCurrent %></td>
         <td><%= AttendanceAudGoal2020 %></td>
       </tr>
       <tr>
         <td style="padding-left:30px">Children</td>
         <td><%= AttendanceLastWeekChild %></td>
-          <td>95%</td>
+        <td><%= AttendanceChildGoalProgress %></td>
         <td><%= AttendanceChildGoalCurrent %></td>
         <td><%= AttendanceChildGoal2020 %></td>
       </tr>
       <tr>
         <td style="padding-left:30px">Students</td>
         <td><%= AttendanceLastWeekStudent %></td>
-          <td>95%</td>
+        <td><%= AttendanceStudentGoalProgress %></td>
         <td><%= AttendanceStudentGoalCurrent %></td>
         <td><%= AttendanceStudentGoal2020 %></td>
       </tr>
       <tr>
         <td>Commitments <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td> <%= Commitments %></td>
-          <td>95%</td>
+          <td><%= CommitmentsGoalProgress %></td>
         <td><%= CommitmentsGoalCurrent %></td>
         <td><%= CommitmentsGoal2020 %></td>
       </tr>
       <tr>
         <td>Re-commitments <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Recommitments %></td>
-          <td>95%</td>
+          <td><%= RecommitmentsGoalProgress %></td>
         <td><%= RecommitmentsGoalCurrent %></td>
         <td><%= RecommitmentsGoal2020 %></td>
       </tr>
       <tr>
         <td>Baptisms <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Baptisms %></td>
-          <td>95%</td>
+        <td><%= BaptismsGoalProgress %></td>
         <td><%= BaptismsGoalCurrent %></td>
         <td><%= BaptismsGoal2020 %></td>
       </tr>
       <tr>
         <td>New Here Guests <small><a href="https://rock.newpointe.org/page/525"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= NewHere %></td>
-          <td>95%</td>
+          <td><%= NewHereGoalProgress %></td>
         <td><%= NewHereGoalCurrent %></td>
         <td><%= NewHereGoal2020 %></td>
       </tr>
@@ -87,24 +86,25 @@
       <tr>
         <td>New to NewPointe <small><a href="https://rock.newpointe.org/page/526"><i class="fa fa-bar-chart"></i></a></small></td>
         <td> <%= NewtoNewPointe %></td>
-          <td>95%</td>
+          <td><%= NewtoNewPointeGoalProgress %></td>
         <td><%= NewtoNewPointeGoalCurrent %></td>
         <td><%= NewtoNewPointeGoal2020 %></td>
       </tr>
       <tr>
         <td>Discover Groups <small><a href="https://rock.newpointe.org/page/526"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= DiscoverGroups %></td>
-          <td>95%</td>
+          <td><%= DiscoverGroupsGoalProgress %></td>
         <td><%= DiscoverGroupsGoalCurrent %></td>
         <td><%= DiscoverGroupsGoal2020 %></td>
       </tr>
       <tr>
         <td>Small Groups</td>
         <td><%= SmallGroupParticipants %></td>
-          <td>95%</td>
+          <td><%= SmallGroupParticipantsGoalProgress %></td>
         <td><%= SmallGroupParticipantsGoalCurrent %></td>
         <td><%= SmallGroupParticipantsGoal2020 %></td>
       </tr>
+        <!--
       <tr>
         <td>Campus Groups</td>
         <td>NYI</td>
@@ -112,10 +112,11 @@
         <td>NYI</td>
         <td>NYI</td>
       </tr>
+            -->
       <tr>
       <td>Partners</td>
         <td><%= Partners %></td>
-          <td>95%</td>
+          <td><%= PartnersGoalProgress %></td>
         <td><%= PartnersGoalCurrent %></td>
         <td><%= PartnersGoal2020 %></td>
       </tr>
@@ -125,14 +126,14 @@
       <tr>
         <td>Volunteers <small><a href="https://rock.newpointe.org/page/551"><i class="fa fa-bar-chart"></i></a></small></td>
         <td><%= Volunteers %></td>
-          <td>95%</td>
+          <td><%= VolunteersGoalProgress %></td>
         <td><%= VolunteersGoalCurrent %></td>
         <td><%= VolunteersGoal2020 %></td>
       </tr>
       <tr>
         <td>Small Group Leaders</td>
         <td><%= SmallGroupLeaders %></td>
-          <td>95%</td>
+          <td><%= SmallGroupLeadersGoalProgress %></td>
         <td><%= SmallGroupLeadersGoalCurrent %></td>
         <td><%= SmallGroupLeadersGoal2020 %></td>
       </tr>

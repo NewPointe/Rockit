@@ -46,88 +46,88 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
         public string AttendanceGoalCurrent;
         public string AttendanceGoal2020;
-        public string AttendanceGoalProgress;
-
+        public string AttendanceGoalProgress = "<span class='label label-danger'>Below Target</span>";
+ 
         public string AttendanceAudGoalCurrent;
         public string AttendanceAudGoal2020;
-        public string AttendanceAudGoalProgress;
+        public string AttendanceAudGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string AttendanceChildGoalCurrent;
         public string AttendanceChildGoal2020;
-        public string AttendanceChildGoalProgress;
+        public string AttendanceChildGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string AttendanceStudentGoalCurrent;
         public string AttendanceStudentGoal2020;
-        public string AttendanceStudentGoalProgress;
+        public string AttendanceStudentGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string AttendanceAllGoalCurrent;
         public string AttendanceAllGoal2020;
-        public string AttendanceAllGoalProgress;
+        public string AttendanceAllGoalProgress = "<span class='label label-danger'>Below Target</span>";
         
         public string Baptisms;
         public string BaptismsGoalCurrent;
         public string BaptismsGoal2020;
-        public string BaptismsGoalProgress;
+        public string BaptismsGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string Commitments;
         public string CommitmentsGoalCurrent;
         public string CommitmentsGoal2020;
-        public string CommitmentsGoalProgress;
+        public string CommitmentsGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string Recommitments;
         public string RecommitmentsGoalCurrent;
         public string RecommitmentsGoal2020;
-        public string RecommitmentsGoalProgress;
+        public string RecommitmentsGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string AllCommitments;
         public string AllCommitmentsGoalCurrent;
         public string AllCommitmentsGoal2020;
-        public string AllCommitmentsGoalProgress;
+        public string AllCommitmentsGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string NewHere;
         public string NewHereGoalCurrent;
         public string NewHereGoal2020;
-        public string NewHereGoalProgress;
+        public string NewHereGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string Partners;
         public string PartnersGoalCurrent;
         public string PartnersGoal2020;
-        public string PartnersGoalProgress;
+        public string PartnersGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string SmallGroupLeaders;
         public string SmallGroupLeadersGoalCurrent;
         public string SmallGroupLeadersGoal2020;
-        public string SmallGroupLeadersGoalProgress;
+        public string SmallGroupLeadersGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string Volunteers;
         public string VolunteersGoalCurrent;
         public string VolunteersGoal2020;
-        public string VolunteersGoalProgress;
+        public string VolunteersGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string Involvement;
         public string InvolvementGoalCurrent;
         public string InvolvementGoal2020;
-        public string InvolvementGoalProgress;
+        public string InvolvementGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string NewtoNewPointe;
         public string NewtoNewPointeGoalCurrent;
         public string NewtoNewPointeGoal2020;
-        public string NewtoNewPointeGoalProgress;
+        public string NewtoNewPointeGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string DiscoverGroups;
         public string DiscoverGroupsGoalCurrent;
         public string DiscoverGroupsGoal2020;
-        public string DiscoverGroupsGoalProgress;
+        public string DiscoverGroupsGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string SmallGroupParticipants;
         public string SmallGroupParticipantsGoalCurrent;
         public string SmallGroupParticipantsGoal2020;
-        public string SmallGroupParticipantsGoalProgress;
+        public string SmallGroupParticipantsGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
         public string Assimilation;
         public string AssimilationGoalCurrent;
         public string AssimilationGoal2020;
-        public string AssimilationGoalProgress;
+        public string AssimilationGoalProgress = "<span class='label label-danger'>Below Target</span>";
 
 
         public string SundayDate;
@@ -158,9 +158,14 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public string FinancialStartDateLastWeek;
         public string FinancialEndDateLastWeek;
 
-        public int CurrentMonthInFiscalYear = 1;
-        public float GoalOffset = 1;
+        public int CurrentMonthInFiscalYear =1;
+        public decimal GoalOffsetMultiplier = 1;
+        public decimal SecondaryGoalOffsetMultiplier = 1;
+        public decimal GoalTarget = .9M;
         
+        public string sMonth;
+
+
 
 
         RockContext rockContext = new RockContext();
@@ -191,57 +196,69 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             FinancialStartDateLastWeek = lastTuesday.AddDays(-14).ToString("yyyy-MM-dd");
             FinancialEndDateLastWeek = lastWednesday.AddDays(-7).ToString("yyyy-MM-dd");
 
-            string sMonth = DateTime.Now.ToString("M");
+            sMonth = DateTime.Now.ToString("MM");
 
             switch (sMonth)
             {
-                case "9":
+                case "09":
                     CurrentMonthInFiscalYear = 1;
-                    GoalOffset = CurrentMonthInFiscalYear/12;
+                    GoalOffsetMultiplier = .083M;
+                    SecondaryGoalOffsetMultiplier = .89M;
                     break;
                 case "10":
                     CurrentMonthInFiscalYear = 2;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .167M;
+                    SecondaryGoalOffsetMultiplier = .90M;
                     break;
                 case "11":
                     CurrentMonthInFiscalYear = 3;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .25M;
+                    SecondaryGoalOffsetMultiplier = .91M;
                     break;
                 case "12":
                     CurrentMonthInFiscalYear = 4;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier =.333M;
+                    SecondaryGoalOffsetMultiplier = .92M;
                     break;
-                case "1":
+                case "01":
                     CurrentMonthInFiscalYear = 5;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .417M;
+                    SecondaryGoalOffsetMultiplier = .93M;
                     break;
-                case "2":
+                case "02":
                     CurrentMonthInFiscalYear = 6;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .5M;
+                    SecondaryGoalOffsetMultiplier = .94M;
                     break;
-                case "3":
+                case "03":
                     CurrentMonthInFiscalYear = 7;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .583M;
+                    SecondaryGoalOffsetMultiplier = .95M;
                     break;
-                case "4":
+                case "04":
                     CurrentMonthInFiscalYear = 8;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier =.667M;
+                    SecondaryGoalOffsetMultiplier = .96M;
                     break;
-                case "5":
+                case "05":
                     CurrentMonthInFiscalYear = 9;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .75M;
+                    SecondaryGoalOffsetMultiplier = .97M;
                     break;
-                case "6":
+                case "06":
                     CurrentMonthInFiscalYear = 10;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .883M;
+                    SecondaryGoalOffsetMultiplier = .98M;
                     break;
-                case "7":
+                case "07":
                     CurrentMonthInFiscalYear = 11;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = .917M;
+                    SecondaryGoalOffsetMultiplier = .99M;
                     break;
-                case "8":
+                case "08":
                     CurrentMonthInFiscalYear = 12;
-                    GoalOffset = CurrentMonthInFiscalYear / 12;
+                    GoalOffsetMultiplier = 1;
+                    SecondaryGoalOffsetMultiplier = 1;
                     break;
             }
 
@@ -393,17 +410,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //Attendance Last Week - All Environments
             if (SelectedCampusId == 0)
             {
-                AttendanceLastWeekAll = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekAll = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND(DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE()) - 1)
                 AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId != 8; ")
-                    .ToList<int?>()[0].ToString();
+                    .ToList<int?>()[0];
 
-                AttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
 				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())")
-                    .ToList<int?>()[0].ToString();
+                    .ToList<int?>()[0];
 
                 AttendanceGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
@@ -412,97 +429,184 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                     .ToList<int?>()[0].ToString();
 
 
+                AttendanceLastWeekAll = iAttendanceLastWeekAll.ToString();
+                AttendanceGoalCurrent = iAttendanceGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekAll / (iAttendanceGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+                else
+                {
+                    AttendanceGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+
 
             }
             else
             {
-                AttendanceLastWeekAll = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekAll = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND(DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE()) - 1)
-                AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                AttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
-				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 AttendanceGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
 				AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceLastWeekAll = iAttendanceLastWeekAll.ToString();
+                AttendanceGoalCurrent = iAttendanceGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekAll / (iAttendanceGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+                else
+                {
+                    AttendanceGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+
             }
+
+
+
+
 
             //Attendance Last Week - Auditorium
             if (SelectedCampusId == 0)
             {
-                AttendanceLastWeekAud = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekAud = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8").ToList<int?>()[0];
 
-                AttendanceAudGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iAttendanceAudGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 2 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 AttendanceAudGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 2 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
+                AttendanceLastWeekAud = iAttendanceLastWeekAud.ToString();
+                AttendanceAudGoalCurrent = iAttendanceAudGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekAud / (iAttendanceAudGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceAudGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceAudGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+                else
+                {
+                    AttendanceAudGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceAudGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+
+
             }
 
             else
             {
-                AttendanceLastWeekAud = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekAud = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 
-                AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                AttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iAttendanceAudGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                AttendanceChildGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                AttendanceAudGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceLastWeekAud = iAttendanceLastWeekAud.ToString();
+                AttendanceAudGoalCurrent = iAttendanceAudGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekAud / (iAttendanceAudGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceAudGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceAudGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+                else
+                {
+                    AttendanceAudGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceAudGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
             }
 
             //Attendance Last Week - Rainforest + Velocity
             if (SelectedCampusId == 0)
             {
-                AttendanceLastWeekChild = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekChild = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 3 OR mv.MetricId = 4) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8")
-                    .ToList<int?>()[0].ToString();
+                    .ToList<int?>()[0];
 
-                AttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iAttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 AttendanceChildGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                AttendanceLastWeekChild = iAttendanceLastWeekChild.ToString();
+                AttendanceChildGoalCurrent = iAttendanceChildGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekChild / (iAttendanceChildGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceChildGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceChildGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+                else
+                {
+                    AttendanceChildGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceChildGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+
+
+
             }
             else
             {
-                AttendanceLastWeekChild = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekChild = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 3 OR mv.MetricId = 4) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1
-                AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                AttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iAttendanceChildGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 AttendanceChildGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceLastWeekChild = iAttendanceLastWeekChild.ToString();
+                AttendanceChildGoalCurrent = iAttendanceChildGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekChild / (iAttendanceChildGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceChildGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceChildGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+                else
+                {
+                    AttendanceChildGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceChildGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
 
             }
 
@@ -512,41 +616,69 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //Attendance Last Week - The Collective
             if (SelectedCampusId == 0)
             {
-                AttendanceLastWeekStudent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekStudent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 5 OR mv.MetricId = 23) AND DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId != 8")
-                    .ToList<int?>()[0].ToString();
+                    .ToList<int?>()[0];
 
-                AttendanceStudentGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iAttendanceStudentGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 AttendanceStudentGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                AttendanceLastWeekStudent = iAttendanceLastWeekStudent.ToString();
+                AttendanceStudentGoalCurrent = iAttendanceStudentGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekStudent / (iAttendanceStudentGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceStudentGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceStudentGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+                else
+                {
+                    AttendanceStudentGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceStudentGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier) + ")</span>";
+                }
+
+
             }
             else
             {
-                AttendanceLastWeekStudent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue),0) as int) as att
+                int? iAttendanceLastWeekStudent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue),0) as int) as att
                 FROM MetricValue mv 
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 5 OR mv.MetricId = 23) AND DATEPART(isowk, mv.MetricValueDateTime) = 
-                DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                DATEPART(isowk, GETDATE())-1 AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                AttendanceStudentGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iAttendanceStudentGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 AttendanceStudentGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE (mv.MetricId = 5 OR mv.MetricId = 23) AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                AttendanceLastWeekStudent = iAttendanceLastWeekStudent.ToString();
+                AttendanceStudentGoalCurrent = iAttendanceStudentGoalCurrent.ToString();
+
+                decimal? goalProgress = iAttendanceLastWeekStudent / (iAttendanceStudentGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    AttendanceStudentGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iAttendanceStudentGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    AttendanceStudentGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iAttendanceStudentGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
             }
 
-
+            
             //AttendanceGoalCurrent = (Int32.Parse(AttendanceStudentGoalCurrent) + Int32.Parse(AttendanceChildGoalCurrent) + Int32.Parse(AttendanceGoalCurrent)).ToString();
             //AttendanceGoal2020 = (Int32.Parse(AttendanceStudentGoal2020) + Int32.Parse(AttendanceChildGoal2020) + Int32.Parse(AttendanceGoal2020)).ToString();
 
@@ -554,113 +686,191 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //Baptisms
             if (SelectedCampusId == 0)
             {
-                Baptisms = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iBaptisms = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 11) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 11) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
 
-                BaptismsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iBaptismsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 11 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 BaptismsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 11 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                Baptisms = iBaptisms.ToString();
+                BaptismsGoalCurrent = iBaptismsGoalCurrent.ToString();
+
+                decimal? goalProgress = iBaptisms / (iBaptismsGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    BaptismsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iBaptismsGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    BaptismsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iBaptismsGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
 
             }
             else
             {
-                Baptisms = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iBaptisms = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 11) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 11) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                BaptismsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? iBaptismsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 11 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 BaptismsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 11 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
 
-             }
+                Baptisms = iBaptisms.ToString();
+                BaptismsGoalCurrent = iBaptismsGoalCurrent.ToString();
+
+                decimal? goalProgress = iBaptisms / (iBaptismsGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    BaptismsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(iBaptismsGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    BaptismsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(iBaptismsGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+            }
 
 
 
             //First Time Commitments
             if (SelectedCampusId == 0)
             {
-                Commitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
 
-                CommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 12 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 CommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 12 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                Commitments = item.ToString();
+                CommitmentsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    CommitmentsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    CommitmentsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
 
             }
             else
             {
-                Commitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                CommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 12 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 CommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 12 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                Commitments = item.ToString();
+                CommitmentsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    CommitmentsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    CommitmentsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
             }
 
 
             //Re-commitments
             if (SelectedCampusId == 0)
             {
-                Recommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
 
-                RecommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 13 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 RecommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 13 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                Recommitments = item.ToString();
+                RecommitmentsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    RecommitmentsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    RecommitmentsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
 
             }
             else
             {
-                Recommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                RecommitmentsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent =
+                    rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 13 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;",
+                        new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 RecommitmentsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 13 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                Recommitments = item.ToString();
+                RecommitmentsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    RecommitmentsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    RecommitmentsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
 
             }
 
@@ -681,159 +891,268 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //New Here Guests
             if (SelectedCampusId == 0)
             {
-                NewHere = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 14) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 14) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
 
-                NewHereGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent =
+                    rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 14 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 NewHereGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 14 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+
+                NewHere = item.ToString();
+                NewHereGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    NewHereGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    NewHereGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
             }
 
             else
             {
-                NewHere = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 14) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 14) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                NewHereGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 14 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 NewHereGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 14 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                NewHere = item.ToString();
+                NewHereGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    NewHereGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    NewHereGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
 
             }
 
             //Partners
             if (SelectedCampusId == 0)
             {
-                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 5 CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricId = 20
-				ORDER BY MetricValueDateTime DESC;").ToList<int?>()[0].ToString();
+                WHERE mv.MetricId = 20 AND mv.MetricValueType = 0;").ToList<int?>()[0];
 
-                PartnersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 20 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 PartnersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 20 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                Partners = item.ToString();
+                PartnersGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    PartnersGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    PartnersGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
             }
             else
             {
-                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 5 CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricId = 20 AND mv.EntityId = @CampusId
-				ORDER BY MetricValueDateTime DESC; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricId = 20 AND mv.MetricValueType = 0 and mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                PartnersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent =
+                    rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 20 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;",
+                        new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 PartnersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 20 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
 
+                Partners = item.ToString();
+                PartnersGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    PartnersGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    PartnersGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
             }
 
             //Small Group Leaders
             if (SelectedCampusId == 0)
             {
-                SmallGroupLeaders =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT TOP 1 CAST(ISNULL(SUM(YValue), 0) as int) as att
 	                    FROM MetricValue mv 
-	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 18) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE())").ToList<int?>()[0].ToString();
+	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 18) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE())").ToList<int?>()[0];
 
-                SmallGroupLeadersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 18 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 SmallGroupLeadersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 18 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                SmallGroupLeaders = item.ToString();
+                SmallGroupLeadersGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    SmallGroupLeadersGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    SmallGroupLeadersGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
             }
             else
             {
-                SmallGroupLeaders =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT TOP 1 CAST(ISNULL(SUM(YValue), 0) as int) as att
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 18) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) 
-                        AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                        AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                SmallGroupLeadersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 18 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 SmallGroupLeadersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 18 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                SmallGroupLeaders = item.ToString();
+                SmallGroupLeadersGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    SmallGroupLeadersGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    SmallGroupLeadersGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
             }
+
+
 
             //Volunteers
             if (SelectedCampusId == 0)
             {
-                Volunteers =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT TOP 1 CAST(ISNULL(SUM(YValue), 0) as int) as att
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 16) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) 
-                        AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) ").ToList<int?>()[0].ToString();
+                        AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) ").ToList<int?>()[0];
 
-                VolunteersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 16 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 VolunteersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 16 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
 
+                Volunteers = item.ToString();
+                VolunteersGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    VolunteersGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    VolunteersGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
+
             }
             else
             {
-                Volunteers =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT TOP 1 CAST(ISNULL(SUM(YValue), 0) as int) as att
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 16) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) 
-                        AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                        AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                VolunteersGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 16 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 VolunteersGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 16 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
 
+                Volunteers = item.ToString();
+                VolunteersGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    VolunteersGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    VolunteersGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
             }
+
+            
 
             //Total Involvement
             if (SelectedCampusId == 0)
@@ -855,128 +1174,219 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                         AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
 
+
+
+
             //New to NewPointe
             if (SelectedCampusId == 0)
             {
-                NewtoNewPointe =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
                         JOIN [Group] g on a.GroupId = g.Id
                         WHERE (g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR
-                        g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01'").ToList<int?>()[0].ToString();
+                        g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01'").ToList<int?>()[0];
 
-                NewtoNewPointeGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 21 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 NewtoNewPointeGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 21 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
+                NewtoNewPointe = item.ToString();
+                NewtoNewPointeGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    NewtoNewPointeGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    NewtoNewPointeGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
+
             }
+
             else
             {
-                NewtoNewPointe =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
                         JOIN [Group] g on a.GroupId = g.Id
                         WHERE (g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR
-                        g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01' AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                        g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01' AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                NewtoNewPointeGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 21 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 NewtoNewPointeGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 21 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                NewtoNewPointe = item.ToString();
+                NewtoNewPointeGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    NewtoNewPointeGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    NewtoNewPointeGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
 
             }
 
             //Discover Groups
             if (SelectedCampusId == 0)
             {
-                DiscoverGroups =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
                 JOIN [Group] g on a.GroupId = g.Id
                 WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
                 OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
-                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01';").ToList<int?>()[0].ToString();
+                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01';").ToList<int?>()[0];
 
-                DiscoverGroupsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 22 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 DiscoverGroupsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 22 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
+                DiscoverGroups = item.ToString();
+                DiscoverGroupsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    DiscoverGroupsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    DiscoverGroupsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
             }
+
+
             else
             {
-                DiscoverGroups =
+                int? item =
                    rockContext.Database.SqlQuery<int?>(
                        @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
                 JOIN [Group] g on a.GroupId = g.Id
                 WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
                 OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
-                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01'AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01'AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                DiscoverGroupsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 22 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                DiscoverGroupsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 22 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+
+                DiscoverGroups = item.ToString();
+                DiscoverGroupsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * GoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    DiscoverGroupsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    DiscoverGroupsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * GoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
             }
 
             //Small Group Participants
             if (SelectedCampusId == 0)
             {
-                SmallGroupParticipants =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT TOP 1 CAST(ISNULL(SUM(YValue), 0) as int) as att
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 17) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) 
-                        AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) ").ToList<int?>()[0].ToString();
+                        AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) ").ToList<int?>()[0];
 
-                SmallGroupParticipantsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 17 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
 
                 SmallGroupParticipantsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 17 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020'").ToList<int?>()[0].ToString();
+
+                SmallGroupParticipants = item.ToString();
+                SmallGroupParticipantsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    SmallGroupParticipantsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    SmallGroupParticipantsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
             }
             else
             {
-                SmallGroupParticipants =
+                int? item =
                     rockContext.Database.SqlQuery<int?>(
                         @"SELECT TOP 1 CAST(ISNULL(SUM(YValue), 0) as int) as att
 	                    FROM MetricValue mv 
 	                    WHERE mv.MetricValueType = 0 AND (mv.MetricId = 17) AND DATEPART(month, mv.MetricValueDateTime) = DATEPART(month, GETDATE()) AND DATEPART(year, mv.MetricValueDateTime) = DATEPART(year, GETDATE()) 
-                        AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                        AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
-                SmallGroupParticipantsGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 17 AND MetricValueType = 1
-	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 SmallGroupParticipantsGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
                 WHERE mv.MetricId = 17 AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
-            }
+
+                SmallGroupParticipants = item.ToString();
+                SmallGroupParticipantsGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? goalProgress = item / (itemGoalCurrent * SecondaryGoalOffsetMultiplier);
+                if (goalProgress >= GoalTarget)
+                {
+                    SmallGroupParticipantsGoalProgress = "<span class='label label-success'>On Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+                else
+                {
+                    SmallGroupParticipantsGoalProgress = "<span class='label label-danger'>Below Target (" + Math.Truncate(itemGoalCurrent.GetValueOrDefault() * SecondaryGoalOffsetMultiplier * GoalTarget) + ")</span>";
+                }
+
+                }
 
 
 
