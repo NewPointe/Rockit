@@ -134,7 +134,7 @@ p, dd, li {
 .categoryButton {
     text-align: center;
     white-space: nowrap !important;
-    }
+}
 
 .btn {
     font-family: @font-family-sans-serif-bold;
@@ -143,7 +143,11 @@ p, dd, li {
     color: @btn-default-color;
 }
 
-.btn-templ(){
+.btn-link {
+    color: @accent-bold-color;
+}
+
+.btn-templ() {
     background-color: @btn-default-bg;
     font-size: @font-size-large;
     max-height: 80px;
@@ -151,10 +155,11 @@ p, dd, li {
     white-space: inherit;
     margin-bottom: 10px;
 }
+
 .btn-templ-pad() {
     .btn-templ;
     padding: @btn-padding;
-    }
+}
 
 .btn.btn-akron, .btn.btn-cm {
     .btn-templ;
@@ -319,6 +324,7 @@ table.striped tr {
         padding: 6px 10px;
         border: none;
         margin-top: 15px;
+        margin-bottom: 12px;
 
         i {
             color: @navbar-inverse-toggle-icon-bar-bg;
@@ -362,6 +368,16 @@ table.striped tr {
     }
 }
 
+.navbar-nav .open .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
 a:hover i.fs {
     text-decoration: none;
 }
@@ -403,7 +419,7 @@ a:hover i.fs {
 
 // Header Container
 header {
-    padding-bottom: 61px;
+    padding-bottom: 66px;
 
     .page-menu,
     .login-status, .mobile-page-menu {
@@ -413,7 +429,7 @@ header {
     .navbar {
         background-color: @header-bg;
         position: fixed;
-        
+
         .container .divMainMenu {
             max-height: calc(~"100vh - 70px");
         }
@@ -456,9 +472,11 @@ header {
 header .custom-login-status {
     width: 100%;
     padding: 10px;
+
     .nav.navbar-nav {
         margin-right: 15px;
     }
+
     .nav.navbar-nav > li > a {
         padding: 0px;
     }
@@ -535,11 +553,12 @@ header .mobile-page-menu {
         z-index: 99999;
         margin-top: 15px;
     }
+
     .loginstatus > li li {
         text-align: right;
 
         a {
-            padding-right:20px;
+            padding-right: 20px;
         }
     }
 }
@@ -649,7 +668,7 @@ header .mobile-page-menu {
     padding: 0px;
     margin-top: 0px;
 }
- // Logo BG
+// Logo BG
 #GreenDiv {
     background-color: @brand-primary;
     height: 100%;
@@ -711,7 +730,6 @@ li.menuLink.menuItemActive:after {
 #announcement-rotator {
     //margin: 0 -@grid-gutter-width/2 @spacing-lg-px;
     //margin-top: -12px !important;
-
     .item {
         img {
             width: 100%;
@@ -797,7 +815,6 @@ li.menuLink.menuItemActive:after {
 }
 
 footer {
-    margin-bottom: 20px;
 
     .footer-message {
         width: 100%;
@@ -967,6 +984,7 @@ th.dow {
 .datepicker table td.day.old, td.day.new {
     color: #808080 !important;
 }
+
 .datepicker.datepicker-dropdown:before, .datepicker.datepicker-dropdown:after {
     border-bottom-color: @accent-semibold-color;
 }
@@ -1235,7 +1253,6 @@ strong {
 
     header .page-menu, header .mobile-page-menu {
         padding: 0px 80px;
-        border-bottom: 1px solid @accent-semibold-color;
     }
 
     header .mobile-page-menu .nav.navbar-nav > li {
@@ -1245,10 +1262,7 @@ strong {
     header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 5px 17px;
     }
-    
-    header .navbar {
-        border: none;
-    }
+
     header .navbar-header {
         padding-bottom: 5px;
     }
@@ -1329,10 +1343,11 @@ strong {
     header {
         padding-bottom: 10px;
     }
-    
+
     header .navbar {
         position: static;
         transform: none;
+        border: none;
     }
 
     #npCampusMenu {
@@ -1351,7 +1366,7 @@ strong {
     header .page-menu .nav.navbar-nav > li a, header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 8px 22px;
     }
-    
+
 
     .subnav li {
         font-size: 1.4em;
@@ -1412,9 +1427,11 @@ strong {
     header .custom-login-status {
         border-top: none;
         padding: 0px;
+
         .nav.navbar-nav {
             margin-right: 0px;
         }
+
         .nav.navbar-nav > li > a {
             padding: 15px;
         }
@@ -1423,11 +1440,11 @@ strong {
     header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
         font-size: 2em;
     }
-    
+
     header .mobile-page-menu {
         border: none;
     }
-    
+
 
     header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 10px 40px;
@@ -1436,7 +1453,7 @@ strong {
     .subnav li {
         font-size: 1.6em;
     }
-    
+
     .divLogin {
         margin-bottom: -15px;
         z-index: 999999;
@@ -1445,13 +1462,15 @@ strong {
             margin-top: -15px;
         }
 
-        a { 
+        a {
             font-size: 1em;
         }
+
         .loginstatus > li li {
             text-align: left;
         }
     }
+
     .right-stacked-lg {
         float: right;
         clear: both;
@@ -1462,6 +1481,9 @@ strong {
     }
 
 
+    footer {
+        margin-bottom: 20px;
+    }
 
     footer .container {
         max-width: 1140px;
@@ -1483,9 +1505,27 @@ strong {
         text-align: justify;
     }
 }
+
+@media (max-width: @screen-md-max) {
+    header .navbar .container, footer .container {
+        width: 100%;
+        max-width: 100%;
+    }
+    footer .container:last-child {
+        margin-bottom: 0px;
+    }
+}
+
+
+@media (min-width: @screen-sm-min) AND (max-width: @screen-md-max) {
+    header .navbar .container {
+        padding: 0px;
+    }
+}
+
 /*xs screens only*/
 @media (max-width: @screen-xs-max) {
-    
+
     .marginfix-xs {
         margin: 0 -15px;
     }
@@ -1513,11 +1553,9 @@ strong {
     }
 }
 /*small screens only*/
-@media(min-width: @screen-sm-min) AND (max-width: @screen-sm-max) {
-    
-    .fullWidthHeader(false)
+@media (min-width: @screen-sm-min) AND (max-width: @screen-sm-max) {
 
-    .sm-border-right {
+    .fullWidthHeader(false) .sm-border-right {
         border-right: 1px solid #fff;
     }
 
@@ -1546,9 +1584,7 @@ strong {
 /* medium only*/
 @media(min-width:@screen-md-min) AND (max-width:@screen-md-max) {
 
-    .fullWidthHeader(true)
-
-    footer h2.give {
+    .fullWidthHeader(true) footer h2.give {
         font-size: 75px;
     }
 
@@ -1818,8 +1854,8 @@ strong {
 
 
 table.gsc-search-box tbody tr td * {
-    height: 100%!important;
-    font-size: 25px!important;
+    height: 100% !important;
+    font-size: 25px !important;
 }
 
 #NPSearch table.gsc-search-box td {
@@ -1869,14 +1905,15 @@ body #error-404 {
 
 body #error-404 h1 {
     font-size: 13em;
-    line-height: 250px!important;
+    line-height: 250px !important;
     font-family: 'GothamBlack';
     letter-spacing: -10px;
     margin-bottom: 50px;
+
     @media (max-width: @screen-xs-max) {
-            font-size: 5em;
-            line-height: 85px!important;
-            }
+        font-size: 5em;
+        line-height: 85px !important;
+    }
 }
 
 body #error-404 h2 {
@@ -1890,18 +1927,19 @@ body #error-404 h2 {
     height: auto;
     background: #efefef;
     position: relative;
-    -moz-border-radius:    50px;
+    -moz-border-radius: 50px;
     -webkit-border-radius: 50px;
-    border-radius:         50px;
+    border-radius: 50px;
 }
+
 #talk-box:before {
-    content:"";
+    content: "";
     position: absolute;
     right: 150px;
     top: 98%;
     width: 0;
     height: 0;
-    border-top:0px solid transparent;
+    border-top: 0px solid transparent;
     border-left: 90px solid #efefef;
     border-bottom: 50px solid transparent;
-    }
+}
