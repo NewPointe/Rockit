@@ -46,6 +46,7 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
         public string Recommitments;
         public string AllCommitments;
         public string NewHere;
+        public string Partners;
         public string SmallGroupLeaders;
         public string Volunteers;
         public string Involvement;
@@ -495,6 +496,25 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 WHERE g.GroupTypeId = 25 and g.IsActive = 'true' AND g.CampusId = @CampusId
                 ) s", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
             }
+
+
+            //Partners
+            if (SelectedCampusId == 0)
+            {
+                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricId = 20
+				ORDER BY MetricValueDateTime DESC;").ToList<int?>()[0].ToString();
+            }
+            else
+            {
+                Partners = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 1 CAST(YValue as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricId = 20 AND mv.EntityId = @CampusId
+				ORDER BY MetricValueDateTime DESC; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+            }
+
+
 
             //Inactive Follow-up
             if (SelectedCampusId == 0)
