@@ -847,6 +847,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
                 person.RecordStatusValueId = recordStatusActiveId;
                 person.Gender = Gender.Unknown;
                 person.ConnectionStatusValueId = (ConnectionStatusValue != null) ? ConnectionStatusValue.Id : (int?)null;
+                person.LastName = FamilyMembers.Any() ? FamilyMembers.Last().Person.LastName : "";
 
                 var familyMember = new GroupMember();
                 familyMember.GroupMemberStatus = GroupMemberStatus.Active;
