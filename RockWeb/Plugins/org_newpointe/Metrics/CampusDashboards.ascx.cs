@@ -522,12 +522,12 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
                 int? iAttendanceAudGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
-                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+                WHERE (mv.MetricId = 2) AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 AttendanceAudGoal2020 = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
-                WHERE (mv.MetricId = 3 OR mv.MetricId = 4) AND MetricValueType = 1
+                WHERE (mv.MetricId = 2) AND MetricValueType = 1
 	            AND DATEPART(YEAR,mv.MetricValueDateTime) = '2020' AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
 
                 AttendanceLastWeekAud = iAttendanceLastWeekAud.ToString();
