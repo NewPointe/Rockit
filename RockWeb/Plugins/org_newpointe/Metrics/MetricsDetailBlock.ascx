@@ -255,3 +255,4 @@
             <span class="pull-right"><Rock:ButtonDropDownList ID="cpCampus" runat="server" OnSelectionChanged="cpCampus_OnSelectionChanged" ToolTip="Choose a Campus" /></span>
         </div>
     </div>
+</div>
