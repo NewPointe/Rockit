@@ -63,6 +63,33 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
         public string InactiveFollowupColor;
 
 
+        public string AttendanceGoalCurrent;
+        public string AttendancePercentage;
+        public string AttendanceColor;
+
+        public string CommitmentGoalCurrent;
+        public string CommitmentPercentage;
+        public string CommitmentColor;
+        
+        public string RecommitmentGoalCurrent;
+        public string RecommitmentPercentage;
+        public string RecommitmentColor;
+
+
+        public string TotalCommitmentGoalCurrent;
+        public string TotalCommitmentPercentage;
+        public string TotalCommitmentColor;
+
+
+        public int CurrentMonthInFiscalYear = 1;
+        public decimal GoalOffsetMultiplier = 1;
+        public decimal SecondaryGoalOffsetMultiplier = 1;
+        public decimal GoalTarget = .9M;
+
+        public string sMonth;
+
+
+
         RockContext rockContext = new RockContext();
 
 
@@ -79,7 +106,7 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 FiscalYearStartDate = GetAttributeValue("FiscalYearStartDate").ToString();
 
                 //Generate Campus List
-                string[] eventList = {"All Org", "Akron Campus", "Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
+                string[] eventList = {"All Org", "Canton Campus", "Coshocton Campus", "Dover Campus", "Millersburg Campus", "Wooster Campus"};
                 cpCampus.DataSource = eventList;
                 cpCampus.DataBind();
 
@@ -138,6 +165,73 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                     SelectedCampusId = 0;
                 }
 
+
+
+                sMonth = DateTime.Now.ToString("MM");
+
+                switch (sMonth)
+                {
+                    case "09":
+                        CurrentMonthInFiscalYear = 1;
+                        GoalOffsetMultiplier = .083M;
+                        SecondaryGoalOffsetMultiplier = .89M;
+                        break;
+                    case "10":
+                        CurrentMonthInFiscalYear = 2;
+                        GoalOffsetMultiplier = .167M;
+                        SecondaryGoalOffsetMultiplier = .90M;
+                        break;
+                    case "11":
+                        CurrentMonthInFiscalYear = 3;
+                        GoalOffsetMultiplier = .25M;
+                        SecondaryGoalOffsetMultiplier = .91M;
+                        break;
+                    case "12":
+                        CurrentMonthInFiscalYear = 4;
+                        GoalOffsetMultiplier = .333M;
+                        SecondaryGoalOffsetMultiplier = .92M;
+                        break;
+                    case "01":
+                        CurrentMonthInFiscalYear = 5;
+                        GoalOffsetMultiplier = .417M;
+                        SecondaryGoalOffsetMultiplier = .93M;
+                        break;
+                    case "02":
+                        CurrentMonthInFiscalYear = 6;
+                        GoalOffsetMultiplier = .5M;
+                        SecondaryGoalOffsetMultiplier = .94M;
+                        break;
+                    case "03":
+                        CurrentMonthInFiscalYear = 7;
+                        GoalOffsetMultiplier = .583M;
+                        SecondaryGoalOffsetMultiplier = .95M;
+                        break;
+                    case "04":
+                        CurrentMonthInFiscalYear = 8;
+                        GoalOffsetMultiplier = .667M;
+                        SecondaryGoalOffsetMultiplier = .96M;
+                        break;
+                    case "05":
+                        CurrentMonthInFiscalYear = 9;
+                        GoalOffsetMultiplier = .75M;
+                        SecondaryGoalOffsetMultiplier = .97M;
+                        break;
+                    case "06":
+                        CurrentMonthInFiscalYear = 10;
+                        GoalOffsetMultiplier = .883M;
+                        SecondaryGoalOffsetMultiplier = .98M;
+                        break;
+                    case "07":
+                        CurrentMonthInFiscalYear = 11;
+                        GoalOffsetMultiplier = .917M;
+                        SecondaryGoalOffsetMultiplier = .99M;
+                        break;
+                    case "08":
+                        CurrentMonthInFiscalYear = 12;
+                        GoalOffsetMultiplier = 1;
+                        SecondaryGoalOffsetMultiplier = 1;
+                        break;
+                }
 
 
             }
@@ -213,18 +307,93 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
             //Attendance Last Week - All Environments
             if (SelectedCampusId == 0)
             {
-                AttendanceLastWeekAll = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekAll =
+                    rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND(DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE()) - 1)
                 AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId != 8; ")
-                    .ToList<int?>()[0].ToString();
+                        .ToList<int?>()[0];
+
+                int? iAttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())")
+                    .ToList<int?>()[0];
+
+                AttendanceGoalCurrent = iAttendanceGoalCurrent.ToString();
+                AttendanceLastWeekAll = iAttendanceLastWeekAll.ToString();
+
+                decimal? attendancePercent = 0;
+                if (iAttendanceGoalCurrent != 0)
+                {
+                    attendancePercent = iAttendanceLastWeekAll / iAttendanceGoalCurrent * 100;
+                    AttendancePercentage = attendancePercent.ToString();
+                }
+                else
+                {
+                    AttendancePercentage = "100";
+                }
+                if (attendancePercent <= 30)
+                {
+                    AttendanceColor = "danger";
+                }
+                else if (attendancePercent <= 60)
+                {
+                    AttendanceColor = "warning";
+                }
+                else if (attendancePercent <= 90)
+                {
+                    AttendanceColor = "info";
+                }
+                else if (attendancePercent <= 100)
+                {
+                    AttendanceColor = "success";
+                }
+
+
             }
             else
             {
-                AttendanceLastWeekAll = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                int? iAttendanceLastWeekAll = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
                 FROM MetricValue mv
                 WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND(DATEPART(isowk, mv.MetricValueDateTime) = DATEPART(isowk, GETDATE()) - 1)
-                AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                AND(DATEPART(yy, mv.MetricValueDateTime) = DATEPART(yy, GETDATE())) AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+
+                int? iAttendanceGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(SUM(YValue) as int) as att
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 1 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5 OR mv.MetricId = 23) 
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())")
+                    .ToList<int?>()[0];
+
+                AttendanceGoalCurrent = iAttendanceGoalCurrent.ToString();
+                AttendanceLastWeekAll = iAttendanceLastWeekAll.ToString();
+
+                decimal? attendancePercent = 0;
+                if (iAttendanceGoalCurrent != 0)
+                {
+                    attendancePercent = iAttendanceLastWeekAll / iAttendanceGoalCurrent * 100;
+                    AttendancePercentage = attendancePercent.ToString();
+                }
+                else
+                {
+                    AttendancePercentage = "100";
+                }
+                if (attendancePercent <= 30)
+                {
+                    AttendanceColor = "danger";
+                }
+                else if (attendancePercent <= 60)
+                {
+                    AttendanceColor = "warning";
+                }
+                else if (attendancePercent <= 90)
+                {
+                    AttendanceColor = "info";
+                }
+                else if (attendancePercent <= 100)
+                {
+                    AttendanceColor = "success";
+                }
             }
 
             //Attendance Last Week - Auditorium
@@ -289,43 +458,270 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
             //First Time Commitments
             if (SelectedCampusId == 0)
             {
-                Commitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
+
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
+
+                Commitments = item.ToString();
+                CommitmentGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? commitmentPercent = 0;
+                if (itemGoalCurrent != 0)
+                {
+                    commitmentPercent = item / itemGoalCurrent * 100;
+                    CommitmentPercentage = commitmentPercent.ToString();
+                }
+                else
+                {
+                    CommitmentPercentage = "100";
+                }
+                if (commitmentPercent <= 30)
+                {
+                    CommitmentColor = "danger";
+                }
+                else if (commitmentPercent <= 60)
+                {
+                    CommitmentColor = "warning";
+                }
+                else if (commitmentPercent <= 90)
+                {
+                    CommitmentColor = "info";
+                }
+                else if (commitmentPercent <= 100)
+                {
+                    CommitmentColor = "success";
+                }
+
             }
             else
             {
-                Commitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12) AND mv.MetricValueDateTime >= '2015-09-01' 
+                AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) 
+                AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+
+                Commitments = item.ToString();
+                CommitmentGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? commitmentPercent = 0;
+                if (itemGoalCurrent != 0)
+                {
+                    commitmentPercent = item / itemGoalCurrent * 100;
+                    CommitmentPercentage = commitmentPercent.ToString();
+                }
+                else
+                {
+                    CommitmentPercentage = "100";
+                }
+                if (commitmentPercent <= 30)
+                {
+                    CommitmentColor = "danger";
+                }
+                else if (commitmentPercent <= 60)
+                {
+                    CommitmentColor = "warning";
+                }
+                else if (commitmentPercent <= 90)
+                {
+                    CommitmentColor = "info";
+                }
+                else if (commitmentPercent <= 100)
+                {
+                    CommitmentColor = "success";
+                }
             }
 
             //Re-commitments
             if (SelectedCampusId == 0)
             {
-                Recommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
+
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
+
+                Recommitments = item.ToString();
+                RecommitmentGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? recommitmentPercent = 0;
+                if (itemGoalCurrent != 0)
+                {
+                    recommitmentPercent = item / itemGoalCurrent * 100;
+                    RecommitmentPercentage = recommitmentPercent.ToString();
+                }
+                else
+                {
+                    RecommitmentPercentage = "100";
+                }
+                if (recommitmentPercent <= 30)
+                {
+                    RecommitmentColor = "danger";
+                }
+                else if (recommitmentPercent <= 60)
+                {
+                    RecommitmentColor = "warning";
+                }
+                else if (recommitmentPercent <= 90)
+                {
+                    RecommitmentColor = "info";
+                }
+                else if (recommitmentPercent <= 100)
+                {
+                    RecommitmentColor = "success";
+                }
+
+
             }
             else
             {
-                Recommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01' 
+                AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+
+                int? itemGoalCurrent =
+                    rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 13 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) AND mv.EntityId = @CampusId;",
+                        new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+
+
+                Recommitments = item.ToString();
+                RecommitmentGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? recommitmentPercent = 0;
+                if (itemGoalCurrent != 0)
+                {
+                    recommitmentPercent = item / itemGoalCurrent * 100;
+                    RecommitmentPercentage = recommitmentPercent.ToString();
+                }
+                else
+                {
+                    RecommitmentPercentage = "100";
+                }
+                if (recommitmentPercent <= 30)
+                {
+                    RecommitmentColor = "danger";
+                }
+                else if (recommitmentPercent <= 60)
+                {
+                    RecommitmentColor = "warning";
+                }
+                else if (recommitmentPercent <= 90)
+                {
+                    RecommitmentColor = "info";
+                }
+                else if (recommitmentPercent <= 100)
+                {
+                    RecommitmentColor = "success";
+                }
+
+
             }
 
             //Total Commitments
             if (SelectedCampusId == 0)
             {
-                AllCommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12 OR mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12 OR mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
+
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())").ToList<int?>()[0];
+
+                AllCommitments = item.ToString();
+                TotalCommitmentGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? totalCommitmentPercent = 0;
+                if (itemGoalCurrent != 0)
+                {
+                    totalCommitmentPercent = item / itemGoalCurrent * 100;
+                    TotalCommitmentPercentage = totalCommitmentPercent.ToString();
+                }
+                else
+                {
+                    TotalCommitmentPercentage = "100";
+                }
+                if (totalCommitmentPercent <= 30)
+                {
+                    TotalCommitmentColor = "danger";
+                }
+                else if (totalCommitmentPercent <= 60)
+                {
+                    TotalCommitmentColor = "warning";
+                }
+                else if (totalCommitmentPercent <= 90)
+                {
+                    TotalCommitmentColor = "info";
+                }
+                else if (totalCommitmentPercent <= 100)
+                {
+                    TotalCommitmentColor = "success";
+                }
+
+
             }
             else
             {
-                AllCommitments = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                int? item = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12 OR mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01' AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0].ToString();
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 12 OR mv.MetricId = 13) AND mv.MetricValueDateTime >= '2015-09-01' 
+                AND mv.EntityId = @CampusId; ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+
+                int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+	            FROM MetricValue mv 
+                WHERE mv.MetricId = 12 AND MetricValueType = 1
+	            AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE()) 
+                AND mv.EntityId = @CampusId;", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+
+                AllCommitments = item.ToString();
+                TotalCommitmentGoalCurrent = itemGoalCurrent.ToString();
+
+                decimal? totalCommitmentPercent = 0;
+                if (itemGoalCurrent != 0)
+                {
+                    totalCommitmentPercent = item / itemGoalCurrent * 100;
+                    TotalCommitmentPercentage = totalCommitmentPercent.ToString();
+                }
+                else
+                {
+                    TotalCommitmentPercentage = "100";
+                }
+                if (totalCommitmentPercent <= 30)
+                {
+                    TotalCommitmentColor = "danger";
+                }
+                else if (totalCommitmentPercent <= 60)
+                {
+                    TotalCommitmentColor = "warning";
+                }
+                else if (totalCommitmentPercent <= 90)
+                {
+                    TotalCommitmentColor = "info";
+                }
+                else if (totalCommitmentPercent <= 100)
+                {
+                    TotalCommitmentColor = "success";
+                }
+
+
             }
 
             //New Here Guests
