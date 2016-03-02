@@ -957,7 +957,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             {
                 int? item = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 5 CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricId = 20 AND mv.MetricValueType = 0;").ToList<int?>()[0];
+                WHERE mv.MetricId = 20 AND mv.MetricValueType = 0
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())
+				AND DATEPART(Month,mv.MetricValueDateTime) = DATEPART(Month,GETDATE() -1)").ToList<int?>()[0];
 
                 int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
@@ -987,7 +989,10 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             {
                 int? item = rockContext.Database.SqlQuery<int?>(@"SELECT TOP 5 CAST(ISNULL(SUM(YValue), 0) as int) as att
                 FROM MetricValue mv 
-                WHERE mv.MetricId = 20 AND mv.MetricValueType = 0 and mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+                WHERE mv.MetricId = 20 AND mv.MetricValueType = 0
+				AND DATEPART(YEAR,mv.MetricValueDateTime) = DATEPART(YEAR,GETDATE())
+				AND DATEPART(Month,mv.MetricValueDateTime) = DATEPART(Month,GETDATE() -1)
+				AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 int? itemGoalCurrent =
                     rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att

@@ -98,7 +98,7 @@
         <td><%= DiscoverGroupsGoal2020 %></td>
       </tr>
       <tr>
-        <td>Small Groups</td>
+        <td>People in Small Groups</td>
         <td><%= SmallGroupParticipants %></td>
           <td><%= SmallGroupParticipantsGoalProgress %></td>
         <td><%= SmallGroupParticipantsGoalCurrent %></td>
