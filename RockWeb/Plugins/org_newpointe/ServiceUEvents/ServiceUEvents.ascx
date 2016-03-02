@@ -19,7 +19,6 @@
         <div id="CampusButtons" class="hidden-xs col-md-6">
 
             <h4>Choose a campus</h4>
-            <a href="#" class="campusButton btn btn-block-xs btn-akron" data-fullname="Akron" data-shortname="Akron" data-campusid="67713">Akron</a>
             <a href="#" class="campusButton btn btn-block-xs btn-canton" data-fullname="Canton" data-shortname="Canton" data-campusid="53103">Canton</a>
             <a href="#" class="campusButton btn btn-block-xs btn-coshocton" data-fullname="Coshocton" data-shortname="Coshocton" data-campusid="62004">Coshocton</a>
             <a href="#" class="campusButton btn btn-block-xs btn-dover" data-fullname="Dover" data-shortname="Dover" data-campusid="51773">Dover</a>
@@ -33,7 +32,6 @@
             <h4>Choose a campus</h4>
             <asp:DropDownList runat="server" ID="ddlCampusDropdown" CssClass="form-control">
                 <asp:ListItem text="ALL" Value="ALL" />
-                <asp:ListItem Text="Akron" Value="67713" />
                 <asp:ListItem Text="Canton" Value="53103" />
                 <asp:ListItem Text="Coshocton" Value="62004" />
                 <asp:ListItem Text="Dover" Value="51773" />
