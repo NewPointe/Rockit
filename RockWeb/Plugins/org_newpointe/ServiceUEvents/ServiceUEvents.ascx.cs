@@ -55,8 +55,32 @@ public partial class Plugins_org_newpointe_ServiceUEvents_ServiceUEvents : RockB
             {
                 Response.Redirect(eventtitleroute);
             }
+
+            CampusService campusService = new CampusService(new Rock.Data.RockContext());
+
+            var qry = campusService.Queryable().Where(c => !c.Name.Contains("Central Services") && !c.Name.Contains("Online") && !c.Name.Contains("Future") && (c.IsActive ?? false)).Select(p => new { Name = p.Name.Replace("Campus", "").Trim(), ShortCode = p.ShortCode }).OrderBy(c => c.Name).ToList();
+
+            rptCampuses.DataSource = qry;
+            rptCampuses.DataBind();
+
+            qry.Insert(0, new { Name = "ALL", ShortCode = "ALL" });
+            ddlCampusDropdown.DataSource = qry;
+            ddlCampusDropdown.DataValueField = "ShortCode";
+            ddlCampusDropdown.DataTextField = "Name";
+            ddlCampusDropdown.DataBind();
         }
 
+    }
+
+
+    protected void lnk_DataBinding(object sender, EventArgs e)
+    {
+        var lnk = (System.Web.UI.WebControls.HyperLink)sender;
+        var name = Eval("Name").ToString();
+        var code = Eval("ShortCode").ToString();
+        lnk.Text = name;
+        lnk.Attributes.Add("data-campuscode", code);
+        lnk.CssClass = "btn btn-default btn-block-xs campus-" + code.ToLower() + "-hover";
     }
 
     protected void GetCampus()

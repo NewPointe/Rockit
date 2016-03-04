@@ -2,69 +2,60 @@
 <%--<link rel="stylesheet" href="/Styles/plus.css" type="text/css">--%>
 <link rel="stylesheet" href="/Themes/NewpointeMain/Styles/calendar.min.css" />
 
-    <h1>Event Calendar</h1>
+<h1>Event Calendar</h1>
 
-    <%--Search box--%>
-
+<%--Search box--%>
 
 <asp:HiddenField ID="hdnEventId" runat="server" />
 <asp:HiddenField ID="hdnCampus" runat="server" />
-<div class="container nopadding" style="height: 125px;">
+
+<div class="container nopadding">
     <div class="col-xs-12 col-md-8">
         <input type="text" id="calendar-search" name="calendar-search" placeholder="Search for Events Here" class="element text large" />
     </div>
     <div class="col-xs-12 col-md-4"></div>
-    <div id="collapseFilter" class="collapsed-filter">
+    <div id="CalendarFilters">
 
-        <div id="CampusButtons" class="hidden-xs col-md-6">
-
+        <div id="CampusFilterButtons" class="hidden-xs col-md-6">
             <h4>Choose a campus</h4>
-            <a href="#" class="campusButton btn btn-block-xs btn-canton" data-fullname="Canton" data-shortname="Canton" data-campusid="53103">Canton</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-coshocton" data-fullname="Coshocton" data-shortname="Coshocton" data-campusid="62004">Coshocton</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-dover" data-fullname="Dover" data-shortname="Dover" data-campusid="51773">Dover</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-millersburg" data-fullname="Millersburg" data-shortname="Millersburg" data-campusid="51774">Millersburg</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-wooster" data-fullname="Wooster" data-shortname="Wooster" data-campusid="67714">Wooster</a>
-            <a href="#" class="campusButton btn btn-block-xs btn-campus-all" data-fullname="ALL" data-shortname="ALL" data-campusid="ALL">ALL</a>
+            <asp:Repeater runat="server" ID="rptCampuses">
+                <ItemTemplate>
+                    <asp:HyperLink runat="server" ID="lnk" OnDataBinding="lnk_DataBinding"></asp:HyperLink>
+                </ItemTemplate>
+            </asp:Repeater>
+            <a href="#" class="btn btn-default btn-block-xs campus-all-hover" data-campuscode="ALL">ALL</a>
         </div>
 
-
-        <div id="CampusDropdown" class="col-xs-12 hidden-sm hidden-md hidden-lg">
+        <div id="CampusFilterDropdown" class="col-xs-12 hidden-sm hidden-md hidden-lg">
             <h4>Choose a campus</h4>
-            <asp:DropDownList runat="server" ID="ddlCampusDropdown" CssClass="form-control">
-                <asp:ListItem text="ALL" Value="ALL" />
-                <asp:ListItem Text="Canton" Value="53103" />
-                <asp:ListItem Text="Coshocton" Value="62004" />
-                <asp:ListItem Text="Dover" Value="51773" />
-                <asp:ListItem Text="Millersburg" Value="51774" />
-                <asp:ListItem Text="Wooster" Value="67714" />
-            </asp:DropDownList>
+            <asp:DropDownList runat="server" ID="ddlCampusDropdown" CssClass="form-control"></asp:DropDownList>
         </div>
 
-        <div id="CategoryButtons" class="hidden-xs col-md-6">
+        <div id="CategoryFilterButtons" class="hidden-xs col-md-6">
             <h4>Choose a category</h4>
-            <a href="#" class="categoryButton btn btn-cm" data-categoryid="13399" data-hovername="Kids" data-shortname="Kids">Kids</a>
-            <a href="#" class="categoryButton btn btn-sm" data-categoryid="13405" data-hovername="Students" data-shortname="Students">Students</a>
-            <a href="#" class="categoryButton btn btn-g" data-categoryid="11111" data-hovername="Adults" data-shortname="Adults">Adults</a><br/>
-            <a href="#" class="categoryButton btn btn-ae" data-categoryid="00000" data-hovername="Everything Else" data-shortname="Everything Else">Everything Else</a>
-            <a href="#" class="categoryButton btn btn-all active" data-categoryid="all" data-hovername="ALL" data-shortname="ALL">ALL</a>
+            <a href="#" class="btn btn-default category-cm-hover" data-categorycode="cm">Kids</a>
+            <a href="#" class="btn btn-default category-sm-hover" data-categorycode="sm">Students</a>
+            <a href="#" class="btn btn-default category-g-hover" data-categorycode="g">Adults</a><br />
+            <a href="#" class="btn btn-default category-ae-hover" data-categorycode="ae">Everything Else</a>
+            <a href="#" class="btn btn-default category-all-hover" data-categorycode="all">ALL</a>
         </div>
 
-        <div id="CategoryDropdown" class="col-xs-12 hidden-sm hidden-md hidden-lg">
+        <div id="CategoryFilterDropdown" class="col-xs-12 hidden-sm hidden-md hidden-lg">
             <h4>Choose a category</h4>
             <asp:DropDownList ID="ddlCategoryDropdown" CssClass="form-control" runat="server">
                 <asp:ListItem Text="ALL" Value="all" />
-                <asp:ListItem Text="Kids" Value="13399" />
-                <asp:ListItem Text="Students" Value="13405" />
-                <asp:ListItem Text="Adults" Value="11111" />
-                <asp:ListItem Text="Everything Else" Value="00000" />
+                <asp:ListItem Text="Kids" Value="cm" />
+                <asp:ListItem Text="Students" Value="sm" />
+                <asp:ListItem Text="Adults" Value="g" />
+                <asp:ListItem Text="Everything Else" Value="ae" />
             </asp:DropDownList>
         </div>
-    </div>
 
+    </div>
 </div>
 
 
-<div class="row">
+<div class="row" style="margin-bottom: 10px;">
     <div class="col-md-4 col-md-push-8 top-cal">
         <%--<div class="col-md-12 hidden-xs hidden-sm col-spacer"></div>--%>
         <h2 class="text-center" id="event-date">Event Details</h2>

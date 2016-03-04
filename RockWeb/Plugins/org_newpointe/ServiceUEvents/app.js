@@ -1,109 +1,72 @@
+"use strict";
 (function ($) {
-    var jsonData = [];
-    var searchData;
-    var id = $("input[name *= hdnCampus]").val();
-    var dropdownlist = $("[id*=ddlCampusDropdown]");
-    "use strict";
 
-    var campusID = $("input[name *= hdnCampus]").val();
-    var campus;
-    var catID = "";
-    var calclass = "";
+    var campuses = [
+        [67713, "Akron Campus", "AKR"],
+        [53103, "Canton Campus", "CAN"],
+        [62004, "Coshocton Campus", "COS"],
+        [51774, "Millersburg Campus", "MIL"],
+        [67714, "Wooster Campus", "WST"],
+        [51773, "Dover Campus", "DOV"],
+        ["ALL", "ALL", "ALL"]
+    ];
 
-    if (campusID == "") {
-        campusID = 'ALL'
+    function getCampusById(cmp) {
+        return campuses.filter(function (c) { return c[0] == cmp; })[0] || campuses[campuses.length - 1];
     }
+    function getCampusByShortCode(cmp) {
+        return campuses.filter(function (c) { return c[2] == cmp; })[0] || campuses[campuses.length - 1];
+    }
+    function getCampusByName(cmp) {
+        return campuses.filter(function (c) { return c[1] == cmp; })[0] || campuses[campuses.length - 1];
+    }
+
+    var categories = [
+        [13399, "event-important", "cm"],
+        [13405, "event-info", "sm"],
+        [21205, "event-warning", "ya"],
+        [11111, "event-success", "g"],
+        ["00000", "event-inverse", "ae"],
+        ["-1", "", "all"]
+    ];
+    
+    function getCategoryById(cat) {
+        return categories.filter(function (c) { return c[0] == cat; })[0] || categories[categories.length-1];
+    }
+    function getCategoryByShortCode(cat) {
+        return categories.filter(function (c) { return c[2] == cat; })[0] || categories[categories.length-1];
+    }
+    function getCategoryByName(cat) {
+        return categories.filter(function (c) { return c[1] == cat; })[0] || categories[categories.length-1];
+    }
+
+    var jsonData = [];
+    var searchData, selectedCampus, selectedCategory;
+
+    var dropdownlist = $("[id*=ddlCampusDropdown]");
+    
+    setSelectedCampus($("input[name *= hdnCampus]").val());
+    setSelectedCategory($("input[name *= hdnCategory]").val());
 
     function filterCampus(d) {
-        if (calclass == "" && campus == "ALL") {
+        if (selectedCategory[1] == "" && selectedCampus[2] == "ALL") {
             return d
-        } else if (calclass == "" && campus != "ALL") {
-            return d.departmentname.split('|').map(function (s) { return s.trim(); }).indexOf(campus) > -1;
-        } else if (calclass != "" && campus == "ALL") {
-            return d.class == calclass;
+        } else if (selectedCategory[1] == "" && selectedCampus[2] != "ALL") {
+            return d.departmentname.split('|').map(function (s) { return s.trim(); }).indexOf(selectedCampus[1]) > -1;
+        } else if (selectedCategory[1] != "" && selectedCampus[2] == "ALL") {
+            return d.class == selectedCategory[1];
         } else {
-            return d.departmentname.split('|').map(function (s) { return s.trim(); }).indexOf(campus) > -1 && d.class == calclass;
+            return d.departmentname.split('|').map(function (s) { return s.trim(); }).indexOf(selectedCampus[1]) > -1 && d.class == selectedCategory[1];
         }
     }
 
-    function getCampusId(cmp) {
-        switch (cmp) {
-            case "Akron Campus":
-                return 67713;
-            case "Canton Campus":
-                return 53103;
-            case "Coshocton Campus":
-                return 62004;
-            case "Millersburg Campus":
-                return 51774;
-            case "Wooster Campus":
-                return 67714;
-            case "Dover Campus":
-                return 51773;
-            case "ALL":
-                return "ALL"
-        }
-    }
-
-
-    switch (campusID) {
-        case "67713":
-            campus = "Akron Campus";
-            $(".btn-akron").addClass("active");
-            $(dropdownlist).val("67713");
-            break;
-
-        case "53103":
-            campus = "Canton Campus";
-            $(".btn-canton").addClass("active");
-            $(dropdownlist).val("53103");
-            break;
-
-        case "62004":
-            campus = "Coshocton Campus";
-            $(".btn-coshocton").addClass("active");
-            $(dropdownlist).val("62004");
-            break;
-
-        case "51774":
-            campus = "Millersburg Campus";
-            $(".btn-millersburg").addClass("active");
-            $(dropdownlist).val(51774);
-            break;
-
-        case "67714":
-            campus = "Wooster Campus";
-            $(dropdownlist).val("67714");
-            $(".btn-wooster").addClass("active");
-            break;
-
-        case "51773":
-            campus = "Dover Campus"
-            $(".btn-dover").addClass("active");
-            $(dropdownlist).val("51773");
-            break;
-
-        default:
-            campus = "ALL"
-            $(".btn-campus-all").addClass("active");
-            $(dropdownlist).val("ALL");
-            break;
-    }
-
-
-    function getArray() {
-        return $.getJSON('/assets/calendar.json?' + (Math.floor(Math.random() * (1000000 - 9999999)) + 1000000));
-    }
-
-    getArray().done(bindCalendar);
+    $.getJSON('/assets/calendar.json', { _: new Date().getTime() }).done(bindCalendar);
 
 
     function bindCalendar(json) {
         jsonData = json;
 
         searchData = $.grep(json, filterCampus);
-
-
 
         var options = {
             events_source: searchData, //'/assets/calendar.json',
@@ -240,165 +203,53 @@
             });
             if (searchData.length == 1) {
                 $(".parent-" + searchData[0].id).slideDown();
-                $("#CampusButtons a").removeClass("active");
-                //$("a[data-fullname *= " + searchData[0].locationcity + " ]").addClass("active");
-                //var campusName = $("input[name *= CampusName]").val();
-                //var dropdownlist = $("[id*=ddlCampusDropdown]");
-                //var id = getCampusId(searchData[0].departmentname);
-                //campus = searchData[0].departmentname;
-                //$(dropdownlist).val(id);
-                //$(campusName).text("Upcoming events for " + campus);
+                $("#CampusFilterButtons .btn").removeClass("active");
 
             }
-
 
         });
     }
 
-    function setActiveCategory(cID, getEvents) {
-        var ddl = $("[id*=ddlCategoryDropdown");
-        $(ddl).val(cID);
-        $("#CategoryButtons a").removeClass("active");
-        switch (cID) {
-            case '13399':
-                $(".btn-cm").addClass("active");
-                break;
-            case '13405':
-                $(".btn-sm").addClass("active");
-                break;
-            case '21205':
-                $(".btn-ya").addClass("active");
-                break;
-            case '11111':
-                $(".btn-g").addClass("active");
-                break;
-            case '00000':
-                $(".btn-ae").addClass("active");
-                break;
-            default:
-                $(".btn-all").addClass("active");
-                break;
-        }
-        catID = cID;
-        if (getEvents) {
-            setActiveButton(id, cID);
-        }
+    function setSelectedCategory(catCode) {
+        selectedCategory = getCategoryByShortCode(catCode || "all");
+
+        $("[id*=ddlCategoryDropdown").val(selectedCategory[2]);
+
+        $("#CategoryFilterButtons a").removeClass("active");
+        $(".category-" + selectedCategory[2] + "-hover").addClass("active");
     }
 
-    function setActiveButton(eventID, catID) {
-        var campusName = $("input[name *= CampusName]").val();
-        var dropdownlist = $("[id*=ddlCampusDropdown]");
-        $("#CampusButtons a").removeClass("active");
-        switch (eventID) {
-            // set Akron active
-            case '67713':
-                $(".btn-akron").addClass("active");
-                campus = "Akron Campus"
-                $(dropdownlist).val(eventID);
-                $(campusName).text("Upcoming events for Akron campus");
-                break;
-            case '53103':
-                $(".btn-canton").addClass("active");
-                campus = "Canton Campus"
-                $(dropdownlist).val(eventID);
-                $(campusName).text("Upcoming events for Canton campus");
-                break;
-            case '62004':
-                $(".btn-coshocton").addClass("active");
-                campus = "Coshocton Campus"
-                $(dropdownlist).val(eventID);
-                $(campusName).text("Upcoming events for Coshocton campus");
-                break;
-            case '51774':
-                $(".btn-millersburg").addClass("active");
-                campus = "Millersburg Campus"
-                $(dropdownlist).val(eventID);
-                $(campusName).text("Upcoming events for Millersburg campus");
-                break;
-            case '67714':
-                $(".btn-wooster").addClass("active");
-                campus = "Wooster Campus"
-                $(dropdownlist).val(eventID);
-                $(campusName).text("Upcoming events for Wooster campus");
-                break;
-            case '51773':
-                $(".btn-dover").addClass("active");
-                campus = "Dover Campus"
-                $(dropdownlist).val(eventID);
-                $(campusName).text("Upcoming events for Dover campus");
-                break;
-            default:
-                $(".btn-campus-all").addClass("active");
-                campus = "ALL"
-                $(dropdownlist).val(eventID);
-                $(campusName).text("Upcoming events for all campuses");
-        }
+    function setSelectedCampus(campusCode) {
+        selectedCampus = getCampusByShortCode(campusCode || "ALL");
 
-        id = eventID;
-        GetEvents(campus, catID);
-    }
-
-    function GetEvents(campus, catID) {
-        campusID = getCampusId(campus);
-
-        switch (catID) {
-            case "13399":
-                calclass = "event-important";
-                break;
-            case "13405":
-                calclass = "event-info";
-                break;
-            case "21205":
-                calclass = "event-warning";
-                break;
-            case "11111":
-                calclass = "event-success";
-                break;
-            case "00000":
-                calclass = "event-inverse";
-                break;
-            default:
-                calclass = "";
-                break;
-        }
-        bindCalendar(jsonData);
+        $("#CampusFilterDropdown select").val(selectedCampus[2]);
+        
+        $("#CampusFilterButtons .btn").removeClass("active");
+        $("#CampusFilterButtons .btn.campus-" + selectedCampus[2].toLowerCase() + "-hover").addClass("active");
     }
 
     $(document).ready(function () {
 
-        $(".campusButton").hover(function (e) {
-            $(this).text($(this).attr("data-fullname"));
-        }, function (t) {
-            $(this).text($(this).attr("data-shortname"));
-        });
-
-        $(".categoryButton").hover(function (e) {
-            $(this).text($(this).attr("data-hovername"));
-        }, function (t) {
-            $(this).html($(this).attr("data-shortname"));
-        });
-
-        $(".categoryButton").click(function (e) {
+        $("#CategoryFilterButtons .btn").click(function (e) {
             e.preventDefault();
-            setActiveCategory($(this).attr("data-categoryid"), true);
+            setSelectedCategory($(this).attr("data-categorycode"));
+            bindCalendar(jsonData);
         })
 
-        $(".campusButton").click(function (e) {
+        $("#CampusFilterButtons .btn").click(function (e) {
             e.preventDefault();
-            $("#CampusName").text("Upcoming events for " + $(this).text()) + "campus";
-            setActiveButton($(this).attr("data-campusid"), catID);
-            //GetEvents($(this).attr("data-campusid"));
+            setSelectedCampus($(this).attr("data-campuscode"));
+            bindCalendar(jsonData);
         });
 
         $("[id*='ddlCampusDropdown']").change(function () {
-            id = $(this).val();
-            setActiveButton(id, catID);
+            setSelectedCampus($(this).val());
+            bindCalendar(jsonData);
         });
 
         $("[id*='ddlCategoryDropdown']").change(function () {
-            catID = $(this).val();
-            setActiveCategory(catID, false);
-            setActiveButton(id, catID)
+            setSelectedCategory($(this).val());
+            bindCalendar(jsonData);
         });
         $("#collapse-Button").click(function () {
             console.log('dafsd');
