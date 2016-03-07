@@ -6218,10 +6218,16 @@ a:hover i.fs {
   max-height: 80px;
   line-height: 1;
 }
+.btn.btn-green:hover,
 .btn.btn-newpointe:hover,
 .btn.btn-purple:hover,
 .btn.btn-orange:hover,
-.btn.btn-newpoint-xs:hover {
+.btn.btn-newpoint-xs:hover,
+.btn.btn-green:active,
+.btn.btn-newpointe:active,
+.btn.btn-purple:active,
+.btn.btn-orange:active,
+.btn.btn-newpoint-xs:active {
   color: #333333;
 }
 .categoryButton {
@@ -7050,9 +7056,6 @@ strong {
   }
   .md-border-right {
     border-right: 1px solid #fff;
-  }
-  .btn.btn-newpointe {
-    margin-bottom: 0;
   }
 }
 /* #endregion */

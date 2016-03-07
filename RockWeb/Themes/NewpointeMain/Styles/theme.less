@@ -352,8 +352,10 @@ a:hover i.fs {
     line-height: 1;
 }
 
-.btn.btn-newpointe:hover, .btn.btn-purple:hover, .btn.btn-orange:hover, .btn.btn-newpoint-xs:hover {
-    color: @text-color;
+.btn.btn-green, .btn.btn-newpointe, .btn.btn-purple, .btn.btn-orange, .btn.btn-newpoint-xs {
+    &:hover, &:active {
+        color: @text-color;
+    }
 }
 
 .categoryButton {
@@ -1450,10 +1452,6 @@ strong {
 
     .md-border-right {
         border-right: 1px solid #fff;
-    }
-
-    .btn.btn-newpointe {
-        margin-bottom: 0;
     }
 }
     /* #endregion */
