@@ -8255,7 +8255,7 @@ body {
 }
 @media all and (-webkit-min-device-pixel-ratio: 1.5) {
   body {
-    background-image: url('../Assets/Images/background@2x.jpg');
+    background-image: url('../Assets/Images/background.jpg');
     background-size: 1348px 1024px;
   }
 }
@@ -9076,7 +9076,7 @@ input.checkin-phone-entry {
 #pointepark-logo {
   position: absolute;
   bottom: 5px;
-  left: 48%;
+  left: 38%;
   opacity: .8;
 }
 #npcc-scroll {
