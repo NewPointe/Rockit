@@ -1122,7 +1122,7 @@ namespace RockWeb.Blocks.Connection
                 // This will be changed in v5.0 to check the opportunity's ConnectionType
                 // RequiresPlacementGroupToConnect bit to see if it should be enabled
                 // or disabled.
-                //lbConnect.Enabled = false;
+                lbConnect.Enabled = false;
             }
 
             if ( connectionRequest.ConnectionState == ConnectionState.Inactive || connectionRequest.ConnectionState == ConnectionState.Connected )
