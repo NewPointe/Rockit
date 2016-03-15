@@ -110,21 +110,20 @@ namespace RockWeb.Blocks.Core
             else
             {
                 // Rebuild the attribute controls on postback based on group type
-                if (pnlDetails.Visible)
+                if ( pnlDetails.Visible )
                 {
-                    int? locationId = PageParameter("LocationId").AsIntegerOrNull();
-                    if (locationId.HasValue && locationId.Value > 0)
+                    int? locationId = PageParameter( "LocationId" ).AsIntegerOrNull();
+                    if ( locationId.HasValue && locationId.Value > 0 )
                     {
-                        var location = new LocationService(new RockContext()).Get(locationId.Value);
-                        if (location != null)
+                        var location = new LocationService(new RockContext()).Get( locationId.Value );
+                        if ( location != null )
                         {
                             location.LoadAttributes();
-                            BuildAttributeEdits(location, true);
+                            BuildAttributeEdits( location, true );
                         }
                     }
-
+                   
                 }
-
             }
         }
 
