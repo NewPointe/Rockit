@@ -294,7 +294,7 @@ namespace RockWeb.Blocks.Connection
                 if ( GetAttributeValue( "DisplayCampusFilter" ).AsBoolean() )
                 {
                     cblCampus.Visible = true;
-                    cblCampus.DataSource = CampusCache.All();
+                    cblCampus.DataSource = CampusCache.All().Where(c => (c.IsActive ?? false) && c.Id != 7 && c.Id != 8); ;
                     cblCampus.DataBind();
                 }
                 else

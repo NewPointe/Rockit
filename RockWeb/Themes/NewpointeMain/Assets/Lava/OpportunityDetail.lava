@@ -1,16 +1,23 @@
-<h3><i class='{{Opportunity.IconCssClass}}'></i> {{ Opportunity.Name }}</h3>
+<div class="col-md-12">
+  <h3>
+    <i class='{{Opportunity.IconCssClass}}'></i> {{ Opportunity.Name }}
+  </h3>
+  <br />
+  <div class="col-md-3">
+    <img src="{{Opportunity.PhotoUrl}}" class="title-image img-responsive margin-b-md" />
+</div>
 
-{{ Opportunity.Description }}
+  <div class="col-md-9">
+    {{ Opportunity.Description }}
 
-<h4>Opportunity Details:</h4>
-{% for attribute in Opportunity.AttributeValues %}
-	<strong>{{ attribute.AttributeName }}:</strong> {{ attribute.ValueFormatted }} <br />
-{% endfor %}
+    <br />
 
-<p class="margin-t-lg">
-	{% if LinkedPages.SignupPage != '' %}
-		<a href="{{ LinkedPages.SignupPage }}?OpportunityId={{ Opportunity.Id }}" class="btn btn-primary">Connect</a>
-	{% endif %}
-</p>
+    <h4>More Details:</h4>
 
-	
+    <strong>Preference Area: </strong>{{ Opportunity | Attribute:'PreferenceArea' }} <br />
+
+    <br /><br /><br />
+  </div>
+</div>
+<h3>Get more info or sign up for this volunteer opportunity!</h3>
+
