@@ -213,7 +213,7 @@
     function setSelectedCategory(catCode) {
         selectedCategory = getCategoryByShortCode(catCode || "all");
 
-        $("[id*=ddlCategoryDropdown").val(selectedCategory[2]);
+        $("[id*=ddlCategoryDropdown]").val(selectedCategory[2]);
 
         $("#CategoryFilterButtons a").removeClass("active");
         $(".category-" + selectedCategory[2] + "-hover").addClass("active");
