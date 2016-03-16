@@ -717,6 +717,7 @@ namespace RockWeb.Blocks.Connection
                         Group = r.AssignedGroup != null ? r.AssignedGroup.Name : "",
                         Connector = r.ConnectorPersonAlias != null ? r.ConnectorPersonAlias.Person.FullName : "",
                         LastActivity = FormatActivity( r.ConnectionRequestActivities.OrderByDescending( a => a.CreatedDateTime ).FirstOrDefault() ),
+                        Opened = (r.CreatedDateTime.HasValue ? (r.CreatedDateTime.Value.ToShortDateString() + " " + r.CreatedDateTime.Value.ToShortTimeString() + " ") : "") + "(<span class='small'>" + r.CreatedDateTime.ToRelativeDateString() + "</small>)",
                         Status = r.ConnectionStatus.Name,
                         StatusLabel = r.ConnectionStatus.IsCritical ? "warning" : "info",
                         ConnectionState = r.ConnectionState,
