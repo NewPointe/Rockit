@@ -144,7 +144,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 
           var rockContext = new RockContext();
 
-          var metricTest = rockContext.MetricValues.SqlQuery("SET DATEFIRST 1; SELECT * FROM dbo.MetricValue WHERE DATEPART(week, MetricValueDateTime) = DATEPART(week, GETDATE()) - 1 AND (MetricId = 2 OR MetricId = 3 OR MetricId = 4 OR MetricId = 5 OR MetricId = 23) ORDER BY MetricValueDateTime DESC;").ToList();
+          var metricTest = rockContext.MetricValues.SqlQuery("SET DATEFIRST 1; SELECT * FROM dbo.MetricValue WHERE DATEPART(week, MetricValueDateTime) = DATEPART(week, GETDATE()) - 1 AND (MetricId = 2 OR MetricId = 3 OR MetricId = 4 OR MetricId = 5) ORDER BY MetricValueDateTime DESC;").ToList();
 
             //Add key/values to dictionary in case they aren't in SQL lookup
            dictionary.Add("ORG2016", 0);
@@ -467,7 +467,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 						        <tr>
 							        <td class=""small"" align=""left"" valign=""top"">
 								        <div><span>Questions?  Please contact Bronson at <a href=""mailto:bwitting@newpointe.org"">bwitting@newpointe.org</a>.</span></div>
-								        <div><span>&copy; 2015 NewPointe Community Church</span></div>
+								        <div><span>&copy; 2016 NewPointe Community Church</span></div>
 							        </td>
 						        </tr>
 						        </table>
