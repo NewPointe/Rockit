@@ -175,7 +175,7 @@
                         <p style="font-size: 14px;" class="vertical-center text-xs-justify text-sm-left">
                             We give our time, talents, and money joyfully in response to Jesus’ generosity and to help more people meet Him.<br>
                             <span style="margin-top: 10px; text-align: center; display: block;">
-                            	<a href="/give" class="btn btn-newpoint-xs" style="line-height: 1.4;">
+                            	<a href="/give" class="btn btn-newpointe btn-xs" style="line-height: 1.4;">
                             		MORE ON GENEROSITY <i class="fa fa-caret-right" style="font-size: 15px; padding-top: 3px; color: inherit;"></i>
                             	</a>
                             </span>
@@ -184,7 +184,7 @@
 
 
                     <div class="col-xs-12 col-sm-4 col-md-3">
-                        <a class="btn btn-newpointe btn-block vertical-center" href="https://newpointe.org/volunteer">
+                        <a class="btn btn-newpointe btn-lg btn-block vertical-center" href="https://newpointe.org/volunteer">
                             <span class="larger">TIME</span><br>
                             VOLUNTEER
                         </a>
@@ -192,7 +192,7 @@
 
 
                     <div class="col-xs-12 col-sm-4 col-md-3">
-                        <a class="btn btn-newpointe btn-block vertical-center" href="https://newpointe.org/give">
+                        <a class="btn btn-newpointe btn-lg btn-block vertical-center" href="https://newpointe.org/give">
                             <span class="larger">MONEY</span><br>
                             DONATE
                         </a>

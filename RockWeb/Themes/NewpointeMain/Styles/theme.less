@@ -191,54 +191,97 @@ a:hover i.fs {
     text-decoration: none;
 }
 
+#modal-popup {
+    margin-bottom: 40px;
+}
+
     /* #endregion */
 
     /*#region // Buttons */
 
+// global button style
 .btn {
     font-family: @font-family-sans-serif-bold;
     text-transform: uppercase;
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    &:hover, &:focus, &.active {
+        border: 1px solid transparent;
+    }
+}
+
+// button sizes
+.btn.btn-nav {
+    padding: 5px 15px;
+}
+.btn.btn-xs {
+    font-family: @font-family-sans-serif;
+    padding: @btn-padding-xs;
+    max-height: 80px;
+    line-height: 1;
+}
+.btn.btn-lg {
+    font-size: 18px;
+    line-height: 1;
+    margin-bottom: 10px;
+    padding: 15px;
+}
+
+// button types
+.btn-default {
     color: @btn-default-color;
+    background-color: @btn-default-bg;
+
 }
 
 .btn-link {
     color: @accent-bold-color;
 }
 
-.btn-templ() {
-    font-size: 18px;
-    line-height: 1;
-    padding: @btn-padding;
-    margin-bottom: 10px;
+.btn.btn-primary, .btn.btn-green, .btn.btn-newpointe {
+    background-color: @btn-primary-bg;
+    color: @btn-primary-color;
 }
 
-.btn-templ-pad() {
-    .btn-templ;
-    padding: @btn-padding;
+.btn.btn-purple {
+    background-color: @btn-purple-bg;
+    color: @btn-purple-color;
 }
 
-.btn-default {
+.btn.btn-orange {
+    background-color: @btn-orange-bg;
+    color: @btn-orange-color;
+}
+
+.btn.btn-blue {
+    background-color: @btn-blue-bg;
+    color: @btn-blue-color;
+}
+
+.btn.btn-red {
+    background-color: @btn-red-bg;
+    color: @btn-red-color;
+}
+
+.btn.btn-yellow {
+    background-color: @btn-yellow-bg;
+    color: @btn-yellow-color;
+}
+
+.btn.btn-black {
+    background-color: @btn-black-bg;
+    color: @btn-black-color;
+}
+
+.btn.btn-grey {
+    color: @btn-default-color;
     background-color: @btn-default-bg;
-    max-height: 80px;
-    margin-bottom: 10px;
-    border: none;
 }
 
-.btn.btn-nav {
-    padding: 5px 15px;
-}
-
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
-    color: #404040;
-    background-color: #8BC540;
-    border-color: #8BC540;
-}
-
-.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
-    color: #8BC540;
-    background-color: #404040;
-    border-color: #404040;
-    border: none;
+.btn.btn-primary, .btn.btn-green, .btn.btn-newpointe, .btn.btn-purple, .btn.btn-orange, .btn.btn-blue, .btn.btn-red, .btn.btn-yellow {
+    &:hover, &:active {
+        color: @text-color;
+    }
 }
 
     /* #endregion */
@@ -305,64 +348,15 @@ a:hover i.fs {
 
     /*#region // Buttons */
 
-.btn.btn-green, .btn.btn-newpointe, .btn.btn-purple, .btn.btn-orange, .btn.btn-blue, .btn.btn-red, .btn.btn-yellow, .btn.btn-black {
-    .btn-templ-pad;
-}
 
-.btn.btn-green, .btn.btn-newpointe {
-    background-color: @btn-primary-bg;
-}
 
-.btn.btn-purple {
-    background-color: @btn-purple-bg;
-    color: @btn-purple-color;
-}
 
-.btn.btn-orange {
-    background-color: @btn-orange-bg;
-    color: @btn-orange-color;
-}
 
-.btn.btn-blue {
-    background-color: @btn-blue-bg;
-    color: @btn-blue-color;
-}
 
-.btn.btn-red {
-    background-color: @btn-red-bg;
-    color: @btn-red-color;
-}
 
-.btn.btn-yellow {
-    background-color: @btn-yellow-bg;
-    color: @btn-yellow-color;
-}
 
-.btn.btn-black {
-    background-color: @btn-black-bg;
-    color: @btn-black-color;
-}
 
-.btn.btn-newpoint-xs {
-    font-family: @font-family-sans-serif;
-    background-color: @btn-primary-bg;
-    padding: @btn-padding-xs;
-    font-size: @font-size-small;
-    max-height: 80px;
-    line-height: 1;
-}
-
-.btn.btn-green, .btn.btn-newpointe, .btn.btn-purple, .btn.btn-orange, .btn.btn-newpoint-xs {
-    &:hover, &:active {
-        color: @text-color;
-    }
-}
-
-.categoryButton {
-    text-align: center;
-    white-space: nowrap !important;
-}
-
+        
     /* #endregion */
     
     /*#region // Header */
@@ -834,7 +828,7 @@ footer .custom-bg-color {
 }
 
 footer h2.give {
-    color: #8bc540;
+    color: @brand-primary;
     font-size: 90px;
     font-family: 'GothamBold';
     margin: 0;
