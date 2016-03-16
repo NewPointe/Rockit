@@ -203,8 +203,6 @@
             });
             if (searchData.length == 1) {
                 $(".parent-" + searchData[0].id).slideDown();
-                $("#CampusFilterButtons .btn").removeClass("active");
-
             }
 
         });
