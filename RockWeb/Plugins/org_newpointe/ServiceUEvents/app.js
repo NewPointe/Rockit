@@ -100,7 +100,7 @@
                     getEventsBy($(this).find("div.cal-month-day span").data("cal-date"));
                 });
                 //void event links 
-                $("div.events-list a").attr("href", "javscript:void(0);");
+                $("div.events-list a").attr("href", "javascript:void(0);");
                 var event = $("input[name *= hdnEventId ]");
                 if (event.val() != '') {
                     getEventsBy('', event.val());
