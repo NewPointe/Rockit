@@ -14,11 +14,18 @@
                 </div>
 
                 <Rock:GridFilter ID="workflowFilters" runat="server" OnApplyFilterClick="workflowFilters_ApplyFilterClick">
-                    <Rock:RockDropDownList ID="wftListBox" runat="server" Label="Workflow"></Rock:RockDropDownList>
-                    <Rock:CampusPicker ID="campusPicker" runat="server"></Rock:CampusPicker>
+                    <Rock:RockDropDownList ID="wftListBox" runat="server" Label="Workflow" AutoPostBack="true" OnSelectedIndexChanged="wftListBox_SelectedIndexChanged"></Rock:RockDropDownList>
+                    <Rock:CampusPicker ID="campusPicker" runat="server" AutoPostBack="true" OnSelectedIndexChanged="campusPicker_SelectedIndexChanged"></Rock:CampusPicker>
                     <Rock:RockDropDownList ID="assignWork" runat="server" Label="Assigned Worker"></Rock:RockDropDownList>
                     <Rock:RockDropDownList ID="workStatus" runat="server" Label="Status"></Rock:RockDropDownList>
                     <Rock:DateRangePicker ID="dateRange" ClientIDMode="Static" runat="server" CssClass="np_customDate" Label="Date" />
+                    <Rock:RockDropDownList ID="rddlGroupBy" runat="server" Label="Group By">
+                        <asp:ListItem Text="" Value=""></asp:ListItem>
+                        <asp:ListItem Text="Workflow" Value="1"></asp:ListItem>
+                        <asp:ListItem Text="Campus" Value="2"></asp:ListItem>
+                        <asp:ListItem Text="Worker" Value="3"></asp:ListItem>
+                        <asp:ListItem Text="Status" Value="4"></asp:ListItem>
+                    </Rock:RockDropDownList>
                 </Rock:GridFilter>
 
                 <div id="viewToggleDiv" class="clearfix" style="margin-top: 15px; margin-right: 15px;">
@@ -44,7 +51,6 @@
                                     viewtogglemousedown = false;
                                     // Mouse clicked
                                     var tglState = ($('#viewToggle_hfChecked').val() == 'false');
-                                    console.log(tglState);
 
                                     if (tglState) {
                                         $('#StatsPanel').hide();
@@ -220,13 +226,37 @@
                     <Rock:Grid ID="workflowReportTable" runat="server" AllowSorting="true" AllowPaging="true" RowClickEnabled="true" OnRowSelected="workflowReportTable_RowSelected" OnGridRebind="workflowReportTable_GridRebind">
                         <Columns>
                             <%--<asp:BoundField HeaderText="Workflow Id" DataField="Id" SortExpression="Id" />--%>
-                            <asp:BoundField HeaderText="Name" DataField="AssignedEntityName" SortExpression="AssignedEntityName" />
+                            <asp:BoundField HeaderText="Assigned Worker" DataField="AssignedEntityName" SortExpression="AssignedEntityName" />
                             <asp:BoundField HeaderText="Workflow Name" DataField="WorkflowTypeName" SortExpression="WorkflowTypeName" />
                             <asp:BoundField HeaderText="Title" DataField="Name" SortExpression="Name" />
                             <asp:BoundField HeaderText="Date Started" DataField="CreatedDateTime" SortExpression="CreatedDateTime" />
                             <asp:BoundField HeaderText="Status" DataField="Status" SortExpression="Status" />
                             <asp:BoundField HeaderText="Date Completed" DataField="CompletedDateTime" SortExpression="CompletedDateTime" />
                             <asp:BoundField HeaderText="Age" DataField="AgeInt" SortExpression="AgeInt" />
+                        </Columns>
+                    </Rock:Grid>
+                    <Rock:Grid ID="workflowGroupedReportTable" runat="server" Visible="false" AllowSorting="false" AllowPaging="true" RowClickEnabled="false" OnGridRebind="workflowReportTable_GridRebind">
+                        <Columns>
+                            <asp:TemplateField>
+                                <HeaderTemplate><%# workflowGroupedReportTableItemName %></HeaderTemplate>
+                                <ItemTemplate><%# HttpUtility.HtmlDecode(Eval("GroupedItem").ToString()) %></ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField HeaderText="Count" DataField="Count" SortExpression="Count" />
+                            <asp:TemplateField HeaderText="0 - 30 Days">
+                                <ItemTemplate><%# HttpUtility.HtmlDecode(Eval("OneMonthOldStats").ToString()) %></ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="30 - 60 Days">
+                                <ItemTemplate><%# HttpUtility.HtmlDecode(Eval("TwoMonthsOldStats").ToString()) %></ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="60 - 90 Days">
+                                <ItemTemplate><%# HttpUtility.HtmlDecode(Eval("ThreeMonthsOldStats").ToString()) %></ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText=">90 Days">
+                                <ItemTemplate><%# HttpUtility.HtmlDecode(Eval("OlderThanThreeMonthsStats").ToString()) %></ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Total">
+                                <ItemTemplate><%# HttpUtility.HtmlDecode(Eval("TotalStats").ToString()) %></ItemTemplate>
+                            </asp:TemplateField>
                         </Columns>
                     </Rock:Grid>
                 </div>
