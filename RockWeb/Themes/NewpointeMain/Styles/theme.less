@@ -162,10 +162,6 @@ p, dd, li {
     position: static;
     float: none;
     width: auto;
-    margin-top: 0;
-    background-color: transparent;
-    border: 0;
-    box-shadow: none;
 }
 
     /* #endregion */
@@ -173,9 +169,6 @@ p, dd, li {
     /*#region // Controls */
 
 .dropdown-menu li {
-    margin-left: 10px;
-    padding-bottom: 5px;
-
     a {
         font-size: .8em;
         border-bottom: dashed 1px #222;
@@ -441,19 +434,6 @@ header {
         /*#endregion */
 
         /*#region // Nav */
-        // Login Menu
-header .custom-login-status {
-    width: 100%;
-    padding: 10px;
-
-    .nav.navbar-nav {
-        margin-right: 15px;
-    }
-
-    .nav.navbar-nav > li > a {
-        padding: 0px;
-    }
-}
 
 .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
     color: #8bc540;
@@ -490,10 +470,6 @@ header .mobile-page-menu {
 }
 
 // custom login
-.loginstatus > li > a:hover,
-.loginstatus > li > a:active {
-    background-color: transparent;
-}
 
 .divLogin {
     background-color: transparent;
@@ -506,40 +482,6 @@ header .mobile-page-menu {
         &:hover, &:focus {
             color: darken(@accent-bold-color, 10%);
             text-decoration: none;
-        }
-    }
-
-    .loginstatus {
-        a, a:focus {
-            border: none;
-            transition: none;
-            background-color: transparent;
-        }
-        
-        .dropdown {
-
-            &.open > a, &.open > a:hover, &.open > a:focus {
-                background-color: #404040;
-                color: #8bc540;
-            }
-
-            .divider {
-                background-color: #404040;
-            }
-        }
-        
-        .dropdown-menu {
-            background-color: #404040 !important;
-            z-index: 99999;
-            margin-top: 15px;
-        }
-        
-        &> li li {
-            text-align: right;
-
-            a {
-                padding-right: 20px;
-            }
         }
     }
 }
@@ -1053,6 +995,77 @@ img.staff {
 
         /*#endregion */
 
+       
+// Nav Dropdowns
+.nav > .dropdown {
+    padding-bottom: 0px;
+
+    &.npMenu {
+        margin-bottom: 10px;
+        &.open {
+            margin-bottom: 5px;
+        }
+    }
+
+    &.open {
+        background-color: #404040;
+        
+    }
+
+    .dropdown-toggle {
+        &, &:hover, &:focus {
+            background-color: transparent;
+        }
+    }
+
+    .dropdown-menu {
+        padding-top: 0px;
+        z-index: 9999;
+
+        .divider {
+            background-color: #303030;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        & > li {
+            padding: 5px 10px;
+            margin: 0px;
+
+            &:hover {
+                background-color: #555;
+            }
+
+            &:last-child {
+                padding-bottom: 8px;
+            }
+            
+            a {
+                font-size: .8em;
+                border: none;
+            }
+        }
+
+        & > .divider + li {
+            padding-top: 8px;
+        }
+    }
+}
+
+.contextsetter > li {
+    min-width: 160px;
+    text-align: right;
+}
+
+#zone-customlogin .block-instance {
+    float: right;
+    clear: none;
+}
+
+#divCampusTimes {
+    margin-top: 5px;                    
+}
+
     /*#endregion */
 
     /*#region // Misc */
@@ -1346,7 +1359,10 @@ strong {
         flex: 1 0 auto;
     }
 
-
+    .navbar-fixed-top .navbar-collapse, .navbar-static-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
+        padding-left: 15px; 
+        padding-right: 15px; 
+    }
 
     .html-content img {
         width: auto;
@@ -1397,7 +1413,7 @@ strong {
     }
 
     header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
-        font-size: 1.8em;
+        font-size: 1.6em;
     }
 
     .navbar-collapse {
@@ -1462,20 +1478,6 @@ strong {
         border: none;
     }
 
-    // Login Menu
-    header .custom-login-status {
-        border-top: none;
-        padding: 0px;
-
-        .nav.navbar-nav {
-            margin-right: 0px;
-        }
-
-        .nav.navbar-nav > li > a {
-            padding: 15px;
-        }
-    }
-
     header .page-menu .nav.navbar-nav > li, header .mobile-page-menu .nav.navbar-nav > li {
         font-size: 2em;
     }
@@ -1488,6 +1490,9 @@ strong {
     header .mobile-page-menu .nav.navbar-nav > li a {
         padding: 10px 40px;
     }
+    .nav > .dropdown .dropdown-menu {
+        position: absolute;
+    }
 
     .subnav li {
         font-size: 1.6em;
@@ -1497,18 +1502,14 @@ strong {
         margin-bottom: -15px;
         z-index: 999999;
 
-        .loginstatus .dropdown-menu {
-            position: absolute;
-            margin-top: -5px;
-        }
-
         a {
             font-size: 1em;
         }
+    }
 
-        .loginstatus > li li {
-            text-align: left;
-        }
+    .navbar-fixed-top .navbar-collapse, .navbar-static-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
+        padding-left: 0px; 
+        padding-right: 0px; 
     }
 
     .right-stacked-lg {
