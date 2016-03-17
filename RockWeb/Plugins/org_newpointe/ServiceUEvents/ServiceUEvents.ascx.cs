@@ -13,11 +13,11 @@ using Rock.Web.Cache;
 [Description("Upcoming events for each campus")]
 public partial class Plugins_org_newpointe_ServiceUEvents_ServiceUEvents : RockBlock
 {
-   
+
     protected void Page_Load(object sender, EventArgs e)
     {
         this.RockPage.AddScriptLink("~/Scripts/jquery.autocomplete.min.js");
-        
+
         //this.RockPage.AddScriptLink("~/Scripts/compenents/underscore.min.js");
         //this.RockPage.AddScriptLink("~/Scripts/compenents/jstz.min.js");
         //this.RockPage.AddScriptLink("~/Scripts/compenents/calendar.js");
@@ -85,45 +85,31 @@ public partial class Plugins_org_newpointe_ServiceUEvents_ServiceUEvents : RockB
 
     protected void GetCampus()
     {
-        var param = Request.QueryString["campusID"];
+        String campusCode = hdnCampus.Value;
 
-        var campusParam = PageParameter("campusName");
-        var campusId = 51773;
+        if (String.IsNullOrWhiteSpace(campusCode))
+        {
+            var cNameParam = PageParameter("campusName");
+            if (!String.IsNullOrWhiteSpace(cNameParam))
+            {
+                var campus = new CampusService(new Rock.Data.RockContext()).Queryable().Where(x => x.Name.Contains(cNameParam)).First();
+                campusCode = campus != null ? campus.ShortCode : campusCode;
+            }
 
-        if (campusParam == "Akron")
-        {
-            campusId = 67713;
-        }
-        else if (campusParam == "Canton")
-        {
-            campusId = 53103;
-        }
-        else if (campusParam == "Coshocton")
-        {
-            campusId = 62004;
-        }
-        else if (campusParam == "Dover")
-        {
-            campusId = 51773;
-        }
-        else if (campusParam == "Millersburg")
-        {
-            campusId = 51774;
-        }
-        else if (campusParam == "Wooster")
-        {
-            campusId = 67714;
-        }
+            var cIdParam = PageParameter("campusID");
+            if (!String.IsNullOrWhiteSpace(cIdParam))
+            {
+                campusCode = cIdParam;
+            }
 
+            var campusEntityType = EntityTypeCache.Read(typeof(Campus));
+            var currentCampus = RockPage.GetCurrentContext(campusEntityType) as Campus;
+            if (currentCampus != null && !String.IsNullOrWhiteSpace(currentCampus.ShortCode))
+            {
+                campusCode = currentCampus.ShortCode;
+            }
 
-        if (!String.IsNullOrEmpty(param))
-        {
-            hdnCampus.Value = param;
-        }
-
-        if (!String.IsNullOrEmpty(campusParam))
-        {
-            hdnCampus.Value = campusId.ToString();
+            hdnCampus.Value = campusCode;
         }
     }
 }
