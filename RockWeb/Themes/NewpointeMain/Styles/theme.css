@@ -6690,7 +6690,7 @@ img.staff {
 /*#endregion */
 /*#region // Date Picker */
 /*#endregion */
-.nav > .dropdown {
+.nav li {
   padding-bottom: 0px;
 }
 .nav > .dropdown.npMenu {
@@ -6733,9 +6733,29 @@ img.staff {
 .nav > .dropdown .dropdown-menu > .divider + li {
   padding-top: 8px;
 }
-.contextsetter > li {
-  min-width: 160px;
+.contextsetter > li.dropdown {
   text-align: right;
+}
+.contextsetter > li.dropdown,
+.contextsetter > li.dropdown > ul {
+  min-width: 210px;
+}
+.loginstatus > li {
+  min-width: 0px;
+}
+.nav > li > a:hover,
+.nav > li > a:focus {
+  background-color: transparent;
+}
+.loginstatus > li.dropdown {
+  text-align: right;
+}
+.loginstatus > li.dropdown,
+.loginstatus > li.dropdown > ul {
+  min-width: 150px;
+}
+.mobile-page-menu .dropdown-menu {
+  box-shadow: none;
 }
 #zone-customlogin .block-instance {
   float: right;
@@ -7147,6 +7167,9 @@ strong {
     float: none !important;
     margin: 7.5px -15px;
   }
+  .divLogin .navbar-nav {
+    margin: 7.5px 0px;
+  }
   .navbar-nav > li {
     float: none;
   }
@@ -7309,7 +7332,7 @@ strong {
   position: absolute;
 }
 .discchart .discbar {
-  border: 1px solid #ddd;
+  border: none;
 }
 .discchart .discbar:before {
   position: absolute;
@@ -7326,7 +7349,7 @@ strong {
   line-height: 1em;
 }
 .discchart .discbar.discbar-primary {
-  background: #193c5a;
+  box-shadow: 0 0px 24px black;
 }
 .disc-chart .discbar-value {
   letter-spacing: -3px;

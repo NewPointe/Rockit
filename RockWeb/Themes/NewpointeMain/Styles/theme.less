@@ -997,8 +997,10 @@ img.staff {
 
        
 // Nav Dropdowns
-.nav > .dropdown {
+.nav li {
     padding-bottom: 0px;
+}
+.nav > .dropdown {
 
     &.npMenu {
         margin-bottom: 10px;
@@ -1051,10 +1053,29 @@ img.staff {
         }
     }
 }
-
-.contextsetter > li {
-    min-width: 160px;
+.contextsetter > li.dropdown {
     text-align: right;
+    &, & > ul {
+        min-width: 210px;
+    }
+}
+
+.loginstatus > li {
+    min-width: 0px;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+    background-color: transparent;
+}
+
+.loginstatus > li.dropdown {
+    text-align: right;
+    &, & > ul {
+        min-width: 150px;
+    }
+}
+.mobile-page-menu .dropdown-menu {
+    box-shadow: none;
 }
 
 #zone-customlogin .block-instance {
@@ -1492,6 +1513,7 @@ strong {
     }
     .nav > .dropdown .dropdown-menu {
         position: absolute;
+        //border-top: 1px solid #8bc540;
     }
 
     .subnav li {
@@ -1572,10 +1594,13 @@ strong {
     .navbar-collapse.collapse {
         display: none !important;
     }
-
+    
     .navbar-nav {
         float: none !important;
         margin: 7.5px -15px;
+    }
+    .divLogin .navbar-nav {
+        margin: 7.5px 0px;
     }
 
     .navbar-nav > li {
@@ -1784,7 +1809,7 @@ strong {
 }
 
 .discchart .discbar {
-    border: 1px solid #ddd;
+    border: none;
 }
 
 .discchart .discbar:before {
@@ -1803,7 +1828,7 @@ strong {
 }
 
 .discchart .discbar.discbar-primary {
-    background: #193c5a;
+    box-shadow: 0 0px 24px black;
 }
 
 .disc-chart .discbar-value {
