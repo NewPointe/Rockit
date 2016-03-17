@@ -14,10 +14,22 @@
 
     <h4>More Details:</h4>
 
+    <!-- <strong>Campuses: </strong>{{ Opportunity | Attribute:'Campuses' }} <br /> -->
     <strong>Preference Area: </strong>{{ Opportunity | Attribute:'PreferenceArea' }} <br />
+    <strong>Role Type: </strong>{{ Opportunity | Attribute:'Role' }} <br />
 
     <br /><br /><br />
   </div>
+  
 </div>
-<h3>Get more info or sign up for this volunteer opportunity!</h3>
+
+
+{% assign short = Opportunity | Attribute:'ShortName' %}
+{% if short != "" %}
+<h4>Get more info or sign up for this volunteer opportunity!</h4>
+
+{% else %}
+<h4>Get more info or sign up for this volunteer opportunity!</h4>
+
+{% endif %}
 
