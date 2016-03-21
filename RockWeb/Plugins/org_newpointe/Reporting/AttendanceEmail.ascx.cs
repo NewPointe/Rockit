@@ -190,7 +190,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
           //loop through results and populate dictionary
           foreach (var metricsvar in metricTest)
           {
-              DateTime theDate = metricsvar.MetricValueDateTime ?? DateTime.Now;
+              DateTime theDate = metricsvar.MetricValueDateTime ?? DateTime.MinValue;
               int year = theDate.Year;
                       
                       //add data to dictionary
