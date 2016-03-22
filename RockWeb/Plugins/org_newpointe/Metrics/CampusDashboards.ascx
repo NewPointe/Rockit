@@ -144,6 +144,13 @@
         <td>0</td>
         <td>0</td>
       </tr> -->
+        <tr>
+        <td>Inactive Follow-up <small><a href="https://rock.newpointe.org/page/735?WorkflowTypeId=120"><i class="fa fa-file-text-o"></i></a></small></td> 
+        <td><%= InactiveFollowupComplete %> <small>Completed</small></td>
+          <td><%= InactiveFollowupGoalProgress %></td>
+        <td><%= InactiveFollowupAll %></td>
+        <td></td>
+      </tr>
    <tfoot>
     <tr>
        <td colspan="5" style="background-color: #8bc540; text-align: center; color: #fff; font-size: 80%;"><em>He must become greater, and I must become less and less.  - John 3:30</em></td>

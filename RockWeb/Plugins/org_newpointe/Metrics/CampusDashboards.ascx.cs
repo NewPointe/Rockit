@@ -165,6 +165,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         
         public string sMonth;
 
+        public int? iInactiveFollowupComplete;
+        public int? iInactiveFollowupIncomplete;
+        public string InactiveFollowupGoalProgress;
+        public string InactiveFollowupAll;
+
 
 
 
@@ -1432,67 +1437,53 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //Inactive Follow-up
             if (SelectedCampusId == 0)
             {
-                InactiveFollowupComplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                 iInactiveFollowupComplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
                   FROM [rock-production].[dbo].[Workflow] wf 
                   JOIN AttributeValue av ON wf.Id = av.EntityID
                   WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Completed'
                   AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())")
-                    .ToList<int?>()[0].ToString();
+                    .ToList<int?>()[0];
             }
             else
             {
-                InactiveFollowupComplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                 iInactiveFollowupComplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
                   FROM [rock-production].[dbo].[Workflow] wf 
                   JOIN AttributeValue av ON wf.Id = av.EntityID
                   WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Completed' AND av.Value = @CampusName
-                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())", new SqlParameter("CampusName", SelectedCampus)).ToList<int?>()[0].ToString();
+                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())", new SqlParameter("CampusName", SelectedCampus)).ToList<int?>()[0];
             }
 
             if (SelectedCampusId == 0)
             {
-                InactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                 iInactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
                   FROM [rock-production].[dbo].[Workflow] wf 
                   JOIN AttributeValue av ON wf.Id = av.EntityID
                   WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Active'
                   AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())")
-                    .ToList<int?>()[0].ToString();
+                    .ToList<int?>()[0];
             }
             else
             {
-                InactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
+                 iInactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
                   FROM [rock-production].[dbo].[Workflow] wf 
                   JOIN AttributeValue av ON wf.Id = av.EntityID
                   WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Active' AND av.Value = @CampusName
-                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())", new SqlParameter("CampusName", SelectedCampus)).ToList<int?>()[0].ToString();
+                  AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())", new SqlParameter("CampusName", SelectedCampus)).ToList<int?>()[0];
             }
 
-            var totalFollowups = Int32.Parse(InactiveFollowupComplete) + Int32.Parse(InactiveFollowupIncomplete);
-            decimal followupPercent = 0;
-            InactiveFollowup = totalFollowups.ToString();
-            if (InactiveFollowup != "0")
+            InactiveFollowupComplete = iInactiveFollowupComplete.ToString();
+            InactiveFollowupIncomplete = iInactiveFollowupIncomplete.ToString();
+            int? iInactiveFollowupAll = iInactiveFollowupComplete + iInactiveFollowupIncomplete;
+            InactiveFollowupAll = iInactiveFollowupAll.ToString();
+
+            decimal? followupProgress = iInactiveFollowupComplete / (iInactiveFollowupComplete + iInactiveFollowupIncomplete);
+            if (followupProgress >= iInactiveFollowupAll)
             {
-                followupPercent = (decimal.Parse(InactiveFollowupComplete) / decimal.Parse(InactiveFollowup)) * 100;
-                InactiveFollowupPercentage = followupPercent.ToString();
+                InactiveFollowupGoalProgress = "<span class='label label-success'>On Target (" + iInactiveFollowupAll.ToString() + ")</span>";
             }
             else
             {
-                InactiveFollowupPercentage = "100";
-            }
-            if (followupPercent <= 30)
-            {
-                InactiveFollowupColor = "danger";
-            }
-            else if (followupPercent <= 60)
-            {
-                InactiveFollowupColor = "warning";
-            }
-            else if (followupPercent <= 90)
-            {
-                InactiveFollowupColor = "info";
-            }
-            else if (followupPercent <= 100)
-            {
-                InactiveFollowupColor = "success";
+                InactiveFollowupGoalProgress = "<span class='label label-danger'>Below Target (" + iInactiveFollowupAll.ToString() + ")</span>";
             }
 
         }

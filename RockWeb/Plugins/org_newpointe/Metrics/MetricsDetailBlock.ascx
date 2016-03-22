@@ -114,7 +114,7 @@
                     </div>
                 </div>
                 <div class='col-md-12 text-right'>
-                    <a href="https://rock.newpointe.org/page/735" class="text-xs-right" style="font-size: 70%">See Report</a>
+                    <a href="https://rock.newpointe.org/page/735?WorkflowTypeId=120" class="text-xs-right" style="font-size: 70%">See Report</a>
                 </div>
             </div>
         </div>
