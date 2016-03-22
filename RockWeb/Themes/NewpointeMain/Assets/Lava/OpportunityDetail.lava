@@ -3,6 +3,9 @@
     <i class='{{Opportunity.IconCssClass}}'></i> {{ Opportunity.Name }}
   </h3>
   <br />
+  
+  <img src="{{ Opportunity | Attribute:'EnvironmentLogo','Url'  }}" class="center-block title-image img-responsive margin-b-md" width="300" />
+    
   <div class="col-md-3">
     <img src="{{Opportunity.PhotoUrl}}" class="title-image img-responsive margin-b-md" />
 </div>
