@@ -419,19 +419,17 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 						
 						<tr valign=""middle""><td height=""40"" align=""left""><span><strong>All Org</strong></span></td><td><span><strong>{4}</strong></span></td><td><span><strong>{5}</strong></span></td><td><span><strong>{6}</strong></span></td><td class=""last"" align=""center"" style=""text-align: center; width:20%;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-ORG?week=??"" /></strong></span></td></tr>
 						
-                        <tr valign=""middle""><td height=""40"" align=""left""><span>Akron</span></td><td><span>{7}</span></td><td><span>{8}</span></td><td><span>{9}<span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-CAN?week=??"" /></strong></span></td></tr>
-
-						<tr valign=""middle""><td height=""40"" align=""left""><span>Canton</span></td><td><span>{10}</span></td><td><span>{11}</span></td><td><span>{12}<span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-CAN?week=??"" /></strong></span></td></tr>
+						<tr valign=""middle""><td height=""40"" align=""left""><span>Canton</span></td><td><span>{7}</span></td><td><span>{8}</span></td><td><span>{9}<span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-CAN?week=??"" /></strong></span></td></tr>
 						
-						<tr valign=""middle""><td height=""40"" align=""left""><span>Coshocton</span></td><td><span>{13}</span></td><td><span>{14}</span></td><td><span>{15}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-COS?week=??"" /></strong></span></td></tr>
+						<tr valign=""middle""><td height=""40"" align=""left""><span>Coshocton</span></td><td><span>{10}</span></td><td><span>{11}</span></td><td><span>{12}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-COS?week=??"" /></strong></span></td></tr>
 						
-                        <tr valign=""middle""><td height=""40"" align=""left""><span>Dover</span></td><td><span>{16}</span></td><td><span>{17}</span></td><td><span>{18}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-DOV?week=??"" /></strong></span></td></tr>
+                        <tr valign=""middle""><td height=""40"" align=""left""><span>Dover</span></td><td><span>{13}</span></td><td><span>{14}</span></td><td><span>{15}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-DOV?week=??"" /></strong></span></td></tr>
                                                 
-                        <tr valign=""middle""><td height=""40"" align=""left""><span>Millersburg</span></td><td><span>{19}</span></td><td><span>{20}</span></td><td><span>{21}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-MIL?week=??"" /></strong></span></td></tr>
+                        <tr valign=""middle""><td height=""40"" align=""left""><span>Millersburg</span></td><td><span>{16}</span></td><td><span>{17}</span></td><td><span>{18}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-MIL?week=??"" /></strong></span></td></tr>
 
-                        <tr valign=""middle""><td height=""40"" align=""left""><span>Wooster</span></td><td><span>{22}</span></td><td><span>{23}</span></td><td><span>{24}<span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-CAN?week=??"" /></strong></span></td></tr>
+                        <tr valign=""middle""><td height=""40"" align=""left""><span>Wooster</span></td><td><span>{19}</span></td><td><span>{20}</span></td><td><span>{21}<span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-CAN?week=??"" /></strong></span></td></tr>
                                                     
-                        <tr valign=""middle""><td height=""40"" align=""left""><span>Online</span></td><td><span>{25}</span></td><td><span>{26}</span></td><td><span>{27}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-WEB?week=??"" /></strong></span></td></tr>
+                        <tr valign=""middle""><td height=""40"" align=""left""><span>Online</span></td><td><span>{22}</span></td><td><span>{23}</span></td><td><span>{24}</span></td><td class=""last"" align=""center"" style=""text-align: center;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-WEB?week=??"" /></strong></span></td></tr>
                                                     
 						</table>
 					</td>
@@ -446,7 +444,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 				</tr>
 				</table>
                             <br><br>
-                            <h3><span>Overall, there was a {28} in attendance from last year.</span></h3>       
+                            <h3><span>Overall, there was a {25} in attendance from last year.</span></h3>       
 			</td>
 		</tr>
 		</table>
@@ -499,7 +497,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 
 
           string emailBodyMerged = string.Format(emailBody, currentDateString);
-          string emailAttendanceMerged = string.Format(emailAttendance, weeknumber, currentSundayDate, dateLastYear, date2YrsAgo, Convert.ToInt32(dictionary["ORG2016"]), Convert.ToInt32(dictionary["ORG2015"]), Convert.ToInt32(dictionary["ORG2014"]), Convert.ToInt32(dictionary["62016"]), Convert.ToInt32(dictionary["62015"]), Convert.ToInt32(dictionary["62014"]), Convert.ToInt32(dictionary["22016"]), Convert.ToInt32(dictionary["22015"]), Convert.ToInt32(dictionary["22014"]), Convert.ToInt32(dictionary["32016"]), Convert.ToInt32(dictionary["32015"]), Convert.ToInt32(dictionary["32014"]), Convert.ToInt32(dictionary["12016"]), Convert.ToInt32(dictionary["12015"]), Convert.ToInt32(dictionary["12014"]), Convert.ToInt32(dictionary["42016"]), Convert.ToInt32(dictionary["42015"]), Convert.ToInt32(dictionary["42014"]), Convert.ToInt32(dictionary["52016"]), Convert.ToInt32(dictionary["52015"]), Convert.ToInt32(dictionary["52014"]), Convert.ToInt32(dictionary["82016"]), Convert.ToInt32(dictionary["82015"]), Convert.ToInt32(dictionary["82014"]), attendancePercentage);
+          string emailAttendanceMerged = string.Format(emailAttendance, weeknumber, currentSundayDate, dateLastYear, date2YrsAgo, Convert.ToInt32(dictionary["ORG2016"]), Convert.ToInt32(dictionary["ORG2015"]), Convert.ToInt32(dictionary["ORG2014"]), Convert.ToInt32(dictionary["22016"]), Convert.ToInt32(dictionary["22015"]), Convert.ToInt32(dictionary["22014"]), Convert.ToInt32(dictionary["32016"]), Convert.ToInt32(dictionary["32015"]), Convert.ToInt32(dictionary["32014"]), Convert.ToInt32(dictionary["12016"]), Convert.ToInt32(dictionary["12015"]), Convert.ToInt32(dictionary["12014"]), Convert.ToInt32(dictionary["42016"]), Convert.ToInt32(dictionary["42015"]), Convert.ToInt32(dictionary["42014"]), Convert.ToInt32(dictionary["52016"]), Convert.ToInt32(dictionary["52015"]), Convert.ToInt32(dictionary["52014"]), Convert.ToInt32(dictionary["82016"]), Convert.ToInt32(dictionary["82015"]), Convert.ToInt32(dictionary["82014"]), attendancePercentage);
 
           return emailHeader + emailBodyMerged + emailAttendanceMerged + emailFooter;
       }

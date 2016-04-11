@@ -65,9 +65,7 @@
 						<tr valign="middle"><th height="40">&nbsp;</th><th><span><strong>2016</strong><br>(<%= currentSundayDate %> )</span></th><th><span>2015<br>(<%= dateLastYear %> )</span></th><th><span>2014<br>(<%= date2YrsAgo %> )</span></th><th><span>Trend</span></th></tr>
 						
 						<tr valign="middle"><td height="40" align="left"><span><strong>All Org</strong></span></td><td><span><strong><%= Convert.ToInt32(dictionary["ORG2016"]) %> </strong></span></td><td><span><strong><%= Convert.ToInt32(dictionary["ORG2015"]) %> </strong></span></td><td><span><strong><%= Convert.ToInt32(dictionary["ORG2014"]) %> </strong></span></td><td class="last" align="center" style="text-align: center; width:20%;"><span><strong><img src="http://metrics.newpointe.org/email/chart-ORG?week=$$$$$week" /></strong></span></td></tr>
-
-						<tr valign="middle"><td height="40" align="left"><span>Akron</span></td><td><span><%= Convert.ToInt32(dictionary["62016"]) %></span></td><td><span><%= Convert.ToInt32(dictionary["62015"]) %></span></td><td><span><%= Convert.ToInt32(dictionary["62014"]) %></span></td><td class="last" align="center" style="text-align: center;"><span><strong><img src="http://metrics.newpointe.org/email/chart-MIL?week=$$$$$week" /></strong></span></td></tr>
-						
+			
 						<tr valign="middle"><td height="40" align="left"><span>Canton</span></td><td><span><%= Convert.ToInt32(dictionary["22016"]) %></span></td><td><span><%= Convert.ToInt32(dictionary["22015"]) %></span></td><td><span><%= Convert.ToInt32(dictionary["22014"]) %></span></td><td class="last" align="center" style="text-align: center;"><span><strong><img src="http://metrics.newpointe.org/email/chart-CAN?week=$$$$$week" /></strong></span></td></tr>
 						
 						<tr valign="middle"><td height="40" align="left"><span>Coshocton</span></td><td><span><%= Convert.ToInt32(dictionary["32016"]) %></span></td><td><span><%= Convert.ToInt32(dictionary["32015"]) %></span></td><td><span><%= Convert.ToInt32(dictionary["32014"]) %></span></td><td class="last" align="center" style="text-align: center;"><span><strong><img src="http://metrics.newpointe.org/email/chart-COS?week=$$$$$week" /></strong></span></td></tr>
