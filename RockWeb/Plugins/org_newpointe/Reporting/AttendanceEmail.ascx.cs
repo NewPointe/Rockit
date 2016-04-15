@@ -415,7 +415,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
 						<h1><span>Attendance for Week {0}</span></h1>
 						<table width=""600"" cellpadding=""0"" cellspacing=""0"" class=""plan"">
 						
-						<tr valign=""middle""><th height=""40"">&nbsp;</th><th><span><strong>2015</strong><br>({1})</span></th><th><span>2014<br>({2})</span></th><th><span>2013<br>({3})</span></th><th><span>Trend</span></th></tr>
+						<tr valign=""middle""><th height=""40"">&nbsp;</th><th><span><strong>2016</strong><br>({1})</span></th><th><span>2015<br>({2})</span></th><th><span>2014<br>({3})</span></th><th><span>Trend</span></th></tr>
 						
 						<tr valign=""middle""><td height=""40"" align=""left""><span><strong>All Org</strong></span></td><td><span><strong>{4}</strong></span></td><td><span><strong>{5}</strong></span></td><td><span><strong>{6}</strong></span></td><td class=""last"" align=""center"" style=""text-align: center; width:20%;""><span><strong><img src=""https://metrics.newpointe.org/email/chart-ORG?week=??"" /></strong></span></td></tr>
 						
