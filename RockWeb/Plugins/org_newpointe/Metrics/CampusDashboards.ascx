@@ -5,7 +5,7 @@
     
     <div class="row center-block">
     <div class="col-md-12 center-block">
-        <h4 style="text-align: center;"><strong>Our mission is to lead people to realize and reach their full potential in Jesus Christ.</strong></h4>
+        <h4 style="text-align: center;"><strong>Every number has a name.  Every name has a story.  Every story matters to God.</strong></h4>
     </div>
    </div>
 
