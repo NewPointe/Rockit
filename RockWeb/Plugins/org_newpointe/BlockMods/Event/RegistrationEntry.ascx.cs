@@ -45,7 +45,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Event
     [Category( "Newpointe > Event" )]
     [Description( "Block used to register for a registration instance." )]
 
-    [DefinedValueField( Rock.SystemGuid.DefinedType.PERSON_CONNECTION_STATUS, "Connection Status", "The connection status to use for new individuals (default: 'Web Prospect'.)", true, false, "368DD475-242C-49C4-A42C-7278BE690CC2", "", 0 )]
+    [DefinedValueField( Rock.SystemGuid.DefinedType.PERSON_CONNECTION_STATUS, "Connection Status", "The connection status to use for new individuals (default: 'Web Prospect'.)", true, false, Rock.SystemGuid.DefinedValue.PERSON_CONNECTION_STATUS_WEB_PROSPECT, "", 0 )]
     [DefinedValueField( Rock.SystemGuid.DefinedType.PERSON_RECORD_STATUS, "Record Status", "The record status to use for new individuals (default: 'Pending'.)", true, false, Rock.SystemGuid.DefinedValue.PERSON_RECORD_STATUS_PENDING, "", 1 )]
     [DefinedValueField( Rock.SystemGuid.DefinedType.FINANCIAL_SOURCE_TYPE, "Source", "The Financial Source Type to use when creating transactions", false, false, Rock.SystemGuid.DefinedValue.FINANCIAL_SOURCE_TYPE_WEBSITE, "", 2 )]
     [TextField( "Batch Name Prefix", "The batch prefix name to use when creating a new batch", false, "Event Registration", "", 3 )]
@@ -511,6 +511,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Event
                         {
                             CurrentRegistrantIndex = registrantId;
                             CurrentFormIndex = formId;
+
+                            this.ProgressBarSteps = numHowMany.Value * FormCount + 2;
+                            PercentComplete = ( ( (double)2 + ( ( CurrentFormIndex + 1) * CurrentRegistrantIndex ) ) / (double)ProgressBarSteps ) * 100;
+
                             ShowRegistrant();
                             break;
                         }
@@ -3670,6 +3674,12 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Event
                         tbYourLastName.Text = CurrentPerson.LastName;
                         tbConfirmationEmail.Text = CurrentPerson.Email;
                     }
+                    else if (RegistrationState.Registrants.Any())
+                    {
+                        tbYourFirstName.Text = (RegistrationState.Registrants.First().GetPersonFieldValue(RegistrationTemplate, RegistrationPersonFieldType.FirstName) ?? "" ).ToString();
+                        tbYourLastName.Text = (RegistrationState.Registrants.First().GetPersonFieldValue(RegistrationTemplate, RegistrationPersonFieldType.LastName) ?? "" ).ToString();
+                        tbConfirmationEmail.Text = (RegistrationState.Registrants.First().GetPersonFieldValue(RegistrationTemplate, RegistrationPersonFieldType.Email) ?? "" ).ToString();
+                    }
                     else
                     {
                         tbYourFirstName.Text = string.Empty;
@@ -3897,7 +3907,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Event
                     pnlRegistrantsReview.Visible = true;
 
                     lRegistrantsReview.Text = string.Format( "<p>The following {0} will be registered for {1}:",
-                        RegistrationTemplate.RegistrantTerm.PluralizeIf( RegistrationState.Registrants.Count > 0 ).ToLower(), RegistrationTemplate.Name );
+                        RegistrationTemplate.RegistrantTerm.PluralizeIf( RegistrationState.Registrants.Count > 0 ).ToLower(), RegistrationInstanceState.Name );
 
                     rptrRegistrantReview.DataSource = RegistrationState.Registrants
                         .Select( r => new
