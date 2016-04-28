@@ -6100,7 +6100,15 @@ a:hover i.fs {
 .btn.btn-orange:active,
 .btn.btn-blue:active,
 .btn.btn-red:active,
-.btn.btn-yellow:active {
+.btn.btn-yellow:active,
+.btn.btn-primary.active,
+.btn.btn-green.active,
+.btn.btn-newpointe.active,
+.btn.btn-purple.active,
+.btn.btn-orange.active,
+.btn.btn-blue.active,
+.btn.btn-red.active,
+.btn.btn-yellow.active {
   color: #333333;
 }
 /* #endregion */

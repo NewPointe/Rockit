@@ -97,7 +97,7 @@
                 $('button[data-calendar-view="' + view + '"]').addClass('active');
                 //ads on click event to calendar date. 
                 $(".cal-cell").click(function () {
-                    getEventsBy($(this).find("div.cal-month-day span").data("cal-date"));
+                    getEventsBy(parseCalDate($(this).find("div.cal-month-day span").data("cal-date")));
                 });
                 //void event links 
                 $("div.events-list a").attr("href", "javascript:void(0);");
@@ -145,6 +145,11 @@
             calendar.setOptions({ first_day: value });
             calendar.view();
         });
+    }
+
+    function parseCalDate(date) {
+        var a = date.split('-');
+        return new Date(a[0], a[1]-1, a[2]);
     }
 
     function getEventsBy(date, id) {
