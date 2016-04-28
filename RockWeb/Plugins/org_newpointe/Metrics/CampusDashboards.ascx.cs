@@ -39,6 +39,8 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public int SelectedCampusId;
 
         public string AttendanceAverage;
+        public string AttendanceAveragePast6Weeks;
+
         public string AttendanceLastWeekAll;
         public string AttendanceLastWeekAud;
         public string AttendanceLastWeekChild;
@@ -169,6 +171,13 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public int? iInactiveFollowupIncomplete;
         public string InactiveFollowupGoalProgress;
         public string InactiveFollowupAll;
+
+
+        public string CompositeScore;
+        public string CompAttendance;
+        public string CompVolunteers;
+        public string CompGroups;
+        public string CompGroupParticipants;
 
 
 
@@ -411,6 +420,40 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 ) inner_query
                 ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int>()[0].ToString();
             }
+
+
+
+
+            //Find the average attendacne over the past 6 weeks
+            if (SelectedCampusId == 0)
+            {
+                AttendanceAveragePast6Weeks = rockContext.Database.SqlQuery<int>(@"SELECT CAST(AVG(att) as int)
+                FROM
+                (
+                SELECT TOP 50 SUM(mv.YValue) as att, DATEPART(isowk, mv.MetricValueDateTime) as weeknumber
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND mv.EntityId != 8 AND mv.MetricValueDateTime > DATEADD(week, -6, GETDATE())
+                GROUP by DATEPART(isowk, mv.MetricValueDateTime)
+                ) inner_query
+                ").ToList<int>()[0].ToString();
+            }
+            else
+            {
+                AttendanceAveragePast6Weeks = rockContext.Database.SqlQuery<int>(@"SELECT CAST(AVG(att) as int)
+                FROM
+                (
+                SELECT TOP 50 SUM(mv.YValue) as att, DATEPART(isowk, mv.MetricValueDateTime) as weeknumber
+                FROM MetricValue mv
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 2 OR mv.MetricId = 3 OR mv.MetricId = 4 OR mv.MetricId = 5) AND mv.EntityId = @CampusId AND mv.MetricValueDateTime > DATEADD(week, -6, GETDATE())
+                GROUP by DATEPART(isowk, mv.MetricValueDateTime)
+                ) inner_query
+                ", new SqlParameter("CampusId", SelectedCampusId)).ToList<int>()[0].ToString();
+            }
+
+
+
+
+
 
             //Attendance Last Week - All Environments
             if (SelectedCampusId == 0)
@@ -1192,10 +1235,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             {
                 int? item =
                     rockContext.Database.SqlQuery<int?>(
-                        @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
-                        JOIN [Group] g on a.GroupId = g.Id
-                        WHERE (g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR
-                        g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01'").ToList<int?>()[0];
+                        @"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 21) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
 
                 int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
@@ -1227,10 +1269,10 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             {
                 int? item =
                     rockContext.Database.SqlQuery<int?>(
-                        @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
-                        JOIN [Group] g on a.GroupId = g.Id
-                        WHERE (g.GroupTypeId = 64 OR g.GroupTypeId = 71 OR g.GroupTypeId = 121 OR g.GroupTypeId = 122 OR g.GroupTypeId = 123 OR
-                        g.GroupTypeId = 124 OR g.GroupTypeId = 125) AND a.StartDateTime > '2015-09-01' AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+                        @"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 21) AND mv.MetricValueDateTime >= '2015-09-01'
+				AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
@@ -1263,11 +1305,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             {
                 int? item =
                     rockContext.Database.SqlQuery<int?>(
-                        @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
-                JOIN [Group] g on a.GroupId = g.Id
-                WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
-                OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
-                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01';").ToList<int?>()[0];
+                        @"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 22) AND mv.MetricValueDateTime >= '2015-09-01'").ToList<int?>()[0];
 
                 int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
@@ -1299,11 +1339,10 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             {
                 int? item =
                    rockContext.Database.SqlQuery<int?>(
-                       @"SELECT COUNT(DISTINCT PersonAliasId) as [count] FROM Attendance a
-                JOIN [Group] g on a.GroupId = g.Id
-                WHERE (g.GroupTypeId = 62 OR g.GroupTypeId = 63 OR g.GroupTypeId = 65 OR g.GroupTypeId = 66 OR g.GroupTypeId = 67  OR g.GroupTypeId = 72 OR g.GroupTypeId = 86
-                OR g.GroupTypeId = 96 OR g.GroupTypeId = 97 OR g.GroupTypeId = 98 OR g.GroupTypeId = 108 OR g.GroupTypeId = 113 OR g.GroupTypeId = 120
-                OR g.GroupTypeId = 142 OR g.GroupTypeId = 143  OR g.GroupTypeId = 144) AND a.StartDateTime > '2015-09-01'AND g.CampusId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
+                       @"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
+                FROM MetricValue mv 
+                WHERE mv.MetricValueType = 0 AND (mv.MetricId = 22) AND mv.MetricValueDateTime >= '2015-09-01'
+				AND mv.EntityId = @CampusId", new SqlParameter("CampusId", SelectedCampusId)).ToList<int?>()[0];
 
                 int? itemGoalCurrent = rockContext.Database.SqlQuery<int?>(@"SELECT CAST(ISNULL(SUM(YValue), 0) as int) as att
 	            FROM MetricValue mv 
@@ -1485,6 +1524,30 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             {
                 InactiveFollowupGoalProgress = "<span class='label label-danger'>Below Target (" + iInactiveFollowupAll.ToString() + ")</span>";
             }
+
+
+
+
+            // ToDo: Finish this section -----------
+
+            //Composite Scores
+
+            Decimal dCompAttendance = Decimal.Parse(AttendanceAveragePast6Weeks) / Decimal.Parse(AttendanceGoalCurrent);
+            CompAttendance = String.Format("{0:P2}", dCompAttendance);
+
+            Decimal dCompVolunteers = Decimal.Parse(Volunteers) / Decimal.Parse(VolunteersGoalCurrent);
+            CompVolunteers = String.Format("{0:P2}", dCompVolunteers);
+
+            Decimal dCompGroupParticipants = Decimal.Parse(SmallGroupParticipants) / Decimal.Parse(SmallGroupParticipantsGoalCurrent);
+            CompGroupParticipants = String.Format("{0:P2}", dCompGroupParticipants);
+
+            Decimal dCompositeScore = (dCompAttendance + (dCompVolunteers * (decimal)1.5) + (dCompGroupParticipants * (decimal)1.5)) / 4;
+            CompositeScore = String.Format("{0:P2}", dCompositeScore);
+
+
+            // --------------------------------------
+
+
 
         }
     }
