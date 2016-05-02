@@ -32,7 +32,7 @@ namespace RockWeb.Plugins.org_newpointe.AzureUpload
 
         protected void fuTemplateBinaryFile_FileUploaded(object sender, EventArgs e)
         {
-
+            //Display the file path
             var fileId = fuTemplateBinaryFile.BinaryFileId;
 
             var thePath = rockContext.Database.SqlQuery<string>(@"SELECT TOP 1 Path FROM BinaryFile WHERE ID = @fileId
@@ -44,6 +44,11 @@ namespace RockWeb.Plugins.org_newpointe.AzureUpload
 
             nbSuccess.Visible = true;
             nbSuccess.Text = "<br />" + thePath + "<br />http://newpointe.org/GetFile.ashx?guid=" + theGuid.ToLower();
+
+
+            //Change IsTemporary to False
+            rockContext.Database.ExecuteSqlCommand(@"UPDATE[BinaryFile]SET IsTemporary = 0 WHERE ID = @fileId", new SqlParameter("fileId", fileId));
+
 
         }
 
