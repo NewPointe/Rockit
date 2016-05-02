@@ -936,7 +936,7 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 InactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
                   FROM [rock-production].[dbo].[Workflow] wf 
                   JOIN AttributeValue av ON wf.Id = av.EntityID
-                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Active'
+                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND (wf.[Status] = 'New' OR wf.[Status] = 'In Progress' OR wf.[Status] = 'Transferred' wf.[Status] = 'Active')
                   AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())")
                     .ToList<int?>()[0].ToString();
             }
@@ -945,7 +945,8 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 InactiveFollowupIncomplete = rockContext.Database.SqlQuery<int?>(@"SELECT COUNT(wf.Id) as Workflows
                   FROM [rock-production].[dbo].[Workflow] wf 
                   JOIN AttributeValue av ON wf.Id = av.EntityID
-                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND wf.[Status] = 'Active' AND av.Value = @CampusName
+                  WHERE wf.WorkflowTypeId = 120 AND av.AttributeId = 10213 AND (wf.[Status] = 'New' OR wf.[Status] = 'In Progress' OR wf.[Status] = 'Transferred' wf.[Status] = 'Active')
+                  AND av.Value = @CampusName
                   AND Month(ActivatedDateTime) = Month(GETDATE()) AND Year(ActivatedDateTime) = Year(GETDATE())", new SqlParameter("CampusName", SelectedCampus)).ToList<int?>()[0].ToString();
             }
 
