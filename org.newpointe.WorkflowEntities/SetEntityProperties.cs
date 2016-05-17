@@ -15,16 +15,15 @@ using Rock;
 
 namespace org.newpointe.WorkflowEntities
 {
-    [Description("Sets the property of an entity")]
+    [Description("Sets multiple properties of an entity")]
     [Export(typeof(ActionComponent))]
-    [ExportMetadata("ComponentName", "Set the property of an entity")]
+    [ExportMetadata("ComponentName", "Set multiple properties of an entity")]
 
     [EntityTypeField("Entity Type", "The type of the entity. If left blank, attempts to infer the Type from the Entity Attribute.", false, "", 0)]
     [WorkflowAttribute("Entity", "The entity to set the property of (Or a text field with it's Guid).", true, "", "", 1)]
     [CustomDropdownListField("Empty Value Handling", "How to handle empty property values", "IGNORE^Ignore empty values,EMPTY^Leave empty values empty,NULL^Set empty values to NULL (where possible)", true, "", "", 2)]
-    [TextField("Property Name", "The name of the property to set. <span class='tip tip-lava'></span>", true, "", "", 3)]
-    [TextField("Property Value", "The value to set the property to. <span class='tip tip-lava'></span>", true, "", "", 4)]
-    class SetEntityProperty : ActionComponent
+    [KeyValueListField("Entity Properties", "The properties to create the entity with. <span class='tip tip-lava'></span>", true, "", "Property", "Value", "", "", "", 3)]
+    class SetEntityProperties : ActionComponent
     {
         public override bool Execute(RockContext rockContext, WorkflowAction action, Object entity, out List<string> errorMessages)
         {
@@ -50,24 +49,29 @@ namespace org.newpointe.WorkflowEntities
                     entityObject = ((Rock.Field.IEntityFieldType)field).GetEntity(entityGuid.ToString(), rockContext);
                 }
                 
-                PropertyInfo propInf = entityObject.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-                if (null != propInf && propInf.CanWrite)
+                var propertyValues = GetAttributeValue(action, "EntityProperties").Replace(" ! ", " | ").ResolveMergeFields(GetMergeFields(action)).TrimEnd('|').Split('|').Select(p => p.Split('^')).Select(p => new { Name = p[0], Value = p[1] });
+
+                foreach (var prop in propertyValues)
                 {
-                    if (!(GetAttributeValue(action, "EmptyValueHandling") == "IGNORE" && String.IsNullOrWhiteSpace(propertyValue)))
+                    PropertyInfo propInf = entityObject.GetType().GetProperty(prop.Name, BindingFlags.Public | BindingFlags.Instance);
+                    if (null != propInf && propInf.CanWrite)
                     {
-                        try
+                        if (!(GetAttributeValue(action, "EmptyValueHandling") == "IGNORE" && String.IsNullOrWhiteSpace(prop.Value)))
                         {
-                            propInf.SetValue(entityObject, ConvertObject(propertyValue, propInf.PropertyType, GetAttributeValue(action, "EmptyValueHandling") == "NULL"), null);
-                        }
-                        catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is OverflowException)
-                        {
-                            errorMessages.Add("Invalid Property Value: " + propertyName + ": " + ex.Message);
+                            try
+                            {
+                                propInf.SetValue(entityObject, ConvertObject(prop.Value, propInf.PropertyType, GetAttributeValue(action, "EmptyValueHandling") == "NULL"), null);
+                            }
+                            catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is OverflowException)
+                            {
+                                errorMessages.Add("Invalid Property Value: " + prop.Name + ": " + ex.Message);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    errorMessages.Add("Invalid Property: " + propertyName);
+                    else
+                    {
+                        errorMessages.Add("Invalid Property: " + prop.Name);
+                    }
                 }
 
                 rockContext.SaveChanges();

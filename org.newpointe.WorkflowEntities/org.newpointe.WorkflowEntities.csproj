@@ -105,6 +105,7 @@
   <ItemGroup>
     <Compile Include="CreateEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetEntityProperties.cs" />
     <Compile Include="SetEntityProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

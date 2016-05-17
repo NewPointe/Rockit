@@ -20,8 +20,9 @@ namespace org.newpointe.WorkflowEntities
     [ExportMetadata("ComponentName", "Create an entity")]
 
     [EntityTypeField("Entity Type", "The type of entity to create.", true, "", 0)]
-    [KeyValueListField("Entity Properties", "The properties to create the entity with. <span class='tip tip-lava'></span>", true, "", "Property", "Value", "", "", "", 1)]
-    [WorkflowAttribute("Entity Attribute", "The attribute to save the entity to.", false, "", "", 2)]
+    [CustomDropdownListField("Empty Value Handling", "How to handle empty property values", "IGNORE^Ignore empty values,EMPTY^Leave empty values empty,NULL^Set empty values to NULL (where possible)", true, "", "", 1)]
+    [KeyValueListField("Entity Properties", "The properties to create the entity with. <span class='tip tip-lava'></span>", true, "", "Property", "Value", "", "", "", 2)]
+    [WorkflowAttribute("Entity Attribute", "The attribute to save the entity to.", false, "", "", 3)]
     class CreateEntity : ActionComponent
     {
         public override bool Execute(RockContext rockContext, WorkflowAction action, Object entity, out List<string> errorMessages)
@@ -29,9 +30,9 @@ namespace org.newpointe.WorkflowEntities
             errorMessages = new List<string>();
 
             EntityTypeCache cachedEntityType = EntityTypeCache.Read(GetAttributeValue(action, "EntityType").AsGuid());
-            var propertyValues = GetAttributeValue(action, "EntityProperties").ResolveMergeFields(GetMergeFields(action)).TrimEnd('|').Split('|').Select(p => p.Split('^')).Select(p => new { Name = p[0], Value = p[1] });
+            var propertyValues = GetAttributeValue(action, "EntityProperties").Replace(" ! ", " | ").ResolveMergeFields(GetMergeFields(action)).TrimEnd('|').Split('|').Select(p => p.Split('^')).Select(p => new { Name = p[0], Value = p[1] });
 
-            if(cachedEntityType != null)
+            if (cachedEntityType != null)
             {
                 Type entityType = cachedEntityType.GetEntityType();
                 IEntity newEntity = (IEntity)Activator.CreateInstance(entityType);
@@ -41,15 +42,16 @@ namespace org.newpointe.WorkflowEntities
                     PropertyInfo propInf = entityType.GetProperty(prop.Name, BindingFlags.Public | BindingFlags.Instance);
                     if (null != propInf && propInf.CanWrite)
                     {
-                        try
+                        if (!(GetAttributeValue(action, "EmptyValueHandling") == "IGNORE" && String.IsNullOrWhiteSpace(prop.Value)))
                         {
-                            Type propType = Nullable.GetUnderlyingType(propInf.PropertyType) ?? propInf.PropertyType;
-                            object convertedValue = prop.Value == null ? null : Convert.ChangeType(prop.Value, propType);
-                            propInf.SetValue(newEntity, convertedValue, null);
-                        }
-                        catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is OverflowException)
-                        {
-                            errorMessages.Add("Invalid Property Value: " + prop.Name + ": " + ex.Message);
+                            try
+                            {
+                                propInf.SetValue(newEntity, ConvertObject(prop.Value, propInf.PropertyType, GetAttributeValue(action, "EmptyValueHandling") == "NULL"), null);
+                            }
+                            catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is OverflowException)
+                            {
+                                errorMessages.Add("Invalid Property Value: " + prop.Name + ": " + ex.Message);
+                            }
                         }
                     }
                     else
@@ -65,7 +67,7 @@ namespace org.newpointe.WorkflowEntities
                 Guid? entityAttributeGuid = GetAttributeValue(action, "EntityAttribute").AsGuidOrNull();
                 if (entityAttributeGuid.HasValue)
                 {
-                    newEntity = (IEntity) rockContext.Set(entityType).Find(new object[] { newEntity.Id });
+                    newEntity = (IEntity)rockContext.Set(entityType).Find(new object[] { newEntity.Id });
                     if (newEntity != null)
                     {
                         SetWorkflowAttributeValue(action, entityAttributeGuid.Value, newEntity.Guid.ToString());
@@ -81,6 +83,32 @@ namespace org.newpointe.WorkflowEntities
                 errorMessages.Add("Invalid Entity Type");
             }
             return false;
+        }
+
+        private object ConvertObject(String theObject, Type objectType, bool tryToNull = true)
+        {
+            if (objectType.IsEnum)
+            {
+                return String.IsNullOrWhiteSpace(theObject) ? null : Enum.Parse(objectType, theObject, true);
+            }
+            else
+            {
+                Type underType = Nullable.GetUnderlyingType(objectType);
+                if (underType == null) // not nullable
+                {
+                    return Convert.ChangeType(theObject, objectType);
+                }
+                else //nullable
+                {
+                    if (tryToNull && String.IsNullOrWhiteSpace(theObject))
+                    {
+                        return null;
+                    }
+                    else {
+                        return Convert.ChangeType(theObject, objectType);
+                    }
+                }
+            }
         }
     }
 }
