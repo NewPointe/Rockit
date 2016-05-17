@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="DeviceDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.DeviceDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="DeviceDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.DeviceDetail" %>
 
 <script type="text/javascript">
     function clearActiveDialog() {
@@ -23,6 +23,7 @@
                 <fieldset>
 
                     <Rock:NotificationBox ID="nbEditModeMessage" runat="server" NotificationBoxType="Info" />
+                    <Rock:NotificationBox ID="nbDuplicateDevice" runat="server" NotificationBoxType="Warning" Title="Sorry" Visible="false" />
 
                     <div class="row">
                         <div class="col-md-6">
