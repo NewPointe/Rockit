@@ -108,7 +108,7 @@
 						{% if LinkedPages.PersonDetailPage != '' %}
 							<a href="{{ LinkedPages.PersonDetailPage }}?PersonId={{ member.PersonId }}">
 						{% endif %}
-						<img src="{{ member.Person.PhotoUrl }}&height=60&width=60&mode=crop&scale=both" height="60" class="pull-left margin-r-sm" />
+						<img src="{{ member.Person.PhotoUrl }}&height=60&width=60&mode=crop&scale=both" style="height:60px" class="pull-left margin-r-sm" />
 						<div class="pull-left">
 							<strong>{{ member.Person.FullName }}</strong>
 							<small>({{ member.GroupRole.Name}})</small>
@@ -176,7 +176,7 @@
 						{% if LinkedPages.PersonDetailPage != '' %}
 							<a href="{{ LinkedPages.PersonDetailPage }}?PersonId={{ member.PersonId }}">
 						{% endif %}
-						<img src="{{ member.Person.PhotoUrl }}&height=60&width=60&mode=crop&scale=both" height="60" class="pull-left margin-r-sm" />
+						<img src="{{ member.Person.PhotoUrl }}&height=60&width=60&mode=crop&scale=both" style="height:60px" class="pull-left margin-r-sm" />
 						<div class="pull-left">
 							<strong>{{ member.Person.FullName }}</strong>
 							<small>({{ member.GroupRole.Name}})</small>
@@ -243,7 +243,7 @@
 						{% if LinkedPages.PersonDetailPage != '' %}
 							<a href="{{ LinkedPages.PersonDetailPage }}?PersonId={{ member.PersonId }}">
 						{% endif %}
-						<img src="{{ member.Person.PhotoUrl }}&height=60&width=60&mode=crop&scale=both" height="60" class="pull-left margin-r-sm" />
+						<img src="{{ member.Person.PhotoUrl }}&height=60&width=60&mode=crop&scale=both" style="height:60px" class="pull-left margin-r-sm" />
 						<div class="pull-left">
 							<strong>{{ member.Person.FullName }}</strong>
 							<small>({{ member.GroupRole.Name}})</small>
@@ -287,6 +287,12 @@
 
 			{% endfor %}
 
+		{% endif %}        
+		
+		{% if countPending < 0 and countActive < 0 and countInactive < 0 %}
+            <div class="well">
+				Noone Here :(
+			</div>
 		{% endif %}
 
 		<div class="pull-right margin-b-md">
