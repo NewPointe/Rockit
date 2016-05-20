@@ -489,7 +489,7 @@ namespace org.newpointe.ProtectMyMinistry
                 counties = new List<String[]>();
             }
             counties.Add(new string[] { county, state });
-            counties = counties.Distinct().ToList();
+            counties = counties.Where(x => !x.Any(y => y == null)).Select(x => x.Select(y => y.ToLower()).ToArray()).Distinct().ToList();
             foreach (var location in counties)
             {
                 if (!string.IsNullOrWhiteSpace(location[0]) ||
