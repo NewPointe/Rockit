@@ -57,7 +57,7 @@ namespace org.newpointe.WorkflowEntities
                     {
                         try
                         {
-                            propInf.SetValue(entityObject, ConvertObject(propertyValue, propInf.PropertyType, GetAttributeValue(action, "EmptyValueHandling") == "NULL"), null);
+                            propInf.SetValue(entityObject, ObjectConverter.ConvertObject(propertyValue, propInf.PropertyType, GetAttributeValue(action, "EmptyValueHandling") == "NULL"), null);
                         }
                         catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is OverflowException)
                         {
@@ -77,32 +77,6 @@ namespace org.newpointe.WorkflowEntities
                 errorMessages.Add("Invalid Entity Attribute");
             }
             return false;
-        }
-
-        private object ConvertObject(String theObject, Type objectType, bool tryToNull = true)
-        {
-            if (objectType.IsEnum)
-            {
-                return String.IsNullOrWhiteSpace(theObject) ? null : Enum.Parse(objectType, theObject, true);
-            }
-            else
-            {
-                Type underType = Nullable.GetUnderlyingType(objectType);
-                if (underType == null) // not nullable
-                {
-                    return Convert.ChangeType(theObject, objectType);
-                }
-                else //nullable
-                {
-                    if (tryToNull && String.IsNullOrWhiteSpace(theObject))
-                    {
-                        return null;
-                    }
-                    else {
-                        return Convert.ChangeType(theObject, objectType);
-                    }
-                }
-            }
         }
     }
 }
