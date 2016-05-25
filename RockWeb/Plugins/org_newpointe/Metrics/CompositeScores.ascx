@@ -117,7 +117,23 @@
                 <td> </td>
                 <td> </td>
                 <td><%= iInactiveFollowup %></td>
-                <td><%= iInactiveFollowupProgress %></td>
+                <td><%= String.Format("{0:0.00}",iInactiveFollowupProgress) %></td>
+            </tr>
+            <tr>
+                <td>Giving</td>
+                <td><%= String.Format("{0:0.00}", giving * 100) %>%</td>
+                <td> </td>
+                <td> </td>
+                <td>100%</td>
+                <td>105% </td>
+            </tr>
+            <tr>
+                <td>Spending</td>
+                <td><%= String.Format("{0:0.00}", expenses * 100)  %>%</td>
+                <td> </td>
+                <td> </td>
+                <td>100%</td>
+                <td>98% </td>
             </tr>
         </tbody>
     </table>

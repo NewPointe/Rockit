@@ -170,6 +170,10 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public double iInactiveFollowupProgress;
 
 
+        public double expenses;
+        public double giving;
+
+
         public int CurrentMonthInFiscalYear =1;
         public double GoalOffsetMultiplier = 1;
         public double SecondaryGoalOffsetMultiplier = 1;
@@ -659,6 +663,15 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
             //Progress
             iInactiveFollowupProgress = (double)iInactiveFollowupComplete / (double)iInactiveFollowup  * 100;
+
+
+            //-------Finances-------
+
+            expenses = .99;
+            giving = .95;
+
+            //TODO: need to make a method to get these as a double (not an int)
+
 
 
             //Calculate the Composite Score
