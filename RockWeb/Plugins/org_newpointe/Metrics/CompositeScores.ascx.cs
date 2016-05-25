@@ -652,7 +652,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             iInactiveFollowup = GetMetrics(35, SelectedCampusId, fiscalYearStartDate, periodEndDate, 0);
 
             //Completed 
-            iInactiveFollowupComplete = GetMetrics(38, SelectedCampusId, lastFiscalYearStartDate, lastPeriodEndDate, 0);
+            iInactiveFollowupComplete = GetMetrics(38, SelectedCampusId, fiscalYearStartDate, periodEndDate, 0);
 
             //Inconplete
             iInactiveFollowupIncomplete = iInactiveFollowup - iInactiveFollowupComplete;
