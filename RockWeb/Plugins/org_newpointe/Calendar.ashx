@@ -133,7 +133,8 @@ public class Calendar : IHttpHandler
 
         if (string.IsNullOrEmpty(result[0].RegistrationURL.ToString()) && !string.IsNullOrEmpty(result[0].ShowReleaseForm.ToString()))
         {
-        }
+            description = description + "<p><a class=\"btn btn-primary\" data-loading-text=\"&lt;i class='fa fa-refresh fa-spin'&gt;&lt;/i&gt; Let's go!\" href=\" " + "https://newpointe.org/form/163" + "\" id=\"ctl00_main_ctl23_ctl01_ctl06_lbSave\" onclick=\"Rock.controls.bootstrapButton.showLoading(this);\">Release Form</a></p>";
+        } 
 
         return description;
     }
