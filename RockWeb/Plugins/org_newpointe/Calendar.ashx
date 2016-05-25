@@ -130,6 +130,11 @@ public class Calendar : IHttpHandler
         {
             description = description + "<p><a class=\"btn btn-primary\" data-loading-text=\"&lt;i class='fa fa-refresh fa-spin'&gt;&lt;/i&gt; Let's go!\" href=\" " + result[0].RegistrationURL.ToString() + "\" id=\"ctl00_main_ctl23_ctl01_ctl06_lbSave\" onclick=\"Rock.controls.bootstrapButton.showLoading(this);\">Register Now</a></p>";
         }
+
+        if (string.IsNullOrEmpty(result[0].RegistrationURL.ToString()) && !string.IsNullOrEmpty(result[0].ShowReleaseForm.ToString()))
+        {
+        }
+
         return description;
     }
     private string getIDString(CalendarLite c)
@@ -160,4 +165,5 @@ class additionalInfo
     public string Image { get; set; }
     public string Details { get; set; }
     public string RegistrationURL { get; set; }
+    public string ShowReleaseForm { get; set; }
 }
