@@ -152,10 +152,11 @@ namespace RockWeb.Blocks.Crm
                     var lUserAgent = e.Item.FindControl( "lUserAgent" ) as Literal;
 
                     lClientIcon.Text = string.Format(
-                        "<div class='pageviewsession-client pull-right'><div class='pull-left'><small>{0}<br>{1}</small></div><i class='fa {2} fa-2x pull-right'></i></div>",
+                        "<div class='pageviewsession-client pull-right'><div class='pull-left'><small>{0}<br>{1}<br>{3}</small></div><i class='fa {2} fa-2x pull-right'></i></div>",
                         session.PageViewSession.PageViewUserAgent.Browser,
                         session.PageViewSession.PageViewUserAgent.OperatingSystem,
-                        icon );
+                        icon,
+                        session.PageViewSession.IpAddress);
 
                     var lSessionDuration = e.Item.FindControl( "lSessionDuration" ) as Literal;
                     TimeSpan duration = (DateTime)session.EndDateTime - (DateTime)session.StartDateTime;
@@ -168,6 +169,8 @@ namespace RockWeb.Blocks.Crm
                     {
                         lSessionDuration.Text = string.Format( "{0}m", duration.Minutes );
                     }
+
+                    
                 }
             }
         }

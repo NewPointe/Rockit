@@ -15,7 +15,7 @@ namespace RockWeb.Plugins.org_newpointe.PersonGetURLEncodedKey
     /// <summary>
     /// Block to pick a person and get their URL encoded key.
     /// </summary>
-    [DisplayName("Person Get URL Encoded Key")]
+    [DisplayName("Person Page History Block")]
     [Category("NewPointe Person")]
     [Description("Gets the URL Enceded Key for the given person.")]
     [BooleanField("Set to Logged In Person", "Yes", "No", "Choose whether or not you want to set the picker to the logged in person on page load.")]
@@ -23,6 +23,8 @@ namespace RockWeb.Plugins.org_newpointe.PersonGetURLEncodedKey
 
     public partial class PersonGetURLEncodedKey : Rock.Web.UI.RockBlock
     {
+        public string PageViewHistoryUrl;
+
         //public Guid typeGuid;
         RockContext rockContext = new RockContext();
 
@@ -31,27 +33,17 @@ namespace RockWeb.Plugins.org_newpointe.PersonGetURLEncodedKey
             //Set the person picker to the currently logged in person.
             PersonService personService = new PersonService(rockContext);
             var personObject = personService.Get(CurrentPerson.Guid);
-            ppPerson.SetValue(personObject);
-        }
 
-        protected void ppPerson_SelectPerson(object sender, EventArgs e)
-        {
-            //Get the person from the PersonPicker
-            int? ppPersonAliasId = ppPerson.PersonAliasId;
-            int personAliasIdInt = ppPersonAliasId.Value;
+            //Get the person from the URL
+            string qsPersonId = PageParameter("PersonId");
+            int iPersonId = Int32.Parse(qsPersonId);
+            
 
-            PersonAliasService personAliasService = new PersonAliasService(rockContext);
-            var thePerson = personAliasService.Queryable().AsNoTracking()
-                .Where(a => a.AliasPersonId == personAliasIdInt)
-                .Select(a => a.Person)
-                .FirstOrDefault();
+            var thePerson = personService.Get(iPersonId);
 
             //Get the URL encoded key from the person object
             var urlEncodedKey = thePerson.UrlEncodedKey;
-
-            //Show the key to the user
-            nbSuccess.Visible = true;
-            nbSuccess.Text = urlEncodedKey;
+            PageViewHistoryUrl = ResolveUrl("~/page/279?Person=" + urlEncodedKey);
             
         }
 
