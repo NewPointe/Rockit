@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Welcome.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.Welcome" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Welcome.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.Welcome" %>
 
 <asp:UpdatePanel ID="upContent" runat="server">
     <Triggers>
@@ -108,9 +108,7 @@
 
         <%-- Panel for active checkin --%>
         <asp:Panel ID="pnlActive" runat="server">
-        	<div class="checkin-header">
-	            <div class="checkin-spacer"></div>
-            </div>
+
             <div class="checkin-body">
                 <div class="checkin-scroll-panel">
                     <div class="scroller">

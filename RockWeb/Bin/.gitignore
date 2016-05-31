@@ -1,2 +1,13 @@
-*.pdb
-/org.newpointe.*.dll
+org.newpointe.*
+
+com.bricksandmortarstudio.Slack.dll
+
+com.minecartstudio.AzureStorageProvider.dll
+Microsoft.WindowsAzure.Storage.dll
+Microsoft.WindowsAzure.Configuration.dll
+
+com.minecartstudio.ContentChannelPush.dll
+
+com.minecartstudio.LavaToPdfWorkflowAction.dll
+evohtmltopdf.dll
+evointernal.dat

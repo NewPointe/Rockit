@@ -1,13 +1,14 @@
 *.suo
 /packages/*.*
+.vs
 
-wwwroot.7z
-RockWeb/App_Data/Logs/RockExceptions.csv
-RockWeb/Bin/org.newpointe.Giving.dll
-RockWeb/Bin/org.newpointe.ServiceUCalendar.dll
-/RockWeb/Assets/calendar-full.json
-/RockWeb/Assets/calendar.json
-/*/bin/
-/*/obj/
-RockWeb/Bin/org.newpointe.LiveService.dll
-prepros.cfg
+*/obj/
+*.orig
+
+org.newpointe./bin/*
+!org.newpointe.*/bin/Release
+!org.newpointe.*/bin/Debug
+org.newpointe.*/bin/Release/*
+org.newpointe.*/bin/Debug/*
+!org.newpointe.*/bin/Release/org.newpointe*
+!org.newpointe.*/bin/Debug/org.newpointe*

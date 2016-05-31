@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AccountDetail.ascx.cs" Inherits="RockWeb.Blocks.Security.AccountDetail" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AccountDetail.ascx.cs" Inherits="RockWeb.Blocks.Security.AccountDetail" %>
 
 <script>
     $(function () {
@@ -22,7 +22,7 @@
 
             <div class="col-sm-9">
 
-                <h1 class="name">
+                <h1 class="title name">
                     <asp:Literal ID="lName" runat="server" /></h1>
 
                 <div class="row">
