@@ -18,4 +18,11 @@ public static class DateTimeExtensions
 
         return dt.AddDays(-1 * diff).Date;
     }
+
+
+    public static DateTime ToFinancialYear(this DateTime dateTime)
+    {
+        return dateTime.Month >= 9 ? dateTime : dateTime.AddYears(-1);
+    }
+
 }

@@ -5,10 +5,4 @@
 */obj/
 *.orig
 
-org.newpointe./bin/*
-!org.newpointe.*/bin/Release
-!org.newpointe.*/bin/Debug
-org.newpointe.*/bin/Release/*
-org.newpointe.*/bin/Debug/*
-!org.newpointe.*/bin/Release/org.newpointe*
-!org.newpointe.*/bin/Debug/org.newpointe*
+org.newpointe.*/bin
