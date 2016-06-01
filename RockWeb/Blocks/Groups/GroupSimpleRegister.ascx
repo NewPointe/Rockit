@@ -7,9 +7,9 @@
 
 
                 <fieldset>
-                    <Rock:RockTextBox ID="txtFirstName" runat="server" Placeholder="First Name" ></Rock:RockTextBox>
-                    <Rock:RockTextBox ID="txtLastName" runat="server" Placeholder="Last Name" ></Rock:RockTextBox>
-                    <Rock:RockTextBox ID="txtEmail" runat="server" Placeholder="Email" ></Rock:RockTextBox>
+                    <Rock:RockTextBox ID="txtFirstName" runat="server" Label="First Name" ></Rock:RockTextBox>
+                    <Rock:RockTextBox ID="txtLastName" runat="server" Label="Last Name" ></Rock:RockTextBox>
+                    <Rock:RockTextBox ID="txtEmail" runat="server" Label="Email" ></Rock:RockTextBox>
                 </fieldset>
 
                 <Rock:NotificationBox ID="nbError" runat="server" Visible="false" NotificationBoxType="Danger"></Rock:NotificationBox>
