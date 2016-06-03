@@ -119,7 +119,7 @@
                 <td><%= iInactiveFollowup %></td>
                 <td><%= String.Format("{0:0.00}",iInactiveFollowupProgress) %></td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td>Giving</td>
                 <td><%= String.Format("{0:0.00}", giving * 100) %>%</td>
                 <td> </td>
@@ -134,7 +134,7 @@
                 <td> </td>
                 <td>100%</td>
                 <td>98% </td>
-            </tr>
+            </tr> -->
         </tbody>
     </table>
     
