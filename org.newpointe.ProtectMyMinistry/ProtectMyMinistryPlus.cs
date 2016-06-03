@@ -32,83 +32,88 @@ namespace org.newpointe.ProtectMyMinistry
         public override bool SendRequest(RockContext rockContext, Workflow workflow, AttributeCache personAttribute, AttributeCache ssnAttribute, AttributeCache requestTypeAttribute, AttributeCache billingCodeAttribute, out List<string> errorMessages)
         {
             errorMessages = new List<string>();
-            //try
-            //{
-                // Check to make sure workflow is not null
-                if (workflow == null)
+
+            rockContext.SaveChanges();
+
+            // Check to make sure workflow is not null
+            if (workflow == null || workflow.Id == 0)
+            {
+                errorMessages.Add("The 'Protect My Ministry' background check provider requires a valid persisted workflow.");
+                return false;
+            }
+
+            workflow.LoadAttributes();
+
+            // Get the person that the request is for
+            Person person = null;
+            if (personAttribute != null)
+            {
+                Guid? personAliasGuid = workflow.GetAttributeValue(personAttribute.Key).AsGuidOrNull();
+                if (personAliasGuid.HasValue)
                 {
-                    errorMessages.Add("The 'Protect My Ministry' background check provider requires a valid workflow.");
-                    return false;
+                    person = new PersonAliasService(rockContext).Queryable()
+                        .Where(p => p.Guid.Equals(personAliasGuid.Value))
+                        .Select(p => p.Person)
+                        .FirstOrDefault();
+                    person.LoadAttributes(rockContext);
                 }
+            }
 
-                // Get the person that the request is for
-                Person person = null;
-                if (personAttribute != null)
+            if (person == null)
+            {
+                errorMessages.Add("The 'Protect My Ministry' background check provider requires the workflow to have a 'Person' attribute that contains the person who the background check is for.");
+                return false;
+            }
+
+            string billingCode = workflow.GetAttributeValue(billingCodeAttribute.Key);
+            Guid? campusGuid = billingCode.AsGuidOrNull();
+            if (campusGuid.HasValue)
+            {
+                var campus = CampusCache.Read(campusGuid.Value);
+                if (campus != null)
                 {
-                    Guid? personAliasGuid = workflow.GetAttributeValue(personAttribute.Key).AsGuidOrNull();
-                    if (personAliasGuid.HasValue)
-                    {
-                        person = new PersonAliasService(rockContext).Queryable()
-                            .Where(p => p.Guid.Equals(personAliasGuid.Value))
-                            .Select(p => p.Person)
-                            .FirstOrDefault();
-                        person.LoadAttributes(rockContext);
-                    }
+                    billingCode = campus.Name;
                 }
+            }
+            string ssn = Encryption.DecryptString(workflow.GetAttributeValue(ssnAttribute.Key));
+            DefinedValueCache requestType = DefinedValueCache.Read(workflow.GetAttributeValue(requestTypeAttribute.Key).AsGuid());
 
-                if (person == null)
-                {
-                    errorMessages.Add("The 'Protect My Ministry' background check provider requires the workflow to have a 'Person' attribute that contains the person who the background check is for.");
-                    return false;
-                }
+            if (requestType == null)
+            {
+                errorMessages.Add("Unknown request type.");
+                return false;
+            }
 
-                if (!person.PrimaryAliasId.HasValue)
-                {
-                    errorMessages.Add("PrimaryAliasId has no value!?!?");
-                    return false;
-                }
+            int orderId = workflow.Id;
 
-                string billingCode = workflow.GetAttributeValue(billingCodeAttribute.Key);
-                Guid? campusGuid = billingCode.AsGuidOrNull();
-                if (campusGuid.HasValue)
-                {
-                    var campus = CampusCache.Read(campusGuid.Value);
-                    if (campus != null)
-                    {
-                        billingCode = campus.Name;
-                    }
-                }
+            string requestTypePackageName = requestType.GetAttributeValue("PMMPackageName").Trim();
 
-                string ssn = Encryption.DecryptString(workflow.GetAttributeValue(ssnAttribute.Key));
-                DefinedValueCache requestType = DefinedValueCache.Read(workflow.GetAttributeValue(requestTypeAttribute.Key).AsGuid());
-                int orderId = workflow.Id;
+            BackgroundCheck bgCheck = getBgCheck(rockContext, workflow, person.PrimaryAliasId.Value);
 
-                BackgroundCheck bgCheck = getBgCheck(rockContext, workflow, person.PrimaryAliasId.Value);
-                List<string[]> SSNTraceCounties = null;
-                if (requestType.GetAttributeValue("PMMPackageName").Trim().Equals("PLUS", StringComparison.OrdinalIgnoreCase) && !String.IsNullOrWhiteSpace(bgCheck.ResponseXml))
-                {
-                    IEnumerable<XElement> transactions = XDocument.Parse(bgCheck.ResponseXml).Root.Elements("Transaction");
-                    IEnumerable<XElement> OrderXMLs = transactions.SelectMany(x => x.Elements("OrderXML"));
-                    IEnumerable<XElement> Orders = OrderXMLs.Select(x => x.Element("Order")).Where(x => x != null);
-                    IEnumerable<XElement> OrderDetails = Orders.SelectMany(x => x.Elements("OrderDetail"));
-                    IEnumerable<XElement> SSNTraces = OrderDetails.Where(x => x.Attribute("ServiceCode")?.Value == "SSNTrace" && x.Element("Status") != null);
-                    IEnumerable<XElement> SSNTraceResults = SSNTraces.Select(x => x.Element("Result"));
-                    IEnumerable<XElement> SSNTraceIndividuals = SSNTraceResults.SelectMany(x => x.Elements("Individual"));
-                    SSNTraceCounties = SSNTraceIndividuals.Select(x => new string[] { x.Element("County").Value, x.Element("State").Value }).ToList();
-                }
+            List<string[]> SSNTraceCounties = null;
+            if (requestTypePackageName.Equals("PLUS", StringComparison.OrdinalIgnoreCase) && !String.IsNullOrWhiteSpace(bgCheck.ResponseXml))
+            {
+                IEnumerable<XElement> transactions = XDocument.Parse(bgCheck.ResponseXml).Root.Elements("Transaction");
+                IEnumerable<XElement> OrderXMLs = transactions.SelectMany(x => x.Elements("OrderXML"));
+                IEnumerable<XElement> Orders = OrderXMLs.Select(x => x.Element("Order")).Where(x => x != null);
+                IEnumerable<XElement> OrderDetails = Orders.SelectMany(x => x.Elements("OrderDetail"));
+                IEnumerable<XElement> SSNTraces = OrderDetails.Where(x => x.Attribute("ServiceCode")?.Value == "SSNTrace" && x.Element("Status") != null);
+                IEnumerable<XElement> SSNTraceResults = SSNTraces.Select(x => x.Element("Result"));
+                IEnumerable<XElement> SSNTraceIndividuals = SSNTraceResults.SelectMany(x => x.Elements("Individual"));
+                SSNTraceCounties = SSNTraceIndividuals.Select(x => new string[] { x.Element("County").Value, x.Element("State").Value }).ToList();
+            }
 
-                XElement xTransaction = makeBGRequest(bgCheck, ssn, requestType, billingCode, SSNTraceCounties);
-                saveTransaction(rockContext, bgCheck, xTransaction);
-                handleTransaction(rockContext, bgCheck, xTransaction);
+            XElement xTransaction = makeBGRequest(bgCheck, ssn, requestType, billingCode, SSNTraceCounties);
+            saveTransaction(rockContext, bgCheck, xTransaction);
+            handleTransaction(rockContext, bgCheck, xTransaction);
             return true;
-            //}
+
             //catch (Exception ex)
             //{
             //    ExceptionLogService.LogException(ex, null);
             //    errorMessages.Add(ex.Message);
             //    return false;
             //}
-            return false;
         }
 
         private static BackgroundCheck getBgCheck(RockContext rockContext, Workflow workflow, int personAliasId)
@@ -191,52 +196,52 @@ namespace org.newpointe.ProtectMyMinistry
 
         public static void handleTransaction(RockContext rockContext, BackgroundCheck bgCheck, XElement xTransaction)
         {
-                bool createdNewAttribute = false;
-                // Handle transaction status
-                XElement xOrderResponse = null;
-                if (xTransaction.Attribute("TransactionType").Value == "REQUEST")
+            bool createdNewAttribute = false;
+            // Handle transaction status
+            XElement xOrderResponse = null;
+            if (xTransaction.Attribute("TransactionType").Value == "REQUEST")
+            {
+                xOrderResponse = xTransaction.Elements().Last();
+
+                XElement xResponseStatus = xOrderResponse.Element("Status");
+                if (xResponseStatus != null)
                 {
-                    xOrderResponse = xTransaction.Elements().Last();
+                    string status = xResponseStatus.Value;
+                    createdNewAttribute = SaveAttributeValue(bgCheck.Workflow, "RequestStatus", status, FieldTypeCache.Read(Rock.SystemGuid.FieldType.TEXT.AsGuid()), rockContext, null) || createdNewAttribute;
 
-                    XElement xResponseStatus = xOrderResponse.Element("Status");
-                    if (xResponseStatus != null)
+                    if (status == "ERROR")
                     {
-                        string status = xResponseStatus.Value;
-                        createdNewAttribute = SaveAttributeValue(bgCheck.Workflow, "RequestStatus", status, FieldTypeCache.Read(Rock.SystemGuid.FieldType.TEXT.AsGuid()), rockContext, null) || createdNewAttribute;
-
-                        if (status == "ERROR")
-                        {
-                            createdNewAttribute = SaveAttributeValue(bgCheck.Workflow, "RequestMessage", xOrderResponse.Elements("Message").Select(x => x.Value).ToList().AsDelimited(Environment.NewLine), FieldTypeCache.Read(Rock.SystemGuid.FieldType.TEXT.AsGuid()), rockContext, null) || createdNewAttribute;
-                        }
-                    }
-
-                    XElement xResponseErrors = xOrderResponse.Elements("Errors").FirstOrDefault();
-                    if (xResponseErrors != null)
-                    {
-                        createdNewAttribute = SaveAttributeValue(bgCheck.Workflow, "RequestMessage", xResponseErrors.Elements("Message").Select(x => x.Value).ToList().AsDelimited(Environment.NewLine), FieldTypeCache.Read(Rock.SystemGuid.FieldType.TEXT.AsGuid()), rockContext, null) || createdNewAttribute;
+                        createdNewAttribute = SaveAttributeValue(bgCheck.Workflow, "RequestMessage", xOrderResponse.Elements("Message").Select(x => x.Value).ToList().AsDelimited(Environment.NewLine), FieldTypeCache.Read(Rock.SystemGuid.FieldType.TEXT.AsGuid()), rockContext, null) || createdNewAttribute;
                     }
                 }
-                else if (xTransaction.Attribute("TransactionType").Value == "RESPONSE")
+
+                XElement xResponseErrors = xOrderResponse.Elements("Errors").FirstOrDefault();
+                if (xResponseErrors != null)
                 {
-                    xOrderResponse = xTransaction.Elements().First();
+                    createdNewAttribute = SaveAttributeValue(bgCheck.Workflow, "RequestMessage", xResponseErrors.Elements("Message").Select(x => x.Value).ToList().AsDelimited(Environment.NewLine), FieldTypeCache.Read(Rock.SystemGuid.FieldType.TEXT.AsGuid()), rockContext, null) || createdNewAttribute;
                 }
+            }
+            else if (xTransaction.Attribute("TransactionType").Value == "RESPONSE")
+            {
+                xOrderResponse = xTransaction.Elements().First();
+            }
 
-                // Handle request status
-                if (xOrderResponse != null)
+            // Handle request status
+            if (xOrderResponse != null)
+            {
+                XElement xOrder = xOrderResponse.Element("Order");
+
+                if (xOrder != null && xOrder.Elements("OrderDetail").Any(x => x.Elements("Status").Any()))
                 {
-                    XElement xOrder = xOrderResponse.Element("Order");
-
-                    if (xOrder != null && xOrder.Elements("OrderDetail").Any(x => x.Elements("Status").Any()))
-                    {
-                        SaveResults(rockContext, bgCheck, xOrderResponse);
-                    }
+                    SaveResults(rockContext, bgCheck, xOrderResponse);
+                }
             }
         }
 
         public static void SaveResults(RockContext rockContext, BackgroundCheck bgCheck, XElement xResult)
         {
             bool createdNewAttribute = false;
-            
+
             if (xResult != null)
             {
                 var xOrder = xResult.Elements("Order").FirstOrDefault();
@@ -248,7 +253,7 @@ namespace org.newpointe.ProtectMyMinistry
                     string reportStatus = "Pass";
                     foreach (var xOrderDetail in xOrder.Elements("OrderDetail"))
                     {
-                        var goodStatus = (xOrderDetail.Attribute("ServiceCode")?.Value == "SSNTrace") ? "Complete" : "NO RECORD";
+                        var goodStatus = (xOrderDetail.Attribute("ServiceCode")?.Value == "SSNTrace") ? "COMPLETE" : "NO RECORD";
 
                         var xStatus = xOrderDetail.Elements("Status").FirstOrDefault();
                         if (xStatus != null)
@@ -463,7 +468,7 @@ namespace org.newpointe.ProtectMyMinistry
                     }
                 }
             }
-            
+
             if (!string.IsNullOrWhiteSpace(packageName) && !packageName.Trim().Equals("SSNTRACE", StringComparison.OrdinalIgnoreCase))
             {
                 orderElement.Add(new XElement("PackageServiceCode", requestType, new XAttribute("OrderId", orderId)));
@@ -489,7 +494,7 @@ namespace org.newpointe.ProtectMyMinistry
                 counties = new List<String[]>();
             }
             counties.Add(new string[] { county, state });
-            counties = counties.Where(x => !x.Any(y => y == null)).Select(x => x.Select(y => y.ToLower()).ToArray()).Distinct().ToList();
+            counties = counties.Where(x => !x.Any(y => y == null)).Select(x => x.Select(y => y.ToLower()).ToArray()).Distinct(new StrArEquals()).ToList();
             foreach (var location in counties)
             {
                 if (!string.IsNullOrWhiteSpace(location[0]) ||
@@ -497,7 +502,7 @@ namespace org.newpointe.ProtectMyMinistry
                 {
                     orderElement.Add(new XElement("OrderDetail",
                         new XAttribute("OrderId", orderId),
-                        new XAttribute("ServiceCode", string.IsNullOrWhiteSpace(county) ? "StateCriminal" : "CountyCrim"),
+                        new XAttribute("ServiceCode", string.IsNullOrWhiteSpace(location[0]) ? "StateCriminal" : "CountyCrim"),
                         new XElement("County", location[0]),
                         new XElement("State", location[1]),
                         new XElement("YearsToSearch", 7),
@@ -538,8 +543,8 @@ namespace org.newpointe.ProtectMyMinistry
 
             //try
             //{
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                return GetResponse(response.GetResponseStream(), response.ContentType, response.StatusCode);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            return GetResponse(response.GetResponseStream(), response.ContentType, response.StatusCode);
             //}
             //catch (WebException webException)
             //{
@@ -708,5 +713,26 @@ namespace org.newpointe.ProtectMyMinistry
             return null;
         }
         #endregion
+    }
+
+    public class StrArEquals : IEqualityComparer<String[]>
+    {
+        public bool Equals(String[] left, String[] right)
+        {
+            if ((object)left == null && (object)right == null)
+            {
+                return true;
+            }
+            if ((object)left == null || (object)right == null)
+            {
+                return false;
+            }
+            return String.Join(":", left) == String.Join(":", right);
+        }
+
+        public int GetHashCode(String[] str)
+        {
+            return String.Join(":", str).GetHashCode();
+        }
     }
 }

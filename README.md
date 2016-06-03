@@ -221,6 +221,7 @@ Mods
 Copy of GetFile that allows for batch printing checkin labels.  
 [/RockWeb/GetCheckinLabel.ashx](/RockWeb/GetCheckinLabel.ashx)  
 [/RockWeb/App_Code/GetCheckinLabel.ashx.cs](/RockWeb/App_Code/GetCheckinLabel.ashx.cs)   
+[/RockWeb/Plugins/org_newpointe/BlockMods/Checkin](/RockWeb/Plugins/org_newpointe/BlockMods/Checkin)   
 
 
 #### Connections Tweeks
@@ -252,6 +253,44 @@ Add CreatedDateTime column
 [/RockWeb/Blocks/Reporting/MetricValueDetail.ascx.cs](/RockWeb/Blocks/Reporting/MetricValueDetail.ascx.cs) !!  
 
 
+#### Custom CampusContextSetter
+Option to use person's campus  ++  
+Option to set default selected campus  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx](/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx)  ++  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx.cs](/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx.cs)  ++  
+
+
+#### Custom AddFamily
+Options to hide fields  
+Option for default group role  
+Option to set block title  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx](/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx)  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx.cs](/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx.cs)  
+
+
+#### Custom RegistrationEntry
+Only show active campuses  
+Pre-fill Registerer from first registrant  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Event/RegistrationEntry.ascx](/RockWeb/Plugins/org_newpointe/BlockMods/Event/RegistrationEntry.ascx)  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Event/RegistrationEntry.ascx.cs](/RockWeb/Plugins/org_newpointe/BlockMods/Event/RegistrationEntry.ascx.cs)  
+
+
+#### Custom TransactionEntry
+Auto-fill from url  
+Auto-collapse saved info sections on mobile  
+Hack to make CurrencyFields use type="number" ++  
+Save date to attribute if url parameter  
+Ask to create account after transaction  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Finance/TransactionEntry.ascx](/RockWeb/Plugins/org_newpointe/BlockMods/Finance/TransactionEntry.ascx)  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Finance/TransactionEntry.ascx.cs](/RockWeb/Plugins/org_newpointe/BlockMods/Finance/TransactionEntry.ascx.cs) 
+
+
+#### Custom GroupFinder
+Add option to filter by campus  ++?  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Groups/GroupFinder.ascx](/RockWeb/Plugins/org_newpointe/BlockMods/Groups/GroupFinder.ascx)  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Groups/GroupFinder.ascx.cs](/RockWeb/Plugins/org_newpointe/BlockMods/Groups/GroupFinder.ascx.cs)  
+
+
 
 
 Misc
@@ -264,6 +303,7 @@ Misc
 
 #### Rewrite of ProtectMyMinistry w/ SSNTrace + Multi-County BGChk support
 [/RockWeb/Webhooks/ProtectMyMinistryPlus.ashx](/RockWeb/Webhooks/ProtectMyMinistryPlus.ashx)  
+[/org.newpointe.ProtectMyMinistry/](/org.newpointe.ProtectMyMinistry/)  
 
 
 

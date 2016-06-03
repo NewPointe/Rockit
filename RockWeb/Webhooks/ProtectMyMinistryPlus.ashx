@@ -18,14 +18,10 @@
 
 using System;
 using System.Web;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
 using Rock;
-using Rock.Data;
 using Rock.Model;
 
 namespace RockWeb.Webhooks
@@ -50,8 +46,8 @@ namespace RockWeb.Webhooks
 
             if (request.Form["REQUEST"] != null)
             {
-                //try
-                //{
+                try
+                {
                     var rockContext = new Rock.Data.RockContext();
 
                     XDocument xResult = null;
@@ -106,20 +102,25 @@ namespace RockWeb.Webhooks
 
                         }
                     }
+                    else
+                    {
+                        ExceptionLogService.LogException(new ArgumentException("Could not find OrderId."), context);
+                    }
 
-                    //try
-                    //{
+                    try
+                    {
                         response.StatusCode = 200;
                         response.ContentType = "text/xml";
                         response.AddHeader("Content-Type", "text/xml");
                         xdocResult.Save(response.OutputStream);
-                    //}
-                    //catch { }
-                //}
-                //catch (SystemException ex)
-                //{
-                //   ExceptionLogService.LogException(ex, context);
-                //}
+                    }
+                    catch { }
+
+                }
+                catch (SystemException ex)
+                {
+                    ExceptionLogService.LogException(ex, context);
+                }
             }
         }
 
