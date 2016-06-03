@@ -681,7 +681,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 iCommitmentsGoalCurrent = Convert.ToInt32((double?)iCommitmentsLastYear * GoalMultiplier);
                 iRecommitmentsGoalCurrent = Convert.ToInt32((double?)iRecommitmentsLastYear * GoalMultiplier);
                 iVolunteersGoalCurrent = Convert.ToInt32((double?)iVolunteersLastYear * GoalMultiplier);
-                iSmallGroupParticipantsGoalCurrent = Convert.ToInt32((double?)iSmallGroupParticipantsGoalProgress * GoalMultiplier);
+                iSmallGroupParticipantsGoalCurrent = Convert.ToInt32((double?)iSmallGroupParticipantsLastYear * GoalMultiplier);
                 iNewtoNewPointeGoalCurrent = Convert.ToInt32((double?)iNewtoNewPointeLastYear * GoalMultiplier);
                 iDiscoverGroupsGoalCurrent = Convert.ToInt32((double?)iDiscoverGroupsLastYear * GoalMultiplier);
                 iCampusGroupsGoalCurrent = Convert.ToInt32((double?)iCampusGroupsLastYear * GoalMultiplier);
