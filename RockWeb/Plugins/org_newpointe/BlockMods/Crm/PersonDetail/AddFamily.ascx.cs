@@ -65,6 +65,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
 
     [AttributeCategoryField( "Attribute Categories", "The Attribute Categories to display attributes from", true, "Rock.Model.Person", false, "", "", 14 )]
 
+    [TextField("Block Title", "The title for this block", true, "New Family", "", 15)]
+
     public partial class AddFamily : Rock.Web.UI.RockBlock
     {
 
@@ -200,7 +202,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
             nfmMembers.RequireGrade = GetAttributeValue( "Grade" ).AsBoolean();
             _SMSEnabled = GetAttributeValue( "SMS" ).AsBoolean();
 
-            lTitle.Text = ("New Children").FormatAsHtmlTitle();
+            lTitle.Text = GetAttributeValue( "BlockTitle" ).FormatAsHtmlTitle();
 
             _homePhone = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME );
             _cellPhone = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_MOBILE );
