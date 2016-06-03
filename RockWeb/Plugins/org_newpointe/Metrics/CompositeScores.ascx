@@ -117,7 +117,7 @@
                 <td> </td>
                 <td> </td>
                 <td><%= iInactiveFollowup %></td>
-                <td><%= String.Format("{0:0.00}",iInactiveFollowupProgress) %></td>
+                <td><%= String.Format("{0:0.00}",iInactiveFollowupProgress) %>%</td>
             </tr>
             <!-- <tr>
                 <td>Giving</td>
@@ -174,7 +174,7 @@
                         </div>
                         <div class="col-md-6">
                             <p>
-                                test    
+                                 
                             </p>
                         </div>
                     </div>
