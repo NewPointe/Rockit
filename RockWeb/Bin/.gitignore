@@ -11,3 +11,5 @@ com.minecartstudio.ContentChannelPush.dll
 com.minecartstudio.LavaToPdfWorkflowAction.dll
 evohtmltopdf.dll
 evointernal.dat
+
+com.minecartstudio.PrayerDigestEmail.dll

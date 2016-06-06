@@ -209,6 +209,15 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 BindAttributes();
                 BuildDynamicControls();
 
+                if ( _targetPersonGuid != Guid.Empty )
+                {
+                    ShowViewForPerson( _targetPersonGuid );
+                }
+                else
+                {
+                    ShowView();
+                }
+                ShowResults();
                 if ( GetAttributeValue( "EnableCampusContext" ).AsBoolean() )
                 {
                     var campusEntityType = EntityTypeCache.Read( "Rock.Model.Campus" );
@@ -219,16 +228,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                         cblCampus.SetValue( contextCampus.Id.ToString() );
                     }
                 }
-
-                if ( _targetPersonGuid != Guid.Empty )
-                {
-                    ShowViewForPerson( _targetPersonGuid );
-                }
-                else
-                {
-                    ShowView();
-                }
-                ShowResults();
             }
         }
 
@@ -660,7 +659,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
             if ( GetAttributeValue( "DisplayCampusFilter" ).AsBoolean() )
             {
                 cblCampus.Visible = true;
-                cblCampus.DataSource = CampusCache.All( false );
+
+                var camps = CampusCache.All( false ).Select( cc => new { cc.Name, cc.Id } ).ToList();
+                camps.Insert( 0, new { Name = "All", Id = -1 } );
+                cblCampus.DataSource = camps;
                 cblCampus.DataBind();
             }
             else
@@ -828,7 +830,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
             if ( GetAttributeValue( "DisplayCampusFilter" ).AsBoolean() )
             {
                 var searchCampus = cblCampus.SelectedValueAsInt();
-                if ( searchCampus != null)
+                if ( searchCampus != null && searchCampus != -1 )
                 {
                     groupQry = groupQry.Where( c => searchCampus == c.CampusId );
                 }
