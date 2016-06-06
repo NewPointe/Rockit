@@ -6260,11 +6260,21 @@ header .navbar div.divLogin {
 /*#endregion */
 /*#region // Logo */
 .logo-container,
-.logo-full,
-.logo-small {
+.newpointe-logo {
   display: inline;
   float: left;
   margin-left: 15px;
+}
+.newpointe-logo {
+  position: absolute;
+  overflow: hidden;
+  width: 56px;
+}
+.newpointe-logo img {
+  max-width: initial;
+  width: 240px;
+  margin-top: -13px;
+  margin-left: -15px;
 }
 #CustomMenuLogo {
   height: 68px;
@@ -6954,6 +6964,10 @@ strong {
 //---------------------------------//*/
 /*#region // Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
+  .newpointe-logo {
+    overflow: hidden;
+    width: 210px;
+  }
   .navbar-brand {
     display: inherit;
   }
