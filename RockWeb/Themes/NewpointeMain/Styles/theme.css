@@ -6881,6 +6881,10 @@ a:hover {
   background-color: #404040;
   margin-bottom: 10px;
 }
+.row .title.name {
+  background-color: inherit;
+  margin-top: 18px;
+}
 .row .title h2 {
   font-size: 24px;
   margin: 0;
