@@ -160,10 +160,6 @@
   </table>
 </div>
     
-    <%= CompAttendance %> - <%= CompVolunteers %> - <%= CompGroupParticipants %> <br /><br />
-    
-    <strong><%= CompositeScore %></strong>
-    
 
     <div class="panel-footer" style="text-align: right;">Choose a different campus: <Rock:ButtonDropDownList ID="cpCampus" runat="server" OnSelectionChanged="cpCampus_OnSelectionChanged" ToolTip="Choose a Campus"/></div>
     </div>

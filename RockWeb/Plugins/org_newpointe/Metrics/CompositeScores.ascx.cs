@@ -190,6 +190,9 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public string LastPeriodStartDate;
         public string LastPeriodEndDate;
 
+        public bool UseGlobalAttributeGoal;
+        public double? GoalMultiplier;
+
         public double? CompositeScore;
 
 
@@ -258,6 +261,25 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
         protected void CalulateMetrics()
         {
+
+
+            // specify which attribute key we want to work with
+            var attributeKeyCompositeUseGlobalValue = "CompositeUseGlobalValue";
+            var attributeKeyCompositeGoalMultiplier = "CompositeGoalMultiplier";
+
+
+            var attributeValueService = new AttributeValueService(rockContext);
+
+            // specify NULL as the EntityId since this is a GlobalAttribute
+            var compositeUseGlobalValue = attributeValueService.GetGlobalAttributeValue(attributeKeyCompositeUseGlobalValue);
+            var compositeGoalMultiplier = attributeValueService.GetGlobalAttributeValue(attributeKeyCompositeGoalMultiplier);
+
+            if (bool.Parse(compositeUseGlobalValue.ToString()) == true)
+            {
+                UseGlobalAttributeGoal = true;
+                GoalMultiplier = Convert.ToDouble(compositeGoalMultiplier.ToString());
+            }
+
 
 
             //Get Needed dates
@@ -394,23 +416,32 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //Auditorium
             iAttendanceAud = Get6WkAttendanceAuditorium(SelectedCampusId, periodEndDate);
             iAttendanceAudLastYear = Get6WkAttendanceAuditorium(SelectedCampusId, lastPeriodEndDate);
-            iAttendanceAudGoalCurrent = GetMetrics(2, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
             iAttendanceAudGoal2020 = GetMetrics(2, SelectedCampusId, start2020, end2020, 1);
-            iAttendanceAudGoalProgress = (double?)iAttendanceAud / ((double?)iAttendanceAudGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
-
+            
             //Kids
             iAttendanceKids = Get6WkAttendanceKids(SelectedCampusId, periodEndDate);
             iAttendanceKidsLastYear = Get6WkAttendanceKids(SelectedCampusId, lastPeriodEndDate);
-            iAttendanceChildGoalCurrent = GetMetrics(3, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
             iAttendanceChildGoal2020 = GetMetrics(3, SelectedCampusId, start2020, end2020, 1);
-            iAttendanceChildGoalProgress = (double?)iAttendanceKids / ((double?)iAttendanceChildGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
-
+            
             //Students
             iAttendanceStudents = Get6WkAttendanceStudents(SelectedCampusId, periodEndDate);
             iAttendanceStudentsLastYear = Get6WkAttendanceStudents(SelectedCampusId, lastPeriodEndDate);
-            iAttendanceStudentGoalCurrent = GetMetrics(5, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
             iAttendanceStudentGoal2020 = GetMetrics(5, SelectedCampusId, start2020, end2020, 1);
-            iAttendanceStudentGoalProgress = (double?)iAttendanceStudents / ((double?)iAttendanceStudentGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
+            
+
+
+            if (UseGlobalAttributeGoal == true)
+            {
+                iAttendanceAudGoalCurrent = Convert.ToInt32((double?)iAttendanceAudLastYear * GoalMultiplier);
+                iAttendanceChildGoalCurrent = Convert.ToInt32((double?)iAttendanceKidsLastYear * GoalMultiplier);
+                iAttendanceStudentGoalCurrent = Convert.ToInt32((double?)iAttendanceStudentsLastYear * GoalMultiplier);
+            }
+            else
+            {
+                iAttendanceAudGoalCurrent = GetMetrics(2, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iAttendanceChildGoalCurrent = GetMetrics(3, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iAttendanceStudentGoalCurrent = GetMetrics(5, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+            }
 
 
             //All
@@ -418,10 +449,14 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             iAttendanceAllLastYear = Get6WkAttendanceAll(SelectedCampusId, lastPeriodEndDate);
             iAttendanceAllGoalCurrent = iAttendanceAudGoalCurrent + iAttendanceAllGoalCurrent + iAttendanceStudentGoalCurrent;
             iAttendanceAllGoal2020 = iAttendanceAudGoal2020 + iAttendanceChildGoal2020 + iAttendanceStudentGoal2020;
-            iAttendanceAllGoalProgress = (double?) iAttendanceAll/((double?) iAttendanceAllGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
+            
 
 
-
+            //Calculate attendance goal progress
+            iAttendanceAudGoalProgress = (double?)iAttendanceAud / ((double?)iAttendanceAudGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
+            iAttendanceChildGoalProgress = (double?)iAttendanceKids / ((double?)iAttendanceChildGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
+            iAttendanceStudentGoalProgress = (double?)iAttendanceStudents / ((double?)iAttendanceStudentGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
+            iAttendanceAllGoalProgress = (double?)iAttendanceAll / ((double?)iAttendanceAllGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
 
 
 
@@ -438,9 +473,6 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
             //2020 Goal 
              iBaptismsGoal2020 = GetMetrics(11, SelectedCampusId, start2020, end2020, 1);
-
-            //Current Goal Progress
-            iBaptismsGoalProgress = (double)iBaptisms / ((double)iBaptismsGoalCurrent * GoalOffsetMultiplier) * 100;
 
 
 
@@ -459,8 +491,6 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iPartnersGoal2020 = GetMetricsLatest(20, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iPartnersGoalProgress = (double)iPartners / ((double)iPartnersGoalCurrent * GoalOffsetMultiplier) * 100;
 
 
 
@@ -479,9 +509,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
             //2020 Goal 
              iCommitmentsGoal2020 = GetMetrics(12, SelectedCampusId, start2020, end2020, 1);
-
-            //Current Goal Progress
-            iCommitmentsGoalProgress = (double)iCommitments / ((double)iCommitmentsGoalCurrent * GoalOffsetMultiplier) * 100;
+       
 
 
 
@@ -501,29 +529,6 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iRecommitmentsGoal2020 = GetMetrics(13, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iRecommitmentsGoalProgress = (double)iRecommitments / ((double)iRecommitmentsGoalCurrent * GoalOffsetMultiplier) * 100;
-
-
-
-
-            //-------AllCommitments-------
-
-            //YTD 
-            iAllCommitments = iCommitments + iRecommitments;
-
-            //LastYTD 
-             iAllCommitmentsLastYear = iCommitmentsLastYear + iRecommitmentsLastYear;
-
-            //Current Goal 
-             iAllCommitmentsGoalCurrent = iCommitmentsGoalCurrent + iRecommitmentsGoalCurrent;
-
-            //2020 Goal 
-             iAllCommitmentsGoal2020 = iCommitmentsGoal2020 + iRecommitmentsGoal2020;
-
-            //Current Goal Progress
-            iAllCommitmentsGoalProgress = ((double)iCommitments + (double)iRecommitments) / (((double)iCommitmentsGoalCurrent + (double)iRecommitmentsGoalCurrent) * GoalOffsetMultiplier) * 100;
-
 
 
 
@@ -541,8 +546,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iVolunteersGoal2020 = GetMetricsLatest(16, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iVolunteersGoalProgress = (double)iVolunteers / ((double)iVolunteersGoalCurrent * GoalOffsetMultiplier) * 100;
+
 
 
 
@@ -561,8 +565,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iSmallGroupParticipantsGoal2020 = GetMetricsLatest(17, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iSmallGroupParticipantsGoalProgress = (double)iSmallGroupParticipants / ((double)iSmallGroupParticipantsGoalCurrent * GoalOffsetMultiplier) * 100;
+  
 
 
 
@@ -582,8 +585,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iNewtoNewPointeGoal2020 = GetMetrics(21, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iNewtoNewPointeGoalProgress = (double)iNewtoNewPointe / ((double)iNewtoNewPointeGoalCurrent * GoalOffsetMultiplier) * 100;
+
 
 
 
@@ -603,8 +605,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iDiscoverGroupsGoal2020 = GetMetrics(2, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iDiscoverGroupsGoalProgress = (double)iDiscoverGroups / ((double)iDiscoverGroupsGoalCurrent * GoalOffsetMultiplier) * 100;
+  
 
 
 
@@ -624,8 +625,6 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iCampusGroupsGoal2020 = GetMetrics(24, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iCampusGroupsGoalProgress = (double)iCampusGroups / ((double)iCampusGroupsGoalCurrent * GoalOffsetMultiplier) * 100;
 
 
 
@@ -644,8 +643,6 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iNewHereGoal2020 = GetMetrics(14, SelectedCampusId, start2020, end2020, 1);
 
-            //Current Goal Progress
-            iNewHereGoalProgress = (double)iNewHere / ((double)iNewHereGoalCurrent * GoalOffsetMultiplier) * 100;
 
 
 
@@ -674,8 +671,75 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
 
 
+
+            //Get Goals based on Global Attribute Multiplier or values stored in metrics table
+
+            if (UseGlobalAttributeGoal == true)
+            {
+                iBaptismsGoalCurrent = Convert.ToInt32((double?)iBaptismsLastYear * GoalMultiplier);
+                iPartnersGoalCurrent = Convert.ToInt32((double?)iPartnersLastYear * GoalMultiplier);
+                iCommitmentsGoalCurrent = Convert.ToInt32((double?)iCommitmentsLastYear * GoalMultiplier);
+                iRecommitmentsGoalCurrent = Convert.ToInt32((double?)iRecommitmentsLastYear * GoalMultiplier);
+                iVolunteersGoalCurrent = Convert.ToInt32((double?)iVolunteersLastYear * GoalMultiplier);
+                iSmallGroupParticipantsGoalCurrent = Convert.ToInt32((double?)iSmallGroupParticipantsLastYear * GoalMultiplier);
+                iNewtoNewPointeGoalCurrent = Convert.ToInt32((double?)iNewtoNewPointeLastYear * GoalMultiplier);
+                iDiscoverGroupsGoalCurrent = Convert.ToInt32((double?)iDiscoverGroupsLastYear * GoalMultiplier);
+                iCampusGroupsGoalCurrent = Convert.ToInt32((double?)iCampusGroupsLastYear * GoalMultiplier);
+                iNewHereGoalCurrent = Convert.ToInt32((double?)iNewHereLastYear * GoalMultiplier);
+
+            }
+            else
+            {
+                iBaptismsGoalCurrent = GetMetrics(11, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iPartnersGoalCurrent = GetMetricsLatest(20, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iCommitmentsGoalCurrent = GetMetrics(12, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iRecommitmentsGoalCurrent = GetMetrics(13, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iVolunteersGoalCurrent = GetMetricsLatest(16, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iSmallGroupParticipantsGoalCurrent = GetMetricsLatest(17, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iNewtoNewPointeGoalCurrent = GetMetrics(21, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iDiscoverGroupsGoalCurrent = GetMetrics(22, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iCampusGroupsGoalCurrent = GetMetrics(24, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iNewHereGoalCurrent = GetMetrics(14, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+            }
+
+
+            //-------AllCommitments-------
+
+            //YTD 
+            iAllCommitments = iCommitments + iRecommitments;
+
+            //LastYTD 
+            iAllCommitmentsLastYear = iCommitmentsLastYear + iRecommitmentsLastYear;
+
+            //Current Goal 
+            iAllCommitmentsGoalCurrent = iCommitmentsGoalCurrent + iRecommitmentsGoalCurrent;
+
+            //2020 Goal 
+            iAllCommitmentsGoal2020 = iCommitmentsGoal2020 + iRecommitmentsGoal2020;
+
+            //Current Goal Progress
+            iAllCommitmentsGoalProgress = ((double)iCommitments + (double)iRecommitments) / (((double)iCommitmentsGoalCurrent + (double)iRecommitmentsGoalCurrent) * GoalOffsetMultiplier) * 100;
+
+
+
+            // Caculate the progress toeards the goals
+            iBaptismsGoalProgress = (double)iBaptisms / ((double)iBaptismsGoalCurrent * GoalOffsetMultiplier) * 100;
+            iPartnersGoalProgress = (double)iPartners / ((double)iPartnersGoalCurrent * GoalOffsetMultiplier) * 100;
+            iCommitmentsGoalProgress = (double)iCommitments / ((double)iCommitmentsGoalCurrent * GoalOffsetMultiplier) * 100;
+            iRecommitmentsGoalProgress = (double)iRecommitments / ((double)iRecommitmentsGoalCurrent * GoalOffsetMultiplier) * 100;
+            iVolunteersGoalProgress = (double)iVolunteers / ((double)iVolunteersGoalCurrent * GoalOffsetMultiplier) * 100;
+            iSmallGroupParticipantsGoalProgress = (double)iSmallGroupParticipants / ((double)iSmallGroupParticipantsGoalCurrent * GoalOffsetMultiplier) * 100;
+            iNewtoNewPointeGoalProgress = (double)iNewtoNewPointe / ((double)iNewtoNewPointeGoalCurrent * GoalOffsetMultiplier) * 100;
+            iDiscoverGroupsGoalProgress = (double)iDiscoverGroups / ((double)iDiscoverGroupsGoalCurrent * GoalOffsetMultiplier) * 100;
+            iCampusGroupsGoalProgress = (double)iCampusGroups / ((double)iCampusGroupsGoalCurrent * GoalOffsetMultiplier) * 100;
+            iNewHereGoalProgress = (double)iNewHere / ((double)iNewHereGoalCurrent * GoalOffsetMultiplier) * 100;
+
+
+
+
             //Calculate the Composite Score
             CompositeScore = CalculateCompositeScore();
+
 
 
 
