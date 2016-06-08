@@ -1,4 +1,15 @@
-{% if AllowedActions.View == true || AllowedActions.Edit == true || AllowedActions.Administrate == true %}
+{% if onlyMembers %}
+    {% assign gtId = Group.GroupTypeId | ToString %}
+    {% assign isMember = CurrentPerson | Groups:gtId,'All' | Where:'GroupId',Group.Id | Size %}
+{% endif %}
+
+{% unless isMember == 0 %}
+    {% if AllowedActions.View == true || AllowedActions.Edit == true || AllowedActions.Administrate == true %}
+        {% assign allowed = true %}
+    {% endif %}
+{% endunless %}
+
+{% if allowed %}
 
 
 	{% for groupLocation in Group.GroupLocations %}
