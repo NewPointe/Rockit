@@ -6728,6 +6728,7 @@ img.staff {
 .nav > .dropdown .dropdown-menu {
   padding-top: 0px;
   z-index: 9999;
+  right: 0px;
 }
 .nav > .dropdown .dropdown-menu .divider {
   background-color: #303030;
