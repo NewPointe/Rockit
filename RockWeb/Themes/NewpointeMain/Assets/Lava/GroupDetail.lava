@@ -13,9 +13,6 @@
     {% endunless %}
 {% endif %}
 
-
-
-
 {% if allowed %}
 
     <div>
@@ -25,11 +22,13 @@
                 height: 140px;
                 margin: 15px 0 10px;
             }
+            {% if responsiveMap %}
             @media (min-width: 1200px) {
                 .group-details-lava-map {
                     height: 285px;
                 }
             }
+            {% endif %}
         </style>
         
         {% assign prevPoints = ',' %}
@@ -37,7 +36,7 @@
 	        {% assign glId = groupLocation.Location.Id | ToString %}
 	        {% unless prevPoints contains glId %}
         		{% if groupLocation.Location.GeoPoint != '' %}
-                    <div class="col-lg-3 col-xs-12 group-details-lava-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=1400x400&zoom=13&maptype=roadmap&markers={{ groupLocation.Location.GeoPoint }}&scale=2') no-repeat center;"></div>
+                    <div class="{% if responsiveMap %}col-lg-3 {% endif %}col-xs-12 group-details-lava-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=1400x400&zoom=13&maptype=roadmap&markers={{ groupLocation.Location.GeoPoint }}&scale=2') no-repeat center;"></div>
     		    {% endif %}
                 {% assign prevPoints = prevPoints | Append:glId | Append:',' %}
 		    {% endunless %}
