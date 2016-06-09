@@ -37,7 +37,7 @@ namespace RockWeb.Webhooks
             HttpResponse response = context.Response;
 
 
-            try
+            /*try
             {
                 var rockContext = new Rock.Data.RockContext();
 
@@ -46,19 +46,20 @@ namespace RockWeb.Webhooks
                 using ( System.IO.FileStream fs = new System.IO.FileStream( logFile, System.IO.FileMode.Append, System.IO.FileAccess.Write ) )
                 using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( fs ) )
                 {
-                    sw.WriteLine( string.Format( "{0} - Recieved Request: {1}", RockDateTime.Now.ToString(), HttpUtility.UrlDecode( request.ToJson() ) ) );
+                    sw.WriteLine( string.Format( "{0} - Recieved Request: {1}: {2}", RockDateTime.Now.ToString(),request.HttpMethod , HttpUtility.UrlDecode( request.Form.ToString() ) ) );
                 }
             }
             catch ( SystemException ex )
             {
                 ExceptionLogService.LogException( ex, context );
-            }
+            }*/
 
 
             response.ContentType = "text/plain";
 
             if ( request.HttpMethod != "POST" )
             {
+	            ExceptionLogService.LogException( new ArgumentException( "Invalid HttpMethod: " + request.HttpMethod ), context );
                 response.Write( "Invalid request type." );
                 return;
             }
@@ -75,7 +76,11 @@ namespace RockWeb.Webhooks
                     xResult = XDocument.Parse( HttpUtility.UrlDecode( request.Form["REQUEST"] ) );
 
                     // Get the orderid from the XML
-                    orderId = ( from o in xResult.Descendants( "OrderDetail" ) select ( string ) o.Attribute( "OrderId" ) ).FirstOrDefault() ?? "OrderIdUnknown";
+                    orderId = ( from o in xResult.Descendants( "OrderDetail" ) select ( string ) o.Attribute( "orderID" ) ).FirstOrDefault() ?? "OrderIdUnknown";
+
+                    if(string.IsNullOrEmpty( orderId ) || orderId == "OrderIdUnknown") {
+                    	orderId = ( from o in xResult.Descendants( "OrderDetail" ) select ( string ) o.Attribute( "OrderId" ) ).FirstOrDefault() ?? "OrderIdUnknown";
+                    }
 
                     // Return the success XML to PMM
                     XDocument xdocResult = new XDocument( new XDeclaration( "1.0", "UTF-8", "yes" ),
@@ -140,6 +145,8 @@ namespace RockWeb.Webhooks
                 {
                     ExceptionLogService.LogException( ex, context );
                 }
+            } else {
+            	ExceptionLogService.LogException( new ArgumentException( "Could not find 'REQUEST' parameter." ), context );
             }
         }
 
