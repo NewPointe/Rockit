@@ -96,14 +96,9 @@
 
                         <!-- Logos -->
                         <div class="logo-container">
-                            <div class="logo-full hidden-xs" style="position: absolute; width: 500px;">
+                            <div class="newpointe-logo">
                                 <a href="/home">
-                                    <asp:Image ImageUrl="~/Content/Central/NewPointeLogo.png" CssClass="hidden-xs" runat="server" />
-                                </a>
-                            </div>
-                            <div class="logo-small hidden-sm hidden-md hidden-lg">
-                                <a href="/home">
-                                    <asp:Image ImageUrl="~/Content/Central/NewPointeLogoSmall.png" runat="server" />
+                                    <asp:Image ImageUrl="~/Assets/Images/NPCC_Logo_Full_green.svg" runat="server" />
                                 </a>
                             </div>
                         </div>

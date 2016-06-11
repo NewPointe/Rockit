@@ -1,48 +1,74 @@
-{% if AllowedActions.View == true || AllowedActions.Edit == true || AllowedActions.Administrate == true %}
+{% if AllowedActions.Edit == true || AllowedActions.Administrate == true %}
+    {% assign allowed = true %}
+{% else %}
+    {% if onlyMembers %}
+        {% assign gtId = Group.GroupTypeId | ToString %}
+        {% assign isMember = CurrentPerson | Groups:gtId,'All' | Where:'GroupId',Group.Id | Size %}
+    {% endif %}
 
+    {% unless isMember == 0 %}
+        {% if AllowedActions.View == true %}
+            {% assign allowed = true %}
+        {% endif %}
+    {% endunless %}
+{% endif %}
 
-	{% for groupLocation in Group.GroupLocations %}
-		{% if groupLocation.Location.GeoPoint != '' %}
+{% if allowed %}
 
-		<div class="packagesummary-image"
-			 style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=1400x400&zoom=13&maptype=roadmap&markers={{ groupLocation.Location.GeoPoint }}&scale=2') no-repeat center;
-					width: 100%;
-					height: 200px;">
-		</div>
+    <div>
+        <style>
+            .group-details-lava-map {
+                float: left;
+                height: 140px;
+                margin: 15px 0 10px;
+            }
+            {% if responsiveMap %}
+            @media (min-width: 1200px) {
+                .group-details-lava-map {
+                    height: 285px;
+                }
+            }
+            {% endif %}
+        </style>
+        
+        {% assign prevPoints = ',' %}
+	    {% for groupLocation in Group.GroupLocations %}
+	        {% assign glId = groupLocation.Location.Id | ToString %}
+	        {% unless prevPoints contains glId %}
+        		{% if groupLocation.Location.GeoPoint != '' %}
+                    <div class="{% if responsiveMap %}col-lg-3 {% endif %}col-xs-12 group-details-lava-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=1400x400&zoom=13&maptype=roadmap&markers={{ groupLocation.Location.GeoPoint }}&scale=2') no-repeat center;"></div>
+    		    {% endif %}
+                {% assign prevPoints = prevPoints | Append:glId | Append:',' %}
+		    {% endunless %}
+	    {% endfor %}
 
-		{% endif %}
-	{% endfor %}
-
-
-
-	<h1>{{ Group.Name }}</h1>
-
-	{{ Group.Description }}
-
-	<div class="row">
-		<div class="col-md-6">
-		<h4>Group Details:</h4>
-		{% for attribute in Group.AttributeValues %}
-		<strong>{{ attribute.AttributeName }}:</strong> {{ attribute.ValueFormatted }} <br />
-		{% endfor %}
-		</div>
-
-		<div class="col-md-6">
-		<h4>Leaders:</h4>
-		<ul>
-			{% for member in Group.Members %}
-
-			{% if member.GroupRole.IsLeader %}
-			<li>
-			{{ member.Person.FullName }} <small>({{ member.GroupRole.Name}})</small>
-			</li>
-			{% endif %}
-			{% endfor %}
-		</ul>
-		</div>
-	</div>
-
-	{% if AllowedActions.Edit == true %}
+        <div style="overflow: hidden; padding-left: 20px;">
+        	<h1 style="margin-top: 10px;">{{ Group.Name }}</h1>
+            <p>{{ Group.Description }}<p>
+        	<div>
+        		<div class="col-md-6">
+            		<h4>Group Details:</h4>
+        	    	{% for attribute in Group.AttributeValues %}
+        		        <strong>{{ attribute.AttributeName }}:</strong> {{ attribute.ValueFormatted }} <br />
+             		{% endfor %}
+		        </div>
+        		<div class="col-md-6">
+    		        <h4>Leaders:</h4>
+	    	        <ul>
+        		    	{% for member in Group.Members %}
+    		        	    {% if member.GroupRole.IsLeader %}
+	        	    	        <li>
+        			                {{ member.Person.FullName }} <small>({{ member.GroupRole.Name}})</small>
+		    	                </li>
+        	    	    	{% endif %}
+			            {% endfor %}
+		            </ul>
+        		</div>
+	        </div>
+        </div>
+    </div>
+	
+    {% if AllowedActions.Edit == true %}
 	<div class="actions margin-v-md clearfix">
 		<a class="btn btn-default btn-sm pull-right" href="#" onclick="{{ Group.Id | Postback:'EditGroup' }}">Edit</a>
 	</div>

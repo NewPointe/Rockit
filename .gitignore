@@ -6,3 +6,5 @@
 *.orig
 
 org.newpointe.*/bin
+
+prepros.cfg

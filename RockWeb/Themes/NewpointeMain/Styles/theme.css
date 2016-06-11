@@ -6260,11 +6260,21 @@ header .navbar div.divLogin {
 /*#endregion */
 /*#region // Logo */
 .logo-container,
-.logo-full,
-.logo-small {
+.newpointe-logo {
   display: inline;
   float: left;
   margin-left: 15px;
+}
+.newpointe-logo {
+  position: absolute;
+  overflow: hidden;
+  width: 56px;
+}
+.newpointe-logo img {
+  max-width: initial;
+  width: 240px;
+  margin-top: -13px;
+  margin-left: -15px;
 }
 #CustomMenuLogo {
   height: 68px;
@@ -6718,6 +6728,7 @@ img.staff {
 .nav > .dropdown .dropdown-menu {
   padding-top: 0px;
   z-index: 9999;
+  right: 0px;
 }
 .nav > .dropdown .dropdown-menu .divider {
   background-color: #303030;
@@ -6881,6 +6892,10 @@ a:hover {
   background-color: #404040;
   margin-bottom: 10px;
 }
+.row .title.name {
+  background-color: inherit;
+  margin-top: 18px;
+}
 .row .title h2 {
   font-size: 24px;
   margin: 0;
@@ -6950,6 +6965,10 @@ strong {
 //---------------------------------//*/
 /*#region // Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
+  .newpointe-logo {
+    overflow: hidden;
+    width: 210px;
+  }
   .navbar-brand {
     display: inherit;
   }

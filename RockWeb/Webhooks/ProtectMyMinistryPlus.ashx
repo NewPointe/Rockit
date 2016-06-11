@@ -31,20 +31,40 @@ namespace RockWeb.Webhooks
     /// </summary>
     public class ProtectMyMinistry : IHttpHandler
     {
-        public void ProcessRequest(HttpContext context)
+        public void ProcessRequest( HttpContext context )
         {
             HttpRequest request = context.Request;
             HttpResponse response = context.Response;
 
+
+            /*try
+            {
+                var rockContext = new Rock.Data.RockContext();
+
+                string logFile = HttpContext.Current.Server.MapPath( "~/App_Data/Logs/PMMLog.txt" );
+
+                using ( System.IO.FileStream fs = new System.IO.FileStream( logFile, System.IO.FileMode.Append, System.IO.FileAccess.Write ) )
+                using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( fs ) )
+                {
+                    sw.WriteLine( string.Format( "{0} - Recieved Request: {1}: {2}", RockDateTime.Now.ToString(),request.HttpMethod , HttpUtility.UrlDecode( request.Form.ToString() ) ) );
+                }
+            }
+            catch ( SystemException ex )
+            {
+                ExceptionLogService.LogException( ex, context );
+            }*/
+
+
             response.ContentType = "text/plain";
 
-            if (request.HttpMethod != "POST")
+            if ( request.HttpMethod != "POST" )
             {
-                response.Write("Invalid request type.");
+	            ExceptionLogService.LogException( new ArgumentException( "Invalid HttpMethod: " + request.HttpMethod ), context );
+                response.Write( "Invalid request type." );
                 return;
             }
 
-            if (request.Form["REQUEST"] != null)
+            if ( request.Form["REQUEST"] != null )
             {
                 try
                 {
@@ -53,74 +73,80 @@ namespace RockWeb.Webhooks
                     XDocument xResult = null;
                     string orderId = string.Empty;
 
-                    xResult = XDocument.Parse(HttpUtility.UrlDecode(request.Form["REQUEST"]));
+                    xResult = XDocument.Parse( HttpUtility.UrlDecode( request.Form["REQUEST"] ) );
 
                     // Get the orderid from the XML
-                    orderId = (from o in xResult.Descendants("OrderDetail") select (string)o.Attribute("OrderId")).FirstOrDefault() ?? "OrderIdUnknown";
+                    orderId = ( from o in xResult.Descendants( "OrderDetail" ) select ( string ) o.Attribute( "orderID" ) ).FirstOrDefault() ?? "OrderIdUnknown";
+
+                    if(string.IsNullOrEmpty( orderId ) || orderId == "OrderIdUnknown") {
+                    	orderId = ( from o in xResult.Descendants( "OrderDetail" ) select ( string ) o.Attribute( "OrderId" ) ).FirstOrDefault() ?? "OrderIdUnknown";
+                    }
 
                     // Return the success XML to PMM
-                    XDocument xdocResult = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"),
-                        new XElement("OrderXML",
-                            new XElement("Success", "TRUE")));
+                    XDocument xdocResult = new XDocument( new XDeclaration( "1.0", "UTF-8", "yes" ),
+                        new XElement( "OrderXML",
+                            new XElement( "Success", "TRUE" ) ) );
 
-                    if (!string.IsNullOrEmpty(orderId) && orderId != "OrderIdUnknown")
+                    if ( !string.IsNullOrEmpty( orderId ) && orderId != "OrderIdUnknown" )
                     {
                         // Find and update the associated workflow
-                        var workflowService = new WorkflowService(rockContext);
-                        var workflow = new WorkflowService(rockContext).Get(orderId.AsInteger());
-                        if (workflow != null && workflow.IsActive)
+                        var workflowService = new WorkflowService( rockContext );
+                        var workflow = new WorkflowService( rockContext ).Get( orderId.AsInteger() );
+                        if ( workflow != null && workflow.IsActive )
                         {
                             workflow.LoadAttributes();
 
-                            var backgroundCheckService = new BackgroundCheckService(rockContext);
+                            var backgroundCheckService = new BackgroundCheckService( rockContext );
                             var backgroundCheck = backgroundCheckService.Queryable()
-                                .Where(c =>
-                                   c.WorkflowId.HasValue &&
-                                   c.WorkflowId.Value == workflow.Id)
+                                .Where( c =>
+                                    c.WorkflowId.HasValue &&
+                                    c.WorkflowId.Value == workflow.Id )
                                 .FirstOrDefault();
 
-                            var xTransaction = new XElement("Transaction",
-                                new XAttribute("TransactionType", "RESPONSE"),
-                                new XAttribute("RequestDateTime", RockDateTime.Now),
-                                new XAttribute("ResponseDateTime", RockDateTime.Now),
+                            var xTransaction = new XElement( "Transaction",
+                                new XAttribute( "TransactionType", "RESPONSE" ),
+                                new XAttribute( "RequestDateTime", RockDateTime.Now ),
+                                new XAttribute( "ResponseDateTime", RockDateTime.Now ),
                                 xResult.Root,
                                 xdocResult.Root
                             );
 
-                            org.newpointe.ProtectMyMinistry.ProtectMyMinistryPlus.saveTransaction(rockContext, backgroundCheck, xTransaction);
-                            org.newpointe.ProtectMyMinistry.ProtectMyMinistryPlus.handleTransaction(rockContext, backgroundCheck, xTransaction);
+                            org.newpointe.ProtectMyMinistry.ProtectMyMinistryPlus.saveTransaction( rockContext, backgroundCheck, xTransaction );
+                            org.newpointe.ProtectMyMinistry.ProtectMyMinistryPlus.handleTransaction( rockContext, backgroundCheck, xTransaction );
 
-                            rockContext.WrapTransaction(() =>
+                            rockContext.WrapTransaction( () =>
                             {
                                 rockContext.SaveChanges();
-                                workflow.SaveAttributeValues(rockContext);
-                                foreach (var activity in workflow.Activities)
+                                workflow.SaveAttributeValues( rockContext );
+                                foreach ( var activity in workflow.Activities )
                                 {
-                                    activity.SaveAttributeValues(rockContext);
+                                    activity.SaveAttributeValues( rockContext );
                                 }
-                            });
+                            } );
 
                         }
                     }
                     else
                     {
-                        ExceptionLogService.LogException(new ArgumentException("Could not find OrderId."), context);
+                        ExceptionLogService.LogException( new ArgumentException( "Could not find OrderId." ), context );
                     }
 
                     try
                     {
                         response.StatusCode = 200;
                         response.ContentType = "text/xml";
-                        response.AddHeader("Content-Type", "text/xml");
-                        xdocResult.Save(response.OutputStream);
+                        response.AddHeader( "Content-Type", "text/xml" );
+                        xdocResult.Save( response.OutputStream );
                     }
                     catch { }
 
                 }
-                catch (SystemException ex)
+                catch ( SystemException ex )
                 {
-                    ExceptionLogService.LogException(ex, context);
+                    ExceptionLogService.LogException( ex, context );
                 }
+            } else {
+            	ExceptionLogService.LogException( new ArgumentException( "Could not find 'REQUEST' parameter." ), context );
             }
         }
 
