@@ -31,10 +31,10 @@ namespace RockWeb.Plugins.org_newpointe.CustomLoginStatus
     [Category("NewPointe.org Web Blocks")]
     [Description( "Displays the currently logged in user's name along with options to Login, Logout, or manage account." )]
 
-    [LinkedPage( "My Account Page", "Page for user to manage their account (if blank will use 'MyAccount' page route)" )]
-    [LinkedPage( "My Profile Page", "Page for user to view their person profile (if blank option will not be displayed)" )]
-    [LinkedPage( "My Settings Page", "Page for user to view their settings (if blank option will not be displayed)" )]
-    [LinkedPage( "Give Now Page", "Page for user to give (if blank option will not be displayed)")]
+    [LinkedPage( "My Account Page", "Page for user to manage their account (if blank will use 'MyAccount' page route)", false)]
+    [LinkedPage( "My Profile Page", "Page for user to view their person profile (if blank option will not be displayed)", false )]
+    [LinkedPage( "My Settings Page", "Page for user to view their settings (if blank option will not be displayed)", false )]
+    [LinkedPage( "Give Now Page", "Page for user to give (if blank option will not be displayed)", false )]
     public partial class CustomLoginStatus : Rock.Web.UI.RockBlock
     {
         #region Base Control Methods
