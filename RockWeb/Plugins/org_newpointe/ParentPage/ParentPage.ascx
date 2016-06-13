@@ -95,7 +95,7 @@
         
                 <Rock:RockTextBox runat="server" Rows="4" ID="rtMessage" Label="Message"/>
                 
-                <Rock:BootstrapButton ID="lbSend" runat="server" Text="Send Message" CssClass="btn btn-danger" OnClick="FindPerson"
+                <Rock:BootstrapButton ID="lbSend" runat="server" Text="Send Message" CssClass="btn btn-danger" OnClick="lbSend_Click"
     DataLoadingText="&lt;i class='fa fa-refresh fa-spin fa-2x'&gt;&lt;/i&gt; Sending" />
                 
 

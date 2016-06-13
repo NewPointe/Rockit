@@ -9,6 +9,8 @@ using Rock;
 using Rock.Data;
 using Rock.Model;
 using Rock.Attribute;
+using Rock.Communication;
+using Rock.Web.Cache;
 using Rock.Web.UI.Controls;
 
 
@@ -22,7 +24,12 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
     [Category("NewPointe Check-In")]
     [Description("Parent Page Block.")]
     [IntegerField("Days Back to Search","Select how many days back to search",true,2)]
-    [TextField("SMS Message Text", "Default text for the SMS",false,"")]
+    [TextField("Default SMS Message Text", "Default text for the SMS",false,"Test Parent Page Message")]
+    [DefinedValueField("611BDE1F-7405-4D16-8626-CCFEDB0E62BE", "Default SMS From Value","Configure in Defined Values",true,false)]
+
+
+    // TODO: How do we limit by only certain check-in groups (kids and students)?
+    // TODO: Save search query douring check-in
 
 
     public partial class ParentPage : Rock.Web.UI.RockBlock
@@ -163,13 +170,57 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
                 
             }
 
+            
+            GroupService groupService = new GroupService(rockContext);
+            GroupMemberService groupMemberService = new GroupMemberService(rockContext);
+
+            var groupMemberList = new List<GroupMember>();
+
+            var relationshipGroupMembers = groupMemberService.GetByPersonId(personId).AsQueryable().Where(a => a.GroupRoleId == 9).Select(a => a.Group); ;
+            var relationshipGroups = relationshipGroupMembers.AsQueryable().Where(a => a.GroupTypeId == 11).Select(a => a.Members);
 
 
-            // TODO: Add people with "Allow Check-in By" relationships too
+            foreach (var b in relationshipGroups)
+            {
+                foreach (var c in b)
+                {
+                    if (c.GroupRoleId == 8)
+                    {
+                        groupMemberList.Add(c);
+                    }
+                }
+            }
+
+            // TODO: Grabbing the wrong person 
+
+            var personRelationships = groupMemberList.AsQueryable()
+                .Select(a => a.Person);
+
+            Debug.WriteLine(personRelationships.ToJson());
+
+            foreach (var y in personRelationships)
+            {
+
+                FamilyList familyList = new FamilyList();
+
+                familyList.FullName = y.FullName;
+                familyList.Id = y.Id;
+                familyList.FamilyName = y.GetFamilies().AsQueryable().Select(a => a.Name).FirstOrDefault();
+
+                var phone = y.PhoneNumbers.AsQueryable().Where(a => a.NumberTypeValueId == 12);
+                var firstOrDefault = phone.FirstOrDefault();
+                if (firstOrDefault != null) familyList.PhoneNumber = firstOrDefault.ToString();
+
+                resultList.Add(familyList);
+
+
+                }
 
 
 
-            SelectedPersonName = selectedPerson.FullName;
+
+
+                SelectedPersonName = selectedPerson.FullName;
             SelectedPersonCampus = selectedPerson.GetCampus().Name;
             SelectedPersonFamily = selectedPerson.GetFamilies().FirstOrDefault().Name.ToString();
 
@@ -177,6 +228,9 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
             lbFamily.Text = SelectedPersonFamily;
             lbCampus.Text = SelectedPersonCampus;
             lbTitle.Text = "Selected Person";
+
+
+
 
             //Populate the grid with family members
             gFamily.DataSource = resultList;
@@ -193,19 +247,76 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
         {
             int personId = (int) e.RowKeyValues["Id"];
 
+
             pnlMessage.Visible = true;
             pnlNumbers.Visible = false;
+
+
+            PersonService personService = new PersonService(rockContext);
+            PersonAliasService personAliasService = new PersonAliasService(rockContext);
+
+            var personToText = personService.Queryable().Where(a => a.Id == personId).FirstOrDefault();
+
+            AdultToTextName = personToText.FullName;
+            AdultToTextFamily = personToText.GetFamilies().AsQueryable().FirstOrDefault().Name.ToString();
+
+            var phone = personToText.PhoneNumbers.AsQueryable().Where(a => a.NumberTypeValueId == 12).Select(a => a.Number);
+            var firstOrDefault = phone.FirstOrDefault();
+            if (firstOrDefault != null) AdultToTextNumber = firstOrDefault.ToString();
 
             lbFamilyTitle.Text = "Adult to Text";
             lbNameToText.Text = AdultToTextName;
             lbFamilyToText.Text = AdultToTextFamily;
             lbNumberToText.Text = AdultToTextNumber;
 
+            rtMessage.Text = GetAttributeValue("DefaultSMSMessageText");
 
-            // TODO: Get the number of the selected adult, then send them a text.
+            // TODO: Show error if no cell phone number
 
         }
 
+
+        protected void lbSend_Click(object sender, EventArgs e)
+        {
+            string message = rtMessage.Text;
+            SendSMS(lbNumberToText.Text, message, "622");
+        }
+
+        protected void SendSMS(string smsNumber, string message, string fromNumber)
+        {
+            var recipients = new List<RecipientData>();
+            var recipient = new RecipientData(smsNumber);
+            recipients.Add(recipient);
+
+            if (recipients.Any() && !string.IsNullOrWhiteSpace(message))
+            {
+                var mediumEntity = EntityTypeCache.Read(Rock.SystemGuid.EntityType.COMMUNICATION_MEDIUM_SMS.AsGuid(),
+                    rockContext);
+                if (mediumEntity != null)
+                {
+                    var medium = MediumContainer.GetComponent(mediumEntity.Name);
+                    if (medium != null && medium.IsActive)
+                    {
+                        var transport = medium.Transport;
+                        if (transport != null && transport.IsActive)
+                        {
+                            var appRoot = GlobalAttributesCache.Read(rockContext).GetValue("InternalApplicationRoot");
+
+                            foreach (var x in recipients)
+                            {
+                                var mediumData = new Dictionary<string, string>();
+                                mediumData.Add("FromValue", fromNumber);
+                                mediumData.Add("Message", message);
+
+                                var number = new List<string> {x.To};
+
+                                transport.Send(mediumData, number, appRoot, string.Empty);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 
     }
