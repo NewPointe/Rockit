@@ -1,19 +1,4 @@
-{% if AllowedActions.Edit == true || AllowedActions.Administrate == true %}
-    {% assign allowed = true %}
-{% else %}
-    {% if onlyMembers %}
-        {% assign gtId = Group.GroupTypeId | ToString %}
-        {% assign isMember = CurrentPerson | Groups:gtId,'All' | Where:'GroupId',Group.Id | Size %}
-    {% endif %}
-
-    {% unless isMember == 0 %}
-        {% if AllowedActions.View == true %}
-            {% assign allowed = true %}
-        {% endif %}
-    {% endunless %}
-{% endif %}
-
-{% if allowed %}
+{% if AllowedActions.View || AllowedActions.Edit || AllowedActions.Administrate %}
 
     <div>
         <style>
