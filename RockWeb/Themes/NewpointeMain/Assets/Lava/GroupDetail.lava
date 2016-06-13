@@ -1,3 +1,10 @@
+{% unless canList == false %}
+    {% assign canList = true %}
+{% endunless %}
+{% if AllowedActions.Edit || AllowedActions.Administrate %}
+    {% assign canList = true %}
+{% endif %}
+
 {% if AllowedActions.View || AllowedActions.Edit || AllowedActions.Administrate %}
 
     <div>
@@ -59,6 +66,7 @@
 	</div>
 	{% endif %}
 
+    {% if canList %}
 	{% if LinkedPages.RosterPage != '' and  (LinkedPages.AttendancePage != '' or Group.GroupType.TakesAttendance == 'False') %}
 		<ul class="nav nav-tabs margin-v-lg">
 			{% if LinkedPages.RosterPage != '' %}
@@ -78,8 +86,9 @@
 			{% endif %}
 		</ul>
 	{% endif %}
+	{% endif %}
 
-	{% if LinkedPages.RosterPage == CurrentPage.Path %}
+	{% if LinkedPages.RosterPage == CurrentPage.Path and canList %}
 
 		{% assign countActive = -1 %}
 		{% assign countInactive = -1 %}
@@ -96,12 +105,8 @@
 			{% endcase %}
 		{% endfor %}
 
-
-
 		{% if countPending > -1 %}
 			{% assign icountPending = 0 %}
-
-			
 
 			{% for member in Group.Members %}
 
@@ -171,8 +176,6 @@
 			{% endfor %}
 
 		{% endif %}
-
-
 
 		{% if countActive > -1 %}
 			{% assign icountActive = 0 %}
@@ -244,8 +247,6 @@
 			{% endfor %}
 
 		{% endif %}
-
-
 
 		{% if countInactive > -1 %}
 			{% assign icountInactive = 0 %}
