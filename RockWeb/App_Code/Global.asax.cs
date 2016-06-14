@@ -215,6 +215,7 @@ namespace RockWeb
                     Template.FileSystem = new RockWeb.LavaFileSystem();
                     Template.RegisterSafeType( typeof( Enum ), o => o.ToString() );
                     Template.RegisterFilter( typeof( Rock.Lava.RockFilters ) );
+                    Template.RegisterFilter( typeof( org.newpointe.Lava.RockFilters ) );
 
                     // add call back to keep IIS process awake at night and to provide a timer for the queued transactions
                     AddCallBack();
