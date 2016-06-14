@@ -4,6 +4,12 @@
 {% if AllowedActions.Edit || AllowedActions.Administrate %}
     {% assign canList = true %}
 {% endif %}
+{% unless canEditAttendance == false %}
+    {% assign canEditAttendance = true %}
+{% endunless %}
+{% if AllowedActions.Edit || AllowedActions.Administrate %}
+    {% assign canEditAttendance = true %}
+{% endif %}
 
 {% if AllowedActions.View || AllowedActions.Edit || AllowedActions.Administrate %}
 
@@ -66,10 +72,10 @@
 	</div>
 	{% endif %}
 
-    {% if canList %}
+    {% if canList or canEditAttendance %}
 	{% if LinkedPages.RosterPage != '' and  (LinkedPages.AttendancePage != '' or Group.GroupType.TakesAttendance == 'False') %}
 		<ul class="nav nav-tabs margin-v-lg">
-			{% if LinkedPages.RosterPage != '' %}
+			{% if LinkedPages.RosterPage != '' and canList %}
 				{% if LinkedPages.RosterPage == CurrentPage.Path %}
 					<li role="presentation" class="active"><a href="{{ LinkedPages.RosterPage }}?GroupId={{ Group.Id }}">Roster</a></li>
 				{% else %}
@@ -77,7 +83,7 @@
 				{% endif %}
 			{% endif %}
 
-			{% if LinkedPages.AttendancePage != '' and Group.GroupType.TakesAttendance == 'True' %}
+			{% if LinkedPages.AttendancePage != '' and Group.GroupType.TakesAttendance == 'True' and canEditAttendance %}
 				{% if LinkedPages.AttendancePage == CurrentPage.Path %}
 					<li role="presentation" class="active"><a href="{{ LinkedPages.AttendancePage }}?GroupId={{ Group.Id }}">Attendance</a></li>
 				{% else %}

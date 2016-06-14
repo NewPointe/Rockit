@@ -1,4 +1,4 @@
-<div {% unless noPadding %} style="padding:25px 0;" {% endunless %}>
+<div>
     <div class="col-xs-12 resourceMenu">
         <h4>
             <a data-toggle="collapse" data-target="#collapseGroupList" aria-expanded="true" aria-controls="collapseExample">

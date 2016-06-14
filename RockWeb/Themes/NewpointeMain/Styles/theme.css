@@ -6504,6 +6504,10 @@ table.gsc-search-box tbody tr td * {
 .main-feature {
   margin-bottom: 10px;
 }
+.photo img {
+  width: auto;
+  margin: auto;
+}
 /*#endregion */
 /*#region // Footer */
 footer .footer-message {
