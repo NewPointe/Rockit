@@ -39,7 +39,7 @@ namespace org.newpointe.Lava
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static object GetAttributes( Object input )
+        public static object NP_GetAttributes( Object input )
         {
             IHasAttributes item = null;
 
@@ -70,26 +70,51 @@ namespace org.newpointe.Lava
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static object AddKeyValue( Object input, Object key, Object value )
+        public static object NP_AddSortValue( Object input, Object sortValue, Object objectValue )
         {
-            IDictionary item = null;
+            IList items = null;
 
-            if ( input is IDictionary )
+            if ( input is IList )
             {
-                item = ( IDictionary ) input;
+                items = ( IList ) input;
             }
             else if ( input is String && String.IsNullOrWhiteSpace( ( String ) input ) )
             {
-                item = new Dictionary<Object, Object>();
+                items = new List<Object>();
             }
-            else
+
+            if (items == null)
             {
                 return string.Empty;
             }
 
-            item.Add( key, value );
+            var dict = new Dictionary<String, Object>();
+            dict.Add( "SortValue", sortValue );
+            dict.Add( "Value", objectValue );
+            items.Add( dict );
 
-            return item;
+            return items;
+        }
+
+        /// <summary>
+        /// Sort elements of the list
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static IEnumerable NP_SortValues( object input )
+        {
+            List<object> ary;
+            if ( input is IEnumerable )
+                ary = ( ( IEnumerable ) input ).Cast<object>().ToList();
+            else
+                ary = new List<object>( new[] { input } );
+            if ( !ary.Any() )
+                return ary;
+
+            ary.Sort( ( a, b ) => Comparer.Default.Compare( ( ( IDictionary ) a )["SortValue"], ( ( IDictionary ) b )["SortValue"] ) );
+
+            return ary;
         }
 
         /// <summary>
