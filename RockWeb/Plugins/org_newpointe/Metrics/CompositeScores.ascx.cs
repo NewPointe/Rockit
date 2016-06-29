@@ -91,36 +91,50 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public int? iBaptismsGoalCurrent;
         public int? iBaptismsGoal2020;
         public double iBaptismsGoalProgress;
+        public int? iBaptisms8Wk;
+        public int? iBaptisms8WkLy;
+        public double? iBaptisms8WkProgress;
 
         public int? iCommitments;
         public int? iCommitmentsLastYear;
         public int? iCommitmentsGoalCurrent;
         public int? iCommitmentsGoal2020;
         public double iCommitmentsGoalProgress;
+        public int? iCommitments8Wk;
+        public int? iCommitments8WkLy;
 
         public int? iRecommitments;
         public int? iRecommitmentsLastYear;
         public int? iRecommitmentsGoalCurrent;
         public int? iRecommitmentsGoal2020;
         public double iRecommitmentsGoalProgress;
+        public int? iRecommitments8Wk;
+        public int? iRecommitments8WkLy;
 
         public int? iAllCommitments;
         public int? iAllCommitmentsLastYear;
         public int? iAllCommitmentsGoalCurrent;
         public int? iAllCommitmentsGoal2020;
         public double iAllCommitmentsGoalProgress;
+        public int? iAllCommitments8Wk;
+        public int? iAllCommitments8WkLy;
+        public double? dAllCommitments8WkProgress;
 
         public int? iNewHere;
         public int? iNewHereLastYear;
         public int? iNewHereGoalCurrent;
         public int? iNewHereGoal2020;
         public double iNewHereGoalProgress;
+        public int? iNewHere8Wk;
+        public int? iNewHere8WkLy;
+        public double dNewHere8WkProgress;
 
         public int? iPartners;
         public int? iPartnersLastYear;
         public int? iPartnersGoalCurrent;
         public int? iPartnersGoal2020;
         public double iPartnersGoalProgress;
+        
 
         public int? iSmallGroupLeaders;
         public int? iSmallGroupLeadersLastYear;
@@ -145,18 +159,27 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public int? iNewtoNewPointeGoalCurrent;
         public int? iNewtoNewPointeGoal2020;
         public double iNewtoNewPointeGoalProgress;
+        public int? iNewtoNewPointe8Wk;
+        public int? iNewtoNewPointe8WkLy;
+        public double dNewtoNewPointe8WkProgress;
 
         public int? iDiscoverGroups;
         public int? iDiscoverGroupsLastYear;
         public int? iDiscoverGroupsGoalCurrent;
         public int? iDiscoverGroupsGoal2020;
         public double iDiscoverGroupsGoalProgress;
+        public int? iDiscoverGroups8Wk;
+        public int? iDiscoverGroups8WkLy;
+        public double dDiscoverGroups8WkProgress;
 
         public int? iCampusGroups;
         public int? iCampusGroupsLastYear;
         public int? iCampusGroupsGoalCurrent;
         public int? iCampusGroupsGoal2020;
         public double iCampusGroupsGoalProgress;
+        public int? iCampusGroups8Wk;
+        public int? iCampusGroups8WkLy;
+        public double dCampusGroups8WkProgress;
 
         public int? iSmallGroupParticipants;
         public int? iSmallGroupParticipantsLastYear;
@@ -189,11 +212,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public string PeriodEndDate;
         public string LastPeriodStartDate;
         public string LastPeriodEndDate;
+        public string Last8WkStartDate;
+        public string Last8WkEndDate;
+        public string Last8WkStartDateLy;
+        public string Last8WkEndDateLy;
 
         public bool UseGlobalAttributeGoal;
         public double? GoalMultiplier;
 
         public double? CompositeScore;
+
+        
 
 
 
@@ -341,6 +370,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             LastPeriodStartDate = lastFiscalYearStartDate.ToShortDateString();
             LastPeriodEndDate = lastPeriodEndDate.ToShortDateString();
 
+            Last8WkStartDate = now.AddDays(-57).ToShortDateString();
+            Last8WkEndDate = now.ToShortDateString();
+            Last8WkStartDateLy = now.AddDays(-57).AddYears(-1).ToShortDateString();
+            Last8WkEndDateLy = now.AddYears(-1).ToShortDateString();
+
 
             switch (iMonth)
             {
@@ -474,6 +508,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iBaptismsGoal2020 = GetMetrics(11, SelectedCampusId, start2020, end2020, 1);
 
+            //8Wk
+            iBaptisms8Wk = GetMetrics(11, SelectedCampusId, now.AddDays(-57), now, 0);
+            iBaptisms8WkLy = GetMetrics(11, SelectedCampusId, now.AddDays(-57).AddYears(-1), now.AddYears(-1), 0) ;
+            iBaptisms8WkProgress = (((double)iBaptisms8Wk - (double)iBaptisms8WkLy) / (double)iBaptisms8WkLy) * 100;
+
 
 
 
@@ -509,7 +548,12 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
             //2020 Goal 
              iCommitmentsGoal2020 = GetMetrics(12, SelectedCampusId, start2020, end2020, 1);
-       
+
+            //8Wk
+            iCommitments8Wk = GetMetrics(12, SelectedCampusId, now.AddDays(-57), now, 0);
+            iCommitments8WkLy = GetMetrics(12, SelectedCampusId, now.AddDays(-57).AddYears(-1), now.AddYears(-1), 0);
+
+
 
 
 
@@ -528,6 +572,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
             //2020 Goal 
              iRecommitmentsGoal2020 = GetMetrics(13, SelectedCampusId, start2020, end2020, 1);
+
+            //8Wk
+            iRecommitments8Wk = GetMetrics(13, SelectedCampusId, now.AddDays(-57), now, 0);
+            iRecommitments8WkLy = GetMetrics(13, SelectedCampusId, now.AddDays(-57).AddYears(-1), now.AddYears(-1), 0);
+            
 
 
 
@@ -585,6 +634,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iNewtoNewPointeGoal2020 = GetMetrics(21, SelectedCampusId, start2020, end2020, 1);
 
+            //8Wk
+            iNewtoNewPointe8Wk = GetMetrics(21, SelectedCampusId, now.AddDays(-57), now, 0);
+            iNewtoNewPointe8WkLy = GetMetrics(21, SelectedCampusId, now.AddDays(-57).AddYears(-1), now.AddYears(-1), 0);
+            dNewtoNewPointe8WkProgress = (((double)iNewtoNewPointe8Wk - (double)iNewtoNewPointe8WkLy) / (double)iNewtoNewPointe8WkLy) * 100;
+
 
 
 
@@ -605,7 +659,12 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iDiscoverGroupsGoal2020 = GetMetrics(2, SelectedCampusId, start2020, end2020, 1);
 
-  
+            //8Wk
+            iDiscoverGroups8Wk = GetMetrics(22, SelectedCampusId, now.AddDays(-57), now, 0);
+            iDiscoverGroups8WkLy = GetMetrics(22, SelectedCampusId, now.AddDays(-57).AddYears(-1), now.AddYears(-1), 0);
+            dDiscoverGroups8WkProgress = (((double)iDiscoverGroups8Wk - (double)iDiscoverGroups8WkLy) / (double)iDiscoverGroups8WkLy) *100;
+
+
 
 
 
@@ -625,6 +684,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //2020 Goal 
              iCampusGroupsGoal2020 = GetMetrics(24, SelectedCampusId, start2020, end2020, 1);
 
+            //8Wk
+            iCampusGroups8Wk = GetMetrics(24, SelectedCampusId, now.AddDays(-57), now, 0);
+            iCampusGroups8WkLy = GetMetrics(24, SelectedCampusId, now.AddDays(-57).AddYears(-1), now.AddYears(-1), 0);
+            dCampusGroups8WkProgress = (((double)iCampusGroups8Wk - (double)iCampusGroups8WkLy) / (double)iCampusGroups8WkLy) * 100;
+
 
 
 
@@ -642,6 +706,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
             //2020 Goal 
              iNewHereGoal2020 = GetMetrics(14, SelectedCampusId, start2020, end2020, 1);
+
+            //8Wk
+            iNewHere8Wk = GetMetrics(14, SelectedCampusId, now.AddDays(-57), now, 0);
+            iNewHere8WkLy = GetMetrics(14, SelectedCampusId, now.AddDays(-57).AddYears(-1), now.AddYears(-1), 0);
+            dNewHere8WkProgress = (((double)iNewHere8Wk - (double)iNewHere8WkLy) / (double)iNewHere8WkLy) * 100;
 
 
 
@@ -720,6 +789,12 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //Current Goal Progress
             iAllCommitmentsGoalProgress = ((double)iCommitments + (double)iRecommitments) / (((double)iCommitmentsGoalCurrent + (double)iRecommitmentsGoalCurrent) * GoalOffsetMultiplier) * 100;
 
+            //8Wk
+            iAllCommitments8Wk = iCommitments8Wk + iRecommitments8Wk;
+            iAllCommitments8WkLy = iCommitments8WkLy + iRecommitments8WkLy;
+            dAllCommitments8WkProgress = (((double)iAllCommitments8Wk - (double)iAllCommitments8WkLy) / (double)iAllCommitments8WkLy) * 100;
+
+
 
 
             // Caculate the progress toeards the goals
@@ -734,7 +809,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             iCampusGroupsGoalProgress = (double)iCampusGroups / ((double)iCampusGroupsGoalCurrent * GoalOffsetMultiplier) * 100;
             iNewHereGoalProgress = (double)iNewHere / ((double)iNewHereGoalCurrent * GoalOffsetMultiplier) * 100;
 
-
+            
 
 
             //Calculate the Composite Score
@@ -812,6 +887,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
             return result;
         }
+
 
 
         protected double? CalculateCompositeScore()
