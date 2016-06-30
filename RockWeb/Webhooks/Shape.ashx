@@ -51,6 +51,10 @@ namespace RockWeb.Webhooks
 
         private Person ThePerson;
 
+        private string FormId;
+            
+
+
 
         public void ProcessRequest(HttpContext context)
         {
@@ -65,16 +69,22 @@ namespace RockWeb.Webhooks
                 return;
             }
 
-
+            // Get personal fields out of POST data
             Email = request.Form["Email"];
             FirstName = request.Form["FirstName"];
             LastName = request.Form["LastName"];
+            FormId = request.Form["FormID"] + "-" + request.Form["EntryNumber"];
 
 
+            // Get the person based on the form (or make a new one)
             var person = GetPerson(rockContext);
             ThePerson = person;
 
+
+            // Build dictionary of <GiftId> <TotalScore>
             Dictionary<string, int> GiftDictionary = new Dictionary<string, int>();
+
+            // Pre-populate dictionary based on number of gifts in POST data
             int numberOfGifts = 5;
 
             for (int i = 1; i <= numberOfGifts; i++)
@@ -83,8 +93,7 @@ namespace RockWeb.Webhooks
             }
 
 
-
-
+            // Go through Post Data and add up scores for each Gift type
             foreach (string x in request.Params.Keys)
             {
                 if (x.Length == 5 && x.Contains("-"))
@@ -97,36 +106,45 @@ namespace RockWeb.Webhooks
 
             }
 
-
-            foreach (var x in GiftDictionary)
-            {
-                response.Write("Key: " + x.Key + " | Value: " + x.Value + "<br>");
-            }
-
-
-
+            
+            // Make a SortedDictionary to sort highest scores descending (yay for avoiding sorting algorithm!)
             var sortedGiftDictionary = from entry in GiftDictionary orderby entry.Value descending select entry;
 
+            // Set highest and lowest gifts
             TopGift1 = sortedGiftDictionary.ElementAt(0).Key;
             TopGift2 = sortedGiftDictionary.ElementAt(1).Key;
             LowestGift = sortedGiftDictionary.Last().Key;
 
+            // Save the attributes
+            SaveAttributes(Int32.Parse(TopGift1),Int32.Parse(TopGift2));
 
+
+            // Testing: write each value in the response for varification
+            foreach (var x in GiftDictionary)
+            {
+                response.Write("Key: " + x.Key + " | Value: " + x.Value + "<br>");
+            }
             response.Write("<br>PersonId: " + person.Id);
             response.Write("<br>Top Gift: " + TopGift1);
             response.Write("<br>2nd Gift: " + TopGift2);
             response.Write("<br>Bottom Gift: " + LowestGift);
 
+
+            // Write a 200 code in the response
             response.ContentType = "text/xml";
             response.AddHeader("Content-Type", "text/xml");
             response.StatusCode = 200;
 
-
-            SaveAttributes(Int32.Parse(TopGift1),1);
+            
 
         }
 
-
+        /// <summary>
+        /// Write the 2 highest gift attributes on the person's record.
+        /// </summary>
+        /// <param name="Gift1">Int of category of Gift1</param>
+        /// <param name="Gift2">Int of category of Gift2</param>
+        /// <returns></returns>
         public void SaveAttributes(int Gift1, int Gift2)
         {
 
@@ -134,10 +152,12 @@ namespace RockWeb.Webhooks
             AttributeValueService attributeValueService = new AttributeValueService(rockContext);
             AttributeValue attributeValue;
             AttributeValue attributeValue2;
+            AttributeValue formAttributeValue;
 
 
             var spiritualGift1Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift1");
             var spiritualGift2Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift2");
+            var spiritualGiftFormAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGiftForm");
 
 
             attributeValue = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift1Attribute.Id, ThePerson.Id);
@@ -178,7 +198,14 @@ namespace RockWeb.Webhooks
             }
 
 
-            
+
+            formAttributeValue = new AttributeValue();
+            formAttributeValue.AttributeId = spiritualGiftFormAttribute.Id;
+            formAttributeValue.EntityId = ThePerson.Id;
+            formAttributeValue.Value = FormId;
+            attributeValueService.Add(formAttributeValue);
+                
+
             rockContext.SaveChanges();
 
 
@@ -187,7 +214,7 @@ namespace RockWeb.Webhooks
 
 
         /// <summary>
-        /// Gets the person.
+        /// Gets the person from form data, or creates a new person if one doesn't exist
         /// </summary>
         /// <param name="rockContext">The rock context.</param>
         /// <returns></returns>
@@ -241,7 +268,6 @@ namespace RockWeb.Webhooks
                 return false;
             }
         }
-
 
 
         private void SendEmail(string recipient, string from, string subject, string body, RockContext rockContext)
