@@ -27,7 +27,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>Attendance - Adults</td>
+                <td>Attendance - Adults <small>(Avg past 6wks)</small></td>
                 <td><%= iAttendanceAud %></td>
                 <td><%= iAttendanceAudLastYear %></td>
                 <td><%= String.Format("{0:0}", (((double)iAttendanceAud / (double)iAttendanceAudLastYear) - 1) * 100) %>%</td>
@@ -38,7 +38,7 @@
                 <td> </td>
             </tr>
             <tr>
-                <td>Attendance - Kids</td>
+                <td>Attendance - Kids <small>(Avg past 6wks)</small></td>
                 <td><%= iAttendanceKids %></td>
                 <td><%= iAttendanceKidsLastYear %></td>
                 <td><%= String.Format("{0:0}", (((double)iAttendanceKids / (double)iAttendanceKidsLastYear) - 1) * 100) %>%</td>
@@ -49,7 +49,7 @@
                 <td> </td>
             </tr>
             <tr>
-                <td>Attendance - Students</td>
+                <td>Attendance - Students <small>(Avg past 6wks)</small></td>
                 <td><%= iAttendanceStudents %></td>
                 <td><%= iAttendanceStudentsLastYear %></td>
                 <td><%= String.Format("{0:0}", (((double)iAttendanceStudents / (double)iAttendanceStudentsLastYear) - 1) * 100) %>%</td>
