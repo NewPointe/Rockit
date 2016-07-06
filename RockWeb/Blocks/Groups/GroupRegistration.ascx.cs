@@ -267,9 +267,9 @@ namespace RockWeb.Blocks.Groups
                 // If using a 'Full' view, save the phone numbers and address
                 if ( !IsSimple )
                 {
-                    if ( String.IsNullOrWhiteSpace( pnHome.Text ) )
+                    if ( !String.IsNullOrWhiteSpace( pnHome.Text ) )
                         SetPhoneNumber( rockContext, person, pnHome, null, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME.AsGuid(), changes );
-                    if ( String.IsNullOrWhiteSpace( pnCell.Text ) )
+                    if ( !String.IsNullOrWhiteSpace( pnCell.Text ) )
                         SetPhoneNumber( rockContext, person, pnCell, cbSms, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_MOBILE.AsGuid(), changes );
 
                     string oldLocation = homeLocation != null ? homeLocation.Location.ToString() : string.Empty;
