@@ -544,7 +544,7 @@ namespace RockWeb.Blocks.Groups
 
             _autoFill = GetAttributeValue( "AutoFillForm" ).AsBoolean();
 
-            tbEmail.Required = _autoFill;
+            tbEmail.Required = true;//autoFill;
 
             string registerButtonText = GetAttributeValue( "RegisterButtonAltText" );
             if ( string.IsNullOrWhiteSpace( registerButtonText ) )
