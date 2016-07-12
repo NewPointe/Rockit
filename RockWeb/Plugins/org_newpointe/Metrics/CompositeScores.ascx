@@ -106,8 +106,8 @@
             <tr>
                 <td>Small Groups <small>(Number of Groups)</small></td>
                 <td><%= iSmallGroups %></td>
-                <td><%= iSmallGroups %></td>
-                <td><%= String.Format("{0:00}", (((double)iSmallGroups / (double)iSmallGroupsLastYear) - 1) * 100) %>%</td>
+                <td><%= iSmallGroupsLastYear %></td>
+                <td><%= String.Format("{0:0}", (((double)iSmallGroups / (double)iSmallGroupsLastYear) - 1) * 100) %>%</td>
                 <td><%= iSmallGroupsGoalCurrent %></td>
                 <td><%= String.Format("{0:0}", iSmallGroupsGoalProgress) %>%</td>
                 <td> </td>
