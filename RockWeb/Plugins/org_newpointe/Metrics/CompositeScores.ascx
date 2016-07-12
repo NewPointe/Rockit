@@ -93,12 +93,23 @@
                 <td><%= String.Format("{0:0}", iBaptisms8WkProgress) %>%</td>
             </tr>
             <tr>
-                <td>Small Group Participation</td>
+                <td>Small Group Participation <small>(People in Groups)</small></td>
                 <td><%= iSmallGroupParticipants %></td>
                 <td><%= iSmallGroupParticipantsLastYear %></td>
                 <td><%= String.Format("{0:00}", (((double)iSmallGroupParticipants / (double)iSmallGroupParticipantsLastYear) - 1) * 100) %>%</td>
                 <td><%= iSmallGroupParticipantsGoalCurrent %></td>
                 <td><%= String.Format("{0:0}", iSmallGroupParticipantsGoalProgress) %>%</td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+            </tr>
+            <tr>
+                <td>Small Groups <small>(Number of Groups)</small></td>
+                <td><%= iSmallGroups %></td>
+                <td><%= iSmallGroups %></td>
+                <td><%= String.Format("{0:00}", (((double)iSmallGroups / (double)iSmallGroupsLastYear) - 1) * 100) %>%</td>
+                <td><%= iSmallGroupsGoalCurrent %></td>
+                <td><%= String.Format("{0:0}", iSmallGroupsGoalProgress) %>%</td>
                 <td> </td>
                 <td> </td>
                 <td> </td>
@@ -154,6 +165,7 @@
                 <td> </td>
                 <td><%= iInactiveFollowup %></td>
                 <td><%= String.Format("{0:0}",iInactiveFollowupProgress) %>%</td>
+                <td> </td>
                 <td> </td>
                 <td> </td>
             </tr>
