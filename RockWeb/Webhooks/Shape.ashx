@@ -32,6 +32,7 @@ using Rock.Attribute;
 using Rock.Communication;
 using System.Diagnostics;
 using System.Globalization;
+using Microsoft.Ajax.Utilities;
 
 namespace RockWeb.Webhooks
 {
@@ -45,6 +46,10 @@ namespace RockWeb.Webhooks
         private string TopGift2;
         private string LowestGift;
 
+        private string TopHeart1;
+        private string TopHeart2;
+        private string LowestHeart;
+
         private string Email;
         private string FirstName;
         private string LastName;
@@ -52,7 +57,7 @@ namespace RockWeb.Webhooks
         private Person ThePerson;
 
         private string FormId;
-            
+
 
 
 
@@ -64,6 +69,12 @@ namespace RockWeb.Webhooks
             response.ContentType = "text/plain";
 
             if (request.HttpMethod != "POST")
+            {
+                response.Write("Invalid request type.");
+                return;
+            }
+
+            if (request.Form["FormId"].IsNullOrWhiteSpace())
             {
                 response.Write("Invalid request type.");
                 return;
@@ -83,22 +94,54 @@ namespace RockWeb.Webhooks
 
             // Build dictionary of <GiftId> <TotalScore>
             Dictionary<string, int> GiftDictionary = new Dictionary<string, int>();
+            Dictionary<string, int> HeartDictionary = new Dictionary<string, int>();
+
+            int numberOfGifts = 0;
+            int numberOfHearts = 0;
+
+
+            // Go through Post Data and get the number of Gifts
+            foreach (string x in request.Params.Keys)
+            {
+                if (x.Length == 7 && x.Contains("-") && x.StartsWith("S"))
+                {
+                    numberOfGifts++;
+                }
+
+            }
+
+            // Go through Post Data and get the number of Heart and Abilities Categories
+            foreach (string x in request.Params.Keys)
+            {
+                if (x.Length == 7 && x.Contains("-") && x.StartsWith("H"))
+                {
+                    numberOfHearts++;
+                }
+
+            }
+
 
             // Pre-populate dictionary based on number of gifts in POST data
-            int numberOfGifts = 5;
-
             for (int i = 1; i <= numberOfGifts; i++)
             {
                 GiftDictionary.Add(i.ToString(), 0);
             }
 
+            // Pre-populate dictionary based on number of heart and abilitiy categories in POST data
+            for (int i = 1; i <= numberOfHearts; i++)
+            {
+                HeartDictionary.Add(i.ToString(), 0);
+            }
+
+
+
 
             // Go through Post Data and add up scores for each Gift type
             foreach (string x in request.Params.Keys)
             {
-                if (x.Length == 5 && x.Contains("-"))
+                if (x.Length == 7 && x.Contains("-") && x.StartsWith("S"))
                 {
-                    string gift = Int32.Parse(x.Substring(3, 2)).ToString();
+                    string gift = Int32.Parse(x.Substring(5, 2)).ToString();
 
                     GiftDictionary[gift] = GiftDictionary[gift] + Int32.Parse(request.Params[x]);
 
@@ -106,17 +149,41 @@ namespace RockWeb.Webhooks
 
             }
 
-            
+
+            // Go through Post Data and add up scores for each Heart and Abilities type
+            foreach (string x in request.Params.Keys)
+            {
+                if (x.Length == 7 && x.Contains("-") && x.StartsWith("H"))
+                {
+                    string heart = Int32.Parse(x.Substring(5, 2)).ToString();
+
+                    HeartDictionary[heart] = HeartDictionary[heart] + Int32.Parse(request.Params[x]);
+
+                }
+
+            }
+
+
             // Make a SortedDictionary to sort highest scores descending (yay for avoiding sorting algorithm!)
             var sortedGiftDictionary = from entry in GiftDictionary orderby entry.Value descending select entry;
+            var sortedHeartDictionary = from entry in HeartDictionary orderby entry.Value descending select entry;
 
             // Set highest and lowest gifts
             TopGift1 = sortedGiftDictionary.ElementAt(0).Key;
             TopGift2 = sortedGiftDictionary.ElementAt(1).Key;
             LowestGift = sortedGiftDictionary.Last().Key;
+            TopHeart1 = sortedHeartDictionary.ElementAt(0).Key;
+            TopHeart2 = sortedHeartDictionary.ElementAt(1).Key;
+            LowestHeart = sortedHeartDictionary.Last().Key;
+
+
 
             // Save the attributes
-            SaveAttributes(Int32.Parse(TopGift1),Int32.Parse(TopGift2));
+            SaveAttributes(Int32.Parse(TopGift1),Int32.Parse(TopGift2),Int32.Parse(TopHeart1),Int32.Parse(TopHeart2));
+
+
+            // Send a confirmation email
+            SendEmail(person.Email,"info@newpointe.org","SHAPE Assessment Results","Body",rockContext);
 
 
             // Testing: write each value in the response for varification
@@ -128,6 +195,9 @@ namespace RockWeb.Webhooks
             response.Write("<br>Top Gift: " + TopGift1);
             response.Write("<br>2nd Gift: " + TopGift2);
             response.Write("<br>Bottom Gift: " + LowestGift);
+            response.Write("<br>Top Heart: " + TopHeart1);
+            response.Write("<br>2nd Heart: " + TopHeart2);
+            response.Write("<br>Bottom Heart: " + LowestHeart);
 
 
             // Write a 200 code in the response
@@ -135,7 +205,7 @@ namespace RockWeb.Webhooks
             response.AddHeader("Content-Type", "text/xml");
             response.StatusCode = 200;
 
-            
+
 
         }
 
@@ -144,67 +214,106 @@ namespace RockWeb.Webhooks
         /// </summary>
         /// <param name="Gift1">Int of category of Gift1</param>
         /// <param name="Gift2">Int of category of Gift2</param>
+        /// <param name="Heart1">Int of category of Heart1</param>
+        /// <param name="Heart2">Int of category of Heart2</param>
         /// <returns></returns>
-        public void SaveAttributes(int Gift1, int Gift2)
+        public void SaveAttributes(int Gift1, int Gift2, int Heart1, int Heart2)
         {
 
             AttributeService attributeService = new AttributeService(rockContext);
             AttributeValueService attributeValueService = new AttributeValueService(rockContext);
-            AttributeValue attributeValue;
-            AttributeValue attributeValue2;
+            AttributeValue spiritualGiftAttributeValue1;
+            AttributeValue spiritualGiftAttributeValue2;
+            AttributeValue heartAttributeValue1;
+            AttributeValue heartAttributeValue2;
             AttributeValue formAttributeValue;
 
 
             var spiritualGift1Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift1");
             var spiritualGift2Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift2");
+            var heart1Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "Heart1");
+            var heart2Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "Heart2");
             var spiritualGiftFormAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGiftForm");
 
 
-            attributeValue = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift1Attribute.Id, ThePerson.Id);
-            attributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift2Attribute.Id, ThePerson.Id);
+            spiritualGiftAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift1Attribute.Id, ThePerson.Id);
+            spiritualGiftAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift2Attribute.Id, ThePerson.Id);
+            heartAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(heart1Attribute.Id, ThePerson.Id);
+            heartAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(heart2Attribute.Id, ThePerson.Id);
 
 
 
-            if (attributeValue == null)
+            if (spiritualGiftAttributeValue1 == null)
             {
-                attributeValue = new AttributeValue();
-                attributeValue.AttributeId = spiritualGift1Attribute.Id;
-                attributeValue.EntityId = ThePerson.Id;
-                attributeValue.Value = Gift1.ToString();
-                attributeValueService.Add(attributeValue);
+                spiritualGiftAttributeValue1 = new AttributeValue();
+                spiritualGiftAttributeValue1.AttributeId = spiritualGift1Attribute.Id;
+                spiritualGiftAttributeValue1.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue1.Value = Gift1.ToString();
+                attributeValueService.Add(spiritualGiftAttributeValue1);
             }
             else
             {
-                attributeValue.AttributeId = spiritualGift1Attribute.Id;
-                attributeValue.EntityId = ThePerson.Id;
-                attributeValue.Value = Gift1.ToString();
+                spiritualGiftAttributeValue1.AttributeId = spiritualGift1Attribute.Id;
+                spiritualGiftAttributeValue1.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue1.Value = Gift1.ToString();
             }
 
 
 
-            if (attributeValue2 == null)
+            if (spiritualGiftAttributeValue2 == null)
             {
-                attributeValue2 = new AttributeValue();
-                attributeValue2.AttributeId = spiritualGift2Attribute.Id;
-                attributeValue2.EntityId = ThePerson.Id;
-                attributeValue2.Value = Gift2.ToString();
-                attributeValueService.Add(attributeValue2);
+                spiritualGiftAttributeValue2 = new AttributeValue();
+                spiritualGiftAttributeValue2.AttributeId = spiritualGift2Attribute.Id;
+                spiritualGiftAttributeValue2.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue2.Value = Gift2.ToString();
+                attributeValueService.Add(spiritualGiftAttributeValue2);
             }
             else
             {
-                attributeValue2.AttributeId = spiritualGift2Attribute.Id;
-                attributeValue2.EntityId = ThePerson.Id;
-                attributeValue2.Value = Gift2.ToString();
+                spiritualGiftAttributeValue2.AttributeId = spiritualGift2Attribute.Id;
+                spiritualGiftAttributeValue2.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue2.Value = Gift2.ToString();
             }
+
+            if (heartAttributeValue1 == null)
+            {
+                heartAttributeValue1 = new AttributeValue();
+                heartAttributeValue1.AttributeId = heart1Attribute.Id;
+                heartAttributeValue1.EntityId = ThePerson.Id;
+                heartAttributeValue1.Value = Heart1.ToString();
+                attributeValueService.Add(heartAttributeValue1);
+            }
+            else
+            {
+                heartAttributeValue1.AttributeId = heart1Attribute.Id;
+                heartAttributeValue1.EntityId = ThePerson.Id;
+                heartAttributeValue1.Value = Heart1.ToString();
+            }
+
+            if (heartAttributeValue2 == null)
+            {
+                heartAttributeValue2 = new AttributeValue();
+                heartAttributeValue2.AttributeId = heart2Attribute.Id;
+                heartAttributeValue2.EntityId = ThePerson.Id;
+                heartAttributeValue2.Value = Heart2.ToString();
+                attributeValueService.Add(heartAttributeValue2);
+            }
+            else
+            {
+                heartAttributeValue2.AttributeId = heart2Attribute.Id;
+                heartAttributeValue2.EntityId = ThePerson.Id;
+                heartAttributeValue2.Value = Heart2.ToString();
+            }
+
 
 
 
             formAttributeValue = new AttributeValue();
             formAttributeValue.AttributeId = spiritualGiftFormAttribute.Id;
             formAttributeValue.EntityId = ThePerson.Id;
-            formAttributeValue.Value = FormId;
+            formAttributeValue.Value = Base64Encode(FormId);
             attributeValueService.Add(formAttributeValue);
-                
+
 
             rockContext.SaveChanges();
 
@@ -294,6 +403,14 @@ namespace RockWeb.Webhooks
                     }
                 }
             }
+        }
+
+
+
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
         }
 
 
