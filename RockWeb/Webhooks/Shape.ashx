@@ -20,6 +20,7 @@ using System;
 using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -110,40 +111,23 @@ namespace RockWeb.Webhooks
 
             }
 
-            // Go through Post Data and get the number of Heart and Abilities Categories
-            foreach (string x in request.Params.Keys)
-            {
-                if (x.Length == 7 && x.Contains("-") && x.StartsWith("H"))
-                {
-                    numberOfHearts++;
-                }
-
-            }
-
-
-            // Pre-populate dictionary based on number of gifts in POST data
-            for (int i = 1; i <= numberOfGifts; i++)
-            {
-                GiftDictionary.Add(i.ToString(), 0);
-            }
-
-            // Pre-populate dictionary based on number of heart and abilitiy categories in POST data
-            for (int i = 1; i <= numberOfHearts; i++)
-            {
-                HeartDictionary.Add(i.ToString(), 0);
-            }
-
-
-
 
             // Go through Post Data and add up scores for each Gift type
             foreach (string x in request.Params.Keys)
             {
-                if (x.Length == 7 && x.Contains("-") && x.StartsWith("S"))
+                if (x.Length == 8 && x.Contains("-") && x.StartsWith("S"))
                 {
-                    string gift = Int32.Parse(x.Substring(5, 2)).ToString();
+                    string gift = Int32.Parse(x.Substring(5, 3)).ToString();
+                    int value;
+                    if (GiftDictionary.TryGetValue(gift, out value))
+                    {
+                        GiftDictionary[gift] = value + Int32.Parse(request.Params[x]);
+                    }
+                    else
+                    {
+                        GiftDictionary.Add(gift, Int32.Parse(request.Params[x]));
+                    }
 
-                    GiftDictionary[gift] = GiftDictionary[gift] + Int32.Parse(request.Params[x]);
 
                 }
 
@@ -153,11 +137,20 @@ namespace RockWeb.Webhooks
             // Go through Post Data and add up scores for each Heart and Abilities type
             foreach (string x in request.Params.Keys)
             {
-                if (x.Length == 7 && x.Contains("-") && x.StartsWith("H"))
+                if (x.Length == 8 && x.Contains("-") && x.StartsWith("H"))
                 {
-                    string heart = Int32.Parse(x.Substring(5, 2)).ToString();
+                    string heart = Int32.Parse(x.Substring(5, 3)).ToString();
+                    int value;
+                    if (HeartDictionary.TryGetValue(heart, out value))
+                    {
+                        HeartDictionary[heart] = value + Int32.Parse(request.Params[x]);
+                    }
+                    else
+                    {
+                        HeartDictionary.Add(heart, Int32.Parse(request.Params[x]));
+                    }
 
-                    HeartDictionary[heart] = HeartDictionary[heart] + Int32.Parse(request.Params[x]);
+
 
                 }
 
@@ -182,8 +175,8 @@ namespace RockWeb.Webhooks
             SaveAttributes(Int32.Parse(TopGift1),Int32.Parse(TopGift2),Int32.Parse(TopHeart1),Int32.Parse(TopHeart2));
 
 
-            // Send a confirmation email
-            SendEmail(person.Email,"info@newpointe.org","SHAPE Assessment Results","Body",rockContext);
+            // Send a confirmation email describing the gifts and how to get back to them
+            SendEmail(person.Email,"info@newpointe.org","SHAPE Assessment Results",GenerateEmailBody(),rockContext);
 
 
             // Testing: write each value in the response for varification
@@ -315,7 +308,14 @@ namespace RockWeb.Webhooks
             attributeValueService.Add(formAttributeValue);
 
 
-            rockContext.SaveChanges();
+            try
+            {
+                rockContext.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                // This is one of those "this should never happen" comments...  But if it does, don't save changes.
+            }
 
 
         }
@@ -414,6 +414,11 @@ namespace RockWeb.Webhooks
         }
 
 
+        private static string GenerateEmailBody()
+        {
+
+            return "";
+        }
 
 
 
