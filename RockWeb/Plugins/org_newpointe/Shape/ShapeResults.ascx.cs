@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.Entity;
 using System.Data;
+using System.Diagnostics;
 using System.Text;
 
 using Rock;
@@ -51,20 +52,25 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 {
                     //Load the person based on the FormId
                     var personInUrl = PageParameter("FormId");
-                    SelectedPerson = GetPersonFromForm(Base64Decode(personInUrl)); }
+                    SelectedPerson = GetPersonFromForm(personInUrl); }
+
+                else if (!string.IsNullOrWhiteSpace(PageParameter("PersonId")))
+                {
+                    //Load the person based on the PersonId
+                    GetPersonFromId(PageParameter("PersonId"));
+                }
+
+                else if (CurrentPerson != null)
+                {
+                    //Load the person based on the currently logged in person
+                    SelectedPerson = CurrentPerson;
+                }
 
                 else
                 {
-                    //Load the person based on the current person
-                    if (CurrentPerson != null)
-                    {
-                        SelectedPerson = CurrentPerson;
-                    }
-                    else
-                    {
-                        nbNoPerson.Visible = true;
-                        return;
-                    }
+                    //Show Error Message
+                    nbNoPerson.Visible = true;
+                    return;
                 }
             }
 
@@ -96,31 +102,88 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
 
 
-            // TODO: Look up the gift name, description, associated volunteer roles from defined types
+            // Get all of the data about the assiciated gifts and heart categories
+            
+            DefinedValueService definedValueService = new DefinedValueService(rockContext);
+
+            var shapeGift1Object = definedValueService.GetListByIds(new List<int> { SpiritualGift1 }).FirstOrDefault();
+            var shapeGift2Object = definedValueService.GetListByIds(new List<int> { SpiritualGift2 }).FirstOrDefault();
+            var heart1Object = definedValueService.GetListByIds(new List<int> { Heart1 }).FirstOrDefault();
+            var heart2Object = definedValueService.GetListByIds(new List<int> { Heart2 }).FirstOrDefault();
+
+            shapeGift1Object.LoadAttributes();
+            shapeGift2Object.LoadAttributes();
+            heart1Object.LoadAttributes();
+            heart2Object.LoadAttributes();
 
 
-            DefinedTypeService definedTypeService = new DefinedTypeService(rockContext);
 
-            ShapeObject shapeGift1 = new ShapeObject();
-            ShapeObject shapeGift2 = new ShapeObject();
-            ShapeObject shapeHeart1 = new ShapeObject();
-            ShapeObject shapeHeart2 = new ShapeObject();
+            // Get Volunteer Opportunities
 
-            // First SHAPE Gift
-            shapeGift1.Name =
-                definedTypeService.Queryable().ToList()
-                    .Where(a => a.Id == SpiritualGift1)
-                    .Select(a => a.Name)
-                    .FirstOrDefault();
+            string vol1 = shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+            string vol2 = shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+            string allVol = vol1 + "," + vol2;
+
+            List<int> TagIds = allVol.Split(',').Select(t => int.Parse(t)).ToList();
+            Dictionary<int, int> VolunteerOpportunities = new Dictionary<int, int>();
+
+            var i = 0;
+            var q = from x in TagIds
+                    group x by x into g
+                    let count = g.Count()
+                    orderby count descending
+                    select new { Value = g.Key, Count = count };
+            foreach (var x in q)
+            {
+                VolunteerOpportunities.Add(i,x.Value);
+                i++;
+            }
+
+            int volunteerOpportunity1 = VolunteerOpportunities[0];
+            int volunteerOpportunity2 = VolunteerOpportunities[1];
+            int volunteerOpportunity3 = VolunteerOpportunities[2];
+            int volunteerOpportunity4 = 8;
+
+            ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
+
+            ConnectionOpportunity connectionOpportunityObject1 = new ConnectionOpportunity();
+            ConnectionOpportunity connectionOpportunityObject2 = new ConnectionOpportunity();
+            ConnectionOpportunity connectionOpportunityObject3 = new ConnectionOpportunity();
+            ConnectionOpportunity connectionOpportunityObject4 = new ConnectionOpportunity();
+
+            connectionOpportunityService.TryGet(volunteerOpportunity1, out connectionOpportunityObject1);
+            connectionOpportunityService.TryGet(volunteerOpportunity2, out connectionOpportunityObject2);
+            connectionOpportunityService.TryGet(volunteerOpportunity3, out connectionOpportunityObject3);
+            connectionOpportunityService.TryGet(volunteerOpportunity4, out connectionOpportunityObject4);
+
+            List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
+
+            connectionOpportunityList.Add(connectionOpportunityObject1);
+            connectionOpportunityList.Add(connectionOpportunityObject2);
+            connectionOpportunityList.Add(connectionOpportunityObject3);
+            connectionOpportunityList.Add(connectionOpportunityObject4);
+
+            rpVolunteerOpportunities.DataSource = connectionOpportunityList;
+            rpVolunteerOpportunities.DataBind();
+
 
 
 
             // Build the UI
 
-            lbPersonName.Text = SelectedPerson.NickName;
-            lbGift1Title.Text = shapeGift1.Name;
-            lbGift1Body.Text = shapeGift1.Description;
+            lbPersonName.Text = SelectedPerson.FullName;
 
+            lbGift1Title.Text = shapeGift1Object.Value;
+            lbGift1BodyHTML.Text = shapeGift1Object.GetAttributeValue("HTMLDescription");
+
+            lbGift2Title.Text = shapeGift2Object.Value;
+            lbGift2BodyHTML.Text = shapeGift2Object.GetAttributeValue("HTMLDescription");
+
+            lbHeart1Title.Text = heart1Object.Value;
+            lbHeart1BodyHTML.Text = heart1Object.GetAttributeValue("HTMLDescription");
+
+            lbHeart2Title.Text = heart2Object.Value;
+            lbHeart2BodyHTML.Text = heart2Object.GetAttributeValue("HTMLDescription");
 
 
 
@@ -135,8 +198,18 @@ namespace RockWeb.Plugins.org_newpointe.Shape
             PersonService personService = new PersonService(rockContext);
             PersonAliasService personAliasService = new PersonAliasService(rockContext);
             
-            var formAttribute = attributeValueService.Queryable().Where(a => a.Value == formId).FirstOrDefault();
-            var person = personService.Queryable().Where(p => p.Id == formAttribute.EntityId).FirstOrDefault();
+            var formAttribute = attributeValueService.Queryable().FirstOrDefault(a => a.Value == formId);
+            var person = personService.Queryable().FirstOrDefault(p => p.Id == formAttribute.EntityId);
+
+            return person;
+        }
+
+
+        protected Person GetPersonFromId(string PersonId)
+        {
+            PersonService personService = new PersonService(rockContext);
+
+            var person = personService.Queryable().FirstOrDefault(p => p.Id == Int32.Parse(PersonId));
 
             return person;
         }
@@ -151,13 +224,4 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
 
     }
-}
-
-class ShapeObject
-{
-    public int Type { get; set; }
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    
 }

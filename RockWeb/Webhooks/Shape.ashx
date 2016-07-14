@@ -59,6 +59,10 @@ namespace RockWeb.Webhooks
 
         private string FormId;
 
+        private string People;
+        private string Places;
+        private string Events;
+
 
 
 
@@ -85,7 +89,10 @@ namespace RockWeb.Webhooks
             Email = request.Form["Email"];
             FirstName = request.Form["FirstName"];
             LastName = request.Form["LastName"];
-            FormId = request.Form["FormID"] + "-" + request.Form["EntryNumber"];
+            FormId = request.Form["EntryNumber"] + "-" + request.Form["FormId"] + "-" + request.Form["Email"];
+            People = request.Form["People"];
+            Places = request.Form["Places"];
+            Events = request.Form["Events"];
 
 
             // Get the person based on the form (or make a new one)
@@ -97,20 +104,6 @@ namespace RockWeb.Webhooks
             Dictionary<string, int> GiftDictionary = new Dictionary<string, int>();
             Dictionary<string, int> HeartDictionary = new Dictionary<string, int>();
 
-            int numberOfGifts = 0;
-            int numberOfHearts = 0;
-
-
-            // Go through Post Data and get the number of Gifts
-            foreach (string x in request.Params.Keys)
-            {
-                if (x.Length == 7 && x.Contains("-") && x.StartsWith("S"))
-                {
-                    numberOfGifts++;
-                }
-
-            }
-
 
             // Go through Post Data and add up scores for each Gift type
             foreach (string x in request.Params.Keys)
@@ -118,14 +111,39 @@ namespace RockWeb.Webhooks
                 if (x.Length == 8 && x.Contains("-") && x.StartsWith("S"))
                 {
                     string gift = Int32.Parse(x.Substring(5, 3)).ToString();
+                    int answer = 0;
+
+                    switch (request.Params[x])
+                    {
+                        case "Never":
+                            answer = 1;
+                            break;
+
+                        case "Almost Never":
+                            answer = 2;
+                            break;
+
+                        case "Sometimes":
+                            answer = 3;
+                            break;
+
+                        case "Almost Always":
+                            answer = 4;
+                            break;
+
+                        case "Always":
+                            answer = 5;
+                            break;
+                    }
+
                     int value;
                     if (GiftDictionary.TryGetValue(gift, out value))
                     {
-                        GiftDictionary[gift] = value + Int32.Parse(request.Params[x]);
+                        GiftDictionary[gift] = value + answer;
                     }
                     else
                     {
-                        GiftDictionary.Add(gift, Int32.Parse(request.Params[x]));
+                        GiftDictionary.Add(gift, answer);
                     }
 
 
@@ -140,14 +158,39 @@ namespace RockWeb.Webhooks
                 if (x.Length == 8 && x.Contains("-") && x.StartsWith("H"))
                 {
                     string heart = Int32.Parse(x.Substring(5, 3)).ToString();
+
+                    int answer = 0;
+
+                    switch (request.Params[x])
+                    {
+                        case "Never":
+                            answer = 1;
+                            break;
+
+                        case "Almost Never":
+                            answer = 2;
+                            break;
+
+                        case "Sometimes":
+                            answer = 3;
+                            break;
+
+                        case "Almost Always":
+                            answer = 4;
+                            break;
+
+                        case "Always":
+                            answer = 5;
+                            break;
+                    }
                     int value;
                     if (HeartDictionary.TryGetValue(heart, out value))
                     {
-                        HeartDictionary[heart] = value + Int32.Parse(request.Params[x]);
+                        HeartDictionary[heart] = value + answer;
                     }
                     else
                     {
-                        HeartDictionary.Add(heart, Int32.Parse(request.Params[x]));
+                        HeartDictionary.Add(heart, answer);
                     }
 
 
@@ -172,11 +215,11 @@ namespace RockWeb.Webhooks
 
 
             // Save the attributes
-            SaveAttributes(Int32.Parse(TopGift1),Int32.Parse(TopGift2),Int32.Parse(TopHeart1),Int32.Parse(TopHeart2));
+            SaveAttributes(Int32.Parse(TopGift1), Int32.Parse(TopGift2), Int32.Parse(TopHeart1), Int32.Parse(TopHeart2), People, Places, Events);
 
 
             // Send a confirmation email describing the gifts and how to get back to them
-            SendEmail(person.Email,"info@newpointe.org","SHAPE Assessment Results",GenerateEmailBody(),rockContext);
+            SendEmail(person.Email, "info@newpointe.org", "SHAPE Assessment Results", GenerateEmailBody(), rockContext);
 
 
             // Testing: write each value in the response for varification
@@ -210,29 +253,31 @@ namespace RockWeb.Webhooks
         /// <param name="Heart1">Int of category of Heart1</param>
         /// <param name="Heart2">Int of category of Heart2</param>
         /// <returns></returns>
-        public void SaveAttributes(int Gift1, int Gift2, int Heart1, int Heart2)
+        public void SaveAttributes(int Gift1, int Gift2, int Heart1, int Heart2, string People, string Places, string Events)
         {
 
             AttributeService attributeService = new AttributeService(rockContext);
             AttributeValueService attributeValueService = new AttributeValueService(rockContext);
-            AttributeValue spiritualGiftAttributeValue1;
-            AttributeValue spiritualGiftAttributeValue2;
-            AttributeValue heartAttributeValue1;
-            AttributeValue heartAttributeValue2;
-            AttributeValue formAttributeValue;
-
 
             var spiritualGift1Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift1");
             var spiritualGift2Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift2");
             var heart1Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "Heart1");
             var heart2Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "Heart2");
             var spiritualGiftFormAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGiftForm");
+            var peopleAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SHAPEPeople");
+            var placesAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SHAPEPlaces");
+            var eventsAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SHAPEEvents");
+            var formAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGiftForm");
 
 
-            spiritualGiftAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift1Attribute.Id, ThePerson.Id);
-            spiritualGiftAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift2Attribute.Id, ThePerson.Id);
-            heartAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(heart1Attribute.Id, ThePerson.Id);
-            heartAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(heart2Attribute.Id, ThePerson.Id);
+            AttributeValue spiritualGiftAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift1Attribute.Id, ThePerson.Id);
+            AttributeValue spiritualGiftAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift2Attribute.Id, ThePerson.Id);
+            AttributeValue heartAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(heart1Attribute.Id, ThePerson.Id);
+            AttributeValue heartAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(heart2Attribute.Id, ThePerson.Id);
+            AttributeValue peopleAttributeValue =  attributeValueService.GetByAttributeIdAndEntityId(peopleAttribute.Id, ThePerson.Id);
+            AttributeValue placesAttributeValue =  attributeValueService.GetByAttributeIdAndEntityId(placesAttribute.Id, ThePerson.Id);
+            AttributeValue eventsAttributeValue =  attributeValueService.GetByAttributeIdAndEntityId(eventsAttribute.Id, ThePerson.Id);
+            AttributeValue formAttributeValue = attributeValueService.GetByAttributeIdAndEntityId(formAttribute.Id, ThePerson.Id);;
 
 
 
@@ -299,13 +344,76 @@ namespace RockWeb.Webhooks
             }
 
 
+            if (peopleAttributeValue == null)
+            {
+                peopleAttributeValue = new AttributeValue();
+                peopleAttributeValue.AttributeId = peopleAttribute.Id;
+                peopleAttributeValue.EntityId = ThePerson.Id;
+                peopleAttributeValue.Value = peopleAttribute.ToString();
+                attributeValueService.Add(peopleAttributeValue);
+            }
+            else
+            {
+                peopleAttributeValue.AttributeId = peopleAttribute.Id;
+                peopleAttributeValue.EntityId = ThePerson.Id;
+                peopleAttributeValue.Value = People;
+            }
 
 
-            formAttributeValue = new AttributeValue();
-            formAttributeValue.AttributeId = spiritualGiftFormAttribute.Id;
-            formAttributeValue.EntityId = ThePerson.Id;
-            formAttributeValue.Value = Base64Encode(FormId);
-            attributeValueService.Add(formAttributeValue);
+            if (placesAttributeValue == null)
+            {
+                placesAttributeValue = new AttributeValue();
+                placesAttributeValue.AttributeId = placesAttribute.Id;
+                placesAttributeValue.EntityId = ThePerson.Id;
+                placesAttributeValue.Value = placesAttribute.ToString();
+                attributeValueService.Add(placesAttributeValue);
+            }
+            else
+            {
+                placesAttributeValue.AttributeId = placesAttribute.Id;
+                placesAttributeValue.EntityId = ThePerson.Id;
+                placesAttributeValue.Value = Places;
+            }
+
+
+
+            if (eventsAttributeValue == null)
+            {
+                eventsAttributeValue = new AttributeValue();
+                eventsAttributeValue.AttributeId = eventsAttribute.Id;
+                eventsAttributeValue.EntityId = ThePerson.Id;
+                eventsAttributeValue.Value = eventsAttribute.ToString();
+                attributeValueService.Add(eventsAttributeValue);
+            }
+            else
+            {
+                eventsAttributeValue.AttributeId = eventsAttribute.Id;
+                eventsAttributeValue.EntityId = ThePerson.Id;
+                eventsAttributeValue.Value = Events;
+            }
+
+
+
+
+            if (formAttributeValue == null)
+            {
+                formAttributeValue = new AttributeValue();
+                formAttributeValue.AttributeId = spiritualGiftFormAttribute.Id;
+                formAttributeValue.EntityId = ThePerson.Id;
+                formAttributeValue.Value = FormId;
+                attributeValueService.Add(formAttributeValue);
+            }
+            else
+            {
+                formAttributeValue.AttributeId = formAttribute.Id;
+                formAttributeValue.EntityId = ThePerson.Id;
+                formAttributeValue.Value = FormId;
+            }
+
+
+
+
+
 
 
             try
