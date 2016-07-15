@@ -120,50 +120,56 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
             // Get Volunteer Opportunities
 
-            string vol1 = shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
-            string vol2 = shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
-            string allVol = vol1 + "," + vol2;
-
-            List<int> TagIds = allVol.Split(',').Select(t => int.Parse(t)).ToList();
-            Dictionary<int, int> VolunteerOpportunities = new Dictionary<int, int>();
-
-            var i = 0;
-            var q = from x in TagIds
-                    group x by x into g
-                    let count = g.Count()
-                    orderby count descending
-                    select new { Value = g.Key, Count = count };
-            foreach (var x in q)
+            if (shapeGift1Object != null)
             {
-                VolunteerOpportunities.Add(i,x.Value);
-                i++;
+                string vol1 = shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+                if (shapeGift2Object != null)
+                {
+                    string vol2 = shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+                    string allVol = vol1 + "," + vol2;
+
+                    List<int> TagIds = allVol.Split(',').Select(int.Parse).ToList();
+                    Dictionary<int, int> VolunteerOpportunities = new Dictionary<int, int>();
+
+                    var i = 0;
+                    var q = from x in TagIds
+                        group x by x into g
+                        let count = g.Count()
+                        orderby count descending
+                        select new { Value = g.Key, Count = count };
+                    foreach (var x in q)
+                    {
+                        VolunteerOpportunities.Add(i,x.Value);
+                        i++;
+                    }
+
+                    int volunteerOpportunity1 = VolunteerOpportunities[0];
+                    int volunteerOpportunity2 = VolunteerOpportunities[1];
+                    int volunteerOpportunity3 = VolunteerOpportunities[2];
+                    int volunteerOpportunity4 = 8;
+
+                    ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
+
+                    ConnectionOpportunity connectionOpportunityObject1 = new ConnectionOpportunity();
+                    ConnectionOpportunity connectionOpportunityObject2 = new ConnectionOpportunity();
+                    ConnectionOpportunity connectionOpportunityObject3 = new ConnectionOpportunity();
+                    ConnectionOpportunity connectionOpportunityObject4 = new ConnectionOpportunity();
+
+                    connectionOpportunityService.TryGet(volunteerOpportunity1, out connectionOpportunityObject1);
+                    connectionOpportunityService.TryGet(volunteerOpportunity2, out connectionOpportunityObject2);
+                    connectionOpportunityService.TryGet(volunteerOpportunity3, out connectionOpportunityObject3);
+                    connectionOpportunityService.TryGet(volunteerOpportunity4, out connectionOpportunityObject4);
+
+                    List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
+
+                    connectionOpportunityList.Add(connectionOpportunityObject1);
+                    connectionOpportunityList.Add(connectionOpportunityObject2);
+                    connectionOpportunityList.Add(connectionOpportunityObject3);
+                    connectionOpportunityList.Add(connectionOpportunityObject4);
+
+                    rpVolunteerOpportunities.DataSource = connectionOpportunityList;
+                }
             }
-
-            int volunteerOpportunity1 = VolunteerOpportunities[0];
-            int volunteerOpportunity2 = VolunteerOpportunities[1];
-            int volunteerOpportunity3 = VolunteerOpportunities[2];
-            int volunteerOpportunity4 = 8;
-
-            ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
-
-            ConnectionOpportunity connectionOpportunityObject1 = new ConnectionOpportunity();
-            ConnectionOpportunity connectionOpportunityObject2 = new ConnectionOpportunity();
-            ConnectionOpportunity connectionOpportunityObject3 = new ConnectionOpportunity();
-            ConnectionOpportunity connectionOpportunityObject4 = new ConnectionOpportunity();
-
-            connectionOpportunityService.TryGet(volunteerOpportunity1, out connectionOpportunityObject1);
-            connectionOpportunityService.TryGet(volunteerOpportunity2, out connectionOpportunityObject2);
-            connectionOpportunityService.TryGet(volunteerOpportunity3, out connectionOpportunityObject3);
-            connectionOpportunityService.TryGet(volunteerOpportunity4, out connectionOpportunityObject4);
-
-            List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
-
-            connectionOpportunityList.Add(connectionOpportunityObject1);
-            connectionOpportunityList.Add(connectionOpportunityObject2);
-            connectionOpportunityList.Add(connectionOpportunityObject3);
-            connectionOpportunityList.Add(connectionOpportunityObject4);
-
-            rpVolunteerOpportunities.DataSource = connectionOpportunityList;
             rpVolunteerOpportunities.DataBind();
 
 
@@ -207,9 +213,11 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
         protected Person GetPersonFromId(string PersonId)
         {
+
+            int intPersonId = Int32.Parse(PersonId);
             PersonService personService = new PersonService(rockContext);
 
-            var person = personService.Queryable().FirstOrDefault(p => p.Id == Int32.Parse(PersonId));
+            var person = personService.Queryable().FirstOrDefault(p => p.Id == intPersonId);
 
             return person;
         }
