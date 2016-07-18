@@ -63,6 +63,7 @@ namespace RockWeb.Webhooks
         private string Places;
         private string Events;
 
+        private int? CampusId;
 
 
 
@@ -93,6 +94,11 @@ namespace RockWeb.Webhooks
             People = request.Form["People"];
             Places = request.Form["Places"];
             Events = request.Form["Events"];
+
+            string campusFromForm = request.Form["campus"];
+            var campusList = CampusCache.All();
+            var selectedCampus = campusList.AsQueryable().FirstOrDefault(a => a.Name == campusFromForm);
+            CampusId = selectedCampus.Id;
 
 
             // Get the person based on the form (or make a new one)
@@ -219,7 +225,7 @@ namespace RockWeb.Webhooks
 
 
             // Send a confirmation email describing the gifts and how to get back to them
-            SendEmail(person.Email, "info@newpointe.org", "SHAPE Assessment Results", GenerateEmailBody(), rockContext);
+            // SendEmail(person.Email, "info@newpointe.org", "SHAPE Assessment Results", GenerateEmailBody(), rockContext);
 
 
             // Testing: write each value in the response for varification
@@ -471,7 +477,7 @@ namespace RockWeb.Webhooks
                     person.RecordStatusValueId = dvcRecordStatus.Id;
                 }
 
-                PersonService.SaveNewPerson(person, rockContext, null, false);
+                PersonService.SaveNewPerson(person, rockContext, CampusId, false);
 
                 return personService.Get(person.Id);
             }
@@ -524,7 +530,7 @@ namespace RockWeb.Webhooks
 
         private static string GenerateEmailBody()
         {
-
+            //TODO: Put info about the results in the email (include header and footer)
             return "";
         }
 
