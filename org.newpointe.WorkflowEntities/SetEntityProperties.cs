@@ -17,7 +17,7 @@ namespace org.newpointe.WorkflowEntities
 {
     [Description("Sets multiple properties of an entity")]
     [Export(typeof(ActionComponent))]
-    [ExportMetadata("ComponentName", "Set multiple properties of an entity")]
+    [ExportMetadata("ComponentName", "Set Entity Properties")]
 
     [EntityTypeField("Entity Type", "The type of the entity. If left blank, attempts to infer the Type from the Entity Attribute.", false, "", 0)]
     [WorkflowAttribute("Entity", "The entity to set the property of (Or a text field with it's Guid).", true, "", "", 1)]

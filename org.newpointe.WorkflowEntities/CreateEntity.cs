@@ -17,7 +17,7 @@ namespace org.newpointe.WorkflowEntities
 {
     [Description("Creates an entity")]
     [Export(typeof(ActionComponent))]
-    [ExportMetadata("ComponentName", "Create an entity")]
+    [ExportMetadata("ComponentName", "Create Entity")]
 
     [EntityTypeField("Entity Type", "The type of entity to create.", true, "", 0)]
     [CustomDropdownListField("Empty Value Handling", "How to handle empty property values", "IGNORE^Ignore empty values,EMPTY^Leave empty values empty,NULL^Set empty values to NULL (where possible)", true, "", "", 1)]
