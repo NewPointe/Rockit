@@ -150,54 +150,19 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     i++;
                 }
 
-                int volunteerOpportunity1 = VolunteerOpportunities[0];
-                int volunteerOpportunity2 = VolunteerOpportunities[1];
-                int volunteerOpportunity3 = VolunteerOpportunities[2];
-                int volunteerOpportunity4 = VolunteerOpportunities[3];
-                ;
-
                 ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
-
-                ConnectionOpportunity connectionOpportunityObject1 = new ConnectionOpportunity();
-                ConnectionOpportunity connectionOpportunityObject2 = new ConnectionOpportunity();
-                ConnectionOpportunity connectionOpportunityObject3 = new ConnectionOpportunity();
-                ConnectionOpportunity connectionOpportunityObject4 = new ConnectionOpportunity();
-
-                connectionOpportunityService.TryGet(volunteerOpportunity1, out connectionOpportunityObject1);
-                connectionOpportunityService.TryGet(volunteerOpportunity2, out connectionOpportunityObject2);
-                connectionOpportunityService.TryGet(volunteerOpportunity3, out connectionOpportunityObject3);
-                connectionOpportunityService.TryGet(volunteerOpportunity4, out connectionOpportunityObject4);
-
-                connectionOpportunityObject1.LoadAttributes();
-                connectionOpportunityObject2.LoadAttributes();
-                connectionOpportunityObject3.LoadAttributes();
-                connectionOpportunityObject4.LoadAttributes();
-
-                var connectionOpportunity1Roles = connectionOpportunityObject1.GetAttributeValue("Role");
-                var connectionOpportunity2Roles = connectionOpportunityObject2.GetAttributeValue("Role");
-                var connectionOpportunity3Roles = connectionOpportunityObject3.GetAttributeValue("Role");
-                var connectionOpportunity4Roles = connectionOpportunityObject4.GetAttributeValue("Role");
-
-                string connectionOpportunityRoles = connectionOpportunity1Roles + "," + connectionOpportunity2Roles +
-                                                    "," + connectionOpportunity3Roles + "," +
-                                                    connectionOpportunity4Roles;
-
-
-
                 List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
 
-                connectionOpportunityList.Add(connectionOpportunityObject1);
-                connectionOpportunityList.Add(connectionOpportunityObject2);
-                connectionOpportunityList.Add(connectionOpportunityObject3);
-                connectionOpportunityList.Add(connectionOpportunityObject4);
+                int z = 0;
+                foreach (KeyValuePair<int, int> entry in VolunteerOpportunities.Take(4))
+                {
+                    var connection = connectionOpportunityService.GetByIds(new List<int> {entry.Value}).FirstOrDefault();
+                    connectionOpportunityList.Add(connection);
+                }
 
                 rpVolunteerOpportunities.DataSource = connectionOpportunityList;
                 rpVolunteerOpportunities.DataBind();
             }
-
-
-
-
 
 
             //Get DISC Info
