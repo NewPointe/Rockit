@@ -79,12 +79,67 @@
         </div>
         <div class="col-xs-12 collapse in gray-bg" id="collapsePersonality">
             <div class="col-md-12">
-                <h4 class="text-center">DISC Goes Here </h4>
             </div>
+            
+            
+            <asp:Panel runat="server" ID="DISCResults" Visible="False">
 
-            <div class="col-md-12">
+            <div class="col-md-12" >
+                
+                                    <ul class="discchart">
+                        <li class="discchart-midpoint"></li>
+                        <li style="height: 100%; width:0px;"></li>
+                        <li id="discNaturalScore_D" runat="server" class="discbar discbar-d">
+                            <div class="discbar-label">D</div>
+                        </li>
+                        <li id="discNaturalScore_I" runat="server" class="discbar discbar-i">
+                            <div class="discbar-label">I</div>
+                        </li>
+                        <li id="discNaturalScore_S" runat="server" class="discbar discbar-s">
+                            <div class="discbar-label">S</div>
+                        </li>
+                        <li id="discNaturalScore_C" runat="server" class="discbar discbar-c">
+                            <div class="discbar-label">C</div>
+                        </li>
+                    </ul>
+                
+
+                
+                <h3>Description</h3>
+                    <asp:Literal ID="lDescription" runat="server"></asp:Literal>
+
+                    <h3>Strengths</h3>
+                    <asp:Literal ID="lStrengths" runat="server"></asp:Literal>
+
+                    <h3>Challenges</h3>
+                    <asp:Literal ID="lChallenges" runat="server"></asp:Literal>
+
+                    <h3>Team Contribution</h3>
+                    <asp:Literal ID="lTeamContribution" runat="server"></asp:Literal>
+
+                    <h3>Leadership Style</h3>
+                    <asp:Literal ID="lLeadershipStyle" runat="server"></asp:Literal>
+                
+                
                 <br />
             </div>
+                
+                </asp:Panel>
+            
+            <asp:Panel runat="server" ID="NoDISCResults" Visible="True">
+
+            <div class="col-md-12 text-center" >
+                
+                <p>The DISC Assessment is used for the Personality portion of your SHAPE Profile.
+                    It looks like you haven't taken the DISC Assessment yet.</p>
+                <a href="https://newpointe.org/DISC?rckipid=<%= SelectedPerson.UrlEncodedKey %>" target="_blank" class="btn btn-primary np-button">TAKE THE DISC ASSESSMENT NOW</a>
+                
+                
+                <br />
+            </div>
+                
+                </asp:Panel>
+
 
         </div>
 
@@ -99,7 +154,14 @@
         </div>
         <div class="col-xs-12 collapse in gray-bg" id="collapsePersonality">
             <div class="col-md-12">
-                <h4 class="text-center">Experiences Go Here </h4>
+                <h4 class="text-center">People </h4>
+                <p><asp:Label runat="server" ID="lbPeople"></asp:Label><br /></p>
+                
+                <h4 class="text-center">Places </h4>
+                <p><asp:Label runat="server" ID="lbPlaces"></asp:Label><br /></p>
+                
+                <h4 class="text-center">Events </h4>
+                <p><asp:Label runat="server" ID="lbEvents"></asp:Label><br /></p>
             </div>
 
             <div class="col-md-12">
