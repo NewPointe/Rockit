@@ -31,7 +31,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
     /// </summary>
     [DisplayName("SHAPE Results")]
     [Category("NewPointe Core")]
-    [Description("Shows a person the results of their SHAPE Assessment and recommends volunteer positions based on them.")]
+    [Description(
+        "Shows a person the results of their SHAPE Assessment and recommends volunteer positions based on them.")]
 
     public partial class ShapeResults : Rock.Web.UI.RockBlock
     {
@@ -46,13 +47,12 @@ namespace RockWeb.Plugins.org_newpointe.Shape
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            if (!IsPostBack)
-            {
                 if (!string.IsNullOrWhiteSpace(PageParameter("FormId")))
                 {
                     //Load the person based on the FormId
                     var personInUrl = PageParameter("FormId");
-                    SelectedPerson = GetPersonFromForm(personInUrl); }
+                    SelectedPerson = GetPersonFromForm(personInUrl);
+                }
 
                 else if (!string.IsNullOrWhiteSpace(PageParameter("PersonId")))
                 {
@@ -72,7 +72,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     nbNoPerson.Visible = true;
                     return;
                 }
-            }
+            
 
             // Load the attributes
 
@@ -80,11 +80,13 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
             var spiritualGift1 =
                 attributeValueService
-                    .Queryable().FirstOrDefault(a => a.Attribute.Key == "SpiritualGift1" && a.EntityId == SelectedPerson.Id);
+                    .Queryable()
+                    .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift1" && a.EntityId == SelectedPerson.Id);
 
             var spiritualGift2 =
                 attributeValueService
-                    .Queryable().FirstOrDefault(a => a.Attribute.Key == "SpiritualGift2" && a.EntityId == SelectedPerson.Id);
+                    .Queryable()
+                    .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift2" && a.EntityId == SelectedPerson.Id);
 
             var heart1 =
                 attributeValueService
@@ -95,13 +97,19 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart2" && a.EntityId == SelectedPerson.Id);
 
             var people = attributeValueService
-                    .Queryable().FirstOrDefault(a => a.Attribute.Key == "SHAPEPeople" && a.EntityId == SelectedPerson.Id).Value;
+                .Queryable()
+                .FirstOrDefault(a => a.Attribute.Key == "SHAPEPeople" && a.EntityId == SelectedPerson.Id)
+                .Value;
 
             var places = attributeValueService
-                    .Queryable().FirstOrDefault(a => a.Attribute.Key == "SHAPEPlaces" && a.EntityId == SelectedPerson.Id).Value;
+                .Queryable()
+                .FirstOrDefault(a => a.Attribute.Key == "SHAPEPlaces" && a.EntityId == SelectedPerson.Id)
+                .Value;
 
             var events = attributeValueService
-                    .Queryable().FirstOrDefault(a => a.Attribute.Key == "SHAPEEvents" && a.EntityId == SelectedPerson.Id).Value;
+                .Queryable()
+                .FirstOrDefault(a => a.Attribute.Key == "SHAPEEvents" && a.EntityId == SelectedPerson.Id)
+                .Value;
 
 
             if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1.Value);
@@ -112,13 +120,13 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
 
             // Get all of the data about the assiciated gifts and heart categories
-            
+
             DefinedValueService definedValueService = new DefinedValueService(rockContext);
 
-            var shapeGift1Object = definedValueService.GetListByIds(new List<int> { SpiritualGift1 }).FirstOrDefault();
-            var shapeGift2Object = definedValueService.GetListByIds(new List<int> { SpiritualGift2 }).FirstOrDefault();
-            var heart1Object = definedValueService.GetListByIds(new List<int> { Heart1 }).FirstOrDefault();
-            var heart2Object = definedValueService.GetListByIds(new List<int> { Heart2 }).FirstOrDefault();
+            var shapeGift1Object = definedValueService.GetListByIds(new List<int> {SpiritualGift1}).FirstOrDefault();
+            var shapeGift2Object = definedValueService.GetListByIds(new List<int> {SpiritualGift2}).FirstOrDefault();
+            var heart1Object = definedValueService.GetListByIds(new List<int> {Heart1}).FirstOrDefault();
+            var heart2Object = definedValueService.GetListByIds(new List<int> {Heart2}).FirstOrDefault();
 
             shapeGift1Object.LoadAttributes();
             shapeGift2Object.LoadAttributes();
@@ -129,22 +137,27 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
             // Get Volunteer Opportunities
 
-            string gift1AssociatedVolunteerOpportunities = shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
-            string gift2AssociatedVolunteerOpportunities = shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
-            string allAssociatedVolunteerOpportunities = gift1AssociatedVolunteerOpportunities + "," + gift2AssociatedVolunteerOpportunities;
+            string gift1AssociatedVolunteerOpportunities =
+                shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+            string gift2AssociatedVolunteerOpportunities =
+                shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+            string allAssociatedVolunteerOpportunities = gift1AssociatedVolunteerOpportunities + "," +
+                                                         gift2AssociatedVolunteerOpportunities;
 
             if (allAssociatedVolunteerOpportunities != ",")
             {
-                List<int> associatedVolunteerOpportunitiesList = allAssociatedVolunteerOpportunities.Split(',').Select(t => int.Parse(t)).ToList();
+                List<int> associatedVolunteerOpportunitiesList =
+                    allAssociatedVolunteerOpportunities.Split(',').Select(t => int.Parse(t)).ToList();
                 Dictionary<int, int> VolunteerOpportunities = new Dictionary<int, int>();
 
 
                 var i = 0;
                 var q = from x in associatedVolunteerOpportunitiesList
-                        group x by x into g
-                        let count = g.Count()
-                        orderby count descending
-                        select new { Value = g.Key, Count = count };
+                    group x by x
+                    into g
+                    let count = g.Count()
+                    orderby count descending
+                    select new {Value = g.Key, Count = count};
                 foreach (var x in q)
                 {
                     VolunteerOpportunities.Add(i, x.Value);
@@ -154,7 +167,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 int volunteerOpportunity1 = VolunteerOpportunities[0];
                 int volunteerOpportunity2 = VolunteerOpportunities[1];
                 int volunteerOpportunity3 = VolunteerOpportunities[2];
-                int volunteerOpportunity4 = VolunteerOpportunities[3]; ;
+                int volunteerOpportunity4 = VolunteerOpportunities[3];
+                ;
 
                 ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
 
@@ -178,11 +192,13 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 var connectionOpportunity3Roles = connectionOpportunityObject3.GetAttributeValue("Role");
                 var connectionOpportunity4Roles = connectionOpportunityObject4.GetAttributeValue("Role");
 
-                string connectionOpportunityRoles = connectionOpportunity1Roles + "," + connectionOpportunity2Roles + "," + connectionOpportunity3Roles + "," + connectionOpportunity4Roles;
+                string connectionOpportunityRoles = connectionOpportunity1Roles + "," + connectionOpportunity2Roles +
+                                                    "," + connectionOpportunity3Roles + "," +
+                                                    connectionOpportunity4Roles;
 
 
 
-                List <ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
+                List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
 
                 connectionOpportunityList.Add(connectionOpportunityObject1);
                 connectionOpportunityList.Add(connectionOpportunityObject2);
@@ -208,7 +224,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 DISCResults.Visible = true;
                 NoDISCResults.Visible = false;
             }
-           
+
 
 
 
@@ -235,6 +251,13 @@ namespace RockWeb.Plugins.org_newpointe.Shape
             lbEvents.Text = events;
 
 
+            // Show create account panel if this person doesn't have an account
+            if (SelectedPerson.Users.Count == 0)
+            {
+                pnlAccount.Visible = true;
+            }
+
+
 
         }
 
@@ -246,7 +269,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
             AttributeValueService attributeValueService = new AttributeValueService(rockContext);
             PersonService personService = new PersonService(rockContext);
             PersonAliasService personAliasService = new PersonAliasService(rockContext);
-            
+
             var formAttribute = attributeValueService.Queryable().FirstOrDefault(a => a.Value == formId);
             var person = personService.Queryable().FirstOrDefault(p => p.Id == formAttribute.EntityId);
 
@@ -284,7 +307,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
         {
             // Plot the Natural graph
             DiscService.PlotOneGraph(discNaturalScore_D, discNaturalScore_I, discNaturalScore_S, discNaturalScore_C,
-                savedScores.NaturalBehaviorD, savedScores.NaturalBehaviorI, savedScores.NaturalBehaviorS, savedScores.NaturalBehaviorC, 35);
+                savedScores.NaturalBehaviorD, savedScores.NaturalBehaviorI, savedScores.NaturalBehaviorS,
+                savedScores.NaturalBehaviorC, 35);
             ShowExplaination(savedScores.PersonalityType);
 
         }
@@ -296,7 +320,10 @@ namespace RockWeb.Plugins.org_newpointe.Shape
         /// <param name="personalityType">The one or two letter personality type.</param>
         private void ShowExplaination(string personalityType)
         {
-            var personalityValue = DefinedTypeCache.Read(Rock.SystemGuid.DefinedType.DISC_RESULTS_TYPE.AsGuid()).DefinedValues.Where(v => v.Value == personalityType).FirstOrDefault();
+            var personalityValue =
+                DefinedTypeCache.Read(Rock.SystemGuid.DefinedType.DISC_RESULTS_TYPE.AsGuid())
+                    .DefinedValues.Where(v => v.Value == personalityType)
+                    .FirstOrDefault();
             if (personalityValue != null)
             {
                 lDescription.Text = personalityValue.Description;
@@ -309,6 +336,91 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
 
 
+        /// <summary>
+        /// Handles the Click event of the lbSaveAccount control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void lbSaveAccount_Click(object sender, EventArgs e)
+        {
 
+            using (var rockContext = new RockContext())
+            {
+                if (phCreateLogin.Visible)
+                {
+                    if (string.IsNullOrWhiteSpace(txtUserName.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
+                    {
+                        nbSaveAccount.Title = "Missing Informaton";
+                        nbSaveAccount.Text = "A username and password are required when saving an account";
+                        nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
+                        nbSaveAccount.Visible = true;
+                        return;
+                    }
+
+                    if (new UserLoginService(rockContext).GetByUserName(txtUserName.Text) != null)
+                    {
+                        nbSaveAccount.Title = "Invalid Username";
+                        nbSaveAccount.Text =
+                            "The selected Username is already being used.  Please select a different Username";
+                        nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
+                        nbSaveAccount.Visible = true;
+                        return;
+                    }
+
+                    if (txtPasswordConfirm.Text != txtPassword.Text)
+                    {
+                        nbSaveAccount.Title = "Invalid Password";
+                        nbSaveAccount.Text = "The password and password confirmation do not match";
+                        nbSaveAccount.NotificationBoxType = NotificationBoxType.Danger;
+                        nbSaveAccount.Visible = true;
+                        return;
+                    }
+                }
+
+                var authorizedPersonAlias = SelectedPerson.PrimaryAlias;
+                if (authorizedPersonAlias != null && authorizedPersonAlias.Person != null)
+                {
+                    if (UserLoginService.IsPasswordValid(txtPassword.Text))
+                    {
+                            var user = UserLoginService.Create(
+                                rockContext,
+                                authorizedPersonAlias.Person,
+                                Rock.Model.AuthenticationServiceType.Internal,
+                                EntityTypeCache.Read(Rock.SystemGuid.EntityType.AUTHENTICATION_DATABASE.AsGuid()).Id,
+                                txtUserName.Text,
+                                txtPassword.Text,
+                                true);
+
+                            var mergeObjects = GlobalAttributesCache.GetMergeFields(null);
+                            mergeObjects.Add("ConfirmAccountUrl", RootPath + "ConfirmAccount");
+
+                            var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;
+                            mergeObjects.Add("Person", personDictionary);
+
+                            mergeObjects.Add("User", user);
+
+                            var recipients = new List<Rock.Communication.RecipientData>();
+                            recipients.Add(new Rock.Communication.RecipientData(authorizedPersonAlias.Person.Email,
+                                mergeObjects));
+
+                            Rock.Communication.Email.Send(GetAttributeValue("ConfirmAccountTemplate").AsGuid(),
+                                recipients, ResolveRockUrl("~/"), ResolveRockUrl("~~/"), false);
+
+                            nbSaveAccount.Title = "Success";
+                            nbSaveAccount.Text = "Your user account has been created.";
+                            nbSaveAccount.NotificationBoxType = NotificationBoxType.Success;
+                            nbSaveAccount.Visible = true;
+                            phCreateLogin.Visible = false;
+                            lbSaveAccount.Visible = false;
+
+
+
+
+                    }
+
+                }
+
+            }
+        }
     }
 }

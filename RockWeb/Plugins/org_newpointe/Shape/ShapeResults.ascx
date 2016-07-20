@@ -3,8 +3,10 @@
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
         <Rock:NotificationBox runat="server" NotificationBoxType="Danger" Text="You must be logged in or access this page from a vaild link." Visible="False" ID="nbNoPerson" Title="No Valid Person"></Rock:NotificationBox>
-
-
+        
+        <Rock:NotificationBox runat="server" NotificationBoxType="Success" Text="It looks like you don't have a MyNewPointe account yet.  Create one at the bottom of this page after you finish reading your SHAPE Profile!  " Visible="False" ID="nbTip" Title="Tip!"></Rock:NotificationBox>
+        
+ 
         <h1 class="text-center">My SHAPE Profile</h1>
         <h2 class="text-center" style="margin-top: -10px;">
             <asp:Label runat="server" ID="lbPersonName"></asp:Label></h2>
@@ -193,7 +195,7 @@
                         <div class="panel panel-default margin-t-md">
                             <div class="panel-heading clearfix">
                                 <h1 class="panel-title pull-left">
-                                    <i class='<%# Eval("IconCssClass") %>'></i><%# Eval("Name") %>
+                                    <i class='<%# Eval("IconCssClass") %>'></i> <%# Eval("Name") %>
                                 </h1>
                             </div>
                             <div class="panel-body">
@@ -216,8 +218,56 @@
             <div class="col-md-12">
                 <br />
             </div>
+            
+            
 
         </div>
+        
+        <div class="col-md-12">
+                <br />
+            </div>
+        
+        <asp:Panel runat="server" Visible="False" Id="pnlAccount">
+        <div class="col-xs-12 resourceMenu">
+            <h4>
+                <a data-toggle="collapse" data-target="#collapseAccount" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-share-square-o"></i> MyNewPointe Account
+                </a>
+            </h4>
+        </div>
+        <div class="col-xs-12 collapse in gray-bg" id="collapseAccount">
+            <div class="col-md-12">
+            </div>
+        
+        <asp:Panel ID="pnlSaveAccount" runat="server" Visible="true">
+                <div class="well">
+                    <legend>Create a MyNewPointe Account</legend>
+                    <fieldset>
+
+                        <asp:PlaceHolder ID="phCreateLogin" runat="server" Visible="true">
+
+                            <Rock:RockTextBox ID="txtUserName" runat="server" Label="Username" CssClass="input-medium" />
+                            <Rock:RockTextBox ID="txtPassword" runat="server" Label="Password" CssClass="input-medium" TextMode="Password" />
+                            <Rock:RockTextBox ID="txtPasswordConfirm" runat="server" Label="Confirm Password" CssClass="input-medium" TextMode="Password" />
+                            
+                        </asp:PlaceHolder>
+
+                        <Rock:NotificationBox ID="nbSaveAccount" runat="server" Visible="false" NotificationBoxType="Danger"></Rock:NotificationBox>
+
+                        <div id="divSaveActions" runat="server" class="actions">
+                            <asp:LinkButton ID="lbSaveAccount" runat="server" Text="Save Account" CssClass="btn btn-primary" OnClick="lbSaveAccount_Click"  />
+                        </div>
+                    </fieldset>
+                </div>
+            </asp:Panel>
+            
+            </div>
+            
+            <div class="col-md-12">
+                <br />
+            </div>
+            
+            </asp:Panel>
 
     </ContentTemplate>
 </asp:UpdatePanel>
