@@ -33,6 +33,7 @@ using Rock.Attribute;
 using Rock.Communication;
 using System.Diagnostics;
 using System.Globalization;
+using Humanizer;
 using Microsoft.Ajax.Utilities;
 
 namespace RockWeb.Webhooks
@@ -40,6 +41,7 @@ namespace RockWeb.Webhooks
 
     public class Shape : IHttpHandler
     {
+
         private int transactionCount = 0;
         private RockContext rockContext = new RockContext();
 
@@ -225,7 +227,7 @@ namespace RockWeb.Webhooks
 
 
             // Send a confirmation email describing the gifts and how to get back to them
-            // SendEmail(person.Email, "info@newpointe.org", "SHAPE Assessment Results", GenerateEmailBody(), rockContext);
+            SendEmail(person.Email, "info@newpointe.org", "SHAPE Assessment Results", GenerateEmailBody(ThePerson, rockContext, Int32.Parse(TopGift1), Int32.Parse(TopGift2), Int32.Parse(TopHeart1), Int32.Parse(TopHeart2), FormId), rockContext);
 
 
             // Testing: write each value in the response for varification
@@ -528,10 +530,63 @@ namespace RockWeb.Webhooks
         }
 
 
-        private static string GenerateEmailBody()
+        private static string GenerateEmailBody(Person person, RockContext rockContext, int Gift1, int Gift2, int Heart1, int Heart2, string profileValue)
         {
-            //TODO: Put info about the results in the email (include header and footer)
-            return "";
+            // Get the Header and Footer
+            string emailHeader = Rock.Web.Cache.GlobalAttributesCache.Value("EmailHeader");
+            string emailFooter = Rock.Web.Cache.GlobalAttributesCache.Value("EmailFooter");
+
+
+            // Get all of the data about the assiciated gifts and heart categories
+            DefinedValueService definedValueService = new DefinedValueService(rockContext);
+
+            var shapeGift1Object = definedValueService.GetListByIds(new List<int> { Gift1 }).FirstOrDefault();
+            var shapeGift2Object = definedValueService.GetListByIds(new List<int> { Gift2 }).FirstOrDefault();
+            var heart1Object = definedValueService.GetListByIds(new List<int> { Heart1 }).FirstOrDefault();
+            var heart2Object = definedValueService.GetListByIds(new List<int> { Heart2 }).FirstOrDefault();
+
+            shapeGift1Object.LoadAttributes();
+            shapeGift2Object.LoadAttributes();
+            heart1Object.LoadAttributes();
+            heart2Object.LoadAttributes();
+
+            string gift1Name = shapeGift1Object.Value;
+            string gift2Name = shapeGift2Object.Value;
+            string heart1Name = heart1Object.Value;
+            string heart2Name = heart2Object.Value;
+
+            string myNewPointeMessage;
+            if (person.Users.Count > 0)
+            {
+                myNewPointeMessage = @"You can view your full SHAPE Profile any time from your 
+                                    <a href=""https://newpointe.org/MyAccount"">MyNewPointe Account</a>";
+            }
+            else
+            {
+                myNewPointeMessage = @"You can view your full SHAPE Profile, plus manage your personal information, 
+                                     give online, and much more via a MyNewPointe account.
+                                     <a href=""https://newpointe.org/NewAccount"">Click here</a> to create a MyNewPointe Account now!";
+            }
+
+            string profileLink = "http://newpointe.org/SHAPEProfile/" + profileValue;
+
+            //Put the body text together
+            string emailBody = emailHeader + String.Format(@"
+            <h2><span style=""color:#8bc540"">SHAPE Assessment Results for {0}</span></h2>
+            <p>Alright! Your SHAPE Assessment is complete and the details are below.  <a href=""{1}"">Click here</a> to view your full SHAPE Profile!</p>
+            <h3><u>Spiritual Gifts</u></h3>
+            <h4>{2}</h4>
+            {3}<br /><br />
+            <h4>{4}</h4>
+            {5}<br /><br /><br />
+            <h3><u>Heart and Abilities</u></h3>
+            <h4>{6}</h4><br /><br />
+            <h4>{7}</h4><br /><br /><br />
+            <p>{8}</p>
+            ", person.NickName, profileLink, gift1Name, shapeGift1Object.Description, gift2Name, shapeGift2Object.Description, heart1Name, heart2Name, myNewPointeMessage) + emailFooter;
+
+
+            return emailBody;
         }
 
 
