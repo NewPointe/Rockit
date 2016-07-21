@@ -230,19 +230,6 @@ namespace RockWeb.Webhooks
             SendEmail(person.Email, "info@newpointe.org", "SHAPE Assessment Results", GenerateEmailBody(ThePerson, rockContext, Int32.Parse(TopGift1), Int32.Parse(TopGift2), Int32.Parse(TopHeart1), Int32.Parse(TopHeart2), FormId), rockContext);
 
 
-            // Testing: write each value in the response for varification
-            foreach (var x in GiftDictionary)
-            {
-                response.Write("Key: " + x.Key + " | Value: " + x.Value + "<br>");
-            }
-            response.Write("<br>PersonId: " + person.Id);
-            response.Write("<br>Top Gift: " + TopGift1);
-            response.Write("<br>2nd Gift: " + TopGift2);
-            response.Write("<br>Bottom Gift: " + LowestGift);
-            response.Write("<br>Top Heart: " + TopHeart1);
-            response.Write("<br>2nd Heart: " + TopHeart2);
-            response.Write("<br>Bottom Heart: " + LowestHeart);
-
 
             // Write a 200 code in the response
             response.ContentType = "text/xml";
@@ -357,7 +344,7 @@ namespace RockWeb.Webhooks
                 peopleAttributeValue = new AttributeValue();
                 peopleAttributeValue.AttributeId = peopleAttribute.Id;
                 peopleAttributeValue.EntityId = ThePerson.Id;
-                peopleAttributeValue.Value = peopleAttribute.ToString();
+                peopleAttributeValue.Value = People;
                 attributeValueService.Add(peopleAttributeValue);
             }
             else
@@ -373,7 +360,7 @@ namespace RockWeb.Webhooks
                 placesAttributeValue = new AttributeValue();
                 placesAttributeValue.AttributeId = placesAttribute.Id;
                 placesAttributeValue.EntityId = ThePerson.Id;
-                placesAttributeValue.Value = placesAttribute.ToString();
+                placesAttributeValue.Value = Places;
                 attributeValueService.Add(placesAttributeValue);
             }
             else
@@ -390,7 +377,7 @@ namespace RockWeb.Webhooks
                 eventsAttributeValue = new AttributeValue();
                 eventsAttributeValue.AttributeId = eventsAttribute.Id;
                 eventsAttributeValue.EntityId = ThePerson.Id;
-                eventsAttributeValue.Value = eventsAttribute.ToString();
+                eventsAttributeValue.Value = Events;
                 attributeValueService.Add(eventsAttributeValue);
             }
             else

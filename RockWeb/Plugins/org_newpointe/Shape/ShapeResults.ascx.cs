@@ -133,11 +133,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 if (heart1 != null) Heart1 = Int32.Parse(heart1.Value);
                 if (heart2 != null) Heart2 = Int32.Parse(heart2.Value);
 
-                // Redirect if they haven't taken the Assessment
-                if (spiritualGift1 == null)
-                {
-                    Response.Redirect("~/SHAPEAssessment");
-                }
+
 
 
                 // Get all of the data about the assiciated gifts and heart categories
@@ -207,23 +203,16 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
 
 
-
-
-
                 //Get DISC Info
 
                 DiscService.AssessmentResults savedScores = DiscService.LoadSavedAssessmentResults(SelectedPerson);
 
-                if (!savedScores.Equals(null))
+                if (!savedScores.LastSaveDate.Equals(null))
                 {
                     ShowResults(savedScores);
                     DISCResults.Visible = true;
                     NoDISCResults.Visible = false;
                 }
-
-
-
-
 
 
                 // Build the UI
@@ -254,9 +243,6 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 }
 
             }
-
-
-
 
 
         }
