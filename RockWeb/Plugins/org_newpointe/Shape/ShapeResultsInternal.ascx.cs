@@ -46,7 +46,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
         protected void Page_Load(object sender, EventArgs e)
         {
 
-                if (!string.IsNullOrWhiteSpace(PageParameter("PersonId")))
+            if (!string.IsNullOrWhiteSpace(PageParameter("PersonId")))
                 {
                     //Load the person based on the PersonId
                     SelectedPerson = GetPersonFromId(PageParameter("PersonId"));
@@ -105,6 +105,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
 
 
+
             // Get all of the data about the assiciated gifts and heart categories
 
             DefinedValueService definedValueService = new DefinedValueService(rockContext);
@@ -157,7 +158,12 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 foreach (KeyValuePair<int, int> entry in VolunteerOpportunities.Take(4))
                 {
                     var connection = connectionOpportunityService.GetByIds(new List<int> {entry.Value}).FirstOrDefault();
-                    connectionOpportunityList.Add(connection);
+
+                    // Only display connection if it is marked Active
+                    if (connection.IsActive == true)
+                    {
+                        connectionOpportunityList.Add(connection);
+                    }
                 }
 
                 rpVolunteerOpportunities.DataSource = connectionOpportunityList;

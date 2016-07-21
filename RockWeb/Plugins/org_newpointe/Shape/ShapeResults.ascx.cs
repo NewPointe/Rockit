@@ -33,6 +33,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
     [Category("NewPointe Core")]
     [Description(
         "Shows a person the results of their SHAPE Assessment and recommends volunteer positions based on them.")]
+    [LinkedPage("SHAPE Assessment Page", "Choose the Assessment page to redirect to if the person hasn't taken the assessment.", true)]
 
     public partial class ShapeResults : Rock.Web.UI.RockBlock
     {
@@ -46,6 +47,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            var pageReference = new Rock.Web.PageReference(GetAttributeValue("SHAPEAssessmentPage"));
 
                 if (!string.IsNullOrWhiteSpace(PageParameter("FormId")))
                 {
@@ -70,8 +72,10 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 {
                     //Show Error Message
                     nbNoPerson.Visible = true;
+                    Response.Redirect(pageReference.BuildUrl(), false);
                     return;
                 }
+
             
 
             // Load the attributes
@@ -83,148 +87,171 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     .Queryable()
                     .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift1" && a.EntityId == SelectedPerson.Id);
 
-            var spiritualGift2 =
-                attributeValueService
+            // Redirect if they haven't taken the Assessment
+            if (spiritualGift1 == null)
+            {
+                Response.Redirect(pageReference.BuildUrl(), false);
+            }
+
+            else
+            {
+                var spiritualGift2 =
+              attributeValueService
+                  .Queryable()
+                  .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift2" && a.EntityId == SelectedPerson.Id);
+
+                var heart1 =
+                    attributeValueService
+                        .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart1" && a.EntityId == SelectedPerson.Id);
+
+                var heart2 =
+                    attributeValueService
+                        .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart2" && a.EntityId == SelectedPerson.Id);
+
+                var people = attributeValueService
                     .Queryable()
-                    .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift2" && a.EntityId == SelectedPerson.Id);
+                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEPeople" && a.EntityId == SelectedPerson.Id)
+                    .Value;
 
-            var heart1 =
-                attributeValueService
-                    .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart1" && a.EntityId == SelectedPerson.Id);
+                var places = attributeValueService
+                    .Queryable()
+                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEPlaces" && a.EntityId == SelectedPerson.Id)
+                    .Value;
 
-            var heart2 =
-                attributeValueService
-                    .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart2" && a.EntityId == SelectedPerson.Id);
-
-            var people = attributeValueService
-                .Queryable()
-                .FirstOrDefault(a => a.Attribute.Key == "SHAPEPeople" && a.EntityId == SelectedPerson.Id)
-                .Value;
-
-            var places = attributeValueService
-                .Queryable()
-                .FirstOrDefault(a => a.Attribute.Key == "SHAPEPlaces" && a.EntityId == SelectedPerson.Id)
-                .Value;
-
-            var events = attributeValueService
-                .Queryable()
-                .FirstOrDefault(a => a.Attribute.Key == "SHAPEEvents" && a.EntityId == SelectedPerson.Id)
-                .Value;
+                var events = attributeValueService
+                    .Queryable()
+                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEEvents" && a.EntityId == SelectedPerson.Id)
+                    .Value;
 
 
-            if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1.Value);
-            if (spiritualGift2 != null) SpiritualGift2 = Int32.Parse(spiritualGift2.Value);
-            if (heart1 != null) Heart1 = Int32.Parse(heart1.Value);
-            if (heart2 != null) Heart2 = Int32.Parse(heart2.Value);
+                if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1.Value);
+                if (spiritualGift2 != null) SpiritualGift2 = Int32.Parse(spiritualGift2.Value);
+                if (heart1 != null) Heart1 = Int32.Parse(heart1.Value);
+                if (heart2 != null) Heart2 = Int32.Parse(heart2.Value);
 
-
-
-            // Get all of the data about the assiciated gifts and heart categories
-
-            DefinedValueService definedValueService = new DefinedValueService(rockContext);
-
-            var shapeGift1Object = definedValueService.GetListByIds(new List<int> {SpiritualGift1}).FirstOrDefault();
-            var shapeGift2Object = definedValueService.GetListByIds(new List<int> {SpiritualGift2}).FirstOrDefault();
-            var heart1Object = definedValueService.GetListByIds(new List<int> {Heart1}).FirstOrDefault();
-            var heart2Object = definedValueService.GetListByIds(new List<int> {Heart2}).FirstOrDefault();
-
-            shapeGift1Object.LoadAttributes();
-            shapeGift2Object.LoadAttributes();
-            heart1Object.LoadAttributes();
-            heart2Object.LoadAttributes();
-
-
-
-            // Get Volunteer Opportunities
-
-            string gift1AssociatedVolunteerOpportunities =
-                shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
-            string gift2AssociatedVolunteerOpportunities =
-                shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
-            string allAssociatedVolunteerOpportunities = gift1AssociatedVolunteerOpportunities + "," +
-                                                         gift2AssociatedVolunteerOpportunities;
-
-            if (allAssociatedVolunteerOpportunities != ",")
-            {
-                List<int> associatedVolunteerOpportunitiesList =
-                    allAssociatedVolunteerOpportunities.Split(',').Select(t => int.Parse(t)).ToList();
-                Dictionary<int, int> VolunteerOpportunities = new Dictionary<int, int>();
-
-
-                var i = 0;
-                var q = from x in associatedVolunteerOpportunitiesList
-                    group x by x
-                    into g
-                    let count = g.Count()
-                    orderby count descending
-                    select new {Value = g.Key, Count = count};
-                foreach (var x in q)
+                // Redirect if they haven't taken the Assessment
+                if (spiritualGift1 == null)
                 {
-                    VolunteerOpportunities.Add(i, x.Value);
-                    i++;
+                    Response.Redirect("~/SHAPEAssessment");
                 }
 
-                ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
-                List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
 
-                int z = 0;
-                foreach (KeyValuePair<int, int> entry in VolunteerOpportunities.Take(4))
+                // Get all of the data about the assiciated gifts and heart categories
+
+                DefinedValueService definedValueService = new DefinedValueService(rockContext);
+
+                var shapeGift1Object = definedValueService.GetListByIds(new List<int> { SpiritualGift1 }).FirstOrDefault();
+                var shapeGift2Object = definedValueService.GetListByIds(new List<int> { SpiritualGift2 }).FirstOrDefault();
+                var heart1Object = definedValueService.GetListByIds(new List<int> { Heart1 }).FirstOrDefault();
+                var heart2Object = definedValueService.GetListByIds(new List<int> { Heart2 }).FirstOrDefault();
+
+                shapeGift1Object.LoadAttributes();
+                shapeGift2Object.LoadAttributes();
+                heart1Object.LoadAttributes();
+                heart2Object.LoadAttributes();
+
+
+
+                // Get Volunteer Opportunities
+
+                string gift1AssociatedVolunteerOpportunities =
+                    shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+                string gift2AssociatedVolunteerOpportunities =
+                    shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+                string allAssociatedVolunteerOpportunities = gift1AssociatedVolunteerOpportunities + "," +
+                                                             gift2AssociatedVolunteerOpportunities;
+
+                if (allAssociatedVolunteerOpportunities != ",")
                 {
-                    var connection = connectionOpportunityService.GetByIds(new List<int> { entry.Value }).FirstOrDefault();
-                    connectionOpportunityList.Add(connection);
+                    List<int> associatedVolunteerOpportunitiesList =
+                        allAssociatedVolunteerOpportunities.Split(',').Select(t => int.Parse(t)).ToList();
+                    Dictionary<int, int> VolunteerOpportunities = new Dictionary<int, int>();
+
+
+                    var i = 0;
+                    var q = from x in associatedVolunteerOpportunitiesList
+                            group x by x
+                        into g
+                            let count = g.Count()
+                            orderby count descending
+                            select new { Value = g.Key, Count = count };
+                    foreach (var x in q)
+                    {
+                        VolunteerOpportunities.Add(i, x.Value);
+                        i++;
+                    }
+
+                    ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
+                    List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
+
+                    int z = 0;
+                    foreach (KeyValuePair<int, int> entry in VolunteerOpportunities.Take(4))
+                    {
+                        var connection = connectionOpportunityService.GetByIds(new List<int> { entry.Value }).FirstOrDefault();
+
+                        // Only display connection if it is marked Active
+                        if (connection.IsActive == true)
+                        {
+                            connectionOpportunityList.Add(connection);
+                        }
+
+                    }
+
+                    rpVolunteerOpportunities.DataSource = connectionOpportunityList;
+                    rpVolunteerOpportunities.DataBind();
                 }
 
-                rpVolunteerOpportunities.DataSource = connectionOpportunityList;
-                rpVolunteerOpportunities.DataBind();
+
+
+
+
+
+                //Get DISC Info
+
+                DiscService.AssessmentResults savedScores = DiscService.LoadSavedAssessmentResults(SelectedPerson);
+
+                if (!savedScores.Equals(null))
+                {
+                    ShowResults(savedScores);
+                    DISCResults.Visible = true;
+                    NoDISCResults.Visible = false;
+                }
+
+
+
+
+
+
+                // Build the UI
+
+                lbPersonName.Text = SelectedPerson.FullName;
+
+                lbGift1Title.Text = shapeGift1Object.Value;
+                lbGift1BodyHTML.Text = shapeGift1Object.GetAttributeValue("HTMLDescription");
+
+                lbGift2Title.Text = shapeGift2Object.Value;
+                lbGift2BodyHTML.Text = shapeGift2Object.GetAttributeValue("HTMLDescription");
+
+                lbHeart1Title.Text = heart1Object.Value;
+                lbHeart1BodyHTML.Text = heart1Object.GetAttributeValue("HTMLDescription");
+
+                lbHeart2Title.Text = heart2Object.Value;
+                lbHeart2BodyHTML.Text = heart2Object.GetAttributeValue("HTMLDescription");
+
+                lbPeople.Text = people;
+                lbPlaces.Text = places;
+                lbEvents.Text = events;
+
+
+                // Show create account panel if this person doesn't have an account
+                if (SelectedPerson.Users.Count == 0)
+                {
+                    pnlAccount.Visible = true;
+                }
+
             }
 
 
-
-
-
-
-            //Get DISC Info
-
-            DiscService.AssessmentResults savedScores = DiscService.LoadSavedAssessmentResults(SelectedPerson);
-
-            if (!savedScores.Equals(null))
-            {
-                ShowResults(savedScores);
-                DISCResults.Visible = true;
-                NoDISCResults.Visible = false;
-            }
-
-
-
-
-
-
-            // Build the UI
-
-            lbPersonName.Text = SelectedPerson.FullName;
-
-            lbGift1Title.Text = shapeGift1Object.Value;
-            lbGift1BodyHTML.Text = shapeGift1Object.GetAttributeValue("HTMLDescription");
-
-            lbGift2Title.Text = shapeGift2Object.Value;
-            lbGift2BodyHTML.Text = shapeGift2Object.GetAttributeValue("HTMLDescription");
-
-            lbHeart1Title.Text = heart1Object.Value;
-            lbHeart1BodyHTML.Text = heart1Object.GetAttributeValue("HTMLDescription");
-
-            lbHeart2Title.Text = heart2Object.Value;
-            lbHeart2BodyHTML.Text = heart2Object.GetAttributeValue("HTMLDescription");
-
-            lbPeople.Text = people;
-            lbPlaces.Text = places;
-            lbEvents.Text = events;
-
-
-            // Show create account panel if this person doesn't have an account
-            if (SelectedPerson.Users.Count == 0)
-            {
-                pnlAccount.Visible = true;
-            }
 
 
 
