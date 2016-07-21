@@ -134,7 +134,7 @@
                 
                 <p>The DISC Assessment is used for the Personality portion of your SHAPE Profile.
                     It looks like you haven't taken the DISC Assessment yet.</p>
-                <a href="https://newpointe.org/DISC?rckipid=<%= SelectedPerson.UrlEncodedKey %>" target="_blank" class="btn btn-primary np-button">TAKE THE DISC ASSESSMENT NOW</a>
+                <a href="https://newpointe.org/DISC?rckipid=<%= PersonEncodedKey %>" target="_blank" class="btn btn-primary np-button">TAKE THE DISC ASSESSMENT NOW</a>
                 
                 
                 <br />

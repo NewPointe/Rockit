@@ -44,6 +44,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
         public int SpiritualGift2;
         public int Heart1;
         public int Heart2;
+        public string PersonEncodedKey = "";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -54,18 +55,21 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     //Load the person based on the FormId
                     var personInUrl = PageParameter("FormId");
                     SelectedPerson = GetPersonFromForm(personInUrl);
+                    PersonEncodedKey = SelectedPerson.UrlEncodedKey;
                 }
 
                 else if (!string.IsNullOrWhiteSpace(PageParameter("PersonId")))
                 {
                     //Load the person based on the PersonId
                     SelectedPerson = GetPersonFromId(PageParameter("PersonId"));
-                }
+                    PersonEncodedKey = SelectedPerson.UrlEncodedKey;
+                 }
 
                 else if (CurrentPerson != null)
                 {
                     //Load the person based on the currently logged in person
                     SelectedPerson = CurrentPerson;
+                    PersonEncodedKey = SelectedPerson.UrlEncodedKey;
                 }
 
                 else
