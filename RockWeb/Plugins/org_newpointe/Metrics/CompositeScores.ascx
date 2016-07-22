@@ -115,6 +115,17 @@
                 <td> </td>
             </tr>
             <tr>
+                <td>Small Groups Leaders <small></small></td>
+                <td><%= iSmallGroupLeaders %></td>
+                <td><%= iSmallGroupLeadersLastYear %></td>
+                <td><%= String.Format("{0:0}", (((double)iSmallGroupLeaders / (double)iSmallGroupLeadersLastYear) - 1) * 100) %>%</td>
+                <td><%= iSmallGroupLeadersGoalCurrent %></td>
+                <td><%= String.Format("{0:0}", iSmallGroupLeadersGoalProgress) %>%</td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+            </tr>
+            <tr>
                 <td>Partners</td>
                 <td><%= iPartners %></td>
                 <td><%= iPartnersLastYear %></td>

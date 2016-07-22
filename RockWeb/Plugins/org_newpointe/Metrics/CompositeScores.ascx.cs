@@ -623,6 +623,29 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
 
 
+
+
+
+            //-------SmallGroupLeaders-------
+
+            //YTD 
+            iSmallGroupLeaders = GetMetricsLatest(18, SelectedCampusId, fiscalYearStartDate, periodEndDate, 0);
+
+            //LastYTD 
+            iSmallGroupLeadersLastYear = GetMetricsLatest(18, SelectedCampusId, lastFiscalYearStartDate, lastPeriodEndDate, 0);
+
+            //Current Goal 
+            iSmallGroupLeadersGoalCurrent = GetMetricsLatest(18, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+
+            //2020 Goal 
+            iSmallGroupLeadersGoal2020 = GetMetricsLatest(18, SelectedCampusId, start2020, end2020, 1);
+
+
+
+
+
+
+
             //-------SmallGroups-------
 
             //YTD 
@@ -774,6 +797,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 iRecommitmentsGoalCurrent = Convert.ToInt32((double?)iRecommitmentsLastYear * GoalMultiplier);
                 iVolunteersGoalCurrent = Convert.ToInt32((double?)iVolunteersLastYear * GoalMultiplier);
                 iSmallGroupParticipantsGoalCurrent = Convert.ToInt32((double?)iSmallGroupParticipantsLastYear * GoalMultiplier);
+                iSmallGroupLeadersGoalCurrent = Convert.ToInt32((double?)iSmallGroupLeadersLastYear * GoalMultiplier);
                 iNewtoNewPointeGoalCurrent = Convert.ToInt32((double?)iNewtoNewPointeLastYear * GoalMultiplier);
                 iDiscoverGroupsGoalCurrent = Convert.ToInt32((double?)iDiscoverGroupsLastYear * GoalMultiplier);
                 iCampusGroupsGoalCurrent = Convert.ToInt32((double?)iCampusGroupsLastYear * GoalMultiplier);
@@ -789,6 +813,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
                 iRecommitmentsGoalCurrent = GetMetrics(13, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
                 iVolunteersGoalCurrent = GetMetricsLatest(16, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
                 iSmallGroupParticipantsGoalCurrent = GetMetricsLatest(17, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
+                iSmallGroupLeadersGoalCurrent = GetMetricsLatest(17, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
                 iNewtoNewPointeGoalCurrent = GetMetrics(21, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
                 iDiscoverGroupsGoalCurrent = GetMetrics(22, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
                 iCampusGroupsGoalCurrent = GetMetrics(24, SelectedCampusId, lastFiscalYearStartDate, fiscalYearEndDate, 1);
@@ -829,6 +854,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             iRecommitmentsGoalProgress = (double)iRecommitments / ((double)iRecommitmentsGoalCurrent * GoalOffsetMultiplier) * 100;
             iVolunteersGoalProgress = (double)iVolunteers / ((double)iVolunteersGoalCurrent * GoalOffsetMultiplier) * 100;
             iSmallGroupParticipantsGoalProgress = (double)iSmallGroupParticipants / ((double)iSmallGroupParticipantsGoalCurrent * GoalOffsetMultiplier) * 100;
+            iSmallGroupLeadersGoalProgress = (double)iSmallGroupLeaders / ((double)iSmallGroupLeadersGoalCurrent * GoalOffsetMultiplier) * 100;
             iNewtoNewPointeGoalProgress = (double)iNewtoNewPointe / ((double)iNewtoNewPointeGoalCurrent * GoalOffsetMultiplier) * 100;
             iDiscoverGroupsGoalProgress = (double)iDiscoverGroups / ((double)iDiscoverGroupsGoalCurrent * GoalOffsetMultiplier) * 100;
             iCampusGroupsGoalProgress = (double)iCampusGroups / ((double)iCampusGroupsGoalCurrent * GoalOffsetMultiplier) * 100;
