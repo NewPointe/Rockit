@@ -36,6 +36,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
         protected string workflowChartData4;
         protected string workflowChartData5;
 
+        protected String workflowGroupedReportTableItemName = "";
 
         protected override void OnInit(EventArgs e)
         {
@@ -64,7 +65,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
 
             if (!Page.IsPostBack)
             {
-                doStuff();
+                BindFilters();
             }
 
         }
@@ -87,179 +88,250 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             return awt.IsAuthorized("View", CurrentPerson);
         }
 
-        protected void doStuff()
+        int workflowTypeFilter;
+        int campusFilter;
+        int workerFilter;
+        string statusFilter;
+        IEnumerable<WorkflowType> viewableWorkflowTypes;
+
+        private void BindFilters()
         {
+            BindFilters_Workflow();
+            BindFilters_Campus();
+        }
 
-            int workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
+        private void BindFilters_Workflow()
+        {
+            // Workflow Type
+            workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
 
-            int? wtfpp = null;
-            if(!IsPostBack)
-            {
-                wtfpp = PageParameter("WorkflowTypeId").AsIntegerOrNull();
-            }
-
-            if(wtfpp.HasValue)
+            int? wtfpp = PageParameter("WorkflowTypeId").AsIntegerOrNull(); ;
+            if (!IsPostBack && wtfpp.HasValue)
             {
                 workflowTypeFilter = wtfpp.Value;
             }
 
+            viewableWorkflowTypes = workTypeServ.Queryable().OrderBy(x => x.Name).ToList().Where(awt => checkPerms(awt));
 
-            int campusFilter = int.TryParse(campusPicker.SelectedValue, out campusFilter) ? campusFilter : -1;
-            int workerFilter = int.TryParse(assignWork.SelectedValue, out workerFilter) ? workerFilter : -1;
-            SortProperty workflowSort = workflowReportTable.SortProperty;
-            string statusFilter = workStatus.SelectedValue;
+            bindNameAndId(wftListBox, viewableWorkflowTypes.ToList(), workflowTypeFilter.ToString());
+            workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
 
+            // Statuses
+            IQueryable<Workflow> viewableWorkflowData;
+            if (workflowTypeFilter < 0)
+            {
+                viewableWorkflowData = workServ.Queryable();
+            }
+            else
+            {
+                viewableWorkflowData = workServ.Queryable().Where(x => x.WorkflowTypeId == workflowTypeFilter);
+            }
 
-            
-            workflowChartData1 = campusFilter.ToString();
-            //SortProperty workflowSort = workflowReportTable.SortProperty;
+            statusFilter = workStatus.SelectedValue;
+            bindObject(workStatus, viewableWorkflowData.GroupBy(wd => wd.Status).Select(x => x.FirstOrDefault().Status).OrderBy(x => x).ToList(), statusFilter);
+            statusFilter = workStatus.SelectedValue;
+        }
 
+        private void BindFilters_Campus()
+        {
             // Campus
-            //bindNameAndId(campusPicker, campServ.Queryable().OrderBy(c => c.Name).ToList(), campusFilter.ToString());
+            campusFilter = int.TryParse(campusPicker.SelectedValue, out campusFilter) ? campusFilter : -1;
+
             var oldVal = campusPicker.SelectedCampusId;
             campusPicker.Campuses = Rock.Web.Cache.CampusCache.All();
             campusPicker.SelectedCampusId = oldVal;
-            campusFilter = campusPicker.SelectedCampusId ?? -1; //int.TryParse(campusPicker.SelectedValue, out campusFilter) ? campusFilter : -1;
+            campusFilter = campusPicker.SelectedCampusId ?? -1;
 
+            // Workers
+            var allWorkflowsAssignedActivities = workServ.Queryable().Select(x => x.Activities.Where(a => a.AssignedGroupId != null || a.AssignedPersonAliasId != null).OrderByDescending(a => a.ActivatedDateTime).FirstOrDefault());
 
-            // Workflow Type
-            var allWorkflowTypes = workTypeServ.Queryable();
-
-            var viewableWorkflowTypes = allWorkflowTypes.ToList().Where(awt => checkPerms(awt));
-
-            bindNameAndId(wftListBox, viewableWorkflowTypes.OrderBy(x => x.Name).ToList(), workflowTypeFilter.ToString());
-            workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
-
-
-            // Workflow
-            var allWorkflowData = from ws in workServ.Queryable()
-                                  join was in workActServ.Queryable() on ws.Id equals was.WorkflowId into wj
-                                  select new WorkflowData
-                                  {
-                                      Workflow = ws,
-                                      Activity = wj.Where(o => o.AssignedGroupId != null || o.AssignedPersonAliasId != null).OrderByDescending(o => o.ActivatedDateTime).FirstOrDefault()
-                                  };
-
-            var assignedWorkflowData = allWorkflowData.Where(awd => awd.Activity.AssignedPersonAliasId != null || awd.Activity.AssignedGroupId != null);
-
-
-            IQueryable<WorkflowData> viewableWorkflowData;
-            var ids = viewableWorkflowTypes.Select(vwt => vwt.Id).ToList();
-
-            if (ids.Contains(workflowTypeFilter))
-            {
-                viewableWorkflowData = (from awd in assignedWorkflowData
-                                        where awd.Workflow.WorkflowTypeId == workflowTypeFilter
-                                        select awd);
-            }
-            else
-            {
-                viewableWorkflowData = (from awd in assignedWorkflowData
-                                        where ids.Contains(awd.Workflow.WorkflowTypeId)
-                                        select awd);
-            }
-
-            var viewableWorkflowDataList = viewableWorkflowData.ToList().AsQueryable();
-
-            // Assigned Worker
-            IQueryable<ShallowPersonData> assignedWorkerData;
-
-            if (campusFilter == -1)
-            {
-                assignedWorkerData = from vwd in viewableWorkflowDataList
-                                     where vwd.Activity.AssignedPersonAliasId != null
-                                     group vwd by vwd.Activity.AssignedPersonAliasId into vwdg
-                                     select new ShallowPersonData
-                                     {
-                                         Id = vwdg.Key,
-                                         FirstName = vwdg.Select(x => x.Activity.AssignedPersonAlias.Person.NickName).FirstOrDefault(),
-                                         LastName = vwdg.Select(x => x.Activity.AssignedPersonAlias.Person.LastName).FirstOrDefault()
-                                     };
-            }
-            else
-            {
-                assignedWorkerData = from vwd in viewableWorkflowDataList
-                                     where vwd.Activity.AssignedPersonAliasId != null && vwd.Activity.AssignedPersonAlias.Person.GetFamilies(_rockContext).FirstOrDefault().CampusId == campusFilter
-                                     group vwd by vwd.Activity.AssignedPersonAliasId into vwdg
-                                     select new ShallowPersonData
-                                     {
-                                         Id = vwdg.Key,
-                                         FirstName = vwdg.Select(x => x.Activity.AssignedPersonAlias.Person.NickName).FirstOrDefault(),
-                                         LastName = vwdg.Select(x => x.Activity.AssignedPersonAlias.Person.LastName).FirstOrDefault()
-                                     };
-            }
-
-
-
-
-
-            var assignedGroupPeopleData = (from vwd in viewableWorkflowDataList
-                                           where vwd.Activity.AssignedGroupId != null && (campusFilter == -1 || vwd.Activity.AssignedGroup.CampusId == campusFilter)
-                                           select vwd.Activity.AssignedGroup.Members.Select(x => new ShallowPersonData
-                                           {
-                                               Id = x.Person.Aliases.FirstOrDefault().Id,
-                                               FirstName = x.Person.FirstName,
-                                               LastName = x.Person.LastName
-                                           })).SelectMany(x => x);
-
-            var allAssignedPeople = assignedGroupPeopleData.Count() > 0 ? assignedWorkerData.Union(assignedGroupPeopleData, new ShallowPersonDataComparer()) : assignedWorkerData;
-
-
-            bindNameAndId(assignWork, allAssignedPeople.OrderBy("FirstName").ToList(), workerFilter.ToString());
             workerFilter = int.TryParse(assignWork.SelectedValue, out workerFilter) ? workerFilter : -1;
 
-            
-            // Status
-            bindObject(workStatus, viewableWorkflowData.ToList().GroupBy(wd => wd.Status).Select(x => x.FirstOrDefault().Status).OrderBy(x => x).ToList(), statusFilter);
-            statusFilter = workStatus.SelectedValue;
+            bindNameAndId(assignWork,
 
+                allWorkflowsAssignedActivities
+                .Where(x => x.AssignedPersonAliasId != null)
+                .GroupBy(x => x.AssignedPersonAliasId)
+                .Select(x => x.FirstOrDefault().AssignedPersonAlias.Person).ToList()
+                .Where(x => campusFilter == -1 || x.GetCampus().Id == campusFilter)
+                .Select(x => new { Id = x.Id, Name = x.NickName + " " + x.LastName })
+                .OrderBy(x => x.Name).ToList(),
 
-            // Filtered Workflows
-            IQueryable<WorkflowData> filteredWorkflowData;
+                workerFilter.ToString());
+            workerFilter = int.TryParse(assignWork.SelectedValue, out workerFilter) ? workerFilter : -1;
+        }
+
+        private void BindGrids()
+        {
+            SortProperty workflowSort = workflowReportTable.SortProperty;
+
+            BindFilters();
+
+            var ids = viewableWorkflowTypes.Select(vwt => vwt.Id).ToList();
+            IQueryable<Workflow> viewableWorkflows;
+            if (ids.Contains(workflowTypeFilter))
+            {
+                viewableWorkflows = workServ.Queryable().Where(awd => awd.WorkflowTypeId == workflowTypeFilter);
+            }
+            else
+            {
+                viewableWorkflows = workServ.Queryable().Where(awd => ids.Contains(awd.WorkflowTypeId));
+            }
+
+            var lastAssignedWorkflowActivities = from ws in viewableWorkflows
+                                                 join was in workActServ.Queryable() on ws.Id equals was.WorkflowId into wj
+                                                 select wj.Where(o => o.AssignedGroupId != null || o.AssignedPersonAliasId != null).OrderByDescending(o => o.ActivatedDateTime).FirstOrDefault();
+
+            IQueryable<WorkflowActivity> filteredWorkflowActivities = lastAssignedWorkflowActivities.Where(x => x != null);
 
             if (workerFilter == -1)
             {
                 if (campusFilter != -1)
                 {
-                    filteredWorkflowData = from vwd in viewableWorkflowDataList
-                                           where (vwd.Activity.AssignedPersonAlias != null && vwd.Activity.AssignedPersonAlias.Person.GetFamilies(_rockContext).FirstOrDefault().CampusId == campusFilter) ||
-                                                 (vwd.Activity.AssignedGroup != null && vwd.Activity.AssignedGroup.CampusId == campusFilter)
-                                           select vwd;
-                }
-                else
-                {
-                    filteredWorkflowData = viewableWorkflowData;
+                    filteredWorkflowActivities = (from vwd in filteredWorkflowActivities.ToList()
+                                                  where (vwd.AssignedPersonAlias != null && vwd.AssignedPersonAlias.Person.GetFamilies(_rockContext).FirstOrDefault().CampusId == campusFilter) ||
+                                                        (vwd.AssignedGroup != null && vwd.AssignedGroup.CampusId == campusFilter)
+                                                  select vwd).AsQueryable();
                 }
             }
             else
             {
-                filteredWorkflowData = from vwd in viewableWorkflowData
-                                       where vwd.Activity.AssignedPersonAliasId == workerFilter ||
-                                            (vwd.Activity.AssignedGroup != null && vwd.Activity.AssignedGroup.Members.Select(x => x.Person.Aliases.Select(y => y.Id).Contains(workerFilter)).Contains(true))
-                                       select vwd;
+                filteredWorkflowActivities = from vwd in filteredWorkflowActivities
+                                             where vwd.AssignedPersonAliasId == workerFilter ||
+                                            (vwd.AssignedGroup != null && vwd.AssignedGroup.Members.Select(x => x.Person.Aliases.Select(y => y.Id).Contains(workerFilter)).Contains(true))
+                                             select vwd;
             }
 
             if (statusFilter != "-1")
             {
-                filteredWorkflowData = filteredWorkflowData.ToList().AsQueryable().Where(x => x.Status == statusFilter);
+                filteredWorkflowActivities = filteredWorkflowActivities.Where(x => x.Workflow.Status == statusFilter);
             }
 
-            filteredWorkflowData = filteredWorkflowData.ToList().AsQueryable().Where(ws => ws.CreatedDateTime > dateRange.LowerValue && ws.CreatedDateTime < (dateRange.UpperValue ?? DateTime.Now).Date.AddHours(23).AddMinutes(59).AddSeconds(59));
+            DateTime? dMin = dateRange.LowerValue;
+            DateTime dMax = (dateRange.UpperValue ?? DateTime.Now).Date.AddHours(23).AddMinutes(59).AddSeconds(59);
             
+            filteredWorkflowActivities = filteredWorkflowActivities.Where(ws => ws.CreatedDateTime > dMin && ws.CreatedDateTime < dMax);
+
+
+            IQueryable<WorkflowData> filteredWorkflowData = filteredWorkflowActivities.Select(x => new WorkflowData { Activity = x, Workflow = x.Workflow });
+
             List<WorkflowData> wrtData;
-            if (workflowSort != null)
+            if (rddlGroupBy.SelectedValue == "")
             {
-                wrtData = filteredWorkflowData.Sort(workflowSort).ToList();
+                if (workflowSort != null)
+                {
+                    wrtData = filteredWorkflowData.Sort(workflowSort).ToList();
+                }
+                else
+                {
+                    wrtData = filteredWorkflowData.ToList().AsQueryable().OrderBy("Completed").ThenBy("WorkflowTypeName").ThenBy("AssignedEntityName").ToList();
+                }
             }
             else
             {
-                wrtData = filteredWorkflowData.OrderBy("Completed").ThenBy("WorkflowTypeName").ThenBy("AssignedEntityName").ToList();
+                wrtData = filteredWorkflowData.ToList();
             }
-            workflowReportTable.DataSource = wrtData;
-            workflowReportTable.DataKeyNames = new string[] { "Id" };
-            workflowReportTable.DataBind();
+
+            IEnumerable<GroupedWorkflowData> gwrtData;
+
+            DateTime oneMonthAgo = DateTime.Now.AddMonths(-1);
+            DateTime twoMonthsAgo = DateTime.Now.AddMonths(-2);
+            DateTime threeMonthsAgo = DateTime.Now.AddMonths(-3);
+
+            switch (rddlGroupBy.SelectedValue)
+            {
+                case "1":
+                    workflowReportTable.Visible = false;
+                    workflowGroupedReportTable.Visible = true;
+                    workflowGroupedReportTableItemName = "Workflow";
+
+                    gwrtData = wrtData.GroupBy(x => x.WorkflowTypeId).Select(grp => new GroupedWorkflowData
+                    {
+                        GroupedItem = grp.FirstOrDefault().WorkflowTypeName,
+                        Count = grp.Count(),
+                        OneMonthOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) > oneMonthAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt < 30).Count(),
+                        TwoMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < oneMonthAgo && (x.CreatedDateTime ?? DateTime.Now) > twoMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 30 && x.AgeInt < 60).Count(),
+                        ThreeMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < twoMonthsAgo && (x.CreatedDateTime ?? DateTime.Now) > threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 60 && x.AgeInt < 90).Count(),
+                        OlderThanThreeMonthsStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 90).Count(),
+                        TotalStats = "Open: " + grp.Where(x => x.Completed == 0).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1).Count()
+                    }).OrderBy(x => x.GroupedItem);
+
+                    workflowGroupedReportTable.DataSource = gwrtData.ToList();
+                    workflowGroupedReportTable.DataBind();
+                    break;
+                case "2":
+                    workflowReportTable.Visible = false;
+                    workflowGroupedReportTable.Visible = true;
+                    workflowGroupedReportTableItemName = "Campus";
+
+                    gwrtData = wrtData.GroupBy(x => x.CampusId).Select(grp => new GroupedWorkflowData
+                    {
+                        GroupedItem = grp.FirstOrDefault().CampusName,
+                        Count = grp.Count(),
+                        OneMonthOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) > oneMonthAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt < 30).Count(),
+                        TwoMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < oneMonthAgo && (x.CreatedDateTime ?? DateTime.Now) > twoMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 30 && x.AgeInt < 60).Count(),
+                        ThreeMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < twoMonthsAgo && (x.CreatedDateTime ?? DateTime.Now) > threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 60 && x.AgeInt < 90).Count(),
+                        OlderThanThreeMonthsStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 90).Count(),
+                        TotalStats = "Open: " + grp.Where(x => x.Completed == 0).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1).Count()
+                    }).OrderBy(x => x.GroupedItem);
+
+                    workflowGroupedReportTable.DataSource = gwrtData.ToList();
+                    workflowGroupedReportTable.DataBind();
+                    break;
+                case "3":
+                    workflowReportTable.Visible = false;
+                    workflowGroupedReportTable.Visible = true;
+                    workflowGroupedReportTableItemName = "Assigned Worker";
+
+                    gwrtData = wrtData.GroupBy(x => x.AssignedEntityName).Select(grp => new GroupedWorkflowData
+                    {
+                        GroupedItem = grp.FirstOrDefault().AssignedEntityName,
+                        Count = grp.Count(),
+                        OneMonthOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) > oneMonthAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt < 30).Count(),
+                        TwoMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < oneMonthAgo && (x.CreatedDateTime ?? DateTime.Now) > twoMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 30 && x.AgeInt < 60).Count(),
+                        ThreeMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < twoMonthsAgo && (x.CreatedDateTime ?? DateTime.Now) > threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 60 && x.AgeInt < 90).Count(),
+                        OlderThanThreeMonthsStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 90).Count(),
+                        TotalStats = "Open: " + grp.Where(x => x.Completed == 0).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1).Count()
+                    }).OrderBy(x => x.GroupedItem);
+
+                    workflowGroupedReportTable.DataSource = gwrtData.ToList();
+                    workflowGroupedReportTable.DataBind();
+                    break;
+                case "4":
+                    workflowReportTable.Visible = false;
+                    workflowGroupedReportTable.Visible = true;
+                    workflowGroupedReportTableItemName = "Status";
+
+                    gwrtData = wrtData.GroupBy(x => x.Status).Select(grp => new GroupedWorkflowData
+                    {
+                        GroupedItem = grp.FirstOrDefault().Status,
+                        Count = grp.Count(),
+                        OneMonthOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) > oneMonthAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt < 30).Count(),
+                        TwoMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < oneMonthAgo && (x.CreatedDateTime ?? DateTime.Now) > twoMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 30 && x.AgeInt < 60).Count(),
+                        ThreeMonthsOldStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < twoMonthsAgo && (x.CreatedDateTime ?? DateTime.Now) > threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 60 && x.AgeInt < 90).Count(),
+                        OlderThanThreeMonthsStats = "Open: " + grp.Where(x => x.Completed == 0 && (x.CreatedDateTime ?? DateTime.Now) < threeMonthsAgo).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1 && x.AgeInt >= 90).Count(),
+                        TotalStats = "Open: " + grp.Where(x => x.Completed == 0).Count() + "<br/>Closed: " + grp.Where(x => x.Completed == 1).Count()
+                    }).OrderBy(x => x.GroupedItem);
+
+                    workflowGroupedReportTable.DataSource = gwrtData.ToList();
+                    workflowGroupedReportTable.DataBind();
+                    break;
+                default:
+                    workflowReportTable.Visible = true;
+                    workflowGroupedReportTable.Visible = false;
+
+                    workflowReportTable.DataSource = wrtData;
+                    workflowReportTable.DataKeyNames = new string[] { "Id" };
+                    workflowReportTable.DataBind();
+                    break;
+            }
 
             doStats(wrtData);
+        }
+
+        protected void doStuff()
+        {
+            BindGrids();
 
         }
         protected void bindObject<T>(ListControl control, List<T> entityList, string selectedValue)
@@ -328,11 +400,11 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
 
             System.Web.Script.Serialization.JavaScriptSerializer jsSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
 
-            List<object[]> campusCount = workflowData.GroupBy(wd => wd.CampusId).Select(wd => new object[] { (campServ.Get(wd.FirstOrDefault().CampusId) != null) ? campServ.Get(wd.FirstOrDefault().CampusId).Name : "None", wd.Count() }).ToList();
+            List<object[]> campusCount = workflowData.GroupBy(wd => wd.CampusId).Select(wd => new object[] { wd.FirstOrDefault().CampusName, wd.Count() }).ToList();
             campusCount.Insert(0, new string[] { "Campus", "Count" });
             workflowChartData2 = jsSerializer.Serialize(campusCount).EncodeHtml();
 
-            List<object[]> wfTypeCount = workflowData.GroupBy(wd => wd.WorkflowTypeId).Select(wd => new object[] { workTypeServ.Get(wd.FirstOrDefault().WorkflowTypeId).Name, wd.Count() }).ToList();
+            List<object[]> wfTypeCount = workflowData.GroupBy(wd => wd.WorkflowTypeId).Select(wd => new object[] { wd.FirstOrDefault().WorkflowTypeName, wd.Count() }).ToList();
             wfTypeCount.Insert(0, new string[] { "Workflow Type", "Count" });
             workflowChartData3 = jsSerializer.Serialize(wfTypeCount).EncodeHtml();
 
@@ -375,7 +447,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             public int Completed { get { return (Workflow.Status == "Completed" || Workflow.CompletedDateTime != null).Bit(); } }
             public int AgeInt { get { return ((Workflow.CompletedDateTime ?? DateTime.Now) - (Workflow.CreatedDateTime ?? DateTime.Now)).Days; } }
             public int CampusId { get { return (Activity.AssignedPersonAlias != null ? Activity.AssignedPersonAlias.Person.GetFamilies().FirstOrDefault().CampusId : (Activity.AssignedGroup != null ? Activity.AssignedGroup.CampusId : -1)) ?? -1; } }
-
+            public String CampusName { get { return (Activity.AssignedPersonAlias != null ? Activity.AssignedPersonAlias.Person.GetFamilies().FirstOrDefault().Campus.Name : (Activity.AssignedGroup != null ? Activity.AssignedGroup.Campus.Name : "")) ?? ""; } }
 
             public Workflow Workflow { get; set; }
             public WorkflowActivity Activity { get; set; }
@@ -388,6 +460,17 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
                     );
                 }
             }
+        }
+
+        public class GroupedWorkflowData
+        {
+            public String GroupedItem { get; set; }
+            public int Count { get; set; }
+            public String OneMonthOldStats { get; set; }
+            public String TwoMonthsOldStats { get; set; }
+            public String ThreeMonthsOldStats { get; set; }
+            public String OlderThanThreeMonthsStats { get; set; }
+            public String TotalStats { get; set; }
         }
 
         public class ShallowPersonData
@@ -410,6 +493,16 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             {
                 return a.Id ?? -1;
             }
+        }
+
+        protected void wftListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindFilters_Workflow();
+        }
+
+        protected void campusPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindFilters_Campus();
         }
     }
 }
