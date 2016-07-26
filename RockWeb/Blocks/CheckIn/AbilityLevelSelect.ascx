@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AbilityLevelSelect.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.AbilityLevelSelect" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AbilityLevelSelect.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.AbilityLevelSelect" %>
 
 <script type="text/javascript">
     Sys.Application.add_load(function () {

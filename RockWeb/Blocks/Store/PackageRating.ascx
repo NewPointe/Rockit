@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PackageRating.ascx.cs" Inherits="RockWeb.Blocks.Store.PackageRating" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PackageRating.ascx.cs" Inherits="RockWeb.Blocks.Store.PackageRating" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>

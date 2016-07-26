@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PersonMergeRequestList.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonMergeRequestList" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PersonMergeRequestList.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonMergeRequestList" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>

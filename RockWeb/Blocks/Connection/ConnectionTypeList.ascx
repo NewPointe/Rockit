@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ConnectionTypeList.ascx.cs" Inherits="RockWeb.Blocks.Connection.ConnectionTypeList" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ConnectionTypeList.ascx.cs" Inherits="RockWeb.Blocks.Connection.ConnectionTypeList" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>

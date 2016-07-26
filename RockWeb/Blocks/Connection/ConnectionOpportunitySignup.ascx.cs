@@ -283,23 +283,22 @@ namespace RockWeb.Blocks.Connection
         {
             using ( var rockContext = new RockContext() )
             {
+                // load campus dropdown
+                var campuses = CampusCache.All();
+                cpCampus.Campuses = campuses;
+                cpCampus.Visible = campuses.Count > 1;
+
+                if ( campuses.Any() )
+                {
+                    cpCampus.SetValue( campuses.First().Id );
+                }
+
                 var opportunity = new ConnectionOpportunityService( rockContext ).Get( opportunityId );
                 if ( opportunity == null )
                 {
                     pnlSignup.Visible = false;
                     ShowError( "Incorrect Opportunity Type", "The requested opportunity does not exist." );
                     return;
-                }
-
-                // load campus dropdown
-                var availableCampusIds = opportunity.ConnectionOpportunityCampuses.Select(x => x.CampusId);
-                var campuses = CampusCache.All().Where(x => availableCampusIds.Contains(x.Id)).ToList();
-                cpCampus.Campuses = campuses;
-                cpCampus.Visible = campuses.Count > 0;
-
-                if ( campuses.Any() )
-                {
-                    cpCampus.SetValue( campuses.First().Id );
                 }
 
                 pnlSignup.Visible = true;
