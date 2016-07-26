@@ -41,8 +41,7 @@ namespace RockWeb.Webhooks
 
     public class Shape : IHttpHandler
     {
-
-        private int transactionCount = 0;
+            
         private RockContext rockContext = new RockContext();
 
         private string TopGift1;
@@ -418,6 +417,7 @@ namespace RockWeb.Webhooks
             catch (DbUpdateException ex)
             {
                 // This is one of those "this should never happen" comments...  But if it does, don't save changes.
+                Rock.Model.ExceptionLogService.LogException( ex , null);
             }
 
 

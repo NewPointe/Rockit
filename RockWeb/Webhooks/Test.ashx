@@ -38,9 +38,7 @@ namespace RockWeb.Webhooks
 
     public class Test : IHttpHandler
     {
-        private int transactionCount = 0;
-
-
+            
         public void ProcessRequest(HttpContext context)
         {
             HttpRequest request = context.Request;

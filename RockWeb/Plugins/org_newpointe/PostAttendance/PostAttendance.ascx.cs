@@ -34,9 +34,6 @@ namespace RockWeb.Plugins.org_newpointe.PostAttendance
 public partial class PostAttendance : Rock.Web.UI.RockBlock
 {
 
-
-    private ScheduleOccurrence _occurrence = null;
-
     public RockContext rockContext = new RockContext();
     public PersonPicker person;
     public LocationPicker location;

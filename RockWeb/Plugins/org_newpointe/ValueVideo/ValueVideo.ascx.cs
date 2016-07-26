@@ -1,21 +1,7 @@
-﻿using Rock.Web.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-
-using Rock.Attribute;
-using Rock.Data;
-using Rock.Security;
-using Rock.Web.Cache;
-using Rock.Web.UI;
-using Rock.Web.UI.Controls;
-using Rock.Model;
+﻿using System;
 using System.ComponentModel;
-
-
+using Rock.Model;
+using Rock.Web.UI;
 
 namespace RockWeb.Plugins.org_newpointe.ValueVideo
 {
