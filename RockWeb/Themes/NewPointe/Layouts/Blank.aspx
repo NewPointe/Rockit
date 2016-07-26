@@ -50,11 +50,17 @@
         </asp:UpdateProgress>
 
         <main class="container">
-        
+
             <!-- Start Content Area -->
             <Rock:Zone Name="Main" runat="server" />
 
         </main>
     </form>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.js-modal-block-move').nextUntil('#cms_admin_footer').hide();
+            $('#cms-admin-footer').show();
+        });
+    </script>
 </body>
 </html>
