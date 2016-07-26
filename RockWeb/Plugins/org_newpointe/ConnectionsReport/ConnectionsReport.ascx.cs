@@ -361,7 +361,7 @@ namespace RockWeb.Plugins.org_newpointe.ConnectionsReport
 
         protected void workflowReportTable_RowSelected( object sender, RowEventArgs e )
         {
-            Response.Redirect( "~/Workflow/" + ( ( GridView ) sender ).DataKeys[e.RowIndex]["Id"].ToString(), false );
+            Response.Redirect( "~/page/999?ConnectionRequestId=" + ( ( GridView ) sender ).DataKeys[e.RowIndex]["Id"].ToString(), false );
         }
         
         protected void workflowReportTable_GridRebind( object sender, EventArgs e )
