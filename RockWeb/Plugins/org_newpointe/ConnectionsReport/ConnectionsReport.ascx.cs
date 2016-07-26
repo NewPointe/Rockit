@@ -18,9 +18,9 @@ namespace RockWeb.Plugins.org_newpointe.ConnectionsReport
     /// <summary>
     /// Template block for a TreeView.
     /// </summary>
-    [DisplayName( "Workflow Report" )]
+    [DisplayName( "Connections Report" )]
     [Category( "Newpointe Reporting" )]
-    [Description( "Workflow report/stats." )]
+    [Description( "Connections report/stats." )]
 
     public partial class ConnectionsReport : Rock.Web.UI.RockBlock
     {
