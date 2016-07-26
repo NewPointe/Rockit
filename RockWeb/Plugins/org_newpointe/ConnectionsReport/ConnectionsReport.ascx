@@ -1,8 +1,7 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="WorkflowReport.ascx.cs" Inherits="RockWeb.Plugins.org_newpointe.WorkflowReport.WorkflowReport" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ConnectionsReport.ascx.cs" Inherits="RockWeb.Plugins.org_newpointe.ConnectionsReport.ConnectionsReport" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
-
         <asp:Panel ID="pnlDetails" CssClass="js-group-panel" runat="server">
             <div class="panel panel-block">
                 <div class="panel-heading panel-follow clearfix">
@@ -14,18 +13,25 @@
                 </div>
 
                 <Rock:GridFilter ID="workflowFilters" runat="server" OnApplyFilterClick="workflowFilters_ApplyFilterClick">
-                    <Rock:WorkflowTypePicker ID="wtpWorkflowType" runat="server" Label="Workflow" AllowMultiSelect="false" OnSelectItem="wtpWorkflowType_SelectItem" />
-                    <Rock:CampusPicker ID="campusPicker" runat="server" OnSelectedIndexChanged="campusPicker_SelectedIndexChanged"></Rock:CampusPicker>
+                    <Rock:RockDropDownList ID="rddConnectionOpportunity" runat="server" Label="Connection Opportunity"></Rock:RockDropDownList>
+                    <Rock:CampusPicker ID="campusPicker" runat="server" Label="Campus"></Rock:CampusPicker>
                     <Rock:PersonPicker ID="ppAssignedPerson" runat="server" Label="Assigned Worker" />
-                    <Rock:RockDropDownList ID="workStatus" runat="server" Label="Status"></Rock:RockDropDownList>
+                    <Rock:RockCheckBoxList ID="cblStatus" runat="server" Label="Status" DataTextField="Name" DataValueField="Id" RepeatDirection="Horizontal" />
+                    <Rock:RockCheckBoxList ID="cblState" runat="server" Label="State" RepeatDirection="Horizontal">
+                        <asp:ListItem Text="Active" Value="0" />
+                        <asp:ListItem Text="Inactive" Value="1" />
+                        <asp:ListItem Text="Future Follow Up" Value="2" />
+                        <asp:ListItem Text="Future Follow Up (Past Due)" Value="-2" />
+                        <asp:ListItem Text="Connected" Value="3" />
+                    </Rock:RockCheckBoxList>
                     <Rock:DateRangePicker ID="dateRange" ClientIDMode="Static" runat="server" CssClass="np_customDate" Label="Date" />
-                    <Rock:RockDropDownList ID="rddlGroupBy" runat="server" Label="Group By">
+                    <%--<Rock:RockDropDownList ID="rddlGroupBy" runat="server" Label="Group By">
                         <asp:ListItem Text="" Value=""></asp:ListItem>
                         <asp:ListItem Text="Workflow" Value="1"></asp:ListItem>
                         <asp:ListItem Text="Campus" Value="2"></asp:ListItem>
                         <asp:ListItem Text="Worker" Value="3"></asp:ListItem>
                         <asp:ListItem Text="Status" Value="4"></asp:ListItem>
-                    </Rock:RockDropDownList>
+                    </Rock:RockDropDownList>--%>
                 </Rock:GridFilter>
 
                 <div id="viewToggleDiv" class="clearfix" style="margin-top: 15px; margin-right: 15px;">
@@ -41,22 +47,28 @@
                         <script type="text/javascript">
                             // For some reason the onclick event doesn't work, so we use mousedown and mouseup as a workaround
                             viewtogglemousedown = false;
-                            $(document).on('mousedown', '#viewToggle', function (e) {
-                                if (e.which == 1) {
+                            $(document).on('mousedown', '#viewToggle', function (e)
+                            {
+                                if (e.which == 1)
+                                {
                                     viewtogglemousedown = true;
                                 }
                             });
-                            $(document).on('mouseup', '#viewToggle', function (e) {
-                                if (viewtogglemousedown) {
+                            $(document).on('mouseup', '#viewToggle', function (e)
+                            {
+                                if (viewtogglemousedown)
+                                {
                                     viewtogglemousedown = false;
                                     // Mouse clicked
                                     var tglState = ($('#viewToggle_hfChecked').val() == 'false');
 
-                                    if (tglState) {
+                                    if (tglState)
+                                    {
                                         $('#StatsPanel').hide();
                                         $('#ReportPanel').show();
                                     }
-                                    else {
+                                    else
+                                    {
                                         $('#ReportPanel').hide();
                                         $('#StatsPanel').show();
                                         drawCharts();
@@ -64,7 +76,8 @@
 
                                 }
                             });
-                            $(document).on('mouseup', function (e) {
+                            $(document).on('mouseup', function (e)
+                            {
                                 viewtogglemousedown = false;
                             });
 
@@ -73,17 +86,22 @@
                             var rtime;
                             var timeout = false;
                             var delta = 1000;
-                            $(window).resize(function () {
+                            $(window).resize(function ()
+                            {
                                 rtime = new Date();
-                                if (timeout === false) {
+                                if (timeout === false)
+                                {
                                     timeout = true;
                                     setTimeout(resizeend, delta);
                                 }
                             });
-                            function resizeend() {
-                                if (new Date() - rtime < delta) {
+                            function resizeend()
+                            {
+                                if (new Date() - rtime < delta)
+                                {
                                     setTimeout(resizeend, delta);
-                                } else {
+                                } else
+                                {
                                     timeout = false;
                                     console.log('Done resizing');
                                     drawCharts();
@@ -92,18 +110,22 @@
 
 
                             // Makes sure google's visualization library is loaded, then draws the charts
-                            function initCharts() {
-                                if (google.visualization) {
+                            function initCharts()
+                            {
+                                if (google.visualization)
+                                {
                                     drawCharts();
                                 }
-                                else {
+                                else
+                                {
                                     google.load("visualization", "1", { packages: ["corechart"] });
                                     google.setOnLoadCallback(drawCharts);
                                 }
                             }
 
 
-                            function drawCharts() {
+                            function drawCharts()
+                            {
                                 dateMin = $('#dateRange_lower').val();
                                 dateMax = $('#dateRange_upper').val();
                                 daysMin = Math.round(Math.abs(new Date() - new Date(dateMax)) / 8.64e7);
@@ -144,14 +166,17 @@
 
                             }
 
-                            function drawChart(chartDivId, chartType, chartOptions) {
+                            function drawChart(chartDivId, chartType, chartOptions)
+                            {
                                 var chartData = $("#" + chartDivId).data("chart");
-                                if (chartData && $.isArray(chartData) && chartData.length > 1) {
+                                if (chartData && $.isArray(chartData) && chartData.length > 1)
+                                {
                                     var dataTable = google.visualization.arrayToDataTable(chartData);
                                     var chart = new google.visualization[chartType](document.getElementById(chartDivId));
                                     chart.draw(dataTable, chartOptions);
                                 }
-                                else {
+                                else
+                                {
                                     $("#" + chartDivId).html("<span>No Chart Data</span>");
                                 }
                             }
@@ -198,9 +223,9 @@
                                 <Rock:RockLiteral ID="rlWorkflowStats" runat="server" />
                             </div>
                             <div class="subChartsRight">--%>
-                                <div id="workflowChart1" class="workflowChart" data-chart="<%= workflowChartData1 %>"></div>
+                        <div id="workflowChart1" class="workflowChart" data-chart="<%= workflowChartData1 %>"></div>
 
-                            <%--</div>
+                        <%--</div>
                         </div>--%>
 
                         <div class="subCharts">
@@ -225,14 +250,23 @@
                 <div class="panel-body" id="ReportPanel" <%=  !viewToggle.Checked ? "style='display: none;'" : "" %>>
                     <Rock:Grid ID="workflowReportTable" runat="server" AllowSorting="true" AllowPaging="true" RowClickEnabled="true" OnRowSelected="workflowReportTable_RowSelected" OnGridRebind="workflowReportTable_GridRebind">
                         <Columns>
-                            <%--<asp:BoundField HeaderText="Workflow Id" DataField="Id" SortExpression="Id" />--%>
-                            <asp:BoundField HeaderText="Assigned Worker" DataField="AssignedEntityName" SortExpression="AssignedEntityName" />
-                            <asp:BoundField HeaderText="Workflow Name" DataField="WorkflowTypeName" SortExpression="WorkflowTypeName" />
-                            <asp:BoundField HeaderText="Title" DataField="Name" SortExpression="Name" />
-                            <asp:BoundField HeaderText="Date Started" DataField="CreatedDateTime" SortExpression="CreatedDateTime" />
-                            <asp:BoundField HeaderText="Status" DataField="Status" SortExpression="Status" />
-                            <asp:BoundField HeaderText="Date Completed" DataField="CompletedDateTime" SortExpression="CompletedDateTime" />
-                            <asp:BoundField HeaderText="Age" DataField="AgeInt" SortExpression="AgeInt" />
+                            <Rock:RockBoundField DataField="Connector" HeaderText="Connector" SortExpression="Connector.PersonAlias.Person.LastName,Connector.PersonAlias.Person.NickName" />
+                            <Rock:RockBoundField HeaderText="Opportunity" DataField="Opportunity.Name" SortExpression="ConnectionOpportunity.Name" />
+                            <Rock:RockBoundField DataField="Campus" HeaderText="Campus" SortExpression="Campus.Name" />
+                            <Rock:RockBoundField DataField="Name" HeaderText="Requestor" SortExpression="PersonAlias.Person.NickName,PersonAlias.Person.LastName" />
+                            <%--<Rock:RockBoundField DataField="Group" HeaderText="Group" SortExpression="AssignedGroup.Name" />--%>
+                            <Rock:RockBoundField DataField="Opened" HeaderText="Opened" HtmlEncode="false" />
+                            <Rock:RockBoundField DataField="LastActivity" HeaderText="Last Activity" HtmlEncode="false" />
+                            <asp:TemplateField HeaderText="Status" SortExpression="ConnectionStatus.Name">
+                                <ItemTemplate>
+                                    <span class='label label-<%# Eval("StatusLabel") %>'><%# Eval("Status") %></span>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="State" SortExpression="ConnectionState">
+                                <ItemTemplate>
+                                    <%# Eval("StateLabel") %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
                         </Columns>
                     </Rock:Grid>
                     <Rock:Grid ID="workflowGroupedReportTable" runat="server" Visible="false" AllowSorting="false" AllowPaging="true" RowClickEnabled="false" OnGridRebind="workflowReportTable_GridRebind">

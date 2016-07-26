@@ -49,7 +49,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             catServ = new CategoryService(_rockContext);
 
             dateRange.UpperValue = DateTime.Now;
-            dateRange.LowerValue = DateTime.Parse("4/15/2015");// DateTime.Now.AddYears(-1);
+            dateRange.LowerValue = DateTime.Now.AddYears( -1 );
 
             lReadOnlyTitle.Text = "Workflows".FormatAsHtmlTitle();
             workflowFilters.Show();
@@ -103,7 +103,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
         private void BindFilters_Workflow()
         {
             // Workflow Type
-            workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
+            workflowTypeFilter = wtpWorkflowType.SelectedValueAsId() ?? -1;
 
             int? wtfpp = PageParameter("WorkflowTypeId").AsIntegerOrNull(); ;
             if (!IsPostBack && wtfpp.HasValue)
@@ -111,10 +111,13 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
                 workflowTypeFilter = wtfpp.Value;
             }
 
-            viewableWorkflowTypes = workTypeServ.Queryable().OrderBy(x => x.Name).ToList().Where(awt => checkPerms(awt));
+            viewableWorkflowTypes = workTypeServ.Queryable().OrderBy( x => x.Name ).ToList().Where( awt => checkPerms( awt ) );
 
-            bindNameAndId(wftListBox, viewableWorkflowTypes.ToList(), workflowTypeFilter.ToString());
-            workflowTypeFilter = int.TryParse(wftListBox.SelectedValue, out workflowTypeFilter) ? workflowTypeFilter : -1;
+            WorkflowType wt = workTypeServ.Get( workflowTypeFilter );
+            if ( wt != null )
+            {
+                wtpWorkflowType.SetValue( wt );
+            }
 
             // Statuses
             IQueryable<Workflow> viewableWorkflowData;
@@ -143,22 +146,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             campusFilter = campusPicker.SelectedCampusId ?? -1;
 
             // Workers
-            var allWorkflowsAssignedActivities = workServ.Queryable().Select(x => x.Activities.Where(a => a.AssignedGroupId != null || a.AssignedPersonAliasId != null).OrderByDescending(a => a.ActivatedDateTime).FirstOrDefault());
-
-            workerFilter = int.TryParse(assignWork.SelectedValue, out workerFilter) ? workerFilter : -1;
-
-            bindNameAndId(assignWork,
-
-                allWorkflowsAssignedActivities
-                .Where(x => x.AssignedPersonAliasId != null)
-                .GroupBy(x => x.AssignedPersonAliasId)
-                .Select(x => x.FirstOrDefault().AssignedPersonAlias.Person).ToList()
-                .Where(x => campusFilter == -1 || x.GetCampus().Id == campusFilter)
-                .Select(x => new { Id = x.Id, Name = x.NickName + " " + x.LastName })
-                .OrderBy(x => x.Name).ToList(),
-
-                workerFilter.ToString());
-            workerFilter = int.TryParse(assignWork.SelectedValue, out workerFilter) ? workerFilter : -1;
+            workerFilter = ppAssignedPerson.PersonId ?? -1;
         }
 
         private void BindGrids()
@@ -231,7 +219,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             {
                 wrtData = filteredWorkflowData.ToList();
             }
-
+            
             IEnumerable<GroupedWorkflowData> gwrtData;
 
             DateTime oneMonthAgo = DateTime.Now.AddMonths(-1);
@@ -447,7 +435,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
             public int Completed { get { return (Workflow.Status == "Completed" || Workflow.CompletedDateTime != null).Bit(); } }
             public int AgeInt { get { return ((Workflow.CompletedDateTime ?? DateTime.Now) - (Workflow.CreatedDateTime ?? DateTime.Now)).Days; } }
             public int CampusId { get { return (Activity.AssignedPersonAlias != null ? Activity.AssignedPersonAlias.Person.GetFamilies().FirstOrDefault().CampusId : (Activity.AssignedGroup != null ? Activity.AssignedGroup.CampusId : -1)) ?? -1; } }
-            public String CampusName { get { return (Activity.AssignedPersonAlias != null ? Activity.AssignedPersonAlias.Person.GetFamilies().FirstOrDefault().Campus.Name : (Activity.AssignedGroup != null ? Activity.AssignedGroup.Campus.Name : "")) ?? ""; } }
+            public String CampusName { get { return (Activity.AssignedPersonAlias != null ? Activity.AssignedPersonAlias.Person.GetFamilies().FirstOrDefault().Campus.Name : (Activity.AssignedGroup != null ? (Activity.AssignedGroup.Campus != null ? Activity.AssignedGroup.Campus.Name : "") : "")) ?? ""; } }
 
             public Workflow Workflow { get; set; }
             public WorkflowActivity Activity { get; set; }
@@ -503,6 +491,11 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
         protected void campusPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindFilters_Campus();
+        }
+
+        protected void wtpWorkflowType_SelectItem( object sender, EventArgs e )
+        {
+            BindFilters_Workflow();
         }
     }
 }
