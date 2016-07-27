@@ -29,21 +29,31 @@ using Rock.Workflow;
 
 namespace org.newpointe.WorkflowEntities
 {
+
     /// <summary>
     /// Sets an attribute's value to the selected person 
     /// </summary>
     //[ActionCategory( "Groups" )]
-    [Description( "Removes a person from a group using a workflow attribute." )]
+    [Description( "Removes person from a specific group." )]
     [Export( typeof( ActionComponent ) )]
-    [ExportMetadata( "ComponentName", "Group Member Remove from Group Using Attribute" )]
+    [ExportMetadata( "ComponentName", "Group Member Remove from Specified Group" )]
 
     [WorkflowAttribute( "Person", "Workflow attribute that contains the person to remove from the group.", true, "", "", 0, null,
         new string[] { "Rock.Field.Types.PersonFieldType" } )]
 
-    [WorkflowAttribute( "Group", "Workflow Attribute that contains the group to remove the person from.", true, "", "", 0, null,
-        new string[] { "Rock.Field.Types.GroupFieldType" } )]
-    public class RemovePersonFromGroupAttribute : ActionComponent
+    [Rock.Attribute.GroupAndRoleFieldAttribute( "Group and Role", "Group/Role to use for the removal. Leave role blank to remove them no matter what their role is.", "Group", true, key: "GroupAndRole" )]
+    public class RemovePersonFromGroup : ActionComponent
     {
+        /// <summary>
+        /// Executes the specified workflow.
+        /// </summary>
+        /// <param name="rockContext">The rock context.</param>
+        /// <param name="action">The action.</param>
+        /// <param name="entity">The entity.</param>
+        /// <param name="errorMessages">The error messages.</param>
+        /// <returns></returns>
+        public override bool Execute( RockContext rockContext, WorkflowAction action, Object entity, out List<string> errorMessages )
+        {
         /// <summary>
         /// Executes the specified workflow.
         /// </summary>
@@ -58,19 +68,27 @@ namespace org.newpointe.WorkflowEntities
 
             // Determine which group to add the person to
             Group group = null;
+            int? groupRoleId = null;
 
-            var guidGroupAttribute = GetAttributeValue( action, "Group" ).AsGuidOrNull();
-
-            if ( guidGroupAttribute.HasValue )
+            var groupAndRoleValues = ( GetAttributeValue( action, "GroupAndRole" ) ?? string.Empty ).Split( '|' );
+            if ( groupAndRoleValues.Count() > 1 )
             {
-                var attributeGroup = AttributeCache.Read( guidGroupAttribute.Value, rockContext );
-                if ( attributeGroup != null )
+                var groupGuid = groupAndRoleValues[1].AsGuidOrNull();
+                if ( groupGuid.HasValue )
                 {
-                    var groupGuid = action.GetWorklowAttributeValue( guidGroupAttribute.Value ).AsGuidOrNull();
+                    group = new GroupService( rockContext ).Get( groupGuid.Value );
 
-                    if ( groupGuid.HasValue )
+                    if ( groupAndRoleValues.Count() > 2 )
                     {
-                        group = new GroupService( rockContext ).Get( groupGuid.Value );
+                        var groupTypeRoleGuid = groupAndRoleValues[2].AsGuidOrNull();
+                        if ( groupTypeRoleGuid.HasValue )
+                        {
+                            var groupRole = new GroupTypeRoleService( rockContext ).Get( groupTypeRoleGuid.Value );
+                            if ( groupRole != null )
+                            {
+                                groupRoleId = groupRole.Id;
+                            }
+                        }
                     }
                 }
             }
@@ -118,14 +136,18 @@ namespace org.newpointe.WorkflowEntities
                 errorMessages.Add( string.Format( "Person could not be found for selected value ('{0}')!", guidPersonAttribute.ToString() ) );
             }
 
-            // remove person from group
+            // Remove Person from Group
             if ( !errorMessages.Any() )
             {
-
                 try
                 {
                     var groupMemberService = new GroupMemberService( rockContext );
                     var groupMembers = groupMemberService.Queryable().Where( m => m.PersonId == person.Id );
+
+                    if ( groupRoleId.HasValue )
+                    {
+                        groupMembers = groupMembers.Where( m => m.GroupRoleId == groupRoleId.Value );
+                    }
 
                     foreach ( var groupMember in groupMembers )
                     {

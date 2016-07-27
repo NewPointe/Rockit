@@ -22,15 +22,13 @@ namespace org.newpointe.WorkflowEntities
     [EntityTypeField("Entity Type", "The type of the entity. If left blank, attempts to infer the Type from the Entity Attribute.", false, "", 0)]
     [WorkflowAttribute("Entity", "The entity to set the property of (Or a text field with it's Guid).", true, "", "", 1)]
     [CustomDropdownListField("Empty Value Handling", "How to handle empty property values", "IGNORE^Ignore empty values,EMPTY^Leave empty values empty,NULL^Set empty values to NULL (where possible)", true, "", "", 2)]
-    [KeyValueListField("Entity Properties", "The properties to create the entity with. <span class='tip tip-lava'></span>", true, "", "Property", "Value", "", "", "", 3)]
+    [KeyValueListField("Entity Properties", "The properties to create the entity with. You can use <span class='tip tip-lava'></span>, but you'll need to use ! instead of |", true, "", "Property", "Value", "", "", "", 3)]
     class SetEntityProperties : ActionComponent
     {
         public override bool Execute(RockContext rockContext, WorkflowAction action, Object entity, out List<string> errorMessages)
         {
             errorMessages = new List<string>();
-
-            String propertyName = GetAttributeValue(action, "PropertyName").ResolveMergeFields(GetMergeFields(action));
-            String propertyValue = GetAttributeValue(action, "PropertyValue").ResolveMergeFields(GetMergeFields(action));
+            
             Guid workflowAttributeGuid = GetAttributeValue(action, "Entity").AsGuid();
             Guid entityGuid = action.GetWorklowAttributeValue(workflowAttributeGuid).AsGuid();
 
