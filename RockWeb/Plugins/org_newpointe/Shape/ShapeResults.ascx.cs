@@ -220,7 +220,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 else
                 {
                     discPageReference.Parameters = new System.Collections.Generic.Dictionary<string, string>();
-                    discPageReference.Parameters.Add("rckpid", SelectedPerson.UrlEncodedKey);
+                    discPageReference.Parameters.Add("rckipid", SelectedPerson.UrlEncodedKey);
                     Response.Redirect(discPageReference.BuildUrl(), true); 
                 }
 
