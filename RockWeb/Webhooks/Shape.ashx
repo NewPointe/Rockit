@@ -537,11 +537,6 @@ namespace RockWeb.Webhooks
             heart1Object.LoadAttributes();
             heart2Object.LoadAttributes();
 
-            string gift1Name = shapeGift1Object.Value;
-            string gift2Name = shapeGift2Object.Value;
-            string heart1Name = heart1Object.Value;
-            string heart2Name = heart2Object.Value;
-
             string myNewPointeMessage;
             if (person.Users.Count > 0)
             {
@@ -560,17 +555,20 @@ namespace RockWeb.Webhooks
             //Put the body text together
             string emailBody = emailHeader + String.Format(@"
             <h2><span style=""color:#8bc540"">SHAPE Assessment Results for {0}</span></h2>
-            <p>Alright! Your SHAPE Assessment is complete and the details are below.  <a href=""{1}"">Click here</a> to view your full SHAPE Profile!</p>
+            <p>Your SHAPE Assessment is complete and the details are below.  <strong><a href=""{1}"">Click here</a> to view your full SHAPE Profile!</strong></p>
             <h3><u>Spiritual Gifts</u></h3>
             <h4>{2}</h4>
             {3}<br /><br />
             <h4>{4}</h4>
             {5}<br /><br /><br />
             <h3><u>Heart and Abilities</u></h3>
-            <h4>{6}</h4><br /><br />
-            <h4>{7}</h4><br /><br /><br />
+            <h4>{6}</h4>
+            {7}<br /><br />
+            <h4>{8}</h4>
+            {9}<br /><br /><br />
             <p>{8}</p>
-            ", person.NickName, profileLink, gift1Name, shapeGift1Object.Description, gift2Name, shapeGift2Object.Description, heart1Name, heart2Name, myNewPointeMessage) + emailFooter;
+            ", person.NickName, profileLink, shapeGift1Object.Value, shapeGift1Object.Description, shapeGift2Object.Value, shapeGift2Object.Description, 
+            heart1Object.Value, heart1Object.Description, heart2Object.Value, heart2Object.Description, myNewPointeMessage) + emailFooter;
 
 
             return emailBody;

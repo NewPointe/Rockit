@@ -146,7 +146,7 @@
 
             <div class="panel panel-block"> 
     <div class="panel-heading">
-        <h4 class="panel-title"><i class="fa fa-share-square-o"></i> Personality</h4>
+        <h4 class="panel-title"><i class="fa fa-share-square-o"></i> Experiences</h4>
     </div>
         <div class="panel panel-body">
             <div class="col-md-12">
