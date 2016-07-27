@@ -209,7 +209,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
                 DiscService.AssessmentResults savedScores = DiscService.LoadSavedAssessmentResults(SelectedPerson);
 
-                if (!savedScores.LastSaveDate.Equals(null))
+
+                if (!string.IsNullOrWhiteSpace(savedScores.PersonalityType))
                 {
                     ShowResults(savedScores);
                     DISCResults.Visible = true;
