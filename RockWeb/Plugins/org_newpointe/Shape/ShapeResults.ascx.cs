@@ -33,7 +33,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
     [Category("NewPointe Core")]
     [Description(
         "Shows a person the results of their SHAPE Assessment and recommends volunteer positions based on them.")]
-    [LinkedPage("SHAPE Assessment Page", "Choose the Assessment page to redirect to if the person hasn't taken the assessment.", true)]
+    [LinkedPage("SHAPE Assessment Page", "Choose the Assessment page to redirect to if the person hasn't taken the SHAPE assessment.", true)]
+    [LinkedPage("DISC Assessment Page", "Choose the Assessment page to redirect to if the person hasn't taken the DISC assessment.", true)]
 
     public partial class ShapeResults : Rock.Web.UI.RockBlock
     {
@@ -48,9 +49,10 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var pageReference = new Rock.Web.PageReference(GetAttributeValue("SHAPEAssessmentPage"));
+            var shapePageReference = new Rock.Web.PageReference(GetAttributeValue("SHAPEAssessmentPage"));
+            var discPageReference = new Rock.Web.PageReference(GetAttributeValue("DISCAssessmentPage"));
 
-                if (!string.IsNullOrWhiteSpace(PageParameter("FormId")))
+            if (!string.IsNullOrWhiteSpace(PageParameter("FormId")))
                 {
                     //Load the person based on the FormId
                     var personInUrl = PageParameter("FormId");
@@ -76,7 +78,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 {
                     //Show Error Message
                     nbNoPerson.Visible = true;
-                    Response.Redirect(pageReference.BuildUrl(), false);
+                    Response.Redirect(shapePageReference.BuildUrl(), true);
                     return;
                 }
 
@@ -94,7 +96,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
             // Redirect if they haven't taken the Assessment
             if (spiritualGift1 == null)
             {
-                Response.Redirect(pageReference.BuildUrl(), false);
+                Response.Redirect(shapePageReference.BuildUrl(), true);
             }
 
             else
@@ -212,6 +214,13 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     ShowResults(savedScores);
                     DISCResults.Visible = true;
                     NoDISCResults.Visible = false;
+                    
+                }
+                else
+                {
+                    discPageReference.Parameters = new System.Collections.Generic.Dictionary<string, string>();
+                    discPageReference.Parameters.Add("rckpid", SelectedPerson.UrlEncodedKey);
+                    Response.Redirect(discPageReference.BuildUrl(), true); 
                 }
 
 
