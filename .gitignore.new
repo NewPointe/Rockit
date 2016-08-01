@@ -1,0 +1,10 @@
+*.suo
+/packages/*.*
+.vs
+
+*/obj/
+*.orig
+
+org.newpointe.*/bin
+
+prepros.cfg
