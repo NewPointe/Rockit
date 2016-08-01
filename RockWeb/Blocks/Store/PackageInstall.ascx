@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PackageInstall.ascx.cs" Inherits="RockWeb.Blocks.Store.PackageInstall" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PackageInstall.ascx.cs" Inherits="RockWeb.Blocks.Store.PackageInstall" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -19,7 +19,13 @@
                     
                     <div class="row">
                         <div class="col-md-4">
-                            
+                            <div class="alert alert-warning">
+                                <strong>Note</strong><br />
+                                <p>
+                                    The installation of plugins may cause Rock to restart. You may want to consider
+                                    installing during off-peak times.
+                                </p>
+                            </div>
                         </div>
                         <div class="col-md-8">
                             

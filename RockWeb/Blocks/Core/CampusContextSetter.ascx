@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="CampusContextSetter.ascx.cs" Inherits="RockWeb.Blocks.Core.CampusContextSetter" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="CampusContextSetter.ascx.cs" Inherits="RockWeb.Blocks.Core.CampusContextSetter" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -11,7 +11,7 @@
                     <b class="fa fa-caret-down"></b>
                 </a>
 
-                <ul class="dropdown-menu">
+                <ul id="ulDropdownMenu" runat="server" enableviewstate="false" class="dropdown-menu">
                     <asp:Repeater runat="server" ID="rptCampuses" OnItemCommand="rptCampuses_ItemCommand">
                         <ItemTemplate>
                             <li>

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupAttendanceList.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupAttendanceList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupAttendanceList.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupAttendanceList" %>
 
 <asp:UpdatePanel ID="pnlContent" runat="server">
     <ContentTemplate>
@@ -10,6 +10,9 @@
                     <i class="fa fa-check-square-o"></i>
                     <asp:Literal ID="lHeading" runat="server" Text="Group Attendance" />
                 </h1>
+
+                <Rock:ButtonDropDownList ID="bddlCampus" runat="server" FormGroupCssClass="panel-options pull-right" Title="All Campuses" SelectionStyle="Checkmark" OnSelectionChanged="bddlCampus_SelectionChanged" DataTextField="Name" DataValueField="Id" />
+
             </div>
 
             <div class="panel-body">

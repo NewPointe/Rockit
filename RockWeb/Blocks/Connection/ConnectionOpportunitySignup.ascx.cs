@@ -1,11 +1,11 @@
 ﻿// <copyright>
-// Copyright 2013 by the Spark Development Network
+// Copyright by the Spark Development Network
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Rock Community License (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+// http://www.rockrms.com/license
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -283,22 +283,22 @@ namespace RockWeb.Blocks.Connection
         {
             using ( var rockContext = new RockContext() )
             {
-                // load campus dropdown
-                var campuses = CampusCache.All();
-                cpCampus.Campuses = campuses;
-                cpCampus.Visible = campuses.Count > 1;
-
-                if ( campuses.Any() )
-                {
-                    cpCampus.SetValue( campuses.First().Id );
-                }
-
                 var opportunity = new ConnectionOpportunityService( rockContext ).Get( opportunityId );
                 if ( opportunity == null )
                 {
                     pnlSignup.Visible = false;
                     ShowError( "Incorrect Opportunity Type", "The requested opportunity does not exist." );
                     return;
+                }
+
+                // load campus dropdown
+                var campuses = CampusCache.All().Where( c => ( c.IsActive ?? false ) && opportunity.ConnectionOpportunityCampuses.Any( o => o.CampusId == c.Id ) ).ToList();
+                cpCampus.Campuses = campuses;
+                cpCampus.Visible = campuses.Any();
+
+                if ( campuses.Any() )
+                {
+                    cpCampus.SetValue( campuses.First().Id );
                 }
 
                 pnlSignup.Visible = true;

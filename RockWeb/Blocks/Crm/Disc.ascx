@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Disc.ascx.cs" Inherits="Rockweb.Blocks.Crm.Disc" ViewStateMode="Enabled" EnableViewState="true" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Disc.ascx.cs" Inherits="Rockweb.Blocks.Crm.Disc" ViewStateMode="Enabled" EnableViewState="true" %>
 
 <script type="text/javascript">
     ///<summary>
@@ -215,7 +215,7 @@
                 <h3>Challenges</h3>
                 <asp:Literal ID="lChallenges" runat="server"></asp:Literal>
 
-                <div class="actions margin-t-lg">
+                <div class="actions margin-t-lg margin-b-lg">
                     <asp:Button ID="btnRetakeTest" runat="server" Visible="false" Text="Retake Test" CssClass="btn btn-default" OnClick="btnRetakeTest_Click" />
                 </div>
 

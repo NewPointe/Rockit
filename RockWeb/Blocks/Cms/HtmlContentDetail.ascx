@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="false" CodeFile="HtmlContentDetail.ascx.cs" Inherits="RockWeb.Blocks.Cms.HtmlContentDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="HtmlContentDetail.ascx.cs" Inherits="RockWeb.Blocks.Cms.HtmlContentDetail" %>
 
 <asp:UpdatePanel runat="server" ID="upnlHtmlContent" ChildrenAsTriggers="false" UpdateMode="Conditional">
     <ContentTemplate>
@@ -15,6 +15,7 @@
                         <ContentTemplate>
                             <asp:HiddenField ID="hfVersion" runat="server" />
                             <asp:Panel ID="pnlEdit" runat="server" Visible="false">
+                                <Rock:NotificationBox ID="nbInvalidHtml" runat="server" NotificationBoxType="Warning" Visible="false" />
 
                                 <!-- Approval -->
                                 <asp:UpdatePanel ID="upnlApproval" runat="server">

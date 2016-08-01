@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttendanceHistoryList.ascx.cs" Inherits="RockWeb.Blocks.Checkin.AttendanceHistoryList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttendanceHistoryList.ascx.cs" Inherits="RockWeb.Blocks.Checkin.AttendanceHistoryList" %>
 
 <asp:UpdatePanel ID="upAttendanceHistory" runat="server">
     <ContentTemplate>
@@ -18,9 +18,9 @@
                         <Rock:RockDropDownList ID="ddlAttendanceGroup" runat="server" Label="Group" />
                         <Rock:SchedulePicker ID="spSchedule" runat="server" Label="Schedule" />
                         <Rock:RockDropDownList ID="ddlDidAttend" runat="server" Label="Attended">
-                            <asp:ListItem Text="[All]" Value="all"></asp:ListItem>
-                            <asp:ListItem Text="Did Attend" Value="didattend"></asp:ListItem>
-                            <asp:ListItem Text="Did Not Attend" Value="didnotattend"></asp:ListItem>
+                            <asp:ListItem Text="[All]" Value=""></asp:ListItem>
+                            <asp:ListItem Text="Did Attend" Value="1"></asp:ListItem>
+                            <asp:ListItem Text="Did Not Attend" Value="0"></asp:ListItem>
                         </Rock:RockDropDownList>
                     </Rock:GridFilter>
                     <Rock:Grid ID="gHistory" runat="server" DisplayType="Full" AllowSorting="true" EmptyDataText="No Attendance Found" OnRowDataBound="gHistory_RowDataBound" >

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="RockUpdate.ascx.cs" Inherits="RockWeb.Blocks.Core.RockUpdate" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="RockUpdate.ascx.cs" Inherits="RockWeb.Blocks.Core.RockUpdate" %>
 <%@ Import namespace="Rock" %>
 <style>
     /* This is here because it prevents the contents from jumping around when/if
@@ -61,7 +61,7 @@
                             <ItemTemplate>
                                 <div id="divPanel" runat="server" class="panel">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title"><asp:Literal runat="server" Text='<%# Eval( "Title" ) %>' /></h3>
+                                        <h3 class="panel-title"><asp:Literal runat="server" Text='<%# GetRockVersion( Eval( "Version" ) )%>' /></h3>
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">

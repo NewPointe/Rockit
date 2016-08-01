@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Welcome.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.Welcome" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Welcome.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.Welcome" %>
 
 <asp:UpdatePanel ID="upContent" runat="server">
     <Triggers>
@@ -63,8 +63,7 @@
 
                 <div class="checkin-scroll-panel">
                     <div class="scroller">
-                        <p>There are no current or future schedules for this kiosk!</p>
-
+                        <p>There are no current or future schedules for this kiosk today!</p>
                     </div>
                 </div>
 
