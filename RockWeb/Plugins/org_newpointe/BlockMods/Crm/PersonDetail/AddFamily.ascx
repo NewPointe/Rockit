@@ -93,7 +93,7 @@
 
                     <%--<div class="row">--%>
                     <div class="<%--col-md-12--%>" id="nfmMemberDiv" runat="server">
-                        <Rock:NewFamilyMembers ID="nfmMembers" runat="server" OnAddFamilyMemberClick="nfmMembers_AddFamilyMemberClick" />
+                        <Rock:NewGroupMembers ID="nfmMembers" runat="server" OnAddGroupMemberClick="nfmMembers_AddFamilyMemberClick" />
                     </div>
                     <%--</div>--%>
 
@@ -112,7 +112,7 @@
                 </asp:Panel>
 
                 <asp:Panel ID="pnlContactInfo" runat="server" Visible="false">
-                    <Rock:NewFamilyContactInfo ID="nfciContactInfo" runat="server" />
+                    <Rock:NewGroupContactInfo ID="nfciContactInfo" runat="server" />
                 </asp:Panel>
 
                 <asp:Panel ID="pnlAttributes" runat="server" Visible="false">

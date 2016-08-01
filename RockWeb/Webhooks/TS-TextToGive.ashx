@@ -100,7 +100,7 @@ public class SmsGiveBot : IHttpHandler
 
     int currstate = 0;
     decimal? amount;
-    //bool confirm = false;
+    bool confirm = false;
     int number = -1;
     FinancialPersonSavedAccount ccard = null;
 

@@ -42,8 +42,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Core
     [TextField( "No Campus Text", "The text displayed when no campus context is selected.", true, "Select Campus", order: 3 )]
     [TextField( "Clear Selection Text", "The text displayed when a campus can be unselected. This will not display when the text is empty.", false, "", order: 4 )]
     [BooleanField( "Display Query Strings", "Select to always display query strings. Default behavior will only display the query string when it's passed to the page.", false, "", order: 5 )]
-    [BooleanField("Default To Current User's Campus", "Will use the campus of the current user if no context is provided.", key: "DefaultToCurrentUser")]
-    [CampusField("Default Selected Campus", "The default campus to select", false, key: "DefaultCampus")]
+    [BooleanField("Default To Current User's Campus", "Will use the campus of the current user if no context is provided.", false, "", 6, "DefaultToCurrentUser")]
+    [CampusField("Default Selected Campus", "The default campus to select", false, "", "", 7, "DefaultCampus")]
     public partial class CampusContextSetter : RockBlock
     {
         #region Base Control Methods

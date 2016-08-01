@@ -376,7 +376,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                                 txtPassword.Text,
                                 true);
 
-                            var mergeObjects = GlobalAttributesCache.GetMergeFields(null);
+                            var mergeObjects = Rock.Lava.LavaHelper.GetCommonMergeFields( RockPage );
                             mergeObjects.Add("ConfirmAccountUrl", RootPath + "ConfirmAccount");
 
                             var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;
