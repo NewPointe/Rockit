@@ -43,6 +43,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
         public int SpiritualGift1;
         public int SpiritualGift2;
+        public int SpiritualGift3;
+        public int SpiritualGift4;
         public int Heart1;
         public int Heart2;
         public string PersonEncodedKey = "";
@@ -106,6 +108,16 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                   .Queryable()
                   .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift2" && a.EntityId == SelectedPerson.Id);
 
+                var spiritualGift3 =
+              attributeValueService
+                  .Queryable()
+                  .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift3" && a.EntityId == SelectedPerson.Id);
+
+                var spiritualGift4 =
+              attributeValueService
+                  .Queryable()
+                  .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift4" && a.EntityId == SelectedPerson.Id);
+
                 var heart1 =
                     attributeValueService
                         .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart1" && a.EntityId == SelectedPerson.Id);
@@ -132,6 +144,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
                 if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1.Value);
                 if (spiritualGift2 != null) SpiritualGift2 = Int32.Parse(spiritualGift2.Value);
+                if (spiritualGift3 != null) SpiritualGift3 = Int32.Parse(spiritualGift3.Value);
+                if (spiritualGift4 != null) SpiritualGift4 = Int32.Parse(spiritualGift4.Value);
                 if (heart1 != null) Heart1 = Int32.Parse(heart1.Value);
                 if (heart2 != null) Heart2 = Int32.Parse(heart2.Value);
 
@@ -144,11 +158,15 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
                 var shapeGift1Object = definedValueService.GetListByIds(new List<int> { SpiritualGift1 }).FirstOrDefault();
                 var shapeGift2Object = definedValueService.GetListByIds(new List<int> { SpiritualGift2 }).FirstOrDefault();
+                var shapeGift3Object = definedValueService.GetListByIds(new List<int> { SpiritualGift3 }).FirstOrDefault();
+                var shapeGift4Object = definedValueService.GetListByIds(new List<int> { SpiritualGift4 }).FirstOrDefault();
                 var heart1Object = definedValueService.GetListByIds(new List<int> { Heart1 }).FirstOrDefault();
                 var heart2Object = definedValueService.GetListByIds(new List<int> { Heart2 }).FirstOrDefault();
 
                 shapeGift1Object.LoadAttributes();
                 shapeGift2Object.LoadAttributes();
+                shapeGift3Object.LoadAttributes();
+                shapeGift4Object.LoadAttributes();
                 heart1Object.LoadAttributes();
                 heart2Object.LoadAttributes();
 
@@ -160,10 +178,17 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     shapeGift1Object.GetAttributeValue("AssociatedVolunteerOpportunities");
                 string gift2AssociatedVolunteerOpportunities =
                     shapeGift2Object.GetAttributeValue("AssociatedVolunteerOpportunities");
-                string allAssociatedVolunteerOpportunities = gift1AssociatedVolunteerOpportunities + "," +
-                                                             gift2AssociatedVolunteerOpportunities;
+                string gift3AssociatedVolunteerOpportunities =
+                    shapeGift3Object.GetAttributeValue("AssociatedVolunteerOpportunities");
+                string gift4AssociatedVolunteerOpportunities =
+                    shapeGift4Object.GetAttributeValue("AssociatedVolunteerOpportunities");
 
-                if (allAssociatedVolunteerOpportunities != ",")
+                string allAssociatedVolunteerOpportunities = gift1AssociatedVolunteerOpportunities + "," +
+                                                             gift2AssociatedVolunteerOpportunities + "," +
+                                                             gift3AssociatedVolunteerOpportunities + "," +
+                                                             gift4AssociatedVolunteerOpportunities;
+
+                if (allAssociatedVolunteerOpportunities != ",,,")
                 {
                     List<int> associatedVolunteerOpportunitiesList =
                         allAssociatedVolunteerOpportunities.Split(',').Select(t => int.Parse(t)).ToList();
@@ -234,6 +259,12 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
                 lbGift2Title.Text = shapeGift2Object.Value;
                 lbGift2BodyHTML.Text = shapeGift2Object.GetAttributeValue("HTMLDescription");
+
+                lbGift3Title.Text = shapeGift3Object.Value;
+                lbGift3BodyHTML.Text = shapeGift3Object.GetAttributeValue("HTMLDescription");
+
+                lbGift4Title.Text = shapeGift4Object.Value;
+                lbGift4BodyHTML.Text = shapeGift4Object.GetAttributeValue("HTMLDescription");
 
                 lbHeart1Title.Text = heart1Object.Value;
                 lbHeart1BodyHTML.Text = heart1Object.GetAttributeValue("HTMLDescription");

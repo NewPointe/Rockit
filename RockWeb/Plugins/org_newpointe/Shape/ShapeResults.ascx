@@ -20,23 +20,47 @@
         </div>
 
         <div class="col-xs-12 collapse in gray-bg" id="collapseSpiritualGifts">
-            <div class="col-md-6">
-                <h5 class="text-center">Spiritual Gift 1: </h5>
-                <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbGift1Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbGift1BodyHTML"></asp:Label>
-            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 1: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift1Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift1BodyHTML"></asp:Label>
+                    <hr/>
+                </div>
 
-            <div class="col-md-6">
-                <h5 class="text-center">Spiritual Gift 2: </h5>
-                <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbGift2Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbGift2BodyHTML"></asp:Label>
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 2: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift2Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift2BodyHTML"></asp:Label>
+                    <hr/>
+                </div>
             </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 3: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift3Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift3BodyHTML"></asp:Label>
+                </div>
 
-            <div class="col-md-12">
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 4: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift4Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift4BodyHTML"></asp:Label>
+                </div>
+                
+                <div class="col-md-12 text-center">
+                    <a href="/SpiritualGiftDescriptions" class="btn btn-primary np-button">View All Spiritual Gifts</a>
                 <br />
             </div>
+
+            </div>
+
+            
 
         </div>
 
@@ -187,7 +211,7 @@
 
             <div class="col-md-12">
                 <h2 class="text-center">Volunteer Opportunities</h2>
-                <p>Based on your profile, here is a list of strategic serving opportunities that match your SHAPE:</p>
+                <p>Based on your profile, here is a list of strategic serving opportunities that match your SHAPE. Pick one or two opportunities that you are most interested in.</p>
 
                 <asp:Repeater runat="server" ID="rpVolunteerOpportunities">
                     <ItemTemplate>
@@ -201,7 +225,7 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <p><%# Eval("Summary") %></p>
-                                    <a class="btn btn-default" href="https://newpointe.org/VolunteerOpportunities/<%# Eval("Id") %>" role="button">More Info</a>
+                                    <a class="btn btn-default" href="https://newpointe.org/VolunteerOpportunities/<%# Eval("Id") %>" role="button">More Info / I'm Interested!</a>
                                 </div>
                             </div>
                         </div>

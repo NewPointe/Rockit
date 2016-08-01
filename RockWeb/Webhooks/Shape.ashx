@@ -47,6 +47,8 @@ namespace RockWeb.Webhooks
 
         private string TopGift1;
         private string TopGift2;
+        private string TopGift3;
+        private string TopGift4;
         private string LowestGift;
 
         private string TopHeart1;
@@ -96,6 +98,11 @@ namespace RockWeb.Webhooks
             People = request.Form["People"];
             Places = request.Form["Places"];
             Events = request.Form["Events"];
+
+            // Format text boxes nicely
+            People = People.Replace(System.Environment.NewLine, "<br />");
+            Places = Places.Replace(System.Environment.NewLine, "<br />");
+            Events = Events.Replace(System.Environment.NewLine, "<br />");
 
             string campusFromForm = request.Form["campus"];
             var campusList = CampusCache.All();
@@ -215,6 +222,8 @@ namespace RockWeb.Webhooks
             // Set highest and lowest gifts
             TopGift1 = sortedGiftDictionary.ElementAt(0).Key;
             TopGift2 = sortedGiftDictionary.ElementAt(1).Key;
+            TopGift3 = sortedGiftDictionary.ElementAt(2).Key;
+            TopGift4 = sortedGiftDictionary.ElementAt(3).Key;
             LowestGift = sortedGiftDictionary.Last().Key;
             TopHeart1 = sortedHeartDictionary.ElementAt(0).Key;
             TopHeart2 = sortedHeartDictionary.ElementAt(1).Key;
@@ -223,7 +232,7 @@ namespace RockWeb.Webhooks
 
 
             // Save the attributes
-            SaveAttributes(Int32.Parse(TopGift1), Int32.Parse(TopGift2), Int32.Parse(TopHeart1), Int32.Parse(TopHeart2), People, Places, Events);
+            SaveAttributes(Int32.Parse(TopGift1), Int32.Parse(TopGift2), Int32.Parse(TopGift3), Int32.Parse(TopGift4), Int32.Parse(TopHeart1), Int32.Parse(TopHeart2), People, Places, Events);
 
 
             // Send a confirmation email describing the gifts and how to get back to them
@@ -248,7 +257,7 @@ namespace RockWeb.Webhooks
         /// <param name="Heart1">Int of category of Heart1</param>
         /// <param name="Heart2">Int of category of Heart2</param>
         /// <returns></returns>
-        public void SaveAttributes(int Gift1, int Gift2, int Heart1, int Heart2, string People, string Places, string Events)
+        public void SaveAttributes(int Gift1, int Gift2, int Gift3, int Gift4, int Heart1, int Heart2, string People, string Places, string Events)
         {
 
             AttributeService attributeService = new AttributeService(rockContext);
@@ -256,6 +265,8 @@ namespace RockWeb.Webhooks
 
             var spiritualGift1Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift1");
             var spiritualGift2Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift2");
+            var spiritualGift3Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift3");
+            var spiritualGift4Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGift4");
             var heart1Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "Heart1");
             var heart2Attribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "Heart2");
             var spiritualGiftFormAttribute = attributeService.Queryable().FirstOrDefault(a => a.Key == "SpiritualGiftForm");
@@ -267,6 +278,8 @@ namespace RockWeb.Webhooks
 
             AttributeValue spiritualGiftAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift1Attribute.Id, ThePerson.Id);
             AttributeValue spiritualGiftAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift2Attribute.Id, ThePerson.Id);
+            AttributeValue spiritualGiftAttributeValue3 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift3Attribute.Id, ThePerson.Id);
+            AttributeValue spiritualGiftAttributeValue4 = attributeValueService.GetByAttributeIdAndEntityId(spiritualGift4Attribute.Id, ThePerson.Id);
             AttributeValue heartAttributeValue1 = attributeValueService.GetByAttributeIdAndEntityId(heart1Attribute.Id, ThePerson.Id);
             AttributeValue heartAttributeValue2 = attributeValueService.GetByAttributeIdAndEntityId(heart2Attribute.Id, ThePerson.Id);
             AttributeValue peopleAttributeValue =  attributeValueService.GetByAttributeIdAndEntityId(peopleAttribute.Id, ThePerson.Id);
@@ -307,6 +320,38 @@ namespace RockWeb.Webhooks
                 spiritualGiftAttributeValue2.EntityId = ThePerson.Id;
                 spiritualGiftAttributeValue2.Value = Gift2.ToString();
             }
+
+            if (spiritualGiftAttributeValue3 == null)
+            {
+                spiritualGiftAttributeValue3 = new AttributeValue();
+                spiritualGiftAttributeValue3.AttributeId = spiritualGift3Attribute.Id;
+                spiritualGiftAttributeValue3.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue3.Value = Gift3.ToString();
+                attributeValueService.Add(spiritualGiftAttributeValue3);
+            }
+            else
+            {
+                spiritualGiftAttributeValue3.AttributeId = spiritualGift3Attribute.Id;
+                spiritualGiftAttributeValue3.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue3.Value = Gift3.ToString();
+            }
+
+
+            if (spiritualGiftAttributeValue4 == null)
+            {
+                spiritualGiftAttributeValue4 = new AttributeValue();
+                spiritualGiftAttributeValue4.AttributeId = spiritualGift4Attribute.Id;
+                spiritualGiftAttributeValue4.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue4.Value = Gift4.ToString();
+                attributeValueService.Add(spiritualGiftAttributeValue4);
+            }
+            else
+            {
+                spiritualGiftAttributeValue4.AttributeId = spiritualGift4Attribute.Id;
+                spiritualGiftAttributeValue4.EntityId = ThePerson.Id;
+                spiritualGiftAttributeValue4.Value = Gift4.ToString();
+            }
+
 
             if (heartAttributeValue1 == null)
             {
@@ -554,8 +599,8 @@ namespace RockWeb.Webhooks
 
             //Put the body text together
             string emailBody = emailHeader + String.Format(@"
-            <h2><span style=""color:#8bc540"">SHAPE Assessment Results for {0}</span></h2>
-            <p>Your SHAPE Assessment is complete and the details are below.  <strong><a href=""{1}"">Click here</a> to view your full SHAPE Profile!</strong></p>
+            <h2><span style=""color:#8bc540"">{0}, Here Are Your SHAPE Results!</span></h2>
+            <p>Your SHAPE Assessment is complete and the details are below.  <strong><a href=""{1}"">Click here</a> to view your full SHAPE Profile</strong></p>
             <h3><u>Spiritual Gifts</u></h3>
             <h4>{2}</h4>
             {3}<br /><br />
@@ -566,7 +611,7 @@ namespace RockWeb.Webhooks
             {7}<br /><br />
             <h4>{8}</h4>
             {9}<br /><br /><br />
-            <p>{8}</p>
+            <p>{10}</p>
             ", person.NickName, profileLink, shapeGift1Object.Value, shapeGift1Object.Description, shapeGift2Object.Value, shapeGift2Object.Description, 
             heart1Object.Value, heart1Object.Description, heart2Object.Value, heart2Object.Description, myNewPointeMessage) + emailFooter;
 

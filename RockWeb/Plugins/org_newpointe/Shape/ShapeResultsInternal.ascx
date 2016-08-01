@@ -15,22 +15,44 @@
         <h4 class="panel-title"><i class="fa fa-share-square-o"></i> Spiritual Gifts</h4>
     </div>
         <div class="panel panel-body">
-            <div class="col-md-6">
-                <h5 class="text-center">Spiritual Gift 1: </h5>
-                <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbGift1Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbGift1BodyHTML"></asp:Label>
-            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 1: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift1Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift1BodyHTML"></asp:Label>
+                    <hr/>
+                </div>
 
-            <div class="col-md-6">
-                <h5 class="text-center">Spiritual Gift 2: </h5>
-                <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbGift2Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbGift2BodyHTML"></asp:Label>
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 2: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift2Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift2BodyHTML"></asp:Label>
+                    <hr/>
+                </div>
             </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 3: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift3Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift3BodyHTML"></asp:Label>
+                </div>
 
-            <div class="col-md-12">
+                <div class="col-md-6">
+                    <h5 class="text-center">Spiritual Gift 4: </h5>
+                    <h3 class="text-center" style="margin-top: -10px;">
+                        <asp:Label runat="server" ID="lbGift4Title"></asp:Label></h3>
+                    <asp:Label runat="server" ID="lbGift4BodyHTML"></asp:Label>
+                </div>
+                
+                <div class="col-md-12 text-center">
+                    <a href="/SpiritualGiftDescriptions" class="btn btn-primary np-button">View All Spiritual Gifts</a>
                 <br />
+            </div>
+
             </div>
         </div>
         </div>
