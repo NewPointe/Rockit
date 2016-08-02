@@ -250,6 +250,10 @@
                                 Last 8 Week End Date: <%= Last8WkEndDate %> <br/>
                                 Last 8 Week Start Date Last Year: <%= Last8WkStartDateLy %> <br/>
                                 Last 8 Week End Date Last Year: <%= Last8WkEndDateLy %> <br/>
+                                Last 6 Week Start Date: <%= Last6WkStartDate %> <br/>
+                                Last 6 Week End Date: <%= Last6WkEndDate %> <br/>
+                                Last 6 Week Start Date Last Year: <%= Last6WkStartDateLy %> <br/>
+                                Last 6 Week End Date Last Year: <%= Last6WkEndDateLy %> <br/>
 
                             </p>
                         </div>

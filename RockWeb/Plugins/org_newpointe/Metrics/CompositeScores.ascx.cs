@@ -222,6 +222,10 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public string Last8WkEndDate;
         public string Last8WkStartDateLy;
         public string Last8WkEndDateLy;
+        public string Last6WkStartDate;
+        public string Last6WkEndDate;
+        public string Last6WkStartDateLy;
+        public string Last6WkEndDateLy;
 
         public bool UseGlobalAttributeGoal;
         public double? GoalMultiplier;
@@ -380,6 +384,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             Last8WkEndDate = now.ToShortDateString();
             Last8WkStartDateLy = now.AddDays(-57).AddYears(-1).ToShortDateString();
             Last8WkEndDateLy = now.AddYears(-1).ToShortDateString();
+
+            Last6WkStartDate = now.AddDays(-43).ToShortDateString();
+            Last6WkEndDate = now.ToShortDateString();
+            Last6WkStartDateLy = now.AddDays(-43).AddYears(-1).ToShortDateString();
+            Last6WkEndDateLy = now.AddYears(-1).ToShortDateString();
 
 
             switch (iMonth)
