@@ -487,7 +487,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //All
             iAttendanceAll = Get6WkAttendanceAll(SelectedCampusId, periodEndDate);
             iAttendanceAllLastYear = Get6WkAttendanceAll(SelectedCampusId, lastPeriodEndDate);
-            iAttendanceAllGoalCurrent = iAttendanceAudGoalCurrent + iAttendanceAllGoalCurrent + iAttendanceStudentGoalCurrent;
+            iAttendanceAllGoalCurrent = iAttendanceAudGoalCurrent + iAttendanceChildGoalCurrent + iAttendanceStudentGoalCurrent;
             iAttendanceAllGoal2020 = iAttendanceAudGoal2020 + iAttendanceChildGoal2020 + iAttendanceStudentGoal2020;
             
 

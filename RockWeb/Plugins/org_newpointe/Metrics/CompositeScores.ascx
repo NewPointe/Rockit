@@ -60,6 +60,17 @@
                 <td> </td>
             </tr>
             <tr>
+                <td><span style="text-indent: 20px; display: block;"><i>All Attendance <small>(Avg past 6wks)</small></i></span></td>
+                <td><%= iAttendanceAll %></td>
+                <td><%= iAttendanceAllLastYear %></td>
+                <td><%= String.Format("{0:0}", (((double)iAttendanceAll / (double)iAttendanceAllLastYear) - 1) * 100) %>%</td>
+                <td><%= iAttendanceAllGoalCurrent %></td>
+                <td><%= String.Format("{0:0}", iAttendanceAllGoalProgress) %>%</td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+            </tr>
+            <tr>
                 <td>Volunteers</td>
                 <td><%= iVolunteers %></td>
                 <td><%= iVolunteersLastYear %></td>
