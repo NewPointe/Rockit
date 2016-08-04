@@ -7,7 +7,8 @@
  
         <h1 class="text-center">SHAPE Profile</h1>
         <h2 class="text-center" style="margin-top: -10px;">
-            <asp:Label runat="server" ID="lbPersonName"></asp:Label></h2>
+            <asp:Label runat="server" ID="lbPersonName"></asp:Label><br />
+                <small>Assessment Taken: <asp:Label runat="server" ID="lbAssessmentDate"></asp:Label></small></h2>
 
         
     <div class="panel panel-block"> 
@@ -58,23 +59,55 @@
         </div>
 
 
+        <div class="panel panel-block"> 
+    <div class="panel-heading">
+        <h4 class="panel-title"><i class="fa fa-share-square-o"></i>Heart</h4>
+    </div>
+        <div class="panel panel-body">
+            
+            <div class="col-md-4">
+                <h3 class="text-center">My Interests: </h3>
+                <p><asp:Label runat="server" ID="lbHeartCategories"></asp:Label></p>
+            </div>
+
+            <div class="col-md-4">
+                <h3 class="text-center">My Causes: </h3>
+                <p><asp:Label runat="server" ID="lbHeartCauses"></asp:Label></p>
+            </div>
+            
+            <div class="col-md-4">
+                <h3 class="text-center">My Passions: </h3>
+                <p><asp:Label runat="server" ID="lbHeartPassion"></asp:Label></p>
+            </div>
+
+
+            <div class="col-md-12">
+                <br />
+            </div>
+
+        </div>
+        </div>
+        
+        
+        
+
     <div class="panel panel-block"> 
     <div class="panel-heading">
-        <h4 class="panel-title"><i class="fa fa-share-square-o"></i> Heart and Abilities</h4>
+        <h4 class="panel-title"><i class="fa fa-share-square-o"></i>Abilities</h4>
     </div>
         <div class="panel panel-body">
             <div class="col-md-6">
-                <h5 class="text-center">Heart/Ability 1: </h5>
+                <h5 class="text-center">Ability/Ability 1: </h5>
                 <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbHeart1Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbHeart1BodyHTML"></asp:Label>
+                    <asp:Label runat="server" ID="lbAbility1Title"></asp:Label></h3>
+                <asp:Label runat="server" ID="lbAbility1BodyHTML"></asp:Label>
             </div>
 
             <div class="col-md-6">
-                <h5 class="text-center">Heart/Ability 2: </h5>
+                <h5 class="text-center">Ability/Ability 2: </h5>
                 <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbHeart2Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbHeart2BodyHTML"></asp:Label>
+                    <asp:Label runat="server" ID="lbAbility2Title"></asp:Label></h3>
+                <asp:Label runat="server" ID="lbAbility2BodyHTML"></asp:Label>
             </div>
 
 

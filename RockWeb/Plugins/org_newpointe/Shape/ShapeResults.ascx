@@ -9,7 +9,8 @@
  
         <h1 class="text-center">My SHAPE Profile</h1>
         <h2 class="text-center" style="margin-top: -10px;">
-            <asp:Label runat="server" ID="lbPersonName"></asp:Label></h2>
+            <asp:Label runat="server" ID="lbPersonName"></asp:Label><br />
+                <small>Assessment Taken: <asp:Label runat="server" ID="lbAssessmentDate"></asp:Label></small></h2>
 
         <div class="col-xs-12 resourceMenu">
             <h4>
@@ -54,37 +55,74 @@
                 </div>
                 
                 <div class="col-md-12 text-center">
-                    <a href="/SpiritualGiftDescriptions" class="btn btn-primary np-button">View All Spiritual Gifts</a>
+                    <a href="/SpiritualGiftDescriptions" class="btn btn-primary np-button">View Spiritual Gifts Library</a>
                 <br />
             </div>
 
             </div>
 
-            
-
         </div>
-
-
-        <div class="col-xs-12 resourceMenu">
+        
+     
+        
+       <div class="col-xs-12 resourceMenu">
             <h4>
                 <a data-toggle="collapse" data-target="#collapseHeart" aria-expanded="true" aria-controls="collapseExample">
-                    <i class="fa fa-share-square-o"></i> Heart and Abilities
+                    <i class="fa fa-share-square-o"></i> Heart
                 </a>
             </h4>
         </div>
         <div class="col-xs-12 collapse in gray-bg" id="collapseHeart">
+            <div class="col-md-4">
+                <h3 class="text-center">My Interests: </h3>
+                <p><asp:Label runat="server" ID="lbHeartCategories"></asp:Label></p>
+            </div>
+
+            <div class="col-md-4">
+                <h3 class="text-center">My Causes: </h3>
+                <p><asp:Label runat="server" ID="lbHeartCauses"></asp:Label></p>
+            </div>
+            
+            <div class="col-md-4">
+                <h3 class="text-center">My Passions: </h3>
+                <p><asp:Label runat="server" ID="lbHeartPassion"></asp:Label></p>
+            </div>
+
+
+            <div class="col-md-12">
+                <br />
+            </div>
+
+        </div> 
+        
+        
+        
+        
+        
+        
+        
+
+
+        <div class="col-xs-12 resourceMenu">
+            <h4>
+                <a data-toggle="collapse" data-target="#collapseAbility" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-share-square-o"></i> Abilities
+                </a>
+            </h4>
+        </div>
+        <div class="col-xs-12 collapse in gray-bg" id="collapseAbility">
             <div class="col-md-6">
-                <h5 class="text-center">Heart/Ability 1: </h5>
+                <h5 class="text-center">Ability/Ability 1: </h5>
                 <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbHeart1Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbHeart1BodyHTML"></asp:Label>
+                    <asp:Label runat="server" ID="lbAbility1Title"></asp:Label></h3>
+                <asp:Label runat="server" ID="lbAbility1BodyHTML"></asp:Label>
             </div>
 
             <div class="col-md-6">
-                <h5 class="text-center">Heart/Ability 2: </h5>
+                <h5 class="text-center">Ability/Ability 2: </h5>
                 <h3 class="text-center" style="margin-top: -10px;">
-                    <asp:Label runat="server" ID="lbHeart2Title"></asp:Label></h3>
-                <asp:Label runat="server" ID="lbHeart2BodyHTML"></asp:Label>
+                    <asp:Label runat="server" ID="lbAbility2Title"></asp:Label></h3>
+                <asp:Label runat="server" ID="lbAbility2BodyHTML"></asp:Label>
             </div>
 
 
@@ -93,6 +131,8 @@
             </div>
 
         </div>
+        
+     
 
 
 
@@ -203,7 +243,7 @@
         <div class="col-xs-12 resourceMenu">
             <h4>
                 <a data-toggle="collapse" data-target="#collapseVolunteer" aria-expanded="true" aria-controls="collapseExample">
-                    <i class="fa fa-share-square-o"></i>Volunteer Opportunities
+                    <i class="fa fa-share-square-o"></i> Volunteer Opportunities
                 </a>
             </h4>
         </div>
@@ -233,6 +273,7 @@
                     </ItemTemplate>
                 </asp:Repeater>
 
+                <p><br/>Want to see more opportunities to use your gifts?  Click below!</p>
                 <a class="btn btn-newpointe" href="https://newpointe.org/VolunteerOpportunities/" role="button">See More Volunteer Opportunities</a>
 
 

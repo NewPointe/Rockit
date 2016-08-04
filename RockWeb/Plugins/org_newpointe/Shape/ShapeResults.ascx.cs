@@ -21,6 +21,7 @@ using Rock.Workflow;
 
 using System.Text.RegularExpressions;
 using System.Web.UI.HtmlControls;
+using Quartz.Util;
 using Rock.Security;
 using Rock.Web.UI;
 
@@ -45,8 +46,8 @@ namespace RockWeb.Plugins.org_newpointe.Shape
         public int SpiritualGift2;
         public int SpiritualGift3;
         public int SpiritualGift4;
-        public int Heart1;
-        public int Heart2;
+        public int Ability1;
+        public int Ability2;
         public string PersonEncodedKey = "";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -89,6 +90,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
             // Load the attributes
 
             AttributeValueService attributeValueService = new AttributeValueService(rockContext);
+            DefinedValueService definedValueService = new DefinedValueService(rockContext);
 
             var spiritualGift1 =
                 attributeValueService
@@ -118,13 +120,13 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                   .Queryable()
                   .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift4" && a.EntityId == SelectedPerson.Id);
 
-                var heart1 =
+                var ability1 =
                     attributeValueService
-                        .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart1" && a.EntityId == SelectedPerson.Id);
+                        .Queryable().FirstOrDefault(a => a.Attribute.Key == "Ability1" && a.EntityId == SelectedPerson.Id);
 
-                var heart2 =
+                var ability2 =
                     attributeValueService
-                        .Queryable().FirstOrDefault(a => a.Attribute.Key == "Heart2" && a.EntityId == SelectedPerson.Id);
+                        .Queryable().FirstOrDefault(a => a.Attribute.Key == "Ability2" && a.EntityId == SelectedPerson.Id);
 
                 var people = attributeValueService
                     .Queryable()
@@ -141,35 +143,109 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                     .FirstOrDefault(a => a.Attribute.Key == "SHAPEEvents" && a.EntityId == SelectedPerson.Id)
                     .Value;
 
+                var heartCategories = attributeValueService
+                    .Queryable()
+                    .FirstOrDefault(a => a.Attribute.Key == "HeartCategories" && a.EntityId == SelectedPerson.Id)
+                    .Value;
 
-                if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1.Value);
-                if (spiritualGift2 != null) SpiritualGift2 = Int32.Parse(spiritualGift2.Value);
-                if (spiritualGift3 != null) SpiritualGift3 = Int32.Parse(spiritualGift3.Value);
-                if (spiritualGift4 != null) SpiritualGift4 = Int32.Parse(spiritualGift4.Value);
-                if (heart1 != null) Heart1 = Int32.Parse(heart1.Value);
-                if (heart2 != null) Heart2 = Int32.Parse(heart2.Value);
+                var heartCauses = attributeValueService
+                    .Queryable()
+                    .FirstOrDefault(a => a.Attribute.Key == "HeartCauses" && a.EntityId == SelectedPerson.Id)
+                    .Value;
+
+                var heartPassion = attributeValueService
+                    .Queryable()
+                    .FirstOrDefault(a => a.Attribute.Key == "HeartPassion" && a.EntityId == SelectedPerson.Id)
+                    .Value;
+
+
+                string spiritualGift1Guid;
+                string spiritualGift2Guid;
+                string spiritualGift3Guid;
+                string spiritualGift4Guid;
+                string ability1Guid;
+                string ability2Guid;
+
+
+                // Check to see if there are already values saved as an ID.  If so, convert them to GUID
+                if (spiritualGift1.ToString().Length < 5)
+                {
+                    if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1.Value);
+                    if (spiritualGift2 != null) SpiritualGift2 = Int32.Parse(spiritualGift2.Value);
+                    if (spiritualGift3 != null) SpiritualGift3 = Int32.Parse(spiritualGift3.Value);
+                    if (spiritualGift4 != null) SpiritualGift4 = Int32.Parse(spiritualGift4.Value);
+                    if (ability1 != null) Ability1 = Int32.Parse(ability1.Value);
+                    if (ability2 != null) Ability2 = Int32.Parse(ability2.Value);
+
+                    var intsOfGifts =
+                        definedValueService.GetByIds(new List<int>
+                        {
+                            SpiritualGift1,
+                            SpiritualGift2,
+                            SpiritualGift3,
+                            SpiritualGift4,
+                            Ability1,
+                            Ability2
+                        });
+
+                    spiritualGift1Guid = intsOfGifts.ToList()[SpiritualGift1].Guid.ToString();
+                    spiritualGift2Guid = intsOfGifts.ToList()[SpiritualGift2].Guid.ToString();
+                    spiritualGift3Guid = intsOfGifts.ToList()[SpiritualGift3].Guid.ToString();
+                    spiritualGift4Guid = intsOfGifts.ToList()[SpiritualGift4].Guid.ToString();
+                    ability1Guid = intsOfGifts.ToList()[Ability1].Guid.ToString();
+                    ability2Guid = intsOfGifts.ToList()[Ability2].Guid.ToString();
+                }
+                else
+                {
+                    spiritualGift1Guid = spiritualGift1.Value;
+                    spiritualGift2Guid = spiritualGift2.Value;
+                    spiritualGift3Guid = spiritualGift3.Value;
+                    spiritualGift4Guid = spiritualGift4.Value;
+                    ability1Guid = ability1.Value;
+                    ability2Guid = ability2.Value;
+                }
 
 
 
 
-                // Get all of the data about the assiciated gifts and heart categories
+                // Get all of the data about the assiciated gifts and ability categories
+                var shapeGift1Object = definedValueService.GetListByGuids(new List<Guid> { new Guid(spiritualGift1Guid) }).FirstOrDefault();
+                var shapeGift2Object = definedValueService.GetListByGuids(new List<Guid> { new Guid(spiritualGift2Guid) }).FirstOrDefault();
+                var shapeGift3Object = definedValueService.GetListByGuids(new List<Guid> { new Guid(spiritualGift3Guid) }).FirstOrDefault();
+                var shapeGift4Object = definedValueService.GetListByGuids(new List<Guid> { new Guid(spiritualGift4Guid) }).FirstOrDefault();
+                var ability1Object = definedValueService.GetListByGuids(new List<Guid> { new Guid(ability1Guid) }).FirstOrDefault();
+                var ability2Object = definedValueService.GetListByGuids(new List<Guid> { new Guid(ability2Guid) }).FirstOrDefault();
 
-                DefinedValueService definedValueService = new DefinedValueService(rockContext);
-
-                var shapeGift1Object = definedValueService.GetListByIds(new List<int> { SpiritualGift1 }).FirstOrDefault();
-                var shapeGift2Object = definedValueService.GetListByIds(new List<int> { SpiritualGift2 }).FirstOrDefault();
-                var shapeGift3Object = definedValueService.GetListByIds(new List<int> { SpiritualGift3 }).FirstOrDefault();
-                var shapeGift4Object = definedValueService.GetListByIds(new List<int> { SpiritualGift4 }).FirstOrDefault();
-                var heart1Object = definedValueService.GetListByIds(new List<int> { Heart1 }).FirstOrDefault();
-                var heart2Object = definedValueService.GetListByIds(new List<int> { Heart2 }).FirstOrDefault();
 
                 shapeGift1Object.LoadAttributes();
                 shapeGift2Object.LoadAttributes();
                 shapeGift3Object.LoadAttributes();
                 shapeGift4Object.LoadAttributes();
-                heart1Object.LoadAttributes();
-                heart2Object.LoadAttributes();
+                ability1Object.LoadAttributes();
+                ability2Object.LoadAttributes();
 
+
+                // Get heart choices Values from Guids
+                string heartCategoriesString = "";
+                if (!heartCategories.IsNullOrWhiteSpace())
+                {
+                    string[] heartCategoryArray = heartCategories.Split(',');
+                    foreach (string category in heartCategoryArray)
+                    {
+                        var definedValueObject =
+                            definedValueService.Queryable().FirstOrDefault(a => a.Guid == new Guid(category));
+
+                        if (category.Equals(heartCategoryArray.Last()))
+                        {
+                            heartCategoriesString += definedValueObject.Value;
+                        }
+                        else
+                        {
+                            heartCategoriesString += definedValueObject.Value + ", ";
+                        }
+                    }
+
+                }
 
 
                 // Get Volunteer Opportunities
@@ -266,15 +342,22 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 lbGift4Title.Text = shapeGift4Object.Value;
                 lbGift4BodyHTML.Text = shapeGift4Object.GetAttributeValue("HTMLDescription");
 
-                lbHeart1Title.Text = heart1Object.Value;
-                lbHeart1BodyHTML.Text = heart1Object.GetAttributeValue("HTMLDescription");
+                lbAbility1Title.Text = ability1Object.Value;
+                lbAbility1BodyHTML.Text = ability1Object.GetAttributeValue("HTMLDescription");
 
-                lbHeart2Title.Text = heart2Object.Value;
-                lbHeart2BodyHTML.Text = heart2Object.GetAttributeValue("HTMLDescription");
+                lbAbility2Title.Text = ability2Object.Value;
+                lbAbility2BodyHTML.Text = ability2Object.GetAttributeValue("HTMLDescription");
 
                 lbPeople.Text = people;
                 lbPlaces.Text = places;
                 lbEvents.Text = events;
+
+                lbHeartCategories.Text = heartCategoriesString;
+                lbHeartCauses.Text = heartCauses;
+                lbHeartPassion.Text = heartPassion;
+
+
+                lbAssessmentDate.Text = shapeGift1Object.CreatedDateTime.Value.ToShortDateString();
 
 
                 // Show create account panel if this person doesn't have an account
