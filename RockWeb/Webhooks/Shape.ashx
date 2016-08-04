@@ -111,7 +111,7 @@ namespace RockWeb.Webhooks
             {
                 heartCategories = heartCategories.Remove(0, 2);
                 DefinedValueService definedValueService = new DefinedValueService(rockContext);
-                string[] heartCategoryArray = Regex.Split(heartCategories, " - ");
+                string[] heartCategoryArray = Regex.Split(heartCategories, "\r- ");
                 foreach (string category in heartCategoryArray)
                 {
                     Guid categoryGuid =
