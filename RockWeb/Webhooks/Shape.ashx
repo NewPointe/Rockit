@@ -105,23 +105,32 @@ namespace RockWeb.Webhooks
             Events = request.Form["Events"];
 
             // Heart fields
-            string heartCategories =  People = request.Form["HeartCategories"];
+            string heartCategories = request.Form["HeartCategories"];
             IList<Guid> guidArrayList = new List<Guid>();
             if (!heartCategories.IsNullOrWhiteSpace())
             {
                 heartCategories = heartCategories.Remove(0, 2);
                 DefinedValueService definedValueService = new DefinedValueService(rockContext);
-                string[] heartCategoryArray = Regex.Split(heartCategories, "\r- ");
+                heartCategories = heartCategories.Replace("\n", " ");
+                string[] heartCategoryArray = heartCategories.Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string category in heartCategoryArray)
                 {
-                    Guid categoryGuid =
-                        definedValueService
-                            .Queryable()
-                            .FirstOrDefault(a => a.Value == category && a.DefinedType.Name == "SHAPE Heart")
-                            .Guid;
-                    guidArrayList.Add(categoryGuid);
+                    var firstOrDefault = definedValueService
+                        .Queryable()
+                        .FirstOrDefault(a => a.Value == category && a.DefinedType.Name == "SHAPE Heart");
+                    if (firstOrDefault != null)
+                    {
+                        Guid categoryGuid =
+                            firstOrDefault
+                                .Guid;
+                        guidArrayList.Add(categoryGuid);
+                    }
                 }
-                HeartCategories = string.Join(",", guidArrayList.ToArray());
+                if (guidArrayList != null)
+                {
+                    HeartCategories = string.Join(",", guidArrayList.ToArray());
+                }
+                
             }
             else
             {
