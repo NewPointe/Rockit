@@ -560,10 +560,6 @@ namespace RockWeb.Webhooks
 
 
 
-
-
-
-
             try
             {
                 rockContext.SaveChanges();
@@ -690,6 +686,8 @@ namespace RockWeb.Webhooks
             ability1Object.LoadAttributes();
             ability2Object.LoadAttributes();
 
+            string profileLink = "http://newpointe.org/SHAPEProfile/" + profileValue;
+
             string myNewPointeMessage;
             if (person.Users.Count > 0)
             {
@@ -698,12 +696,12 @@ namespace RockWeb.Webhooks
             }
             else
             {
-                myNewPointeMessage = @"You can view your full SHAPE Profile, plus manage your personal information, 
+                myNewPointeMessage = String.Format(@"You can view your full SHAPE Profile, plus manage your personal information, 
                                      give online, and much more via a MyNewPointe account.
-                                     <a href=""https://newpointe.org/NewAccount"">Click here</a> to create a MyNewPointe Account now!";
+                                     <a href=""{0}"">Click here</a> to create a MyNewPointe Account via your SHAPE Profile now!", profileLink);
             }
 
-            string profileLink = "http://newpointe.org/SHAPEProfile/" + profileValue;
+            
 
             //Put the body text together
             string emailBody = emailHeader + String.Format(@"

@@ -92,71 +92,96 @@ namespace RockWeb.Plugins.org_newpointe.Shape
             AttributeValueService attributeValueService = new AttributeValueService(rockContext);
             DefinedValueService definedValueService = new DefinedValueService(rockContext);
 
-            var spiritualGift1 =
+
+
+            string spiritualGift1 = "";
+            string spiritualGift2 = "";
+            string spiritualGift3 = "";
+            string spiritualGift4 = "";
+            string heartCategories = "";
+            string heartCauses = "";
+            string heartPassion = "";
+            string ability1 = "";
+            string ability2 = "";
+            string people = "";
+            string places = "";
+            string events = "";
+
+            var spiritualGift1AttributeValue =
                 attributeValueService
                     .Queryable()
                     .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift1" && a.EntityId == SelectedPerson.Id);
 
             // Redirect if they haven't taken the Assessment
-            if (spiritualGift1 == null)
+            if (spiritualGift1AttributeValue == null)
             {
                 Response.Redirect(shapePageReference.BuildUrl(), true);
             }
 
             else
             {
-                var spiritualGift2 =
+                var spiritualGift2AttributeValue =
               attributeValueService
                   .Queryable()
                   .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift2" && a.EntityId == SelectedPerson.Id);
 
-                var spiritualGift3 =
+                var spiritualGift3AttributeValue =
               attributeValueService
                   .Queryable()
                   .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift3" && a.EntityId == SelectedPerson.Id);
 
-                var spiritualGift4 =
+                var spiritualGift4AttributeValue =
               attributeValueService
                   .Queryable()
                   .FirstOrDefault(a => a.Attribute.Key == "SpiritualGift4" && a.EntityId == SelectedPerson.Id);
 
-                var ability1 =
+                var ability1AttributeValue =
                     attributeValueService
                         .Queryable().FirstOrDefault(a => a.Attribute.Key == "Ability1" && a.EntityId == SelectedPerson.Id);
 
-                var ability2 =
+                var ability2AttributeValue =
                     attributeValueService
                         .Queryable().FirstOrDefault(a => a.Attribute.Key == "Ability2" && a.EntityId == SelectedPerson.Id);
 
-                var people = attributeValueService
+                var peopleAttributeValue = attributeValueService
                     .Queryable()
-                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEPeople" && a.EntityId == SelectedPerson.Id)
-                    .Value;
+                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEPeople" && a.EntityId == SelectedPerson.Id);
 
-                var places = attributeValueService
+                var placesAttributeValue = attributeValueService
                     .Queryable()
-                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEPlaces" && a.EntityId == SelectedPerson.Id)
-                    .Value;
+                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEPlaces" && a.EntityId == SelectedPerson.Id);
 
-                var events = attributeValueService
+                var eventsAttributeValue = attributeValueService
                     .Queryable()
-                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEEvents" && a.EntityId == SelectedPerson.Id)
-                    .Value;
+                    .FirstOrDefault(a => a.Attribute.Key == "SHAPEEvents" && a.EntityId == SelectedPerson.Id);
 
-                var heartCategories = attributeValueService
+                var heartCategoriesAttributeValue = attributeValueService
                     .Queryable()
-                    .FirstOrDefault(a => a.Attribute.Key == "HeartCategories" && a.EntityId == SelectedPerson.Id)
-                    .Value;
+                    .FirstOrDefault(a => a.Attribute.Key == "HeartCategories" && a.EntityId == SelectedPerson.Id);
 
-                var heartCauses = attributeValueService
+                var heartCausesAttributeValue = attributeValueService
                     .Queryable()
-                    .FirstOrDefault(a => a.Attribute.Key == "HeartCauses" && a.EntityId == SelectedPerson.Id)
-                    .Value;
+                    .FirstOrDefault(a => a.Attribute.Key == "HeartCauses" && a.EntityId == SelectedPerson.Id);
 
-                var heartPassion = attributeValueService
+                var heartPassionAttributeValue = attributeValueService
                     .Queryable()
-                    .FirstOrDefault(a => a.Attribute.Key == "HeartPassion" && a.EntityId == SelectedPerson.Id)
-                    .Value;
+                    .FirstOrDefault(a => a.Attribute.Key == "HeartPassion" && a.EntityId == SelectedPerson.Id);
+
+
+                if (spiritualGift1AttributeValue.Value != null) spiritualGift1 = spiritualGift1AttributeValue.Value;
+                if (spiritualGift2AttributeValue.Value != null) spiritualGift2 = spiritualGift2AttributeValue.Value;
+                if (spiritualGift3AttributeValue.Value != null) spiritualGift3 = spiritualGift3AttributeValue.Value;
+                if (spiritualGift4AttributeValue.Value != null) spiritualGift4 = spiritualGift4AttributeValue.Value;
+                if (heartCategoriesAttributeValue.Value != null) heartCategories = heartCategoriesAttributeValue.Value;
+                if (heartCausesAttributeValue.Value != null) heartCategories = heartCategoriesAttributeValue.Value;
+                if (heartPassionAttributeValue.Value != null) heartPassion = heartPassionAttributeValue.Value;
+                if (ability1AttributeValue.Value != null) ability1 = ability1AttributeValue.Value;
+                if (ability2AttributeValue.Value != null) ability2 = ability2AttributeValue.Value;
+                if (peopleAttributeValue.Value != null) people = peopleAttributeValue.Value;
+                if (placesAttributeValue.Value != null) places = placesAttributeValue.Value;
+                if (eventsAttributeValue.Value != null) events = eventsAttributeValue.Value;
+
+
 
 
                 string spiritualGift1Guid;
@@ -170,12 +195,12 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 // Check to see if there are already values saved as an ID.  If so, convert them to GUID
                 if (spiritualGift1.ToString().Length < 5)
                 {
-                    if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1.Value);
-                    if (spiritualGift2 != null) SpiritualGift2 = Int32.Parse(spiritualGift2.Value);
-                    if (spiritualGift3 != null) SpiritualGift3 = Int32.Parse(spiritualGift3.Value);
-                    if (spiritualGift4 != null) SpiritualGift4 = Int32.Parse(spiritualGift4.Value);
-                    if (ability1 != null) Ability1 = Int32.Parse(ability1.Value);
-                    if (ability2 != null) Ability2 = Int32.Parse(ability2.Value);
+                    if (spiritualGift1 != null) SpiritualGift1 = Int32.Parse(spiritualGift1);
+                    if (spiritualGift2 != null) SpiritualGift2 = Int32.Parse(spiritualGift2);
+                    if (spiritualGift3 != null) SpiritualGift3 = Int32.Parse(spiritualGift3);
+                    if (spiritualGift4 != null) SpiritualGift4 = Int32.Parse(spiritualGift4);
+                    if (ability1 != null) Ability1 = Int32.Parse(ability1);
+                    if (ability2 != null) Ability2 = Int32.Parse(ability2);
 
                     var intsOfGifts =
                         definedValueService.GetByIds(new List<int>
@@ -197,12 +222,12 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 }
                 else
                 {
-                    spiritualGift1Guid = spiritualGift1.Value;
-                    spiritualGift2Guid = spiritualGift2.Value;
-                    spiritualGift3Guid = spiritualGift3.Value;
-                    spiritualGift4Guid = spiritualGift4.Value;
-                    ability1Guid = ability1.Value;
-                    ability2Guid = ability2.Value;
+                    spiritualGift1Guid = spiritualGift1;
+                    spiritualGift2Guid = spiritualGift2;
+                    spiritualGift3Guid = spiritualGift3;
+                    spiritualGift4Guid = spiritualGift4;
+                    ability1Guid = ability1;
+                    ability2Guid = ability2;
                 }
 
 
