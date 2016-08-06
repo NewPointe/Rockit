@@ -46,10 +46,21 @@ namespace RockWeb.Plugins.org_newpointe.Shape
         public int Ability1;
         public int Ability2;
 
+        public string PersonEncodedKey = "";
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            if (!string.IsNullOrWhiteSpace(PageParameter("PersonId")))
+
+            if (!string.IsNullOrWhiteSpace(PageParameter("FormId")))
+            {
+                //Load the person based on the FormId
+                var personInUrl = PageParameter("FormId");
+                SelectedPerson = GetPersonFromForm(personInUrl);
+                PersonEncodedKey = SelectedPerson.UrlEncodedKey;
+            }
+
+            else if (!string.IsNullOrWhiteSpace(PageParameter("PersonId")))
                 {
                     //Load the person based on the PersonId
                     SelectedPerson = GetPersonFromId(PageParameter("PersonId"));
@@ -339,7 +350,14 @@ namespace RockWeb.Plugins.org_newpointe.Shape
             lbHeartCauses.Text = heartCauses;
             lbHeartPassion.Text = heartPassion;
 
-            lbAssessmentDate.Text = shapeGift1Object.CreatedDateTime.Value.ToShortDateString();
+            if (spiritualGift1AttributeValue.ModifiedDateTime != null)
+            {
+                lbAssessmentDate.Text = spiritualGift1AttributeValue.ModifiedDateTime.Value.ToShortDateString();
+            }
+            else
+            {
+                lbAssessmentDate.Text = spiritualGift1AttributeValue.CreatedDateTime.Value.ToShortDateString();
+            }
 
 
         }

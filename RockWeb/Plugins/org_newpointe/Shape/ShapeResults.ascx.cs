@@ -378,8 +378,14 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 lbHeartCauses.Text = heartCauses;
                 lbHeartPassion.Text = heartPassion;
 
-
-                lbAssessmentDate.Text = shapeGift1Object.CreatedDateTime.Value.ToShortDateString();
+                if (spiritualGift1AttributeValue.ModifiedDateTime != null)
+                {
+                    lbAssessmentDate.Text = spiritualGift1AttributeValue.ModifiedDateTime.Value.ToShortDateString();
+                }
+                else
+                {
+                    lbAssessmentDate.Text = spiritualGift1AttributeValue.CreatedDateTime.Value.ToShortDateString();
+                }
 
 
                 // Show create account panel if this person doesn't have an account

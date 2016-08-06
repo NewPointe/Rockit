@@ -9,6 +9,7 @@
         <h2 class="text-center" style="margin-top: -10px;">
             <asp:Label runat="server" ID="lbPersonName"></asp:Label><br />
                 <small>Assessment Taken: <asp:Label runat="server" ID="lbAssessmentDate"></asp:Label></small></h2>
+        <p class="text-center"><a href="https://rock.newpointe.org/Person/<%= SelectedPerson.Id %>" class="btn btn-primary np-button">Return to Person Profile</a></p>
 
         
     <div class="panel panel-block"> 
