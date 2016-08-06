@@ -139,7 +139,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 if (spiritualGift3AttributeValue.Value != null) spiritualGift3 = spiritualGift3AttributeValue.Value;
                 if (spiritualGift4AttributeValue.Value != null) spiritualGift4 = spiritualGift4AttributeValue.Value;
                 if (heartCategoriesAttributeValue.Value != null) heartCategories = heartCategoriesAttributeValue.Value;
-                if (heartCausesAttributeValue.Value != null) heartCategories = heartCategoriesAttributeValue.Value;
+                if (heartCausesAttributeValue.Value != null) heartCauses = heartCausesAttributeValue.Value;
                 if (heartPassionAttributeValue.Value != null) heartPassion = heartPassionAttributeValue.Value;
                 if (ability1AttributeValue.Value != null) ability1 = ability1AttributeValue.Value;
                 if (ability2AttributeValue.Value != null) ability2 = ability2AttributeValue.Value;
@@ -149,11 +149,11 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
 
                 string spiritualGift1Guid;
-            string spiritualGift2Guid;
-            string spiritualGift3Guid;
-            string spiritualGift4Guid;
-            string ability1Guid;
-            string ability2Guid;
+                string spiritualGift2Guid;
+                string spiritualGift3Guid;
+                string spiritualGift4Guid;
+                string ability1Guid;
+                string ability2Guid;
 
 
             // Check to see if there are already values saved as an ID.  If so, convert them to GUID

@@ -173,16 +173,13 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                 if (spiritualGift3AttributeValue.Value != null) spiritualGift3 = spiritualGift3AttributeValue.Value;
                 if (spiritualGift4AttributeValue.Value != null) spiritualGift4 = spiritualGift4AttributeValue.Value;
                 if (heartCategoriesAttributeValue.Value != null) heartCategories = heartCategoriesAttributeValue.Value;
-                if (heartCausesAttributeValue.Value != null) heartCategories = heartCategoriesAttributeValue.Value;
+                if (heartCausesAttributeValue.Value != null) heartCauses = heartCausesAttributeValue.Value;
                 if (heartPassionAttributeValue.Value != null) heartPassion = heartPassionAttributeValue.Value;
                 if (ability1AttributeValue.Value != null) ability1 = ability1AttributeValue.Value;
                 if (ability2AttributeValue.Value != null) ability2 = ability2AttributeValue.Value;
                 if (peopleAttributeValue.Value != null) people = peopleAttributeValue.Value;
                 if (placesAttributeValue.Value != null) places = placesAttributeValue.Value;
                 if (eventsAttributeValue.Value != null) events = eventsAttributeValue.Value;
-
-
-
 
                 string spiritualGift1Guid;
                 string spiritualGift2Guid;

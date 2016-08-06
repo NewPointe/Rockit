@@ -130,7 +130,7 @@ namespace RockWeb.Webhooks
                 {
                     HeartCategories = string.Join(",", guidArrayList.ToArray());
                 }
-                
+
             }
             else
             {
@@ -281,7 +281,8 @@ namespace RockWeb.Webhooks
             // Send a confirmation email describing the gifts and how to get back to them
             SendEmail(person.Email, "info@newpointe.org", "SHAPE Assessment Results", GenerateEmailBody(ThePerson, rockContext, Int32.Parse(TopGift1), Int32.Parse(TopGift2), Int32.Parse(TopAbility1), Int32.Parse(TopAbility2), FormId), rockContext);
 
-
+            // Email the campus pastor if the person has the gift of Leadership as #1
+            CampusPastor(Int32.Parse(TopGift1), campusFromForm, person);
 
             // Write a 200 code in the response
             response.ContentType = "text/xml";
@@ -290,6 +291,38 @@ namespace RockWeb.Webhooks
 
 
 
+        }
+
+
+        /// <summary>
+        /// Email the campus pastor if the person's #1 gift is leadership
+        /// </summary>
+        /// <param name="Gift1">Int of category of Gift1</param>
+        /// <param name="campus">String of the person's campus name</param>
+        /// <param name="personWithLeadership">Person object with the target person</param>
+        /// <returns></returns>
+        public void CampusPastor(int Gift1, string campus, Person personWithLeadership)
+        {
+            DefinedValueService definedValueService = new DefinedValueService(rockContext);
+
+            string gift1Value = definedValueService.GetByIds(new List<int> {Gift1}).FirstOrDefault().Value;
+
+            if (gift1Value == "Leadership")
+            {
+                // Get the Header and Footer
+                string emailHeader = Rock.Web.Cache.GlobalAttributesCache.Value("EmailHeader");
+                string emailFooter = Rock.Web.Cache.GlobalAttributesCache.Value("EmailFooter");
+
+                CampusService campusService = new CampusService(rockContext);
+                var campusPastor = campusService.Queryable().FirstOrDefault(a => a.Name == campus).LeaderPersonAlias;
+                string emailBody = emailHeader + String.Format(@"<h2>Hey {0},</h2>
+                                     <p>{1} from your campus has taken the SHAPE Assessment and their top gift is Leadership.
+                                     <a href=""https://rock.newpointe.org/Person/{2}"">Click here</a> to see their Rock profile, SHAPE Profile, and be sure to follow up!</p>
+                                     <p>Thanks,<br />The RockBot</p>", campusPastor.Person.NickName,personWithLeadership.FullName,personWithLeadership.Id) + emailFooter;
+
+                SendEmail(campusPastor.Person.Email, "info@newpointe.org", "SHAPE Assessment Results", emailBody, rockContext);
+
+            }
         }
 
         /// <summary>
@@ -701,7 +734,7 @@ namespace RockWeb.Webhooks
                                      <a href=""{0}"">Click here</a> to create a MyNewPointe Account via your SHAPE Profile now!", profileLink);
             }
 
-            
+
 
             //Put the body text together
             string emailBody = emailHeader + String.Format(@"
