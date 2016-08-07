@@ -112,14 +112,14 @@
         </div>
         <div class="col-xs-12 collapse in gray-bg" id="collapseAbility">
             <div class="col-md-6">
-                <h5 class="text-center">Ability/Ability 1: </h5>
+                <h5 class="text-center">Ability 1: </h5>
                 <h3 class="text-center" style="margin-top: -10px;">
                     <asp:Label runat="server" ID="lbAbility1Title"></asp:Label></h3>
                 <asp:Label runat="server" ID="lbAbility1BodyHTML"></asp:Label>
             </div>
 
             <div class="col-md-6">
-                <h5 class="text-center">Ability/Ability 2: </h5>
+                <h5 class="text-center">Ability 2: </h5>
                 <h3 class="text-center" style="margin-top: -10px;">
                     <asp:Label runat="server" ID="lbAbility2Title"></asp:Label></h3>
                 <asp:Label runat="server" ID="lbAbility2BodyHTML"></asp:Label>

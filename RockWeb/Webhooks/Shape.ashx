@@ -739,13 +739,13 @@ namespace RockWeb.Webhooks
             //Put the body text together
             string emailBody = emailHeader + String.Format(@"
             <h2><span style=""color:#8bc540"">{0}, Here Are Your SHAPE Results!</span></h2>
-            <p>Your SHAPE Assessment is complete and the details are below.  <strong><a href=""{1}"">Click here</a> to view your full SHAPE Profile</strong></p>
+            <p>Your SHAPE Assessment is complete and a sneak peek of the details are below.  <strong><a href=""{1}"">Click here</a> to view your full SHAPE Profile</strong></p>
             <h3><u>Spiritual Gifts</u></h3>
             <h4>{2}</h4>
             {3}<br /><br />
             <h4>{4}</h4>
             {5}<br /><br /><br />
-            <h3><u>Ability and Abilities</u></h3>
+            <h3><u>Abilities</u></h3>
             <h4>{6}</h4>
             {7}<br /><br />
             <h4>{8}</h4>
