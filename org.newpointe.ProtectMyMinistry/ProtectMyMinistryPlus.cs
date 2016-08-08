@@ -416,8 +416,17 @@ namespace org.newpointe.ProtectMyMinistry
             }
 
             var homelocation = person.GetHomeLocation();
+
             if (homelocation != null)
             {
+            
+                var addressStatesDefinedValues = DefinedTypeCache.Read( Rock.SystemGuid.DefinedType.LOCATION_ADDRESS_STATE.AsGuid() ).DefinedValues;
+                var mappedStateId = addressStatesDefinedValues.Where( x => x.Description.ToLower() == homelocation.State.ToLower() ).Select(x => x.Value).FirstOrDefault();
+                if(mappedStateId != null)
+                {
+                    homelocation.State = mappedStateId;
+                }
+
                 subjectElement.Add(new XElement("CurrentAddress",
                     new XElement("StreetAddress", homelocation.Street1),
                     new XElement("City", homelocation.City),
