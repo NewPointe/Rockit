@@ -22,6 +22,6 @@
 
 {% if arraysize == 0 %}
   <p>
-    There are no upcoming Discover Groups at this time. <a href="/moreinfo/?topic=Discover Groups" class="btn btn-newpointe">REQUEST MORE INFO</a>
+    There are no upcoming DISCOVER classes at this time. <a href="/moreinfo/?topic=Discover Groups" class="btn btn-newpointe">REQUEST MORE INFO</a>
   </p>
 {% endif %}
