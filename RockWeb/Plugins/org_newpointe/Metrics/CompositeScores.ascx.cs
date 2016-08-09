@@ -915,7 +915,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         {
             int? result =
                 rockContext.Database.SqlQuery<int?>(
-                    "EXEC dbo.spNPMetrics_Attendace6WkAll @campusId, @endDate",
+                    "EXEC dbo.spNPMetrics_Attendace6WkAll @campusId, @endDate, @startDate",
                     new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
 
             return result;
@@ -926,7 +926,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         {
             int? result =
                 rockContext.Database.SqlQuery<int?>(
-                    "EXEC dbo.spNPMetrics_Attendace6WkKids @campusId, @endDate",
+                    "EXEC dbo.spNPMetrics_Attendace6WkKids @campusId, @endDate, @startDate",
                     new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
 
             return result;
@@ -937,7 +937,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         {
             int? result =
                 rockContext.Database.SqlQuery<int?>(
-                    "EXEC dbo.spNPMetrics_Attendace6WkStudents @campusId, @endDate",
+                    "EXEC dbo.spNPMetrics_Attendace6WkStudents @campusId, @endDate, @startDate",
                     new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
 
             return result;
