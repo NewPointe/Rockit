@@ -390,6 +390,11 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             Last6WkStartDateLy = now.AddDays(-43).AddYears(-1).ToShortDateString();
             Last6WkEndDateLy = now.AddYears(-1).ToShortDateString();
 
+            DateTime last6WkStartDate = now.AddDays(-43);
+            DateTime last6WkEndDate = now;
+            DateTime last6WkStartDateLy = now.AddDays(-43).AddYears(-1);
+            DateTime last6WkEndDateLy = now.AddYears(-1);
+
 
             switch (iMonth)
             {
@@ -463,18 +468,18 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             //-------Attendance-------
 
             //Auditorium
-            iAttendanceAud = Get6WkAttendanceAuditorium(SelectedCampusId, periodEndDate);
-            iAttendanceAudLastYear = Get6WkAttendanceAuditorium(SelectedCampusId, lastPeriodEndDate);
+            iAttendanceAud = Get6WkAttendanceAuditorium(SelectedCampusId, last6WkStartDate, last6WkEndDate);
+            iAttendanceAudLastYear = Get6WkAttendanceAuditorium(SelectedCampusId, last6WkStartDateLy, last6WkEndDateLy);
             iAttendanceAudGoal2020 = GetMetrics(2, SelectedCampusId, start2020, end2020, 1);
             
             //Kids
-            iAttendanceKids = Get6WkAttendanceKids(SelectedCampusId, periodEndDate);
-            iAttendanceKidsLastYear = Get6WkAttendanceKids(SelectedCampusId, lastPeriodEndDate);
+            iAttendanceKids = Get6WkAttendanceKids(SelectedCampusId, last6WkStartDate, last6WkEndDate);
+            iAttendanceKidsLastYear = Get6WkAttendanceKids(SelectedCampusId, last6WkStartDateLy, last6WkEndDateLy);
             iAttendanceChildGoal2020 = GetMetrics(3, SelectedCampusId, start2020, end2020, 1);
             
             //Students
-            iAttendanceStudents = Get6WkAttendanceStudents(SelectedCampusId, periodEndDate);
-            iAttendanceStudentsLastYear = Get6WkAttendanceStudents(SelectedCampusId, lastPeriodEndDate);
+            iAttendanceStudents = Get6WkAttendanceStudents(SelectedCampusId, last6WkStartDate, last6WkEndDate);
+            iAttendanceStudentsLastYear = Get6WkAttendanceStudents(SelectedCampusId, last6WkStartDateLy, last6WkEndDateLy);
             iAttendanceStudentGoal2020 = GetMetrics(5, SelectedCampusId, start2020, end2020, 1);
             
 
@@ -494,8 +499,8 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
 
 
             //All
-            iAttendanceAll = Get6WkAttendanceAll(SelectedCampusId, periodEndDate);
-            iAttendanceAllLastYear = Get6WkAttendanceAll(SelectedCampusId, lastPeriodEndDate);
+            iAttendanceAll = Get6WkAttendanceAll(SelectedCampusId, last6WkStartDate, last6WkEndDate);
+            iAttendanceAllLastYear = Get6WkAttendanceAll(SelectedCampusId, last6WkStartDateLy, last6WkEndDateLy);
             iAttendanceAllGoalCurrent = iAttendanceAudGoalCurrent + iAttendanceChildGoalCurrent + iAttendanceStudentGoalCurrent;
             iAttendanceAllGoal2020 = iAttendanceAudGoal2020 + iAttendanceChildGoal2020 + iAttendanceStudentGoal2020;
             
@@ -906,45 +911,45 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         }
 
 
-        protected int? Get6WkAttendanceAll(int campusId, DateTime endDate)
+        protected int? Get6WkAttendanceAll(int campusId, DateTime startDate, DateTime endDate)
         {
             int? result =
                 rockContext.Database.SqlQuery<int?>(
                     "EXEC dbo.spNPMetrics_Attendace6WkAll @campusId, @endDate",
-                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate)).ToList<int?>()[0]; ;
+                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
 
             return result;
         }
 
 
-        protected int? Get6WkAttendanceKids(int campusId, DateTime endDate)
+        protected int? Get6WkAttendanceKids(int campusId, DateTime startDate, DateTime endDate)
         {
             int? result =
                 rockContext.Database.SqlQuery<int?>(
                     "EXEC dbo.spNPMetrics_Attendace6WkKids @campusId, @endDate",
-                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate)).ToList<int?>()[0]; ;
+                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
 
             return result;
         }
 
 
-        protected int? Get6WkAttendanceStudents(int campusId, DateTime endDate)
+        protected int? Get6WkAttendanceStudents(int campusId, DateTime startDate, DateTime endDate)
         {
             int? result =
                 rockContext.Database.SqlQuery<int?>(
                     "EXEC dbo.spNPMetrics_Attendace6WkStudents @campusId, @endDate",
-                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate)).ToList<int?>()[0]; ;
+                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
 
             return result;
         }
 
         
-        protected int? Get6WkAttendanceAuditorium(int campusId, DateTime endDate)
+        protected int? Get6WkAttendanceAuditorium(int campusId, DateTime startDate, DateTime endDate)
         {
             int? result =
                 rockContext.Database.SqlQuery<int?>(
-                    "EXEC dbo.spNPMetrics_Attendace6WkAuditorium @campusId, @endDate",
-                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate)).ToList<int?>()[0]; ;
+                    "EXEC dbo.spNPMetrics_Attendace6WkAuditorium @campusId, @endDate, @startDate",
+                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
 
             return result;
         }
