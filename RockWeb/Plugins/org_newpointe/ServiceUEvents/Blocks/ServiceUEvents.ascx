@@ -1,6 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ServiceUEvents.ascx.cs" Inherits="Plugins_org_newpointe_ServiceUEvents_ServiceUEvents" %>
-<%--<link rel="stylesheet" href="/Styles/plus.css" type="text/css">--%>
-<link rel="stylesheet" href="/Themes/NewpointeMain/Styles/calendar.min.css" />
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ServiceUEvents.ascx.cs" Inherits="RockWeb.Plugins.org_newpointe.ServiceUEvents.ServiceUEvents" %>
 
 <h1>Event Calendar</h1>
 
@@ -87,8 +85,4 @@
     </div>
 
 </div>
-<script src="/Scripts/compenents/underscore.min.js"></script>
-<script src="/Scripts/compenents/jstz.min.js"></script>
-<script src="/Scripts/compenents/calendar.js"></script>
-<script src="/Plugins/org_newpointe/ServiceUevents/app.js"></script>
 

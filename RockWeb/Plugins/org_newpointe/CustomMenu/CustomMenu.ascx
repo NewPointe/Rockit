@@ -23,7 +23,7 @@
     }
 
     #NPSearch {
-        height:75px;
+        height: 75px;
         background-color: #404040;
     }
 
@@ -58,24 +58,24 @@
         height: 2em !important;
         line-height: 1em !important;
         margin-bottom: 0 !important;
-        padding-top:5px !important;
+        padding-top: 5px !important;
     }
 
     .gsc-expansionArea .gsc-cursor {
-    font-size: 22px !important;
-}
+        font-size: 22px !important;
+    }
 
     .gs-bidi-start-align.gs-snippet {
-    font-size: 18px !important;
-    margin-bottom: 20px !important;
-}
+        font-size: 18px !important;
+        margin-bottom: 20px !important;
+    }
 
     div.gsc-result {
-    box-shadow: 0px 0px 0px #c0c0c0 !important;
-    margin-bottom: 20px !important;
-    padding: 20px !important;
-    border-bottom:1px solid #c0c0c0;
-}
+        box-shadow: 0px 0px 0px #c0c0c0 !important;
+        margin-bottom: 20px !important;
+        padding: 20px !important;
+        border-bottom: 1px solid #c0c0c0;
+    }
 
     div.gs-snippet {
         font-size: 32px !important;
@@ -83,7 +83,7 @@
         line-height: 1.4em !important;
         margin-bottom: 10px !important;
         width: 100%;
-        margin-bottom:20px;
+        margin-bottom: 20px;
     }
 
     .gsc-tabHeader {
@@ -110,100 +110,103 @@
         overflow: hidden;
     }
 </style>
-
-
-<nav class="navbar-fixed-top affix-top" data-spy="affix" data-offset-top="72">
-    <div class="container">
-
-
-
-        <div id="divCustomMenu" class="row hidden-xs hidden-sm hidden-md">
-            <div id="divCustomInterior" class="col-md-12" style="background-color: #fff;">
-                <div id="NPSearch" style="display: none;" class="col-xs-12">
-                    <script>
-                        if (!window.gcseInjected) {
-                            window.gcseInjected = true;
-                            (function () {
-                                var cx = '001784362343258229631:fdnsp4tdlfa';
-                                var gcse = document.createElement('script');
-                                gcse.type = 'text/javascript';
-                                gcse.async = true;
-                                gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-                                    '//cse.google.com/cse.js?cx=' + cx;
-                                var s = document.getElementsByTagName('script')[0];
-                                s.parentNode.insertBefore(gcse, s);
-                            })();
-                        }
-                    </script>
-                    <gcse:searchbox-only resultsurl="https://newpointe.org/SearchResults"></gcse:searchbox-only>
-                </div>
-                <div id="NPMenu">
-                    <div id="CustomMenuLogo" class="col-md-1 customMenuContainer">
-                        <div id="GreenDiv" style="display: none;">
-                            <asp:Image runat="server" Style="margin: 0 auto; height: 100%; padding: 10px;" ImageUrl="~/Content/Central/NPCC_Small.png" />
-                        </div>
-                    </div>
-                    <div class="col-md-11">
-                        <ul class="npCustomMenu">
-                            <asp:Repeater ID="rptMenuLinks" OnItemDataBound="rptMenuLinks_ItemDataBound" runat="server">
-                                <ItemTemplate>
-                                    <li class="menuLink"><a href="#" id="<%#DataBinder.Eval(Container.DataItem, "ID") %>" onclick="ShowPopup(<%#DataBinder.Eval(Container.DataItem, "ID") %>);" class="aCustomMenuLink"><%# DataBinder.Eval(Container.DataItem, "PageTitle") %></a></li>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </ul>
-                        <div id="searchDiv">
-                            <a id="searchIcon" href="#"><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <asp:Repeater ID="rptMenuDivs" runat="server">
-                        <ItemTemplate>
-                            <div id="popup-<%#DataBinder.Eval(Container.DataItem, "ID") %>" style="display: none;" class="col-md-12 pop-over fullwidthSub">
-                                <%#((string)DataBinder.Eval(Container.DataItem, "HtmlContent")).Replace(replaceId,replacedId).Replace(replaceImage,replacedImage) %>
-                            </div>
-                        </ItemTemplate>
-                    </asp:Repeater>
+<div id="FloatingMenu" class="desktop-only">
+    <div style="height: 70px;margin-bottom: 10px;"></div>
+    <nav class="container navbar-fixed-top affix-top" data-spy="affix" data-offset-top="72">
+        <div id="NPSearch" style="display: none;" class="col-xs-12">
+            <script>
+                if (!window.gcseInjected)
+                {
+                    window.gcseInjected = true;
+                    (function ()
+                    {
+                        var cx = '001784362343258229631:fdnsp4tdlfa';
+                        var gcse = document.createElement('script');
+                        gcse.type = 'text/javascript';
+                        gcse.async = true;
+                        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+                            '//cse.google.com/cse.js?cx=' + cx;
+                        var s = document.getElementsByTagName('script')[0];
+                        s.parentNode.insertBefore(gcse, s);
+                    })();
+                }
+            </script>
+            <gcse:searchbox-only resultsurl="https://newpointe.org/SearchResults"></gcse:searchbox-only>
+        </div>
+        <div id="CustomMenuMenu">
+            <div id="CustomMenuLogo" class="col-md-1">
+                <div class="brand-logo" style="margin: 5px auto;">
+                    <asp:Image runat="server" ImageUrl="~/Assets/Images/NPCC_Logo_Full_White.svg" />
                 </div>
             </div>
+            <div class="col-md-11 pull-right">
+                <ul class="npCustomMenu">
+                    <asp:Repeater ID="rptMenuLinks" OnItemDataBound="rptMenuLinks_ItemDataBound" runat="server">
+                        <ItemTemplate>
+                            <li><a href="#" id="<%#DataBinder.Eval(Container.DataItem, "ID") %>" onclick="ShowPopup(<%#DataBinder.Eval(Container.DataItem, "ID") %>);"><%# DataBinder.Eval(Container.DataItem, "PageTitle") %></a></li>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </ul>
+                <div id="searchDiv">
+                    <a id="searchIcon" href="#"><i class="fa fa-search"></i></a>
+                </div>
+            </div>
+            <asp:Repeater ID="rptMenuDivs" runat="server">
+                <ItemTemplate>
+                    <div id="popup-<%#DataBinder.Eval(Container.DataItem, "ID") %>" style="display: none;" class="pop-over">
+                        <%#((string)DataBinder.Eval(Container.DataItem, "HtmlContent")).Replace(replaceId,replacedId).Replace(replaceImage,replacedImage) %>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
         </div>
-    </div>
-</nav>
+    </nav>
+</div>
 
 <script>
 
-    $(window).scroll(function () {
+    $(window).scroll(function ()
+    {
         var scroll = $(window).scrollTop();
 
-        if (scroll >= 72) {
+        if (scroll >= 72)
+        {
             $('#GreenDiv').show();
         }
-        else {
+        else
+        {
             $("#GreenDiv").hide();
         }
     });
 
 
 
-    $(document).ready(function () {
-        $('.aCustomMenuLink').click(function (e) {
+    $(document).ready(function ()
+    {
+        $('.aCustomMenuLink').click(function (e)
+        {
             e.preventDefault();
         })
 
-        $('.bordered a').hover(function () {
+        $('.bordered a').hover(function ()
+        {
             $('.bordered').css('border-color', '#8BC540');
-        }, function () {
+        }, function ()
+        {
             $('.bordered').css('border-color', '#fff');
         });
 
         //setTimeout(showSearchText, 1000);
 
-        function showSearchText() {
+        function showSearchText()
+        {
             $("#gsc-i-id2").attr("placeholder", "Enter to search");
 
         }
 
     });
 
-    $("#searchIcon").click(function (e) {
+    $("#searchIcon").click(function (e)
+    {
         e.preventDefault();
 
         $('#NPSearch').height('75px');
@@ -219,23 +222,28 @@
     //    $("#NPMenu").fadeIn();
     //});
 
-    $(document).mouseup(function (e) {
+    $(document).mouseup(function (e)
+    {
         var container = $("#NPSearch");
-        if (!container.is(e.target) && container.has(e.target).length === 0) {
+        if (!container.is(e.target) && container.has(e.target).length === 0)
+        {
             container.hide();
             $("#NPMenu").show();
         }
     })
 
-    function ShowPopup(id) {
-        $(".npCustomMenu li").removeClass("menuItemActive");
+    function ShowPopup(id)
+    {
+        $(".npCustomMenu li a").removeClass("active");
 
-        if ($("#popup-" + id).is(":visible")) {
-            $(".fullwidthSub").hide();
+        if ($("#popup-" + id).is(":visible"))
+        {
+            $(".pop-over").hide();
         }
-        else {
-            $(".fullwidthSub").hide();
-            $("#" + id).parent().addClass('menuItemActive');
+        else
+        {
+            $(".pop-over").hide();
+            $("#" + id).addClass('active');
             $("#popup-" + id).show();
         }
 
