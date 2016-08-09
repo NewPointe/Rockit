@@ -37,8 +37,6 @@ namespace RockWeb.Plugins.org_newpointe.AttendanceEditor
 
         RockContext _rockContext = null;
         AttendanceService attendServ = null;
-        GroupService groupServ = null;
-        LocationService locServ = null;
 
 
         protected override void OnInit(EventArgs e)

@@ -114,10 +114,8 @@ namespace org.newpointe.ExpiredCards.Data
 
 
             List<string> errorMessages;
-
-            _workflow.Process(_rockContext, null, out errorMessages);
-
-            if (_workflow.Process(_rockContext, null, out errorMessages))
+            
+            if ( _workflowService.Process( _workflow, out errorMessages ) )
             {
                 // If the workflow type is persisted, save the workflow
                 if (_workflow.IsPersisted || _workflowType.IsPersisted)

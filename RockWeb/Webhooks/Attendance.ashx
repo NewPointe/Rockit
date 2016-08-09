@@ -38,7 +38,6 @@ namespace RockWeb.Webhooks
 
     public class Attendance : IHttpHandler
     {
-        private int transactionCount = 0;
         private RockContext rockContext = new RockContext();
         private int metricValueId = 0;
         private int metricCategoryId = 2;

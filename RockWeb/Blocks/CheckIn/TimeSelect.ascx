@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TimeSelect.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.TimeSelect" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TimeSelect.ascx.cs" Inherits="RockWeb.Blocks.CheckIn.TimeSelect" %>
 <asp:UpdatePanel ID="upContent" runat="server">
 <ContentTemplate>
 
@@ -18,7 +18,7 @@
                     <div class="controls checkin-timelist btn-group" data-toggle="buttons-checkbox">
                         <asp:Repeater ID="rSelection" runat="server">
                             <ItemTemplate>
-                                <button type="button" schedule-id='<%# Eval("Schedule.Id") %>' class="btn btn-default btn-lg btn-checkbox">
+                                <button type="button" schedule-id='<%# Eval("Schedule.Id") %>' class='<%# "btn btn-default btn-lg btn-checkbox" + ((bool)Eval("PreSelected") ? " active" : "") %>'>
                                     <i class="fa fa-square-o"></i>
                                 
                                     <div><%# Container.DataItem.ToString() %></div>
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="checkin-actions">
-                        <asp:LinkButton CssClass="btn btn-primary" ID="lbSelect" runat="server" data-loading-text="Printing..." OnClientClick="return GetTimeSelection();" OnClick="lbSelect_Click" Text="Check-in" />
+                        <asp:LinkButton CssClass="btn btn-primary" ID="lbSelect" runat="server" OnClientClick="return GetTimeSelection();" OnClick="lbSelect_Click" />
                     </div>
 
                 </div>

@@ -856,7 +856,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                                             txtPassword.Text,
                                             false );
 
-                                        var mergeObjects = GlobalAttributesCache.GetMergeFields( null );
+                                        var mergeObjects = Rock.Lava.LavaHelper.GetCommonMergeFields( RockPage );
                                         mergeObjects.Add( "ConfirmAccountUrl", RootPath + "ConfirmAccount" );
 
                                         var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;
@@ -1226,7 +1226,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
                 if ( familyGroup != null )
                 {
-                    GroupService.AddNewFamilyAddress(
+                    GroupService.AddNewGroupAddress(
                         rockContext,
                         familyGroup,
                         GetAttributeValue( "AddressType" ),

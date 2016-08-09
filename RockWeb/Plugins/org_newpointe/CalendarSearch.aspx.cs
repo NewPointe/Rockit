@@ -56,7 +56,7 @@ public partial class Plugins_org_newpointe_CalendarSearch : System.Web.UI.Page
                 }
                 catch (Exception ex)
                 {
-
+                    Rock.Model.ExceptionLogService.LogException( ex, Context );
                 }
             }
 

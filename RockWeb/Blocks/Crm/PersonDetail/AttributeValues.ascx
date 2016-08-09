@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttributeValues.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonDetail.AttributeValues" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttributeValues.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonDetail.AttributeValues" %>
 
 <asp:UpdatePanel ID="upnlAttributeValues" runat="server" class="context-attribute-values">
 <ContentTemplate>
@@ -15,6 +15,7 @@
         </div>
         <div class="panel-body">
             <Rock:HiddenFieldWithClass ID="hfAttributeOrder" runat="server" CssClass="js-attribute-values-order" />
+            <asp:ValidationSummary ID="valSummaryTop" runat="server"  HeaderText="Please Correct the Following" CssClass="alert alert-danger" />
             <fieldset id="fsAttributes" runat="server" class="attribute-values"></fieldset>
             <asp:Panel ID="pnlActions" runat="server" CssClass="actions" Visible="false">
                 <asp:LinkButton ID="btnSave" runat="server" AccessKey="s" Text="Save" CssClass="btn btn-primary btn-xs" OnClick="btnSave_Click" ValidationGroup="vgAttributeValues" />

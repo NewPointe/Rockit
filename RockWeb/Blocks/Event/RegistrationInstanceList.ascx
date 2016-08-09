@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="RegistrationInstanceList.ascx.cs" Inherits="RockWeb.Blocks.Event.RegistrationInstanceList" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="RegistrationInstanceList.ascx.cs" Inherits="RockWeb.Blocks.Event.RegistrationInstanceList" %>
 
 <asp:UpdatePanel ID="upList" runat="server">
     <ContentTemplate>

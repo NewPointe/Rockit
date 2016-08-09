@@ -1,26 +1,17 @@
-﻿using Rock.Web.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-
+using Rock;
 using Rock.Attribute;
 using Rock.Data;
-using Rock.Security;
-using Rock.Web.Cache;
-using Rock.Web.UI;
-using Rock.Web.UI.Controls;
 using Rock.Model;
-using System.ComponentModel;
-
-
-using Rock;
 using Rock.SystemGuid;
+using Rock.Web.UI;
 
 
-namespace RockWeb.Plugins.org_newpointe.Staff 
+namespace RockWeb.Plugins.org_newpointe.Staff
 {
     [DisplayName("Staff")]
     [Category("Newpointe.org Web Blocks")]

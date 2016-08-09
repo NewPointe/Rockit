@@ -308,8 +308,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
 
                     ConnectionOpportunityService connectionOpportunityService = new ConnectionOpportunityService(rockContext);
                     List<ConnectionOpportunity> connectionOpportunityList = new List<ConnectionOpportunity>();
-
-                    int z = 0;
+                    
                     foreach (KeyValuePair<int, int> entry in VolunteerOpportunities.Take(4))
                     {
                         var connection = connectionOpportunityService.GetByIds(new List<int> { entry.Value }).FirstOrDefault();
@@ -529,7 +528,7 @@ namespace RockWeb.Plugins.org_newpointe.Shape
                                 txtPassword.Text,
                                 true);
 
-                            var mergeObjects = GlobalAttributesCache.GetMergeFields(null);
+                            var mergeObjects = Rock.Lava.LavaHelper.GetCommonMergeFields( RockPage );
                             mergeObjects.Add("ConfirmAccountUrl", RootPath + "ConfirmAccount");
 
                             var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;

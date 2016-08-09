@@ -851,7 +851,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Event
                                     txtPassword.Text,
                                     false );
 
-                                var mergeObjects = GlobalAttributesCache.GetMergeFields( null );
+                                var mergeObjects = Rock.Lava.LavaHelper.GetCommonMergeFields(RockPage);
                                 mergeObjects.Add( "ConfirmAccountUrl", RootPath + "ConfirmAccount" );
 
                                 var personDictionary = authorizedPersonAlias.Person.ToLiquid() as Dictionary<string, object>;
@@ -2058,7 +2058,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Event
                     var familyGroup = new GroupService( rockContext ).Get( familyId.Value );
                     if ( familyGroup != null )
                     {
-                        GroupService.AddNewFamilyAddress(
+                        GroupService.AddNewGroupAddress(
                             rockContext,
                             familyGroup,
                             Rock.SystemGuid.DefinedValue.GROUP_LOCATION_TYPE_HOME,

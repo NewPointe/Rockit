@@ -36,7 +36,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// Make dialogs simpler.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 
-    // Allow chrome's native spellchecker
+    // enable browser spell check
 	config.disableNativeSpellChecker = false;
 
     // allow i tags to be empty (for font awesome)

@@ -114,7 +114,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Data\LiveServiceJsonJob.cs" />
-    <Compile Include="SystemGuid\DefinedType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

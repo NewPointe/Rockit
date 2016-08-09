@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PersonBadgeList.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonBadgeList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PersonBadgeList.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonBadgeList" %>
 
 <asp:UpdatePanel ID="upPersonBadge" runat="server">
     <ContentTemplate>
@@ -16,6 +16,7 @@
                         <Columns>
                             <Rock:ReorderField />
                             <Rock:RockBoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                            <Rock:RockBoundField DataField="EntityType.FriendlyName" HeaderText="Type" SortExpression="EntityType.FriendlyName" />
                             <Rock:RockBoundField DataField="Description" HeaderText="Description" SortExpression="Description" />
                             <Rock:SecurityField TitleField="Name" />
                             <Rock:DeleteField OnClick="gPersonBadge_Delete" />

@@ -1,6 +1,6 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Categories.ascx.cs" Inherits="RockWeb.Blocks.Core.Categories" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Categories.ascx.cs" Inherits="RockWeb.Blocks.Core.Categories" %>
 
-<asp:UpdatePanel ID="upnlCategories" runat="server">
+<asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
         <asp:Panel ID="pnlList" CssClass="panel panel-block" runat="server">
 

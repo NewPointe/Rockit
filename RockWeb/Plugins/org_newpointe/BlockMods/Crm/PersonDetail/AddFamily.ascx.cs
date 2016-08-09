@@ -74,7 +74,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
 
         private bool _confirmMaritalStatus = true;
         private int _childRoleId = 0;
-        private List<NewFamilyAttributes> attributeControls = new List<NewFamilyAttributes>();
+        private List<NewGroupAttributes> attributeControls = new List<NewGroupAttributes>();
         private Dictionary<string, int?> _verifiedLocations = null;
         private DefinedValueCache _homePhone = null;
         private DefinedValueCache _cellPhone = null;
@@ -316,8 +316,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
         /// <exception cref="System.NotImplementedException"></exception>
         void familyMemberRow_RoleUpdated( object sender, EventArgs e )
         {
-            NewFamilyMembersRow row = sender as NewFamilyMembersRow;
-            row.ShowGrade = row.RoleId == _childRoleId;
+            NewGroupMembersRow row = sender as NewGroupMembersRow;
+            row.ShowGradePicker = row.RoleId == _childRoleId;
         }
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         void familyMemberRow_DeleteClick( object sender, EventArgs e )
         {
-            NewFamilyMembersRow row = sender as NewFamilyMembersRow;
+            NewGroupMembersRow row = sender as NewGroupMembersRow;
             var familyMember = FamilyMembers.FirstOrDefault( m => m.Person.Guid.Equals( row.PersonGuid ) );
             if ( familyMember != null )
             {
@@ -388,7 +388,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
                                     string locationKey = GetLocationKey();
                                     if ( !string.IsNullOrEmpty( locationKey ) && _verifiedLocations.ContainsKey( locationKey ) )
                                     {
-                                        GroupService.AddNewFamilyAddress( rockContext, familyGroup, GetAttributeValue( "LocationType" ), _verifiedLocations[locationKey] );
+                                        GroupService.AddNewGroupAddress( rockContext, familyGroup, GetAttributeValue( "LocationType" ), _verifiedLocations[locationKey] );
                                     }
                                 }
                             } );
@@ -423,7 +423,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
                     var category = CategoryCache.Read( guid );
                     if ( category != null )
                     {
-                        var attributeControl = new NewFamilyAttributes();
+                        var attributeControl = new NewGroupAttributes();
                         attributeControl.ClearRows();
                         pnlAttributes.Controls.Add( attributeControl );
                         attributeControls.Add( attributeControl );
@@ -456,7 +456,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
             {
                 string familyMemberGuidString = familyMember.Person.Guid.ToString().Replace( "-", "_" );
 
-                var familyMemberRow = new NewFamilyMembersRow();
+                var familyMemberRow = new NewGroupMembersRow();
                 nfmMembers.Controls.Add( familyMemberRow );
                 familyMemberRow.ID = string.Format( "row_{0}", familyMemberGuidString );
                 familyMemberRow.RoleUpdated += familyMemberRow_RoleUpdated;
@@ -465,10 +465,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
                 familyMemberRow.RequireGender = nfmMembers.RequireGender;
                 familyMemberRow.RequireGrade = nfmMembers.RequireGrade;
                 familyMemberRow.RoleId = familyMember.GroupRoleId;
-                familyMemberRow.ShowGrade = familyMember.GroupRoleId == _childRoleId;
+                familyMemberRow.ShowGradePicker = familyMember.GroupRoleId == _childRoleId;
                 familyMemberRow.ValidationGroup = BlockValidationGroup;
 
-                var contactInfoRow = new NewFamilyContactInfoRow();
+                var contactInfoRow = new NewGroupContactInfoRow();
                 nfciContactInfo.Controls.Add( contactInfoRow );
                 contactInfoRow.ID = string.Format( "ci_row_{0}", familyMemberGuidString );
                 contactInfoRow.PersonGuid = familyMember.Person.Guid;
@@ -514,7 +514,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
 
                 foreach ( var attributeControl in attributeControls )
                 {
-                    var attributeRow = new NewFamilyAttributesRow();
+                    var attributeRow = new NewGroupAttributesRow();
                     attributeControl.Controls.Add( attributeRow );
                     attributeRow.ID = string.Format( "{0}_{1}", attributeControl.ID, familyMemberGuidString );
                     attributeRow.AttributeList = attributeControl.AttributeList;
@@ -644,7 +644,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
                 {
                     personInfoHtml.AppendFormat(
                         "<img src='{0}' class='img-thumbnail'>",
-                        Person.GetPhotoUrl( person.PhotoId.Value, person.Age, person.Gender, recordTypeValueGuid, 65, 65 ) );
+                        Person.GetPersonPhotoUrl( person.PhotoId.Value, 65, 65 ) );
                 }
                 personInfoHtml.Append( "</div>" );
             }
@@ -720,7 +720,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
             int recordTypePersonId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON.AsGuid() ).Id;
             int recordStatusActiveId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.PERSON_RECORD_STATUS_ACTIVE.AsGuid() ).Id;
 
-            foreach ( NewFamilyMembersRow row in nfmMembers.FamilyMemberRows )
+            foreach ( NewGroupMembersRow row in nfmMembers.GroupMemberRows )
             {
                 var groupMember = new GroupMember();
                 groupMember.GroupMemberStatus = GroupMemberStatus.Active;
@@ -778,7 +778,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
                 groupMember.Person.ConnectionStatusValueId = row.ConnectionStatusValueId;
                 groupMember.Person.GradeOffset = row.GradeOffset;
 
-                NewFamilyContactInfoRow contactInfoRow = nfciContactInfo.ContactInfoRows.FirstOrDefault( c => c.PersonGuid == row.PersonGuid );
+                NewGroupContactInfoRow contactInfoRow = nfciContactInfo.ContactInfoRows.FirstOrDefault( c => c.PersonGuid == row.PersonGuid );
                 if ( contactInfoRow != null )
                 {
                     string homeNumber = PhoneNumber.CleanNumber( contactInfoRow.HomePhoneNumber );
@@ -813,7 +813,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Crm.PersonDetail
 
                 foreach ( var attributeControl in attributeControls )
                 {
-                    NewFamilyAttributesRow attributeRow = attributeControl.AttributesRows.FirstOrDefault( r => r.PersonGuid == row.PersonGuid );
+                    NewGroupAttributesRow attributeRow = attributeControl.AttributesRows.FirstOrDefault( r => r.PersonGuid == row.PersonGuid );
                     if ( attributeRow != null )
                     {
                         attributeRow.GetEditValues( groupMember.Person );

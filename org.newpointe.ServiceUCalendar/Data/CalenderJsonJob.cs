@@ -66,7 +66,7 @@ namespace org.newpointe.ServiceUCalendar.Data
             }
             catch (Exception ex)
             {
-
+                Rock.Model.ExceptionLogService.LogException( ex , null);
             }
 
             //build new json Calendar

@@ -319,6 +319,7 @@ public class SmsGiveBot : IHttpHandler
         WriteToLog(toPhone, fromPhone, "Reply: " + msg);
         return;
 
+        /*
         RockContext rContext = new RockContext();
 
         var mediumData = new Dictionary<string, string>();
@@ -342,6 +343,7 @@ public class SmsGiveBot : IHttpHandler
                 }
             }
         }
+        */
     }
 
     private void replyPrompt(int stateId, string msg)

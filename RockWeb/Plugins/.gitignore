@@ -1,1 +1,4 @@
-/*.dll
+/*
+!/org_newpointe
+!/.gitignore
+!/readme.txt

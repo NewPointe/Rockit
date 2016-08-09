@@ -91,7 +91,7 @@ public class Calendar : IHttpHandler
             }
             catch (Exception ex)
             {
-
+                Rock.Model.ExceptionLogService.LogException( ex , context);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PhotoVerify.ascx.cs" Inherits="RockWeb.Blocks.Crm.PhotoVerify" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PhotoVerify.ascx.cs" Inherits="RockWeb.Blocks.Crm.PhotoVerify" %>
 
 <script>
     Sys.Application.add_load(function () {

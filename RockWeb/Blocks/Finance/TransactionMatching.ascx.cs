@@ -1,11 +1,11 @@
 ﻿// <copyright>
-// Copyright 2013 by the Spark Development Network
+// Copyright by the Spark Development Network
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Rock Community License (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+// http://www.rockrms.com/license
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -135,9 +135,11 @@ namespace RockWeb.Blocks.Finance
             string keyPrefix = string.Format( "transaction-matching-{0}-", this.BlockId );
             var personalAccountGuidList = ( this.GetUserPreference( keyPrefix + "account-list" ) ?? string.Empty ).SplitDelimitedValues().Select( a => a.AsGuid() ).ToList();
 
-            var accountQry = new FinancialAccountService( rockContext ).Queryable();
+            var accountQry = new FinancialAccountService( rockContext )
+                .Queryable()
+                .Where( a => a.IsActive );
 
-            // no accounts specified means "all"
+            // no accounts specified means "all Active"
             if ( accountGuidList.Any() )
             {
                 accountQry = accountQry.Where( a => accountGuidList.Contains( a.Guid ) );
@@ -522,7 +524,10 @@ namespace RockWeb.Blocks.Finance
         {
             string keyPrefix = string.Format( "transaction-matching-{0}-", this.BlockId );
             var personalAccountGuidList = ( this.GetUserPreference( keyPrefix + "account-list" ) ?? string.Empty ).SplitDelimitedValues().Select( a => a.AsGuid() ).ToList();
-            var personalAccountList = new FinancialAccountService( new RockContext() ).GetByGuids( personalAccountGuidList ).ToList();
+            var personalAccountList = new FinancialAccountService( new RockContext() )
+                .GetByGuids( personalAccountGuidList )
+                .Where( a => a.IsActive )
+                .ToList();
 
             apPersonalAccounts.SetValues( personalAccountList );
 
@@ -784,7 +789,7 @@ namespace RockWeb.Blocks.Finance
                 var campus = person.GetCampus();
                 lCampus.Text = campus != null ? string.Format( "<p><strong>Campus: </strong>{0}</p>", campus.Name ) : string.Empty;
                 
-                rptrAddresses.DataSource = person.GetFamilies().SelectMany( a => a.GroupLocations ).ToList();
+                rptrAddresses.DataSource = person.GetFamilies().SelectMany( a => a.GroupLocations ).OrderBy( l => l.GroupLocationTypeValue.Order ).ToList();
                 rptrAddresses.DataBind();
             }
         }
