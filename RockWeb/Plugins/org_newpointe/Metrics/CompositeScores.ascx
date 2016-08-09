@@ -49,7 +49,7 @@
                 <td> </td>
             </tr>
             <tr>
-                <td>Attendance - Students <small>(Avg past 6wks)</small></td>
+                <td>Attendance - Students <small>(Middle School, Avg past 6wks)</small></td>
                 <td><%= iAttendanceStudents %></td>
                 <td><%= iAttendanceStudentsLastYear %></td>
                 <td><%= String.Format("{0:0}", (((double)iAttendanceStudents / (double)iAttendanceStudentsLastYear) - 1) * 100) %>%</td>
@@ -66,6 +66,17 @@
                 <td><%= String.Format("{0:0}", (((double)iAttendanceAll / (double)iAttendanceAllLastYear) - 1) * 100) %>%</td>
                 <td><%= iAttendanceAllGoalCurrent %></td>
                 <td><%= String.Format("{0:0}", iAttendanceAllGoalProgress) %>%</td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+            </tr>
+            <tr>
+                <td>Attendance - High School <small>(Avg past 6wks)</small></td>
+                <td><%= iAttendanceHighSchool %></td>
+                <td><%= iAttendanceHighSchoolLastYear %></td>
+                <td><%= String.Format("{0:0}", (((double)iAttendanceHighSchool / (double)iAttendanceHighSchoolLastYear) - 1) * 100) %>%</td>
+                <td><%= iAttendanceHighSchoolGoalCurrent %></td>
+                <td><%= String.Format("{0:0}", iAttendanceHighSchoolGoalProgress) %>%</td>
                 <td> </td>
                 <td> </td>
                 <td> </td>

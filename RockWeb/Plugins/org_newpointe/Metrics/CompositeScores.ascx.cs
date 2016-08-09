@@ -55,6 +55,8 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public int? iAttendanceKidsLastYear;
         public int? iAttendanceStudents;
         public int? iAttendanceStudentsLastYear;
+        public int? iAttendanceHighSchool;
+        public int? iAttendanceHighSchoolLastYear;
         public int? iAttendanceAll;
         public int? iAttendanceAllLastYear;
 
@@ -81,6 +83,10 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
         public int? iAttendanceStudentGoalCurrent;
         public int? iAttendanceStudentGoal2020;
         public double? iAttendanceStudentGoalProgress;
+
+        public int? iAttendanceHighSchoolGoalCurrent;
+        public int? iAttendanceHighSchoolGoal2020;
+        public double? iAttendanceHighSchoolGoalProgress;
 
         public int? iAttendanceAllGoalCurrent;
         public int? iAttendanceAllGoal2020;
@@ -481,7 +487,12 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             iAttendanceStudents = Get6WkAttendanceStudents(SelectedCampusId, last6WkStartDate, last6WkEndDate);
             iAttendanceStudentsLastYear = Get6WkAttendanceStudents(SelectedCampusId, last6WkStartDateLy, last6WkEndDateLy);
             iAttendanceStudentGoal2020 = GetMetrics(5, SelectedCampusId, start2020, end2020, 1);
-            
+
+            //HighSchool
+            iAttendanceHighSchool = Get6WkAttendanceHighSchool(SelectedCampusId, last6WkStartDate, last6WkEndDate);
+            iAttendanceHighSchoolLastYear = Get6WkAttendanceHighSchool(SelectedCampusId, last6WkStartDateLy, last6WkEndDateLy);
+            iAttendanceStudentGoal2020 = GetMetrics(5, SelectedCampusId, start2020, end2020, 1);
+
 
 
             if (UseGlobalAttributeGoal == true)
@@ -510,6 +521,7 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             iAttendanceAudGoalProgress = (double?)iAttendanceAud / ((double?)iAttendanceAudGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
             iAttendanceChildGoalProgress = (double?)iAttendanceKids / ((double?)iAttendanceChildGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
             iAttendanceStudentGoalProgress = (double?)iAttendanceStudents / ((double?)iAttendanceStudentGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
+            iAttendanceHighSchoolGoalProgress = (double?)iAttendanceHighSchool / ((double?)iAttendanceHighSchoolGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
             iAttendanceAllGoalProgress = (double?)iAttendanceAll / ((double?)iAttendanceAllGoalCurrent * SecondaryGoalOffsetMultiplier) * 100;
 
 
@@ -943,7 +955,17 @@ namespace RockWeb.Plugins.org_newpointe.Metrics
             return result;
         }
 
-        
+        protected int? Get6WkAttendanceHighSchool(int campusId, DateTime startDate, DateTime endDate)
+        {
+            int? result =
+                rockContext.Database.SqlQuery<int?>(
+                    "EXEC dbo.spNPMetrics_Attendace6WkHighSchool @campusId, @endDate, @startDate",
+                    new SqlParameter("campusId", campusId), new SqlParameter("endDate", endDate), new SqlParameter("startDate", startDate)).ToList<int?>()[0];
+
+            return result;
+        }
+
+
         protected int? Get6WkAttendanceAuditorium(int campusId, DateTime startDate, DateTime endDate)
         {
             int? result =
