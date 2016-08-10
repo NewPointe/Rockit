@@ -3,5 +3,6 @@
 /App_Data
 /Assets/calendar-full.json
 /Assets/calendar.json
-/web.config
+/web.config*
 /wp-content
+/newrelic

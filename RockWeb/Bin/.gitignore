@@ -13,3 +13,6 @@ evohtmltopdf.dll
 evointernal.dat
 
 com.minecartstudio.PrayerDigestEmail.dll
+
+com.minecartstudio.ExchangeContactSync.dll
+Microsoft.Exchange.WebServices.dll

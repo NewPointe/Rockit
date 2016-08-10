@@ -160,7 +160,7 @@ img {
 
 .dropdown-menu > li {
     & > a {
-        color: @accent-text-color;
+        color: @brand-primary;
         font-size: .8em;
 
         &:focus {
@@ -237,8 +237,18 @@ address {
     }
 
     a:hover {
-        color: @accent-text-color !important;
+        color: @brand-primary !important;
     }
+}
+
+img.img-center {
+    display: block;
+    margin: 0 auto;
+}
+
+.form-control {
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 // Custom panel - grey
@@ -335,24 +345,6 @@ address {
         }
     }
 }
-/*
-
-    Button themes:
-     - Change text color
-     - Darken/lighten background-color
-     - Change background-color
-
-
-
-
-
-
-
-
-
-
-
-*/
 
 
 
@@ -684,7 +676,7 @@ h2.give {
 
             &.active,
             &:hover {
-                color: @accent-text-color;
+                color: @brand-primary;
             }
             // Active menu arrow pointer
             &.active:after {
