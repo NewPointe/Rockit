@@ -114,7 +114,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Data\LiveServiceJsonJob.cs" />
-    <Compile Include="SystemGuid\DefinedType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -128,6 +127,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="Model\" />
     <Folder Include="Rest\" />
+    <Folder Include="SystemGuid\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
