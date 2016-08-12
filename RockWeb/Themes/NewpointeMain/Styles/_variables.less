@@ -59,7 +59,7 @@
 //--
 
 
-// Generic
+// [BS] Generic
 
 @body-bg: @background-color;
 
@@ -67,16 +67,16 @@
 @border-radius-large:            0px;
 @border-radius-small:            0px;
 
-// Navbar collapse
+// [BS] Navbar collapse
 //** Point at which the navbar becomes uncollapsed.
 @grid-float-breakpoint:     @screen-lg-min;
 //** Point at which the navbar begins collapsing.
 @grid-float-breakpoint-max: (@grid-float-breakpoint - 1);
 
-// Brand
+// [BS] Brand
 @brand-primary: @primary-theme-color;
 
-// Font
+// [BS] Font
 @text-color:            @primary-text-color;
 
 @headings-font-family:    @font-family-sans-serif-bold;
@@ -89,7 +89,7 @@
 @font-family-monospace:   Monaco, Menlo, Consolas, "Courier New", monospace;
 @font-family-base:        @font-family-sans-serif;
 
-// Navbar
+// [BS] Navbar
 @navbar-default-toggle-icon-bar-bg: @primary-theme-color;
 @navbar-default-toggle-hover-bg:       transparent;
 @navbar-default-toggle-border-color:       transparent;
@@ -123,7 +123,7 @@
 
 @table-row-background-color: #efefef;
 
-// Buttons
+// [BS] Buttons
 // -------------------------
 @btn-default-color: @secondary-text-color;
 @btn-default-bg: @grey-medium;
@@ -148,22 +148,28 @@
 @btn-danger-border:              transparent;
 
 
-// Panels
+// [BS] Panels
 // -------------------------
 
 //@panel-bg: #efefef;
 
 
-// Dropdowns
+// [BS] Dropdowns
 // -------------------------
 
-@dropdown-bg:                    #404040;
+@dropdown-bg:                    @secondary-theme-color;
 @dropdown-border:                none;
 @dropdown-fallback-border:       none;
 
-@dropdown-link-color:            #F0F;
+@dropdown-link-color:            @secondary-text-color;
 @dropdown-link-hover-color:      @brand-primary;
 @dropdown-link-hover-bg:         @secondary-background-color;
+
+//@dropdown-link-color:            @primary-text-color;
+//@dropdown-link-hover-color:      @brand-primary;
+//@dropdown-link-hover-bg:         @background-color;
+//@dropdown-bg:                    @background-color;
+//@dropdown-border:                @secondary-background-color;
 
 @dropdown-link-active-color:     @component-active-color;
 @dropdown-link-active-bg:        @component-active-bg;
@@ -187,8 +193,9 @@
 
 @input-color-placeholder:        @gray-light;
 
-//@legend-color:                   @gray-dark;
-//@legend-border-color:            #efefef;
 
-//@input-group-addon-bg:           #efefef;  //picker????
-//@input-group-addon-border-color: @input-border;
+
+
+// [Rock] Date Picker
+@datepicker-highlight-bg: @primary-theme-color;
+@datepicker-highlight-color: @primary-text-color;
