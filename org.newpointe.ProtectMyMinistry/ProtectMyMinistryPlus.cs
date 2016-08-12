@@ -100,7 +100,7 @@ namespace org.newpointe.ProtectMyMinistry
                 IEnumerable<XElement> SSNTraces = OrderDetails.Where(x => x.Attribute("ServiceCode")?.Value == "SSNTrace" && x.Element("Status") != null);
                 IEnumerable<XElement> SSNTraceResults = SSNTraces.Select(x => x.Element("Result"));
                 IEnumerable<XElement> SSNTraceIndividuals = SSNTraceResults.SelectMany(x => x.Elements("Individual"));
-                SSNTraceCounties = SSNTraceIndividuals.Select(x => new string[] { x.Element("County").Value, x.Element("State").Value }).ToList();
+                SSNTraceCounties = SSNTraceIndividuals.Where(x => x.Element( "EndDate" ) == null || x.Element( "EndDate" ).Element( "Year" ) == null || (x.Element( "EndDate" ).Element( "Year" ).Value.AsInteger() > (DateTime.Now.Year - 8) ) ).Select(x => new string[] { x.Element("County").Value, x.Element("State").Value }).ToList();
             }
 
             XElement xTransaction = makeBGRequest(bgCheck, ssn, requestType, billingCode, SSNTraceCounties);
@@ -416,8 +416,17 @@ namespace org.newpointe.ProtectMyMinistry
             }
 
             var homelocation = person.GetHomeLocation();
+
             if (homelocation != null)
             {
+            
+                var addressStatesDefinedValues = DefinedTypeCache.Read( Rock.SystemGuid.DefinedType.LOCATION_ADDRESS_STATE.AsGuid() ).DefinedValues;
+                var mappedStateId = addressStatesDefinedValues.Where( x => x.Description.ToLower() == homelocation.State.ToLower() ).Select(x => x.Value).FirstOrDefault();
+                if(mappedStateId != null)
+                {
+                    homelocation.State = mappedStateId;
+                }
+
                 subjectElement.Add(new XElement("CurrentAddress",
                     new XElement("StreetAddress", homelocation.Street1),
                     new XElement("City", homelocation.City),

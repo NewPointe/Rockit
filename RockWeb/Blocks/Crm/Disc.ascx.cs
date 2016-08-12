@@ -410,6 +410,11 @@ namespace Rockweb.Blocks.Crm
         /// <param name="savedScores">The saved scores.</param>
         private void ShowResults( DiscService.AssessmentResults savedScores )
         {
+            // NewPointe alteration: redirect to SHAPE profile page instead
+            string shapeRedirectUrl = "https://newpointe.org/ShapeProfile?PersonId=" + _targetPerson.Id;
+            Response.Redirect(shapeRedirectUrl, true);
+            // end NewPointe alteration:
+
             pnlInstructions.Visible = false;
             pnlQuestions.Visible = false;
             pnlResults.Visible = true;

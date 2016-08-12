@@ -267,8 +267,10 @@ namespace RockWeb.Blocks.Groups
                 // If using a 'Full' view, save the phone numbers and address
                 if ( !IsSimple )
                 {
-                    SetPhoneNumber( rockContext, person, pnHome, null, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME.AsGuid(), changes );
-                    SetPhoneNumber( rockContext, person, pnCell, cbSms, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_MOBILE.AsGuid(), changes );
+                    if ( !String.IsNullOrWhiteSpace( pnHome.Text ) )
+                        SetPhoneNumber( rockContext, person, pnHome, null, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME.AsGuid(), changes );
+                    if ( !String.IsNullOrWhiteSpace( pnCell.Text ) )
+                        SetPhoneNumber( rockContext, person, pnCell, cbSms, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_MOBILE.AsGuid(), changes );
 
                     string oldLocation = homeLocation != null ? homeLocation.Location.ToString() : string.Empty;
                     string newLocation = string.Empty;
@@ -289,15 +291,6 @@ namespace RockWeb.Blocks.Groups
 
                         homeLocation.Location = location;
                         newLocation = location.ToString();
-                    }
-                    else
-                    {
-                        if ( homeLocation != null )
-                        {
-                            homeLocation.Location = null;
-                            family.GroupLocations.Remove( homeLocation );
-                            new GroupLocationService( rockContext ).Delete( homeLocation );
-                        }
                     }
 
                     History.EvaluateChange( familyChanges, "Home Location", oldLocation, newLocation );
@@ -551,7 +544,7 @@ namespace RockWeb.Blocks.Groups
 
             _autoFill = GetAttributeValue( "AutoFillForm" ).AsBoolean();
 
-            tbEmail.Required = _autoFill;
+            tbEmail.Required = true;//autoFill;
 
             string registerButtonText = GetAttributeValue( "RegisterButtonAltText" );
             if ( string.IsNullOrWhiteSpace( registerButtonText ) )

@@ -17,11 +17,11 @@ namespace org.newpointe.WorkflowEntities
 {
     [Description("Creates an entity")]
     [Export(typeof(ActionComponent))]
-    [ExportMetadata("ComponentName", "Create an entity")]
+    [ExportMetadata("ComponentName", "Create Entity")]
 
     [EntityTypeField("Entity Type", "The type of entity to create.", true, "", 0)]
     [CustomDropdownListField("Empty Value Handling", "How to handle empty property values", "IGNORE^Ignore empty values,EMPTY^Leave empty values empty,NULL^Set empty values to NULL (where possible)", true, "", "", 1)]
-    [KeyValueListField("Entity Properties", "The properties to create the entity with. <span class='tip tip-lava'></span>", true, "", "Property", "Value", "", "", "", 2)]
+    [KeyValueListField("Entity Properties", "The properties to create the entity with.  You can use <span class='tip tip-lava'></span>, but you'll need to use ! instead of |", true, "", "Property", "Value", "", "", "", 2)]
     [WorkflowAttribute("Entity Attribute", "The attribute to save the entity to.", false, "", "", 3)]
     class CreateEntity : ActionComponent
     {

@@ -217,7 +217,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 {
                     ShowView();
                 }
-                ShowResults();
                 if ( GetAttributeValue( "EnableCampusContext" ).AsBoolean() )
                 {
                     var campusEntityType = EntityTypeCache.Read( "Rock.Model.Campus" );
@@ -228,6 +227,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                         cblCampus.SetValue( contextCampus.Id.ToString() );
                     }
                 }
+                ShowResults();
             }
         }
 
