@@ -59,6 +59,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
     [TextField( "ScheduleFilters", "", false, "", "CustomSetting" )]
     [BooleanField( "Display Campus Filter", "", false, "CustomSetting" )]
     [BooleanField( "Enable Campus Context", "", false, "CustomSetting" )]
+    [BooleanField( "Auto Search", "", false, "CustomSetting" )]
     [AttributeField( Rock.SystemGuid.EntityType.GROUP, "Attribute Filters", "", false, true, "", "CustomSetting" )]
 
     // Map Settings
@@ -227,7 +228,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                         cblCampus.SetValue( contextCampus.Id.ToString() );
                     }
                 }
-                ShowResults();
+                if ( GetAttributeValue( "AutoSearch" ).AsBoolean() )
+                {
+                    ShowResults();
+                }
             }
         }
 
@@ -294,6 +298,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
 
             SetAttributeValue( "DisplayCampusFilter", cbFilterCampus.Checked.ToString() );
             SetAttributeValue( "EnableCampusContext", cbCampusContext.Checked.ToString() );
+            SetAttributeValue( "AutoSearch", cbAutoSearch.Checked.ToString() );
             SetAttributeValue( "AttributeFilters", cblAttributes.Items.Cast<ListItem>().Where( i => i.Selected ).Select( i => i.Value ).ToList().AsDelimited( "," ) );
 
             SetAttributeValue( "ShowMap", cbShowMap.Checked.ToString() );
@@ -441,6 +446,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
 
             cbFilterCampus.Checked = GetAttributeValue( "DisplayCampusFilter" ).AsBoolean();
             cbCampusContext.Checked = GetAttributeValue( "EnableCampusContext" ).AsBoolean();
+            cbAutoSearch.Checked = GetAttributeValue( "AutoSearch" ).AsBoolean();
 
             cbShowMap.Checked = GetAttributeValue( "ShowMap" ).AsBoolean();
             ddlMapStyle.BindToDefinedType( DefinedTypeCache.Read( Rock.SystemGuid.DefinedType.MAP_STYLES.AsGuid() ) );
@@ -573,7 +579,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
 
                 // Check to see if there's any filters
                 string scheduleFilters = GetAttributeValue( "ScheduleFilters" );
-                if ( !string.IsNullOrWhiteSpace( scheduleFilters ) || AttributeFilters.Any() )
+                if ( !string.IsNullOrWhiteSpace( scheduleFilters ) || AttributeFilters.Any() || GetAttributeValue( "DisplayCampusFilter" ).AsBoolean() )
                 {
                     phFilterControls.Visible = true;
                     btnSearch.Visible = true;
