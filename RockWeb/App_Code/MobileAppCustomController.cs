@@ -33,7 +33,7 @@ public class MobileAppPrayerController : ApiControllerBase
     public HttpResponseMessage Post(PrayerPost prayer)
     {
         //verify the token passed from the app is valid. Just an extra security measure tp make sure they're hitting from the app.
-        var isAuthed = ValidateAppToken();
+        var isAuthed = MobileAppAPIHelper.ValidateAppToken(Request);
 
         if (!isAuthed)
             return Request.CreateResponse(HttpStatusCode.Unauthorized);
@@ -61,33 +61,10 @@ public class MobileAppPrayerController : ApiControllerBase
             return Request.CreateResponse(result.StatusCode, result.StatusDescription);
         }
 
-    }
-
-    /// <summary>
-    /// Called in each controller to pass the header value for app token to be verified. 
-    /// </summary>
-    /// <returns></returns>
-    private bool ValidateAppToken()
-    {
-        var isAuthed = false;
-        string token = "";
-        IEnumerable<string> headerValues;
-
-        if (Request.Headers.TryGetValues("appToken", out headerValues))
-        {
-            token = headerValues.First();
-            if (MobileAppAPIHelper.ValidateToken(token))
-            {
-                //yay, continue doing what you're doing.
-                isAuthed = true;
-            }
-        }
-
-        return isAuthed;
-    }
+    } 
 }
 
- 
+[Authorize]
 public class MobileAppProfileController : ApiControllerBase
 {
 
@@ -98,7 +75,7 @@ public class MobileAppProfileController : ApiControllerBase
     public HttpResponseMessage Get()
     {
         //verify the token passed from the app is valid. Just an extra security measure tp make sure they're hitting from the app.
-        var isAuthed = ValidateAppToken();
+        var isAuthed = MobileAppAPIHelper.ValidateAppToken(Request);
 
         //if this check fails, return Unauthorized
         if (!isAuthed)
@@ -158,7 +135,7 @@ public class MobileAppProfileController : ApiControllerBase
     public HttpResponseMessage Patch(int Id, UserProfilePatch person)
     {
         //verify the token passed from the app is valid. Just an extra security measure tp make sure they're hitting from the app.
-        var isAuthed = ValidateAppToken();
+        var isAuthed = MobileAppAPIHelper.ValidateAppToken(Request);
 
         if (!isAuthed)
             return Request.CreateResponse(HttpStatusCode.Unauthorized);
@@ -185,31 +162,42 @@ public class MobileAppProfileController : ApiControllerBase
         }
 
     }
+ 
+}
+
+
+
+public class MobileAppAboutController : ApiControllerBase
+{
 
     /// <summary>
-    /// Called in each controller to pass the header value for app token to be verified. 
+    /// Get Method for pulling the about us text
     /// </summary>
     /// <returns></returns>
-    private bool ValidateAppToken()
+    public HttpResponseMessage Get()
     {
-        var isAuthed = false;
-        string token = "";
-        IEnumerable<string> headerValues;
+        //verify the token passed from the app is valid. Just an extra security measure tp make sure they're hitting from the app.
+        var isAuthed = MobileAppAPIHelper.ValidateAppToken(Request);
 
-        if (Request.Headers.TryGetValues("appToken", out headerValues))
+        //if this check fails, return Unauthorized
+        if (!isAuthed)
+            return Request.CreateResponse(HttpStatusCode.Unauthorized);
+
+        try
         {
-            token = headerValues.First();
-            if (MobileAppAPIHelper.ValidateToken(token))
-            {
-                //yay, continue doing what you're doing.
-                isAuthed = true;
-            }
+            var aboutText = Rock.Web.Cache.GlobalAttributesCache.Value("AppAboutUs");
+            //and return ok.
+            return Request.CreateResponse(HttpStatusCode.OK, aboutText);
         }
-
-        return isAuthed;
+        catch (Exception ex) 
+        {
+            //todo: log the error somewhere. 
+            return Request.CreateResponse(HttpStatusCode.InternalServerError);
+        }
     }
-
+      
 }
+
 
 #region Custom API Stuff
 
@@ -227,10 +215,29 @@ public class MobileAppAPIHelper
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public static bool ValidateToken(string token)
+    private static bool ValidateToken(string token)
     {
         //this is stored in the app, so don't change it. Otherwise the app won't work until it's updated.
         return token == "rKEaetxPmqe55LjoWy7lXgCo";
+    }
+
+    public static bool ValidateAppToken(HttpRequestMessage request)
+    {
+        var isAuthed = false;
+        string token = "";
+        IEnumerable<string> headerValues;
+
+        if (request.Headers.TryGetValues("appToken", out headerValues))
+        {
+            token = headerValues.First();
+            if (ValidateToken(token))
+            {
+                //yay, continue doing what you're doing.
+                isAuthed = true;
+            }
+        }
+
+        return isAuthed;
     }
 
 
