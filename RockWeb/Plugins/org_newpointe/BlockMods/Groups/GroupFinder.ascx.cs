@@ -579,10 +579,15 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
 
                 // Check to see if there's any filters
                 string scheduleFilters = GetAttributeValue( "ScheduleFilters" );
-                if ( !string.IsNullOrWhiteSpace( scheduleFilters ) || AttributeFilters.Any() || GetAttributeValue( "DisplayCampusFilter" ).AsBoolean() )
+                if ( !string.IsNullOrWhiteSpace( scheduleFilters ) || AttributeFilters.Any() )
                 {
                     phFilterControls.Visible = true;
                     btnSearch.Visible = true;
+                }
+                else if ( GetAttributeValue( "DisplayCampusFilter" ).AsBoolean() )
+                {
+                    cblCampus.SelectedIndexChanged += btnSearch_Click;
+                    pnlResults.Visible = true;
                 }
                 else
                 {
@@ -1029,7 +1034,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                             mergeFields.Add( "Location", gl.Location );
 
                             Dictionary<string, object> linkedPages = new Dictionary<string, object>();
-                            linkedPages.Add( "GroupDetailPage", LinkedPageUrl( "GroupDetailPage", null ) );
+                            linkedPages.Add( "GroupDetailPage", LinkedPageRoute( "GroupDetailPage" ) );
 
                             if ( _targetPersonGuid != Guid.Empty )
                             {
@@ -1037,7 +1042,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                             }
                             else
                             {
-                                linkedPages.Add( "RegisterPage", LinkedPageUrl( "RegisterPage", null ) );
+                                linkedPages.Add( "RegisterPage", LinkedPageRoute( "RegisterPage" ) );
                             }
 
                             mergeFields.Add( "LinkedPages", linkedPages );
@@ -1100,7 +1105,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 mergeFields.Add( "Groups", groups );
 
                 Dictionary<string, object> linkedPages = new Dictionary<string, object>();
-                linkedPages.Add( "GroupDetailPage", LinkedPageUrl( "GroupDetailPage", null ) );
+                linkedPages.Add( "GroupDetailPage", LinkedPageRoute( "GroupDetailPage" ) );
 
                 if ( _targetPersonGuid != Guid.Empty )
                 {
@@ -1108,7 +1113,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 }
                 else
                 {
-                    linkedPages.Add( "RegisterPage", LinkedPageUrl( "RegisterPage", null ) );
+                    linkedPages.Add( "RegisterPage", LinkedPageRoute( "RegisterPage" ) );
                 }
 
                 mergeFields.Add( "LinkedPages", linkedPages );
