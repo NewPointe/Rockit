@@ -64,6 +64,7 @@ namespace RockWeb.Webhooks
                 var formDate = request.Form["date"];
                 var formCampus = request.Form["campus"];
                 var form6pm = request.Form["6pm"];
+                var form7pm = request.Form["7pm"];
                 var form9am = request.Form["9am"];
                 var form10am = request.Form["10am"];
                 var form11am = request.Form["11am"];
@@ -107,6 +108,11 @@ namespace RockWeb.Webhooks
                 if (!String.IsNullOrWhiteSpace(form6pm))
                 {
                     SaveMetric(dt.AddHours(18), campusEntityId, form6pm, formNotes); 
+                }
+
+                if (!String.IsNullOrWhiteSpace(form7pm))
+                {
+                    SaveMetric(dt.AddHours(19), campusEntityId, form7pm, formNotes); 
                 }
 
 
