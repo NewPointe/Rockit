@@ -40,6 +40,7 @@
     <%--<script src="<%# ResolveRockUrl("~/Scripts/core.js", true) %>"></script>--%>
     <%--<script src="<%# ResolveRockUrl("~/Scripts/sugarpak.js", true) %>"></script>--%>
     <script src="<%# ResolveRockUrl("~/Scripts/jquery.fullscreen-popup.min.js", true) %>"></script>
+    <script src="<%# ResolveRockUrl("~/Scripts/HotJar.js", true) %>"></script>
 
 
     <!-- Set the viewport width to device width for mobile -->
