@@ -1,11 +1,11 @@
 ﻿// <copyright>
-// Copyright 2013 by the Spark Development Network
+// Copyright by the Spark Development Network
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Rock Community License (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+// http://www.rockrms.com/license
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,153 +33,162 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
     /// <summary>
     /// 
     /// </summary>
-    [DisplayName( "Custom Success" )]
-    [Category("Newpointe Check-in")]
-    [Description( "Displays the details of a successful checkin." )]
-    [LinkedPage( "Person Select Page" )]
+    [DisplayName("Custom Success")]
+    [Category("Newpinte Check-in")]
+    [Description("Displays the details of a successful checkin.")]
+    [LinkedPage("Person Select Page", "", false, "", "", 5)]
     public partial class Success : CheckInBlock
     {
         /// <summary>
         /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
-        protected override void OnInit( EventArgs e )
+        protected override void OnInit(EventArgs e)
         {
-            base.OnInit( e );
+            base.OnInit(e);
 
-            RockPage.AddScriptLink( "~/Scripts/CheckinClient/cordova-2.4.0.js", false );
-            RockPage.AddScriptLink( "~/Scripts/CheckinClient/ZebraPrint.js" );
+            RockPage.AddScriptLink("~/Scripts/CheckinClient/cordova-2.4.0.js", false);
+            RockPage.AddScriptLink("~/Scripts/CheckinClient/ZebraPrint.js");
 
-            RockPage.AddScriptLink( "~/Scripts/iscroll.js" );
-            RockPage.AddScriptLink( "~/Scripts/CheckinClient/checkin-core.js" );
+            RockPage.AddScriptLink("~/Scripts/iscroll.js");
+            RockPage.AddScriptLink("~/Scripts/CheckinClient/checkin-core.js");
         }
 
         /// <summary>
         /// Raises the <see cref="E:System.Web.UI.Control.Load" /> event.
         /// </summary>
         /// <param name="e">The <see cref="T:System.EventArgs" /> object that contains the event data.</param>
-        protected override void OnLoad( EventArgs e )
+        protected override void OnLoad(EventArgs e)
         {
-            base.OnLoad( e );
+            base.OnLoad(e);
 
-            if ( CurrentWorkflow == null || CurrentCheckInState == null )
+            if (CurrentWorkflow == null || CurrentCheckInState == null)
             {
                 NavigateToHomePage();
             }
             else
             {
-                if ( !Page.IsPostBack )
+                if (!Page.IsPostBack)
                 {
                     try
                     {
+                        var printFromClient = new List<CheckInLabel>();
+                        var printFromServer = new List<CheckInLabel>();
+
                         // Print the labels
-                        foreach ( var family in CurrentCheckInState.CheckIn.Families.Where( f => f.Selected ) )
+                        foreach (var family in CurrentCheckInState.CheckIn.Families.Where(f => f.Selected))
                         {
-                            lbAnother.Visible = family.People.Count > 1;
+                            lbAnother.Visible =
+                                CurrentCheckInState.CheckInType.TypeOfCheckin == TypeOfCheckin.Individual &&
+                                family.People.Count > 1;
 
-                            foreach ( var person in family.People.Where( p => p.Selected ) )
+                            foreach (var person in family.GetPeople(true))
                             {
-                                foreach ( var groupType in person.GroupTypes.Where( g => g.Selected ) )
+                                foreach (var groupType in person.GetGroupTypes(true))
                                 {
-                                    foreach ( var group in groupType.Groups.Where( g => g.Selected ) )
+                                    foreach (var group in groupType.GetGroups(true))
                                     {
-                                        foreach ( var location in group.Locations.Where( l => l.Selected ) )
+                                        foreach (var location in group.GetLocations(true))
                                         {
-                                            foreach ( var schedule in location.Schedules.Where( s => s.Selected ) )
+                                            foreach (var schedule in location.GetSchedules(true))
                                             {
-                                                var li = new HtmlGenericControl( "li" );
-                                                li.InnerText = string.Format( "{0} was checked into {1} for {2} at {3}",
-                                                    person.ToString(), group.ToString(), location.ToString(), schedule.ToString(), person.SecurityCode );
+                                                var li = new HtmlGenericControl("li");
+                                                li.InnerText = string.Format("{0} was checked into {1} in {2} at {3}",
+                                                    person.ToString(), group.ToString(), location.ToString(), schedule.ToString(), person.SecurityCode);
 
-                                                phResults.Controls.Add( li );
+                                                phResults.Controls.Add(li);
                                             }
                                         }
                                     }
 
-                                    var printFromClient = groupType.Labels.Where( l => l.PrintFrom == Rock.Model.PrintFrom.Client );
-                                    if ( printFromClient.Any() )
-                                    {
-                                        var urlRoot = string.Format( "{0}://{1}", Request.Url.Scheme, Request.Url.Authority );
-                                        printFromClient.ToList().ForEach( l => l.LabelFile = urlRoot + l.LabelFile.Replace( "GetFile.ashx", "GetCheckinLabel.ashx" ) );
-                                        for ( int i = 0; i < printFromClient.Count() - 1; i++ )
-                                        {
-                                            printFromClient.ElementAt( i ).LabelFile += "&delaycut=T";
-                                        }
-                                        AddLabelScript( printFromClient.ToJson() );
-                                    }
+                                    printFromClient.AddRange(groupType.Labels.Where(l => l.PrintFrom == Rock.Model.PrintFrom.Client));
+                                    printFromServer.AddRange(groupType.Labels.Where(l => l.PrintFrom == Rock.Model.PrintFrom.Server));
+                                }
+                            }
+                        }
 
-                                    var printFromServer = groupType.Labels.Where( l => l.PrintFrom == Rock.Model.PrintFrom.Server );
-                                    if ( printFromServer.Any() )
-                                    {
-                                        Socket socket = null;
-                                        string currentIp = string.Empty;
+                        if (printFromClient.Any())
+                        {
+                            var urlRoot = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Authority);
+                            printFromClient.ToList().ForEach(l => l.LabelFile = urlRoot + l.LabelFile.Replace("GetFile.ashx", "GetCheckinLabel.ashx"));
+                            for (int i = 0; i < printFromClient.Count() - 1; i++)
+                            {
+                                printFromClient.ElementAt(i).LabelFile += "&delaycut=T";
+                            }
 
-                                        foreach ( var label in printFromServer )
+                            //printFromClient.OrderBy(l => l.Order).ToList().ForEach(l => l.LabelFile = urlRoot + l.LabelFile);
+                            AddLabelScript(printFromClient.ToJson());
+                        }
+
+                        if (printFromServer.Any())
+                        {
+                            Socket socket = null;
+                            string currentIp = string.Empty;
+
+                            foreach (var label in printFromServer.OrderBy(l => l.Order))
+                            {
+                                var labelCache = KioskLabel.Read(label.FileGuid);
+                                if (labelCache != null)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(label.PrinterAddress))
+                                    {
+                                        if (label.PrinterAddress != currentIp)
                                         {
-                                            var labelCache = KioskLabel.Read( label.FileGuid );
-                                            if ( labelCache != null )
+                                            if (socket != null && socket.Connected)
                                             {
-                                                if ( !string.IsNullOrWhiteSpace( label.PrinterAddress ) )
-                                                {
-                                                    if ( label.PrinterAddress != currentIp )
-                                                    {
-                                                        if ( socket != null && socket.Connected )
-                                                        {
-                                                            socket.Shutdown( SocketShutdown.Both );
-                                                            socket.Close();
-                                                        }
+                                                socket.Shutdown(SocketShutdown.Both);
+                                                socket.Close();
+                                            }
 
-                                                        currentIp = label.PrinterAddress;
-                                                        var printerIp = new IPEndPoint( IPAddress.Parse( currentIp ), 9100 );
+                                            currentIp = label.PrinterAddress;
+                                            var printerIp = new IPEndPoint(IPAddress.Parse(currentIp), 9100);
 
-                                                        socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
-                                                        IAsyncResult result = socket.BeginConnect( printerIp, null, null );
-                                                        bool success = result.AsyncWaitHandle.WaitOne( 5000, true );
-                                                    }
+                                            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                                            IAsyncResult result = socket.BeginConnect(printerIp, null, null);
+                                            bool success = result.AsyncWaitHandle.WaitOne(5000, true);
+                                        }
 
-                                                    string printContent = labelCache.FileContent;
-                                                    foreach ( var mergeField in label.MergeFields )
-                                                    {
-                                                        if ( !string.IsNullOrWhiteSpace( mergeField.Value ) )
-                                                        {
-                                                            printContent = Regex.Replace( printContent, string.Format( @"(?<=\^FD){0}(?=\^FS)", mergeField.Key ), ZebraFormatString( mergeField.Value ) );
-                                                        }
-                                                        else
-                                                        {
-                                                            // Remove the box preceding merge field
-                                                            printContent = Regex.Replace( printContent, string.Format( @"\^FO.*\^FS\s*(?=\^FT.*\^FD{0}\^FS)", mergeField.Key ), string.Empty );
-                                                            // Remove the merge field
-                                                            printContent = Regex.Replace( printContent, string.Format( @"\^FD{0}\^FS", mergeField.Key ), "^FD^FS" );
-                                                        }
-                                                    }
-
-                                                    if ( socket.Connected )
-                                                    {
-                                                        var ns = new NetworkStream( socket );
-                                                        byte[] toSend = System.Text.Encoding.ASCII.GetBytes( printContent );
-                                                        ns.Write( toSend, 0, toSend.Length );
-                                                    }
-                                                    else
-                                                    {
-                                                        phResults.Controls.Add( new LiteralControl( "<br/>NOTE: Could not connect to printer!" ) );
-                                                    }
-                                                }
+                                        string printContent = labelCache.FileContent;
+                                        foreach (var mergeField in label.MergeFields)
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(mergeField.Value))
+                                            {
+                                                printContent = Regex.Replace(printContent, string.Format(@"(?<=\^FD){0}(?=\^FS)", mergeField.Key), ZebraFormatString(mergeField.Value));
+                                            }
+                                            else
+                                            {
+                                                // Remove the box preceding merge field
+                                                printContent = Regex.Replace(printContent, string.Format(@"\^FO.*\^FS\s*(?=\^FT.*\^FD{0}\^FS)", mergeField.Key), string.Empty);
+                                                // Remove the merge field
+                                                printContent = Regex.Replace(printContent, string.Format(@"\^FD{0}\^FS", mergeField.Key), "^FD^FS");
                                             }
                                         }
 
-                                        if ( socket != null && socket.Connected )
+                                        if (socket.Connected)
                                         {
-                                            socket.Shutdown( SocketShutdown.Both );
-                                            socket.Close();
+                                            var ns = new NetworkStream(socket);
+                                            byte[] toSend = System.Text.Encoding.ASCII.GetBytes(printContent);
+                                            ns.Write(toSend, 0, toSend.Length);
+                                        }
+                                        else
+                                        {
+                                            phResults.Controls.Add(new LiteralControl("<br/>NOTE: Could not connect to printer!"));
                                         }
                                     }
                                 }
                             }
+
+                            if (socket != null && socket.Connected)
+                            {
+                                socket.Shutdown(SocketShutdown.Both);
+                                socket.Close();
+                            }
                         }
+
                     }
-                    catch ( Exception ex )
+                    catch (Exception ex)
                     {
-                        LogException( ex );
+                        LogException(ex);
                     }
                 }
             }
@@ -190,20 +199,20 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        protected void lbDone_Click( object sender, EventArgs e )
+        protected void lbDone_Click(object sender, EventArgs e)
         {
             NavigateToHomePage();
         }
 
-        private string ZebraFormatString( string input, bool isJson = false )
+        private string ZebraFormatString(string input, bool isJson = false)
         {
-            if ( isJson )
+            if (isJson)
             {
-                return input.Replace( "é", @"\\82" );  // fix acute e
+                return input.Replace("é", @"\\82");  // fix acute e
             }
             else
             {
-                return input.Replace( "é", @"\82" );  // fix acute e
+                return input.Replace("é", @"\82");  // fix acute e
             }
         }
 
@@ -212,17 +221,17 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        protected void lbAnother_Click( object sender, EventArgs e )
+        protected void lbAnother_Click(object sender, EventArgs e)
         {
-            if ( KioskCurrentlyActive )
+            if (KioskCurrentlyActive)
             {
-                foreach ( var family in CurrentCheckInState.CheckIn.Families.Where( f => f.Selected ) )
+                foreach (var family in CurrentCheckInState.CheckIn.Families.Where(f => f.Selected))
                 {
-                    foreach ( var person in family.People.Where( p => p.Selected ) )
+                    foreach (var person in family.People.Where(p => p.Selected))
                     {
                         person.Selected = false;
 
-                        foreach ( var groupType in person.GroupTypes.Where( g => g.Selected ) )
+                        foreach (var groupType in person.GroupTypes.Where(g => g.Selected))
                         {
                             groupType.Selected = false;
                         }
@@ -230,7 +239,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
                 }
 
                 SaveState();
-                NavigateToLinkedPage( "PersonSelectPage" );
+                NavigateToLinkedPage("PersonSelectPage");
 
             }
             else
@@ -243,9 +252,9 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
         /// Adds the label script.
         /// </summary>
         /// <param name="jsonObject">The json object.</param>
-        private void AddLabelScript( string jsonObject )
+        private void AddLabelScript(string jsonObject)
         {
-            string script = string.Format( @"
+            string script = string.Format(@"
 
         // setup deviceready event to wait for cordova
 	    if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {{
@@ -287,8 +296,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
 			    }}
             );
 	    }}
-", ZebraFormatString( jsonObject, true ) );
-            ScriptManager.RegisterStartupScript( this, this.GetType(), "addLabelScript", script, true );
+", ZebraFormatString(jsonObject, true));
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "addLabelScript", script, true);
         }
 
     }
