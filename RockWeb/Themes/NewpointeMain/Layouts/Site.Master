@@ -105,12 +105,19 @@
 
                     <button class="navbar-toggle" type="button" onclick="location.href='/GiveNow';"><i class="fa fa-usd"></i></button>
 
+                    <asp:PlaceHolder runat="server">
+                        <% if ( Rock.Web.Cache.GlobalAttributesCache.Value( "LiveService" ).ToLower() == "true" )
+                            { %>
+                        <button class="navbar-toggle" type="button" onclick="location.href='http://live.newpointe.org';"><i class="fa fa-video-camera"></i></button>
+                        <% } %>
+                    </asp:PlaceHolder>
+
                     <%--<Rock:Zone Name="Header" runat="server" />--%>
                     <div class="brand-logo pull-left">
-                            <a href="/home">
-                                <asp:Image ImageUrl="~/Assets/Images/NPCC_Logo_Full_green.svg" runat="server" />
-                            </a>
-                        </div>
+                        <a href="/home">
+                            <asp:Image ImageUrl="~/Assets/Images/NPCC_Logo_Full_green.svg" runat="server" />
+                        </a>
+                    </div>
                 </div>
                 <div id="LoginCollapse" class="navbar-collapse collapse">
                     <!-- Main Navigation -->

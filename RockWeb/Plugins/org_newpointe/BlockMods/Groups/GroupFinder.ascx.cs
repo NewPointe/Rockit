@@ -586,7 +586,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 }
                 else if ( GetAttributeValue( "DisplayCampusFilter" ).AsBoolean() )
                 {
-                    cblCampus.SelectedIndexChanged += btnSearch_Click;
+                    cblCampus.AutoPostBack = true;
+                    btnSearch.Visible = false;
                     pnlResults.Visible = true;
                 }
                 else
@@ -1546,6 +1547,15 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
         protected void ddlPageSize_SelectedIndexChanged( object sender, EventArgs e )
         {
             ShowResults();
+        }
+
+        protected void cblCampus_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            string scheduleFilters = GetAttributeValue( "ScheduleFilters" );
+            if (!( !string.IsNullOrWhiteSpace( scheduleFilters ) || AttributeFilters.Any()))
+            {
+                ShowResults();
+            }
         }
     }
 }

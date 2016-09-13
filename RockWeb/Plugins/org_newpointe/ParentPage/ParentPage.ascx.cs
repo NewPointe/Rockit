@@ -20,13 +20,20 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
     /// <summary>
     /// Block to pick a person and get their URL encoded key.
     /// </summary>
-    [DisplayName("Parent Page")]
-    [Category("NewPointe Check-In")]
-    [Description("Parent Page Block.")]
-    [IntegerField("Days Back to Search","Select how many days back to search",true,2)]
-    [TextField("Default SMS Message Text", "Default text for the SMS",false,"Test Parent Page Message")]
-    [DefinedValueField("611BDE1F-7405-4D16-8626-CCFEDB0E62BE", "Default SMS From Value","Configure in Defined Values",true,false)]
+    [DisplayName( "Parent Page" )]
+    [Category( "NewPointe > Checkin" )]
+    [Description( "Parent Page Block." )]
 
+    [IntegerField( "Days Back to Search", "Select how many days back to search", true, 1, "", 0 )]
+    [CustomCheckboxListField( "Included Relationships", "The relationships to include.", "SELECT Name AS Text, Guid AS Value FROM GroupTypeRole WHERE GroupTypeId = 11 OR GroupTypeId = 10", true, ""
+        + Rock.SystemGuid.GroupRole.GROUPROLE_FAMILY_MEMBER_ADULT + ","
+        + Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_ALLOW_CHECK_IN_BY + ","
+        + Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_GRANDPARENT + ","
+        + Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_INVITED_BY + ","
+        + Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_PARENT + ","
+        + Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_STEP_PARENT
+        + "", "", 1 )]
+    [WorkflowTypeField( "Workflow Type", "The workflow to launch.", false, false, "", "", 2 )]
 
     // TODO: How do we limit by only certain check-in groups (kids and students)?
     // TODO: Save search query douring check-in
@@ -34,23 +41,163 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
 
     public partial class ParentPage : Rock.Web.UI.RockBlock
     {
-        //public Guid typeGuid;
+
         RockContext rockContext = new RockContext();
 
-        public string Code;
+        protected string CheckinCode
+        {
+            get { return ViewState["CheckinCode"] as string; }
+            set { ViewState["CheckinCode"] = value; }
+        }
+        protected int? SelectedPersonAliasId
+        {
+            get { return ViewState["SelectedPersonAliasId"] as int?; }
+            set { ViewState["SelectedPersonAliasId"] = value; }
+        }
+
+        protected override void OnLoad( EventArgs e )
+        {
+            if ( !IsPostBack )
+            {
+                CheckinCode = PageParameter( "CheckinCode" );
+                if ( !String.IsNullOrWhiteSpace( CheckinCode ) )
+                    bindGrid();
+            }
+        }
+
+        protected void bindGrid()
+        {
+            if ( !String.IsNullOrWhiteSpace( CheckinCode ) )
+            {
+                pnlCheckinCode.Visible = false;
+                pnlSearchedCheckinCode.Visible = true;
+                rlCheckinCode.Text = CheckinCode + " <a href='?'><i class='fa fa-times'></i></a>";
+
+                if ( SelectedPersonAliasId.HasValue )
+                {
+
+                    Person SelectedPerson = new PersonAliasService( rockContext ).Get( SelectedPersonAliasId.Value ).Person;
+                    pnlSelectedPerson.Visible = true;
+                    pnlRelationSearch.Visible = true;
+                    pnlCodeSearch.Visible = false;
+                    rlSelectedPerson.Text = SelectedPerson.FullName + " <a href='?CheckinCode=" + CheckinCode + "'><i class='fa fa-times'></i></a>";
+
+                    // Adult Family Members
+                    var familyMembers = SelectedPerson.GetFamilyMembers( false, rockContext ).Select( m => new PersonRelationship { Person = m.Person, Role = m.GroupRole, Priority = 100 } ).ToList();
+
+                    // Known Relationships
+                    var knownRelationship_GroupMemberships = new GroupMemberService( rockContext ).Queryable().Where( gm => gm.Group.GroupTypeId == 11 && gm.PersonId == SelectedPerson.Id );
+
+                    var ownedRelationshipGroups = knownRelationship_GroupMemberships.Where( gm => gm.GroupRole.Guid.ToString() == Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_OWNER ).Select( gm => gm.Group );
+                    var thirdPartyReletionshipGroupMemberShips = knownRelationship_GroupMemberships.Where( gm => gm.GroupRole.Guid.ToString() != Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_OWNER );
+
+                    // For Owned relationships, we need the reverse of the 3rd party's role
+                    var ownedRelationship_GroupMembers = ownedRelationshipGroups.SelectMany( g => g.Members.Where( gm => gm.PersonId != SelectedPerson.Id ) );
+
+                    var ownedRelationships = ownedRelationship_GroupMembers.ToList().Select( gm => new PersonRelationship
+                    {
+                        Person = gm.Person,
+                        Role = gm.GroupRole,
+                        Priority = 50
+                    } );
+
+                    var GroupRoleServ = new GroupTypeRoleService( rockContext );
+                    var ownedRelationshipsList = new List<PersonRelationship>();
+                    foreach ( var relationship in ownedRelationships )
+                    {
+                        relationship.Role.LoadAttributes();
+                        relationship.Role = GroupRoleServ.Get( relationship.Role.GetAttributeValue( "InverseRelationship" ).AsGuid() );
+                        ownedRelationshipsList.Add( relationship );
+                    }
+
+                    // For 3rd party relationships, we need our role
+                    var thirdPartyRelationships = thirdPartyReletionshipGroupMemberShips.Select( gm => new PersonRelationship
+                    {
+                        Person = gm.Group.Members.Where( gm2 => gm2.GroupRole.Guid.ToString() == Rock.SystemGuid.GroupRole.GROUPROLE_KNOWN_RELATIONSHIPS_OWNER ).FirstOrDefault().Person,
+                        Role = gm.GroupRole,
+                        Priority = 40
+                    } ).ToList();
+
+
+
+                    var relationships = familyMembers.Union( ownedRelationshipsList ).Union( thirdPartyRelationships );
+
+                    var shownRelationships = GetAttributeValue( "IncludedRelationships" ).Split( ',' ).Select( g => Guid.Parse( g ) );
+                    relationships = relationships.Where( r => shownRelationships.Contains( r.Role.Guid ) );
+
+                    var rels = relationships.GroupBy( x => new
+                    {
+                        PersonId = x.Person.Id,
+                        Person = x.Person,
+                        Roles = String.Join( ", ", relationships.Where( r => r.Person.Id == x.Person.Id ).Select( r => r.Role.Name ) ),
+                        Priority = x.Priority,
+                        HomePhone = x.Person.PhoneNumbers.Where( p => p.NumberTypeValueId == 12 ).Select( p => p.NumberFormatted + ( p.IsMessagingEnabled ? " &nbsp;<i class=\"fa fa-comments\"></i>" : "" ) ).FirstOrDefault(),
+                        MobilePhone = x.Person.PhoneNumbers.Where( p => p.NumberTypeValueId == 13 ).Select( p => p.NumberFormatted + ( p.IsMessagingEnabled ? " &nbsp;<i class=\"fa fa-comments\"></i>" : "" ) ).FirstOrDefault()
+                    } ).Select( g => g.Key );
+
+                    gReleventPeople.DataSource = rels.OrderByDescending( r => r.Priority );
+                    gReleventPeople.DataKeyNames = new string[] { "PersonId" };
+                    gReleventPeople.DataBind();
+                }
+                else
+                {
+                    pnlSelectedPerson.Visible = false;
+                    pnlRelationSearch.Visible = false;
+                    pnlCodeSearch.Visible = true;
+
+                    int daysBacktoSearch = GetAttributeValue( "DaysBacktoSearch" ).AsInteger();
+                    var searchDate = DateTime.Now.Date.AddDays( -daysBacktoSearch );
+                    gSearchResults.SetLinqDataSource( new AttendanceCodeService( rockContext ).Queryable().Where( c => c.Code == CheckinCode && c.IssueDateTime > searchDate ).SelectMany( c => c.Attendances ).OrderByDescending( "StartDateTime" ) );
+                    gSearchResults.DataKeyNames = new string[] { "PersonAliasId" };
+                    gSearchResults.DataBind();
+                }
+            }
+        }
+
+        protected string FormatCheckedIntoString( string grp, string loc )
+        {
+            return loc.Equals( grp, StringComparison.OrdinalIgnoreCase ) ? grp : grp + " at " + loc;
+        }
+
+
+        protected void rbbSearch_Click( object sender, EventArgs e )
+        {
+            CheckinCode = rtbCheckinCode.Text.ToUpper();
+            bindGrid();
+        }
+
+        protected void gSearchResults_RowSelected( object sender, RowEventArgs e )
+        {
+            SelectedPersonAliasId = e.RowKeyId;
+            bindGrid();
+        }
+
+        protected void gReleventPeople_RowSelected( object sender, RowEventArgs e )
+        {
+            int pagePersonId = e.RowKeyId;
+            Person pagePerson = new PersonService( rockContext ).Get( pagePersonId );
+
+            if(pagePerson != null)
+            {
+                var workflowType = new WorkflowTypeService( rockContext ).Get( GetAttributeValue( "WorkflowType" ).AsGuid() );
+                if (workflowType != null)
+                {
+                    var workflow = Rock.Model.Workflow.Activate( workflowType, null, rockContext );
+                    List<string> errorMessages;
+                    new Rock.Model.WorkflowService( rockContext ).Process( workflow, out errorMessages );
+                }
+            }
+        }
+
+        /*
+        //public Guid typeGuid;
+
         public string SelectedPersonName;
         public string SelectedPersonFamily;
         public string SelectedPersonCampus;
         public string AdultToTextName;
         public string AdultToTextFamily;
         public string AdultToTextNumber;
-
-        
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
-
-        }
 
         protected void FindPerson(object sender, EventArgs e)
         {
@@ -318,29 +465,14 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
             }
         }
 
-
+    */
     }
 }
 
-class PersonList
-{
-    public string FullName { get; set; }
-    public string GradeFormatted { get; set; }
-    public string Age { get; set; }
-    public string Gender { get; set; }
-    public string Date { get; set; }
-    public string Campus { get; set; }
-    public string Device { get; set; }
-    public string Group { get; set; }
-    public string Time { get; set; }
-    public int Id { get; set; }
-    public int PersonAliasId { get; set; }
-}
 
-class FamilyList
+class PersonRelationship
 {
-    public string FullName { get; set; }
-    public int Id { get; set; }
-    public string PhoneNumber { get; set; }
-    public string FamilyName { get; set; }
+    public Person Person { get; set; }
+    public GroupTypeRole Role { get; set; }
+    public int Priority { get; set; }
 }
