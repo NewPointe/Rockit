@@ -51,8 +51,8 @@
     <div id="pointepark-logo">
         <img src="/Themes/CheckinPointePark/Assets/Images/pointepark.png" height="100" alt="NewPointe Community Church" />
     </div>
-    <div id="npcc-logo">
-        <img src="../Themes/checkinnewpointe/Assets/Images/NPCC_Logo.png" height="100" alt="NewPointe Community Church" />
+    <!--<div id="npcc-logo">
+        <img src="../Themes/checkinnewpointe/Assets/Images/NPCC_Logo.png" height="100" alt="NewPointe Community Church" />-->
     </div>
 </body>
 </html>
