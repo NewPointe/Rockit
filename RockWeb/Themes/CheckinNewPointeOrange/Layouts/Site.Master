@@ -48,8 +48,8 @@
             $("body").rockFadeIn();
         });
     </script>
-    <div id="npcc-logo">
-        <img src="../Themes/checkinnewpointe/Assets/Images/NPCC_Logo.png" height="100" alt="NewPointe Community Church" />
+    <!--<div id="npcc-logo">
+        <img src="../Themes/checkinnewpointe/Assets/Images/NPCC_Logo.png" height="100" alt="NewPointe Community Church" /> -->
     </div>
 </body>
 </html>
