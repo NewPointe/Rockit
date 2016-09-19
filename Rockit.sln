@@ -21,7 +21,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb", "RockWeb\", "{223
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "51200"
+		VWDPort = "44301"
 		SlnRelativePath = "RockWeb\"
 		StartServerOnDebug = "true"
 	EndProjectSection
@@ -43,6 +43,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ProtectMyMinistry", "org.newpointe.ProtectMyMinistry\org.newpointe.ProtectMyMinistry.csproj", "{B56F8C96-C5B6-4F7E-8B0D-7C6FC930FEA2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.PrivateChat", "org.newpointe.PrivateChat\org.newpointe.PrivateChat.csproj", "{054E242B-9622-4C7A-AD13-657940BEC32B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ParentPaging", "org.newpointe.ParentPaging\org.newpointe.ParentPaging.csproj", "{B9281D13-BD41-43C7-9C07-C1FBAB871097}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +92,10 @@ Global
 		{054E242B-9622-4C7A-AD13-657940BEC32B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{054E242B-9622-4C7A-AD13-657940BEC32B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{054E242B-9622-4C7A-AD13-657940BEC32B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9281D13-BD41-43C7-9C07-C1FBAB871097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9281D13-BD41-43C7-9C07-C1FBAB871097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9281D13-BD41-43C7-9C07-C1FBAB871097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9281D13-BD41-43C7-9C07-C1FBAB871097}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

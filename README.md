@@ -43,11 +43,6 @@ Blocks
 [/RockWeb/Blocks/Crm/PersonFollowingList.ascx.cs](/RockWeb/Blocks/Crm/PersonFollowingList.ascx.cs)  
 
 
-#### AttendanceEditor
-Very basic attendance list that lets you toggle DidAttend and DidNotOccur.  
-[/RockWeb/Plugins/org_newpointe/AttendanceEditor/](/RockWeb/Plugins/org_newpointe/AttendanceEditor/)  
-
-
 #### AzureUpload
 Generic file upload block. Need to change hard-coded URL in success message.  
 [/RockWeb/Plugins/org_newpointe/AzureUpload/](/RockWeb/Plugins/org_newpointe/AzureUpload/)  
@@ -64,11 +59,6 @@ Auto-start check-in with all Group Types selected.
 [/RockWeb/Plugins/org_newpointe/Checkin/CheckinAutoStart.ascx.cs](/RockWeb/Plugins/org_newpointe/Checkin/CheckinAutoStart.ascx.cs)  
 
 
-#### CustomLoginStatus
-Customized `LoginStatus` block.  
-[/RockWeb/Plugins/org_newpointe/CustomLoginStatus](/RockWeb/Plugins/org_newpointe/CustomLoginStatus)  
-
-
 #### CustomMenu
 Custom nav menu.  
 [/RockWeb/Plugins/org_newpointe/CustomMenu](/RockWeb/Plugins/org_newpointe/CustomMenu)  
@@ -83,11 +73,6 @@ Unnecessary. Use Lava instead: `{{ 'Global' | Attribute:'RockFunFacts','RawValue
 #### MachFormEmbed
 Embeds a MachForm into a page. Can also auto-fill field values from person name or page parameters.  
 [/RockWeb/Plugins/org_newpointe/MachFormEmbed](/RockWeb/Plugins/org_newpointe/MachFormEmbed)  
-
-
-#### MobilePageMenu
-Custom mobile nav menu.  
-[/RockWeb/Plugins/org_newpointe/MobilePageMenu](/RockWeb/Plugins/org_newpointe/MobilePageMenu)  
 
 
 #### PersonPicker
