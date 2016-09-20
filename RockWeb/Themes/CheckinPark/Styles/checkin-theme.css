@@ -52,4 +52,4 @@ src:url('../../../Assets/Fonts/OpenSans/OpenSans-Bold-webfont.eot');
 src:url('../../../Assets/Fonts/OpenSans/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),url('../../../Assets/Fonts/OpenSans/OpenSans-Bold-webfont.woff') format('woff'),url('../../../Assets/Fonts/OpenSans/OpenSans-Bold-webfont.ttf') format('truetype'),url('s../../../Assets/Fonts/OpenSans/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
 font-weight:700;
 font-style:normal}
-.checkin-count h3,.checkin-count li{color:#4c4c4b}body{-ms-touch-action:manipulation !important;-ms-content-zooming:none;touch-action:manipulation;display:none}
+.checkin-count h3,.checkin-count li{color:#4c4c4b}body{-ms-touch-action:none !important;-ms-content-zooming:none;touch-action:none;display:none}

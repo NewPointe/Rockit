@@ -77,8 +77,10 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
                     ShowPanel( 2 );
                     var SelectedAttendance = new AttendanceService( rockContext ).Get( SelectedAttendanceGuid );
                     SelectedAttendance.LoadAttributes();
-                    var attSearch = SelectedAttendance.GetAttributeValue( "SearchValue" ).AsNumeric();
+                    var attSearch = SelectedAttendance.GetAttributeValue( "SearchValue" );
                     var hasSearch = !String.IsNullOrWhiteSpace( attSearch );
+                    if ( hasSearch )
+                        attSearch = attSearch.AsNumeric();
 
                     var SelectedPerson = SelectedAttendance.PersonAlias.Person;
                     rlSelectedPerson.Text = SelectedPerson.FullName + " <a href='?CheckinCode=" + CheckinCode + "'><i class='fa fa-times'></i></a>";
