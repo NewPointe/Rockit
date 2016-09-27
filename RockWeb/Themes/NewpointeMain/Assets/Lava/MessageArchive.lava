@@ -37,7 +37,7 @@
     <div class="col-xs-6 col-sm-6 col-md-3 message-tiles">
         <a href="{{LinkedPages.DetailPage}}/series/{{item.Id}}">
             <div class="overlay">
-                {{item.SermonGraphic}}
+              {{item.OptimizedSeriesArchiveImage}}
             </div>
         </a>
     </div>
