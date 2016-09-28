@@ -1,7 +1,6 @@
 <div class="col-sm-6 margin-b-md rollover-container" style="overflow: hidden;">
 
 	{% if LinkedPages.PersonDetailPage != '' %}
-		<a href="{{ LinkedPages.PersonDetailPage }}?PersonId={{ member.PersonId }}">
 	{% endif %}
 <div class="contactCard" >
 	<img src="{{ member.Person.PhotoUrl }}&height=60&width=60&mode=crop&scale=both" style="height:60px" class="margin-r-sm" />
@@ -52,7 +51,7 @@
 </div>
 
 	{% if LinkedPages.PersonDetailPage != '' %}
-		</a>
+
 	{% endif %}
 
 </div>
