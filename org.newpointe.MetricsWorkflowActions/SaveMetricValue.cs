@@ -21,11 +21,13 @@ namespace org.newpointe.MetricsWorkflowActions
     [ExportMetadata( "ComponentName", "Save MetricValue" )]
 
     [WorkflowTextOrAttribute("Metric Guid","Metric Attribute", "<span class='tip tip-lava'></span> The metric entity attribute or Guid to use.", true,"","",1,"MetricId")]
-    [WorkflowTextOrAttribute("Metric Value", "Metric Value Attribute", "<span class='tip tip-lava'></span> The value to save.", true,"","",2, "MetricValue")]
-    [WorkflowAttribute("Metric DateTime Attribute", "DateTime to save with the Metric Value (attribute can be a DateTime or Date Entity).", true,"","",3,"MetricDate")]
-    [WorkflowTextOrAttribute("Entity Id", "Entity Id Attribute", "<span class='tip tip-lava'></span> Entity (eg. campus) Id to save with the metric value.", false, "", "", 4, "EntityId")]
+    [WorkflowTextOrAttribute("MetricValue Value", "Metric Value Attribute", "<span class='tip tip-lava'></span> The value to save.", true,"","",2, "MetricValue")]
+    [WorkflowAttribute("MetricValue DateTime Attribute", "DateTime to save with the Metric Value (attribute can be a DateTime or Date Entity).", true,"","",3,"MetricDate")]
+    [WorkflowTextOrAttribute("MetricValue Entity Id", "MetricValue Entity Id Attribute", "<span class='tip tip-lava'></span> Entity (eg. campus) Id to save with the metric value.", false, "", "", 4, "EntityId")]
     //[CampusField("Campus","Campus for the Metric Partition",false,"","",4)]  //TODO: V6 multi-partition?
-    [WorkflowTextOrAttribute("Notes","Notes Attribute","Note to save with the metric",false,"","",5, "Notes")]
+    [WorkflowTextOrAttribute("MetricValue Notes", "Notes Attribute","Note to save with the metric",false,"","",5, "Notes")]
+    [WorkflowTextOrAttribute("MetricValue Type", "MetricValue Type Attribute", "Int of the Type of MetricValue to Save",true,"0","",6,"MetricType")]
+    
 
 
     class SaveMetricValue : ActionComponent
@@ -40,6 +42,7 @@ namespace org.newpointe.MetricsWorkflowActions
             var metricDate = GetAttributeValue(action, "MetricDate");
             var metricEntityId = GetAttributeValue(action, "EntityId");
             var metricNotes = GetAttributeValue(action, "Notes");
+            var metricType = GetAttributeValue(action, "MetricType");
 
             //Get Metric Id
             string metricIdContent = metricId;
@@ -93,10 +96,10 @@ namespace org.newpointe.MetricsWorkflowActions
                 }
             }
 
-            //Get Metric Entity
+            //Get Metric Notes
             string metricNotesContent = metricNotes;
             Guid metricNotesGuid = metricNotes.AsGuid();
-            if (metricDateGuid.IsEmpty())
+            if (metricNotesGuid.IsEmpty())
             {
                 metricNotesContent = metricNotesContent.ResolveMergeFields(GetMergeFields(action));
             }
@@ -110,10 +113,10 @@ namespace org.newpointe.MetricsWorkflowActions
                 }
             }
 
-            //Get Metric Notes
+            //Get Metric EntityId
             string metricEntityIdContent = metricEntityId;
             Guid metricEntityIdGuid = metricEntityId.AsGuid();
-            if (metricDateGuid.IsEmpty())
+            if (metricEntityIdGuid.IsEmpty())
             {
                 metricEntityIdContent = metricEntityIdContent.ResolveMergeFields(GetMergeFields(action));
             }
@@ -128,10 +131,28 @@ namespace org.newpointe.MetricsWorkflowActions
             }
 
 
+            //Get Metric Type
+            string metricTypeContent = metricType;
+            Guid metricTypeGuid = metricType.AsGuid();
+            if (metricTypeGuid.IsEmpty())
+            {
+                metricTypeContent = metricTypeContent.ResolveMergeFields(GetMergeFields(action));
+            }
+            else
+            {
+                var attributeValue = action.GetWorklowAttributeValue(metricTypeGuid);
+
+                if (attributeValue != null)
+                {
+                    metricTypeContent = attributeValue;
+                }
+            }
+
             //Convert the Attribute values to approprate types
             DateTime metricDateAsDate = Convert.ToDateTime(metricDateContent);
             Decimal metricValueAsDecimal = Decimal.Parse(metricValueContent);
             int metricEntityIdAsInt = Int32.Parse(metricEntityIdContent);
+            int metricTypeAsInt = Int32.Parse(metricTypeContent);
 
             //Convert Metric Attribute to Id
             var metricIdAsGuidAsValues = metricIdContent.Split('|');
@@ -143,13 +164,13 @@ namespace org.newpointe.MetricsWorkflowActions
                 int metricIdAsInt = selectedMetric.Id;
 
                 //Save the Metric
-                SaveMetric(metricDateAsDate, metricIdAsInt, metricValueAsDecimal, metricEntityIdAsInt, metricNotesContent);
+                SaveMetric(metricDateAsDate, metricIdAsInt, metricValueAsDecimal, metricEntityIdAsInt, metricNotesContent, metricTypeAsInt);
             }
 
             return true;
         }
 
-        public void SaveMetric(DateTime dt, int metric, Decimal value, int campus, string notes)
+        public void SaveMetric(DateTime dt, int metric, Decimal value, int campus, string notes, int type)
         {
             int metricValueId = 0;
             RockContext rockContext = new RockContext();
@@ -179,7 +200,7 @@ namespace org.newpointe.MetricsWorkflowActions
                 metricValue = metricValueService.Get(metricValueId);
             }
 
-            metricValue.MetricValueType = (MetricValueType)metric;
+            metricValue.MetricValueType = (MetricValueType)type;
             metricValue.XValue = null;
             metricValue.YValue = value;
             metricValue.Note = notes;
