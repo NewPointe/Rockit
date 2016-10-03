@@ -36,12 +36,23 @@ public class ParentPageBlinker : IHttpHandler
         var rockContext = new RockContext();
         var defValServ = new DefinedValueService( rockContext );
 
-        var statusToShow = new WorkflowService( rockContext ).Queryable().Where( w => w.CompletedDateTime == null && w.WorkflowTypeId == 193 ).ToList().Select(p => {
-            p.LoadAttributes();
-            return defValServ.Get(p.GetAttributeValue("PagerStatus").AsGuid());
-        } ).Where(dv => dv != null).OrderBy(dv => dv.Order).FirstOrDefault();
+        Guid campusGuid = Guid.Empty;
+        if ( !String.IsNullOrWhiteSpace( request.Params["Campus"] ) )
+        {
+            var campus = CampusCache.All( false ).Where( c => c.ShortCode.Equals( request.Params["Campus"], StringComparison.OrdinalIgnoreCase ) ).FirstOrDefault();
+            campusGuid = campus != null ? campus.Guid : campusGuid;
+        }
 
-        if(statusToShow == null)
+        var statusToShow = new WorkflowService( rockContext ).Queryable().Where( w => w.CompletedDateTime == null && w.WorkflowTypeId == 193 ).ToList().Select( p =>
+        {
+            p.LoadAttributes();
+            return p;
+        } ).Where( p => campusGuid.IsEmpty() || p.GetAttributeValue("Campus").AsGuid() == campusGuid).Select( p =>
+        {
+            return defValServ.Get( p.GetAttributeValue( "PagerStatus" ).AsGuid() );
+        } ).Where( dv => dv != null ).OrderBy( dv => dv.Order ).FirstOrDefault();
+
+        if ( statusToShow == null )
         {
             response.Write( "#FF00FF" );
             return;
@@ -49,12 +60,13 @@ public class ParentPageBlinker : IHttpHandler
 
         statusToShow.LoadAttributes();
 
-        if(request.Params["Production"] == "true")
+        if ( request.Params["Production"] == "true" )
         {
-            response.Write(statusToShow.GetAttributeValue("ProductionTeamBlinkCode"));
+            response.Write( statusToShow.GetAttributeValue( "ProductionTeamBlinkCode" ) );
         }
-        else {
-            response.Write(statusToShow.GetAttributeValue("KidsTeamBlinkCode"));
+        else
+        {
+            response.Write( statusToShow.GetAttributeValue( "KidsTeamBlinkCode" ) );
         }
 
     }
