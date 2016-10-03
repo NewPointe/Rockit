@@ -31,11 +31,11 @@ namespace org.newpointe.PageSearch
     /// <summary>
     /// Searches for people with matching names
     /// </summary>
-    [Description( "Person Name Search" )]
+    [Description( "Page Title Search" )]
     [Export( typeof( SearchComponent ) )]
-    [ExportMetadata( "ComponentName", "Page Name" )]
+    [ExportMetadata( "ComponentName", "Page Title" )]
     [LinkedPage( "Root Page", "The page to start searching from.", false, "", "", 0 )]
-    public class PageName : SearchComponent
+    public class PageTitle : SearchComponent
     {
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace org.newpointe.PageSearch
             get
             {
                 var defaults = new Dictionary<string, string>();
-                defaults.Add( "SearchLabel", "Name" );
+                defaults.Add( "SearchLabel", "Page Title" );
                 return defaults;
             }
         }

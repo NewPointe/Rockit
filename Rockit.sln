@@ -6,7 +6,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb", "RockWeb\", "{223
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.1"
-		ProjectReferences = "{496ec024-71ed-4ad1-b677-2a3fa60ccd05}|org.newpointe.ServiceUCalendar.dll;{1018d6f2-dd34-4aa6-a22b-2c5f5c339cc8}|org.newpointe.Giving.dll;{9c7bc326-ab12-4301-8c69-63531546cbac}|org.newpointe.Checkin.dll;{e6d6dd7e-daed-46c0-9ad5-c9e96eb4fcfc}|org.newpointe.Connections.dll;{3fe48220-bb2b-4796-91c4-02ede591aa91}|org.newpointe.WorkflowEntities.dll;{b56f8c96-c5b6-4f7e-8b0d-7c6fc930fea2}|org.newpointe.ProtectMyMinistry.dll;{054e242b-9622-4c7a-ad13-657940bec32b}|org.newpointe.PrivateChat.dll;{e202cf81-6268-4aa1-9f50-d69d36833b40}|org.newpointe.LiveService.dll;{614438b1-0d2b-4940-bb5a-64160945a270}|org.newpointe.ExpiredCards.dll;"
+		ProjectReferences = "{496ec024-71ed-4ad1-b677-2a3fa60ccd05}|org.newpointe.ServiceUCalendar.dll;{1018d6f2-dd34-4aa6-a22b-2c5f5c339cc8}|org.newpointe.Giving.dll;{9c7bc326-ab12-4301-8c69-63531546cbac}|org.newpointe.Checkin.dll;{e6d6dd7e-daed-46c0-9ad5-c9e96eb4fcfc}|org.newpointe.Connections.dll;{3fe48220-bb2b-4796-91c4-02ede591aa91}|org.newpointe.WorkflowEntities.dll;{b56f8c96-c5b6-4f7e-8b0d-7c6fc930fea2}|org.newpointe.ProtectMyMinistry.dll;{054e242b-9622-4c7a-ad13-657940bec32b}|org.newpointe.PrivateChat.dll;{e202cf81-6268-4aa1-9f50-d69d36833b40}|org.newpointe.LiveService.dll;{614438b1-0d2b-4940-bb5a-64160945a270}|org.newpointe.ExpiredCards.dll;{d06f3dd0-0045-4b74-925e-c78a4c229bbd}|org.newpointe.BetterPersonSearch.dll;{30c9087e-1d3d-414d-bbf7-43d9318ae6d5}|org.newpointe.PageSearch.dll;{b9281d13-bd41-43c7-9c07-c1fbab871097}|org.newpointe.ParentPaging.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_50345"
 		Debug.AspNetCompiler.PhysicalPath = "RockWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_50345\"
@@ -45,6 +45,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.PrivateChat", "org.newpointe.PrivateChat\org.newpointe.PrivateChat.csproj", "{054E242B-9622-4C7A-AD13-657940BEC32B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ParentPaging", "org.newpointe.ParentPaging\org.newpointe.ParentPaging.csproj", "{B9281D13-BD41-43C7-9C07-C1FBAB871097}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.PageSearch", "org.newpointe.PageSearch\org.newpointe.PageSearch.csproj", "{30C9087E-1D3D-414D-BBF7-43D9318AE6D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.BetterPersonSearch", "org.newpointe.BetterPersonSearch\org.newpointe.BetterPersonSearch.csproj", "{D06F3DD0-0045-4B74-925E-C78A4C229BBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,6 +100,14 @@ Global
 		{B9281D13-BD41-43C7-9C07-C1FBAB871097}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9281D13-BD41-43C7-9C07-C1FBAB871097}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9281D13-BD41-43C7-9C07-C1FBAB871097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C9087E-1D3D-414D-BBF7-43D9318AE6D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C9087E-1D3D-414D-BBF7-43D9318AE6D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C9087E-1D3D-414D-BBF7-43D9318AE6D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C9087E-1D3D-414D-BBF7-43D9318AE6D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D06F3DD0-0045-4B74-925E-C78A4C229BBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D06F3DD0-0045-4B74-925E-C78A4C229BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D06F3DD0-0045-4B74-925E-C78A4C229BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D06F3DD0-0045-4B74-925E-C78A4C229BBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,11 +30,6 @@ namespace RockWeb.Plugins.org_newpointe.PageSearch
 
     public partial class PageSearch : Rock.Web.UI.RockBlock
     {
-        #region Fields
-
-        private DefinedValueCache _inactiveStatus = null;
-        #endregion
-
         #region Base Control Methods
 
         protected override void OnLoad( EventArgs e )
