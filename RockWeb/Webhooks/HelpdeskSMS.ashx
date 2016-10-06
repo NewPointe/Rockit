@@ -1,4 +1,4 @@
-﻿<%@ WebHandler Language="C#" Class="Twilio" %>
+﻿<%@ WebHandler Language="C#" Class="HelpdeskSMS" %>
 // <copyright>
 // Copyright 2013 by the Spark Development Network
 //
@@ -30,7 +30,7 @@ using Rock.Web.Cache;
 using Slack.Webhooks;
 using HttpResponse = System.Web.HttpResponse;
 
-public class Webhooks : IHttpHandler
+public class HelpdeskSMS : IHttpHandler
 {
     private HttpRequest request;
     private HttpResponse response;
