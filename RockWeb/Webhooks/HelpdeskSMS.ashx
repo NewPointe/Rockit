@@ -50,7 +50,6 @@ public class HelpdeskSMS : IHttpHandler
             return;
         }
 
-        RockContext rockContext = new RockContext();
 
         var body = request.Form["Body"];
         var from = request.Form["From"];
@@ -59,6 +58,8 @@ public class HelpdeskSMS : IHttpHandler
         var media = request.Form["NumMedia"];
         var mediaAttachment = "";
         int mediaNumber = 0;
+
+        string formattedPhone = from.Substring(2);
 
         if (Int32.TryParse(media, out mediaNumber))
         {
@@ -97,13 +98,13 @@ public class HelpdeskSMS : IHttpHandler
                     new SlackField
                         {
                             Title = "Phone",
-                            Value = from + "(" + city + ", " + state + ")",
+                            Value = formattedPhone + " (" + city + ", " + state + ")",
                             Short = true
                         },
                     new SlackField
                         {
                             Title = "Person",
-                            Value = PhoneString(from),
+                            Value = PhoneString(formattedPhone),
                             Short = true
                         }
 
