@@ -99,8 +99,9 @@ namespace org.newpointe.ProtectMyMinistry
                 IEnumerable<XElement> OrderDetails = Orders.SelectMany(x => x.Elements("OrderDetail"));
                 IEnumerable<XElement> SSNTraces = OrderDetails.Where(x => x.Attribute("ServiceCode")?.Value == "SSNTrace" && x.Element("Status") != null);
                 IEnumerable<XElement> SSNTraceResults = SSNTraces.Select(x => x.Element("Result"));
-                IEnumerable<XElement> SSNTraceIndividuals = SSNTraceResults.SelectMany(x => x.Elements("Individual"));
-                SSNTraceCounties = SSNTraceIndividuals.Where(x => x.Element( "EndDate" ) == null || x.Element( "EndDate" ).Element( "Year" ) == null || (x.Element( "EndDate" ).Element( "Year" ).Value.AsInteger() > (DateTime.Now.Year - 8) ) ).Select(x => new string[] { x.Element("County").Value, x.Element("State").Value }).ToList();
+                IEnumerable<XElement> SSNTraceIndividuals = SSNTraceResults.SelectMany( x => x.Elements( "Individual" ) );
+                IEnumerable<XElement> SSNTraceIndividualsToSearch = SSNTraceIndividuals.Where( x => x.Element( "EndDate" ) == null || x.Element( "EndDate" ).Element( "Year" ) == null || ( x.Element( "EndDate" ).Element( "Year" ).Value.AsInteger() > ( DateTime.Now.Year - 8 ) ) );
+                SSNTraceCounties = SSNTraceIndividualsToSearch.Where(x => x.Element( "County" ) != null && x.Element( "State" ) != null).Select(x => new string[] { x.Element("County").Value, x.Element("State").Value }).ToList();
             }
 
             XElement xTransaction = makeBGRequest(bgCheck, ssn, requestType, billingCode, SSNTraceCounties);
