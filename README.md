@@ -28,11 +28,6 @@ Blocks
 [/RockWeb/Scripts/?](/RockWeb/Scripts/?)  
 
 
-#### AutoStart Checkin from querystring
-[/RockWeb/Blocks/Checkin/AutoStart.ashx](/RockWeb/Blocks/Checkin/AutoStart.ashx)  
-[/RockWeb/Blocks/Checkin/AutoStart.ashx.cs](/RockWeb/Blocks/Checkin/AutoStart.ashx.cs)  
-
-
 #### SiteMap?
 [/RockWeb/Blocks/Cms/SiteMap.ashx](/RockWeb/Blocks/Cms/SiteMap.ashx)  
 [/RockWeb/Blocks/Cms/SiteMap.ashx.cs](/RockWeb/Blocks/Cms/SiteMap.ashx.cs)  
@@ -62,12 +57,6 @@ Auto-start check-in with all Group Types selected.
 #### CustomMenu
 Custom nav menu.  
 [/RockWeb/Plugins/org_newpointe/CustomMenu](/RockWeb/Plugins/org_newpointe/CustomMenu)  
-
-
-#### FunFacts
-Displays a random item from the global attribute 'RockFunFacts'.  
-Unnecessary. Use Lava instead: `{{ 'Global' | Attribute:'RockFunFacts','RawValue' | Split:'|' | Shuffle | First }}`  
-[/RockWeb/Plugins/org_newpointe/FunFacts](/RockWeb/Plugins/org_newpointe/FunFacts)  
 
 
 #### MachFormEmbed
@@ -114,18 +103,9 @@ Workflow Actions
 [/org.newpointe.Checkin/](/org.newpointe.Checkin/)  
 
 
-#### AddConnection w/ Comment
-[/org.newpointe.Connections/](/org.newpointe.Connections/) ++  
-
-
 #### Shorten URL
 Gets a shortened url from a YOURLS url-shortener. Need to change hard-coded shortener URL.  
 [/org.newpointe.Giving/](/org.newpointe.Giving/)
-
-
-#### Get Person's URLEncodedKey
-Unnecessary. Use Lava instead: `{{ Workflow | Attribute:'Person','Object' | Property:'URLEncodedKey' }}`  
-[/org.newpointe.Giving/](/org.newpointe.Giving/)  
 
 
 
@@ -193,10 +173,6 @@ Checkin theme for At The Movies series
 [/RockWeb/Themes/NewPointeMain/](/RockWeb/Themes/NewPointeMain/)  
 
 
-#### Old My NewPointe theme
-[/RockWeb/Themes/NewPointe/](/RockWeb/Themes/NewPointe/)  
-
-
 
 
 Mods
@@ -214,8 +190,6 @@ Only show active campuses
 [/RockWeb/Blocks/Connection/ConnectionOpportunitySearch.ashx.cs](/RockWeb/Blocks/Connection/ConnectionOpportunitySearch.ashx.cs) !!  
 Only show active & available campuses  
 [/RockWeb/Blocks/Connection/ConnectionOpportunitySignup.ashx.cs](/RockWeb/Blocks/Connection/ConnectionOpportunitySignup.ashx.cs) !!++  
-Require PlacementGroup before connect  
-[/RockWeb/Blocks/Connection/ConnectionRequestDetail.ashx.cs](/RockWeb/Blocks/Connection/ConnectionRequestDetail.ashx.cs) !!++  
 Add CreatedDateTime column  
 [/RockWeb/Blocks/Connection/MyConnectionOpportunities.ashx](/RockWeb/Blocks/Connection/MyConnectionOpportunities.ashx) !!  
 [/RockWeb/Blocks/Connection/MyConnectionOpportunities.ashx.cs](/RockWeb/Blocks/Connection/MyConnectionOpportunities.ashx.cs) !!  
@@ -236,21 +210,6 @@ Add CreatedDateTime column
 #### Change DatePicker to DateTimePicker in MetricValueDetail
 [/RockWeb/Blocks/Reporting/MetricValueDetail.ascx](/RockWeb/Blocks/Reporting/MetricValueDetail.ascx) !!  
 [/RockWeb/Blocks/Reporting/MetricValueDetail.ascx.cs](/RockWeb/Blocks/Reporting/MetricValueDetail.ascx.cs) !!  
-
-
-#### Custom CampusContextSetter
-Option to use person's campus  ++  
-Option to set default selected campus  
-[/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx](/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx)  ++  
-[/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx.cs](/RockWeb/Plugins/org_newpointe/BlockMods/Core/CampusContextSetter.ascx.cs)  ++  
-
-
-#### Custom AddFamily
-Options to hide fields  
-Option for default group role  
-Option to set block title  
-[/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx](/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx)  
-[/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx.cs](/RockWeb/Plugins/org_newpointe/BlockMods/Crm/PersonDetail/AddFamily.ascx.cs)  
 
 
 #### Custom RegistrationEntry
@@ -289,9 +248,6 @@ Misc
 #### Rewrite of ProtectMyMinistry w/ SSNTrace + Multi-County BGChk support
 [/RockWeb/Webhooks/ProtectMyMinistryPlus.ashx](/RockWeb/Webhooks/ProtectMyMinistryPlus.ashx)  
 [/org.newpointe.ProtectMyMinistry/](/org.newpointe.ProtectMyMinistry/)  
-
-
-
 
 
 

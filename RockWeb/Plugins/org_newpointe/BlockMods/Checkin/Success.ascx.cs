@@ -34,7 +34,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
     /// 
     /// </summary>
     [DisplayName("Custom Success")]
-    [Category("Newpinte Check-in")]
+    [Category("NewPointe Check-in")]
     [Description("Displays the details of a successful checkin.")]
     [LinkedPage("Person Select Page", "", false, "", "", 5)]
     public partial class Success : CheckInBlock

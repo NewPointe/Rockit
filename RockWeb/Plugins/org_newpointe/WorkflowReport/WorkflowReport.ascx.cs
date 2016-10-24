@@ -17,7 +17,7 @@ namespace RockWeb.Plugins.org_newpointe.WorkflowReport
     /// Template block for a TreeView.
     /// </summary>
     [DisplayName("Workflow Report")]
-    [Category("Newpointe Reporting")]
+    [Category("NewPointe Reporting")]
     [Description("Workflow report/stats.")]
 
     public partial class WorkflowReport : Rock.Web.UI.RockBlock

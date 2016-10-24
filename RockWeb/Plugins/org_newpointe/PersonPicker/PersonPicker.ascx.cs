@@ -29,7 +29,7 @@ namespace RockWeb.Plugins.org_newpointe.PersonPicker
     /// Template block for a TreeView.
     /// </summary>
     [DisplayName("Person Picker")]
-    [Category("Newpointe Core")]
+    [Category("NewPointe Core")]
     [Description("Person Picker")]
 
     public partial class PersonPicker : Rock.Web.UI.RockBlock

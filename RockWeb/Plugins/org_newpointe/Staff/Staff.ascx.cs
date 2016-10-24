@@ -14,7 +14,7 @@ using Rock.Web.UI;
 namespace RockWeb.Plugins.org_newpointe.Staff
 {
     [DisplayName("Staff")]
-    [Category("Newpointe.org Web Blocks")]
+    [Category("NewPointe.org Web Blocks")]
     [Description("This block will display all members of the selected group")]
     [GroupField("Root Group", "Select the root group to use as a starting point for the tree view.", false, order: 1)]
     public partial class Staff : RockBlock
