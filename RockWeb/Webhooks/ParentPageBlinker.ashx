@@ -54,7 +54,7 @@ public class ParentPageBlinker : IHttpHandler
 
         if ( statusToShow == null )
         {
-            response.Write( "#FF00FF" );
+            response.Write( "#005500" );
             return;
         }
 
