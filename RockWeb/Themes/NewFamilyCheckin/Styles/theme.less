@@ -1,0 +1,130 @@
+
+
+// Load Master Styles
+// -------------------------
+@import "../../../Styles/Bootstrap/variables.less";
+@import "../../../Styles/_rock-core.less";
+@import "../../../Styles/_store.less";
+@import "../../../Styles/_rock-variables.less";
+@import "_variables.less";
+@import "_variable-overrides.less";
+
+
+// set page background
+body {
+    background: #f78d1f url('../Assets/Images/background.jpg') top right no-repeat fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow-x: hidden;
+}
+
+@media all and (-webkit-min-device-pixel-ratio: 1.5) {
+    body {
+        background-image: url('../Assets/Images/background@2x.jpg');
+        background-size: 1348px 1024px; // should be 1/2 of the actual
+    }
+}
+
+//
+// Components
+// --------------------------------------------------
+.btn-touch {
+    padding: 15px;
+    margin-right: 10px;
+    width: 200px;
+    height: 200px;
+    border-radius: 5px;
+}
+
+.btn-touch .fa {
+    font-size: 60px;
+    display: block;
+    line-height: 2;
+}
+
+.panel-block {
+    margin-top: 15px;
+
+    .panel-heading {
+        display: none;
+    }
+}
+
+a.back {
+    color: #ffffff;
+}
+
+a.back:hover,
+a.back:active,
+a.back:focus {
+    color: #dddddd;
+}
+
+.btn-xs {
+    padding: 15px 30px;
+}
+
+#cms-admin-footer {
+    //display: none;
+}
+
+
+.personprofilebar-bio .nav li .persondetails-actions {
+    &:hover, &:focus {
+        color: #333;
+        text-decoration: none;
+    }
+
+    &:hover, &:focus, &:active, &.active {
+        color: #fff;
+        background-color: #cf5e10;
+        border-color: #ae4f0d;
+    }
+
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #fff;
+    background-color: #ee7624;
+    border-color: #e76812;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    padding: 15px 30px !important;
+}
+
+.personprofilebar-bio .nav-actions {
+    width: auto;
+}
+
+.nav-actions .dropdown-menu > li > a {
+    padding: 15px 20px;
+}
+
+.personprofilebar-bio .actions.rollover-item {
+    display: none;
+}
+
+.header {
+    color: #ffffff;
+}
+
+.title {
+    color: #000000;
+}
+
+.personprofilebar-family .actions {
+    right: 0px;
+}
