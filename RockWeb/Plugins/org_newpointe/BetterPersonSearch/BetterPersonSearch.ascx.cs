@@ -339,7 +339,7 @@ namespace RockWeb.Plugins.org_newpointe.BetterPersonSearch
 
                 if ( personList.Count == 1 )
                 {
-                    Response.Redirect( string.Format( "~/Person/{0}", personList[0].Id ), false );
+                    NavigateToLinkedPage( "PersonDetailPage", "PersonId", ( int ) personList[0].Id );
                     Context.ApplicationInstance.CompleteRequest();
                 }
                 else
