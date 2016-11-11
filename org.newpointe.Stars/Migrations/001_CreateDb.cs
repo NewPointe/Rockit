@@ -8,7 +8,7 @@ using Rock.Plugin;
 
 namespace org.newpointe.Stars.Migrations
 {
-    [MigrationNumber( 1, "1.0.1" )]
+    [MigrationNumber( 1, "1.0.2" )]
     public class CreateDb : Migration
     {
         /// <summary>
@@ -29,6 +29,8 @@ namespace org.newpointe.Stars.Migrations
 	    [CreatedByPersonAliasId] [int] NULL,
 	    [ModifiedByPersonAliasId] [int] NULL,
 	    [ForeignId] [nvarchar](50) NULL,
+        [ForeignGuid] [nvarchar](50) NULL,
+        [ForeignKey] [int] NULL,
      CONSTRAINT [PK_dbo._org_newpointe_Stars_Transactions] PRIMARY KEY CLUSTERED 
     (
 	    [Id] ASC
