@@ -41,7 +41,6 @@ namespace org.newpointe.Stars.Model
         /// The description.
         /// </value>
         [Required(ErrorMessage = "Value is required")]
-        [MaxLength(10)]
         [DataMember]
         public decimal Value { get; set; }
 
@@ -76,6 +75,9 @@ namespace org.newpointe.Stars.Model
         /// The campus.
         /// </value>
         public virtual Campus Campus { get; set; }
+
+
+        public virtual PersonAlias PersonAlias { get; set; }
 
         #endregion
 
