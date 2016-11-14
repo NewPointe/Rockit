@@ -8,7 +8,7 @@ using Rock.Plugin;
 
 namespace org.newpointe.Stars.Migrations
 {
-    [MigrationNumber( 1, "1.0.2" )]
+    [MigrationNumber( 1, "1.0.5" )]
     public class CreateDb : Migration
     {
         /// <summary>
