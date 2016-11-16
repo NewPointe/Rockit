@@ -22,6 +22,7 @@ namespace org.newpointe.Stars.Migrations
         [PersonAliasId] [int] NOT NULL,
         [Value] decimal(18,0) NOT NULL,
         [TransactionDateTime] [datetime] NOT NULL,
+        [Note] [nvarchar](100) NULL,
 	    [CampusId] [int] NULL,
 	    [Guid] [uniqueidentifier] NOT NULL,
 	    [CreatedDateTime] [datetime] NULL,

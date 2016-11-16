@@ -44,6 +44,17 @@ namespace org.newpointe.Stars.Model
         [DataMember]
         public decimal Value { get; set; }
 
+
+        /// <summary>
+        /// Gets or sets the transaction note.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
+        [DataMember]
+        public string Note { get; set; }
+
+
         /// <summary>
         /// Gets or sets the Transaction Date and Time.
         /// </summary>
