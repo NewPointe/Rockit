@@ -94,7 +94,7 @@ namespace org.newpointe.Stars
 
 
             //Save Stars
-            SaveStars(currentDateTime, personAliasId, starsValue);
+            SaveStars(currentDateTime, personAliasId, starsValue, definedValue.Value);
 
 
 
@@ -104,7 +104,7 @@ namespace org.newpointe.Stars
 
 
 
-        public void SaveStars(DateTime dt, int paId, decimal starsValue)
+        public void SaveStars(DateTime dt, int paId, decimal starsValue, string note)
         {
             StarsProjectContext starsProjectContext = new StarsProjectContext();
             StarsService starsService = new StarsService(starsProjectContext);
@@ -118,6 +118,7 @@ namespace org.newpointe.Stars
             stars.CampusId = campusId;
             stars.TransactionDateTime = DateTime.Now;
             stars.Value = starsValue;
+            stars.Note = note;
 
             starsService.Add(stars);
 
