@@ -1,4 +1,4 @@
-using Rock;
+﻿using Rock;
 using Rock.Data;
 using Rock.Model;
 using Rock.Rest;
@@ -58,12 +58,41 @@ public class MessageArchiveCustomController : ApiControllerBase
             var newItem = new MessageArchiveItem();
 
             newItem.Id = item.Id;
-            newItem.Content = item.Content;
+
+            var audio = item.AttributeValues["PodcastAudio"];
+            BinaryFileService binaryFileService = new BinaryFileService(rockContext);
+
+            var mp3CdnPath = "";
+            var binaryFile = binaryFileService.Get(Guid.Parse(audio.Value));
+
+            if (binaryFile != null)
+                mp3CdnPath = binaryFileService.Get(Guid.Parse(audio.Value)).Path;
+
+            newItem.Content = DotLiquid.StandardFilters.StripHtml(item.Content).Replace("\n\n", "\r\n\r\n");
+
+            newItem.AudioLink = mp3CdnPath.ToString();
+
             newItem.Date = DateTime.Parse(item.GetAttributeValue("Date")).ToShortDateString();
             newItem.Speaker = item.GetAttributeValue("Speaker");
             newItem.SpeakerTitle = item.GetAttributeValue("SpeakerTitle");
             newItem.Title = item.Title;
-            newItem.VimeoLink = link;
+
+
+            newItem.VimeoLink = link.Url;
+            newItem.VimeoImage = link.Image; 
+
+
+
+            var notesAttr = item.AttributeValues["MessageNotes"];
+
+
+
+
+            var talkAttr = item.AttributeValues["TalkItOver"];
+            binaryFile = binaryFileService.Get(Guid.Parse(notesAttr.Value));
+            if (binaryFile != null)
+                newItem.TalkItOver = binaryFile.Path;
+
 
 
             dailyItems.Add(newItem);
@@ -73,12 +102,15 @@ public class MessageArchiveCustomController : ApiControllerBase
         return Ok(dailyItems.AsQueryable());
     }
 
-    private string GetVimeoLink(string id)
+    private VimeoReturnObject GetVimeoLink(string id)
     {
+        var retObj = new VimeoReturnObject();
+
+
         if (id != "")
         {
             var client = new WebClient();
-
+ 
             try
             {
                 var reply = client.DownloadString(string.Format("https://player.vimeo.com/video/{0}/config", id));
@@ -87,19 +119,25 @@ public class MessageArchiveCustomController : ApiControllerBase
 
                 var count = response.request.files.progressive.Count;
 
-                return response.request.files.progressive[count - 1].url;
+                retObj.Url = response.request.files.progressive[count - 1].url;
+                retObj.Image = response.video.thumbs.Image640;
             }
             catch
             {
-                return "";
+            
             }
 
         }
-        else
-        {
-            return "";
-        }
+      
 
+        return retObj;
+
+    }
+
+    public class VimeoReturnObject
+    {
+        public string Url { get; set; }
+        public string Image { get; set; }
     }
 
 
@@ -111,7 +149,11 @@ public class MessageArchiveCustomController : ApiControllerBase
         public string Speaker { get; set; }
         public string SpeakerTitle { get; set; }
         public string VimeoLink { get; set; }
+        public string VimeoImage { get; set; }
         public string Content { get; set; }
+        public string Notes { get; set; }
+        public string TalkItOver { get; set; }
+        public string AudioLink { get; set; }
     }
 
     public class AkfireInterconnect
@@ -307,9 +349,12 @@ public class MessageArchiveCustomController : ApiControllerBase
 
     public class Thumbs
     {
-        public string __invalid_name__640 { get; set; }
-        public string __invalid_name__960 { get; set; }
-        public string __invalid_name__1280 { get; set; }
+        [JsonProperty(PropertyName ="640")]
+        public string Image640 { get; set; }
+        [JsonProperty(PropertyName = "960")]
+        public string Image960 { get; set; }
+        [JsonProperty(PropertyName = "1280")]
+        public string Image1280 { get; set; }
         public string @base { get; set; }
     }
 

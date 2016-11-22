@@ -1,4 +1,4 @@
-using Rock;
+﻿using Rock;
 using Rock.Data;
 using Rock.Model;
 using Rock.Rest;
@@ -13,7 +13,17 @@ using System.Web.Http;
 using System.Web.Http.OData;
 using Rock.Web.Cache;
 using System.Data.SqlClient;
+
 using System.Net.Http.Headers;
+ 
+using Rock.Constants;
+ 
+using Rock.Security;
+using Rock.Web;
+ 
+using Rock.Web.UI;
+using Rock.Web.UI.Controls;
+
 
 using RestSharp;
 
@@ -200,7 +210,6 @@ public class MobileAppAboutController : ApiControllerBase
 
 public class MobileAppLoginController : ApiControllerBase
 {
-
     /// <summary>
     /// Get Method for logging the user in.
     /// </summary>
@@ -217,7 +226,6 @@ public class MobileAppLoginController : ApiControllerBase
         try
         {
 
-
             RestClient restClient = new RestClient(ApiUrls.BaseUrl);
  
 
@@ -231,17 +239,21 @@ public class MobileAppLoginController : ApiControllerBase
                 var obj = new LoginReturnObject();
                 obj.Cookie = result.Cookies[0].Name + "=" + result.Cookies[0].Value;
             
-
-
+                
 
                 var rc = new RockContext();
                 var u = new UserLoginService(rc).GetByUserName(login.Username);
- 
+                 
                 if (u == null)
                     return Request.CreateResponse(HttpStatusCode.NotFound);
 
                 obj.Username = u.UserName;
                 obj.EncodedUrl = u.UrlEncodedKey;
+
+                u.Person.LoadAttributes();
+
+                u.Person.SetAttributeValue("AppPlatform", login.Platform);
+                u.Person.SaveAttributeValues();
 
                 return Request.CreateResponse(HttpStatusCode.OK, obj);
             }
@@ -260,6 +272,169 @@ public class MobileAppLoginController : ApiControllerBase
 
 }
 
+
+public class MobileAppRegisterController : ApiControllerBase
+{
+    /// <summary>
+    /// Get Method for logging the user in.
+    /// </summary>
+    /// <returns></returns>
+    public HttpResponseMessage Post(RegisterPost register)
+    {
+        //verify the token passed from the app is valid. Just an extra security measure tp make sure they're hitting from the app.
+        var isAuthed = MobileAppAPIHelper.ValidateAppToken(Request);
+
+        //if this check fails, return Unauthorized
+        if (!isAuthed)
+            return Request.CreateResponse(HttpStatusCode.Unauthorized);
+
+        try
+        {
+
+ 
+            var rockContext = new RockContext();
+            var personService = new PersonService(rockContext);
+
+
+            if (new UserLoginService(rockContext).GetByUserName(register.Username.Trim()) != null)
+            {
+                //check the username
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "The selected username is already taken.");
+            }
+
+
+            if (!UserLoginService.IsPasswordValid(register.Password.Trim()))
+            {
+                //check the password.
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Password is invalid.");
+            }
+
+
+
+
+
+            Person person = null;
+            Person spouse = null;
+            Group family = null;
+            GroupLocation homeLocation = null;
+
+            var changes = new List<string>();
+            var spouseChanges = new List<string>();
+            var familyChanges = new List<string>();
+
+
+
+            // Try to find person by name/email 
+            if (person == null)
+            {
+                var matches = personService.GetByMatch(register.FirstName.Trim(), register.LastName.Trim(), register.Email.Trim());
+                if (matches.Count() == 1)
+                {
+                    person = matches.First();
+                }
+            }
+
+            // Check to see if this is a new person
+            if (person == null)
+            {
+                // If so, create the person and family record for the new person
+                person = new Person();
+                person.FirstName = register.FirstName.Trim();
+                person.LastName = register.LastName.Trim();
+                person.Email = register.Email.Trim();
+
+                person.IsEmailActive = true;
+                person.EmailPreference = EmailPreference.EmailAllowed;
+                person.RecordTypeValueId = DefinedValueCache.Read(Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON.AsGuid()).Id;
+
+
+                
+        
+
+            //    person.ConnectionStatusValueId = DefinedValueCache.Read(GetAttributeValue("ConnectionStatus").AsGuid()).Id;
+              //  person.RecordStatusValueId = DefinedValueCache.Read(GetAttributeValue("RecordStatus").AsGuid());
+
+                person.Gender = Gender.Unknown;
+
+                family = PersonService.SaveNewPerson(person, rockContext, null, false);
+            }
+
+
+            if (person != null)
+            {
+                var user = UserLoginService.Create(
+                rockContext,
+                person,
+                Rock.Model.AuthenticationServiceType.Internal,
+                EntityTypeCache.Read(Rock.SystemGuid.EntityType.AUTHENTICATION_DATABASE.AsGuid()).Id,
+                register.Username.Trim(),
+                register.Password.Trim(),
+                true);
+
+
+
+                //var mergeObjects = Rock.Lava.LavaHelper.GetCommonMergeFields(RockPage);
+                //mergeObjects.Add("ConfirmAccountUrl", RootPath + "ConfirmAccount");
+
+                //var personDictionary = person.ToLiquid() as Dictionary<string, object>;
+                //mergeObjects.Add("Person", personDictionary);
+
+                //mergeObjects.Add("User", user);
+
+                //var recipients = new List<Rock.Communication.RecipientData>();
+                //recipients.Add(new Rock.Communication.RecipientData(person.Email,
+                //    mergeObjects));
+
+                //Rock.Communication.Email.Send(GetAttributeValue("ConfirmAccountTemplate").AsGuid(),
+                //    recipients, ResolveRockUrl("~/"), ResolveRockUrl("~~/"), false);
+
+            }
+
+            
+            return Request.CreateResponse(HttpStatusCode.OK, "SUccess");
+  
+
+        }
+        catch (Exception ex)
+        {
+            //todo: log the error somewhere. 
+            return Request.CreateResponse(HttpStatusCode.InternalServerError);
+        }
+    }
+
+}
+
+
+public class MobileAppBackgroundController : ApiControllerBase
+{
+
+    /// <summary>
+    /// Get Method for checking the background image
+    /// </summary>
+    /// <returns></returns>
+    public HttpResponseMessage Get()
+    {
+        //verify the token passed from the app is valid. Just an extra security measure tp make sure they're hitting from the app.
+        var isAuthed = MobileAppAPIHelper.ValidateAppToken(Request);
+
+        //if this check fails, return Unauthorized
+        if (!isAuthed)
+            return Request.CreateResponse(HttpStatusCode.Unauthorized);
+
+        try
+        {
+            var version = Rock.Web.Cache.GlobalAttributesCache.Value("AppBackgroundVersion");
+            //and return ok.
+            return Request.CreateResponse(HttpStatusCode.OK, version);
+        }
+        catch (Exception ex)
+        {
+            //todo: log the error somewhere. 
+            return Request.CreateResponse(HttpStatusCode.InternalServerError);
+        }
+    }
+
+}
 
 
 
@@ -410,6 +585,16 @@ public class LoginPost
     public string Username { get; set; }
     public string Password { get; set; }
     public bool Persited { get; set; }
+    public string Platform { get; set; }
+}
+
+public class RegisterPost
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
 }
 
 public class LoginReturnObject

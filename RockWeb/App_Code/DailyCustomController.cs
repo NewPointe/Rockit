@@ -52,6 +52,8 @@ public class DailyCustomController : ApiControllerBase
         {
             i.LoadAttributes();
 
+            i.Content = DotLiquid.StandardFilters.StripHtml(i.Content).Replace("\n\n", "\r\n\r\n");
+
             var attributes = i.Attributes;
 
             var pdfAttr = i.Attributes["PDF"];
