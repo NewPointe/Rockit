@@ -8,21 +8,23 @@
                         <div class="panel-heading">
                 <h1 class="panel-title"><i class="fa fa-user"></i> Stars Report</h1>
             </div>
+            
+            <Rock:GridFilter ID="workflowFilters" runat="server" OnApplyFilterClick="filters_ApplyFilterClick">
+                    <Rock:MonthYearPicker runat="server" ID="mypMonth" Label="Month / Year"/>
+                    <Rock:CampusesPicker runat="server" ID="cpCampus" Label="Campus"/>
+                </Rock:GridFilter>
            
             <div class="panel-body">
-                
-                <div class="col-md-12">
+
                              
-                    <Rock:Grid ID="gStars" runat="server" AllowSorting="true" AllowPaging="True" EmptyDataText="No Data Found" RowClickEnabled="True" OnRowSelected="gStars_OnRowSelected" >
+                    <Rock:Grid ID="gStars" runat="server" AllowSorting="true" AllowPaging="True" EmptyDataText="No Data Found" RowClickEnabled="True" OnRowSelected="gStars_OnRowSelected"  >
                         <Columns>
                             <asp:BoundField DataField="Person" HeaderText="Person" />
                             <asp:BoundField DataField="Sum" HeaderText="Stars" />
                         </Columns>
                     </Rock:Grid>
                     
-                      
-
-                  </div>  </div>
+                 </div>
             </asp:Panel>
         
         

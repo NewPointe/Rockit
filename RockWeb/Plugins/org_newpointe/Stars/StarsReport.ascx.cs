@@ -49,25 +49,60 @@ namespace RockWeb.Plugins.org_newpointe.Stars
         
         public Person SelectedPerson;
 
+        public int FilterMonth = 0;
+        public int FilterYear = 2017;
+
+
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            PersonAliasService personAliasService = new PersonAliasService(rockContext);
+            cpCampus.DataSource = CampusCache.All();
+            cpCampus.DataBind();
 
+            mypMonth.MinimumYear = 2016;
+            mypMonth.MaximumYear = 2017;
+
+            DateTime selectedDate = mypMonth.SelectedDate ?? DateTime.Now;
+
+            FilterMonth = selectedDate.Month;
+            FilterYear = selectedDate.Year;
+
+            BindGrid();
+            
+        }
+
+
+        protected void BindGrid()
+        {
             StarsService starsService = new StarsService(starsProjectContext);
 
-            var starsList = starsService.Queryable().GroupBy(a => a.PersonAlias.Person).Select(g => new { Person = g.Key, Sum = g.Sum(a => a.Value)}).ToList();
+            var starsList =
+            starsService.Queryable().Where(a => a.TransactionDateTime.Month == FilterMonth && a.TransactionDateTime.Year == FilterYear)
+                .GroupBy(a => a.PersonAlias.Person).Select(
+                    g =>
+                        new
+                        {
+                            Person = g.Key,
+                            Sum = g.Sum(a => a.Value),
+                            Month = g.Select(a => a.TransactionDateTime.Month)
+                        })
+                        .ToList();
 
 
 
             gStars.DataSource = starsList;
             gStars.DataBind();
-            
         }
 
 
         protected void gStars_OnRowSelected(object sender, RowEventArgs e)
         {
             Response.Redirect("~/Person/" + e.RowKeyValue);
+        }
+
+        protected void filters_ApplyFilterClick(object sender, EventArgs e)
+        {
+            BindGrid();
         }
     }
 }
