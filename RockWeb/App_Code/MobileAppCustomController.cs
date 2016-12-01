@@ -442,7 +442,7 @@ public class MobileAppBackgroundController : ApiControllerBase
 
 public class ApiUrls
 {
-    public static string BaseUrl = "http://nprock.rmrdevelopment.com/api/";
+    public static string BaseUrl = "http://newpointe.org/api/";
 
     public static string UserPatchUrl = "/People/{0}";
     public static string PrayerPostUrl = "/PrayerRequests";
