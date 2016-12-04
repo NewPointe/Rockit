@@ -56,8 +56,11 @@ namespace RockWeb.Plugins.org_newpointe.Stars
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            cpCampus.DataSource = CampusCache.All();
-            cpCampus.DataBind();
+            if (!IsPostBack)
+            {
+                cpCampus.DataSource = CampusCache.All();
+                cpCampus.DataBind();  
+            }
 
             mypMonth.MinimumYear = 2016;
             mypMonth.MaximumYear = 2017;
@@ -68,7 +71,7 @@ namespace RockWeb.Plugins.org_newpointe.Stars
             FilterYear = selectedDate.Year;
 
             BindGrid();
-            
+
         }
 
 
@@ -77,20 +80,46 @@ namespace RockWeb.Plugins.org_newpointe.Stars
             StarsService starsService = new StarsService(starsProjectContext);
 
             var starsList =
-            starsService.Queryable().Where(a => a.TransactionDateTime.Month == FilterMonth && a.TransactionDateTime.Year == FilterYear)
-                .GroupBy(a => a.PersonAlias.Person).Select(
-                    g =>
-                        new
-                        {
-                            Person = g.Key,
-                            Sum = g.Sum(a => a.Value),
-                            Month = g.Select(a => a.TransactionDateTime.Month)
-                        })
-                        .ToList();
+                starsService.Queryable()
+                    .Where(a => a.TransactionDateTime.Month == FilterMonth && a.TransactionDateTime.Year == FilterYear)
+                    .GroupBy(a => a.PersonAlias.Person).Select(
+                        g =>
+                            new
+                            {
+                                Person = g.Key,
+                                PersonId = g.Key.Id,
+                                Sum = g.Sum(a => a.Value),
+                                Month = g.Select(a => a.TransactionDateTime.Month)
+                            });
+
+
+            //Filter Star Levels
+
+            int starsValueFilter = 0;
+
+            if (!ddlStars.SelectedValue.IsNullOrWhiteSpace())
+            {
+                starsValueFilter = Convert.ToInt32(ddlStars.SelectedValue);
+                starsList = starsList.Where(a => a.Sum >= starsValueFilter && a.Sum < starsValueFilter + 10);
+            }
 
 
 
-            gStars.DataSource = starsList;
+            //Filter Campuses
+
+            var selectedCampuses = cpCampus.SelectedValues;
+
+            if (selectedCampuses.Count > 0)
+            {
+                starsList = starsList.Where(a => selectedCampuses.Contains(a.Person.GetCampus().Name));
+            }
+
+
+
+            var starsListForGrid = starsList.ToList();
+
+
+            gStars.DataSource = starsListForGrid;
             gStars.DataBind();
         }
 
@@ -104,5 +133,6 @@ namespace RockWeb.Plugins.org_newpointe.Stars
         {
             BindGrid();
         }
+
     }
 }
