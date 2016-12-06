@@ -44,8 +44,8 @@ namespace RockWeb.Plugins.org_newpointe.Stars
 
     public partial class StarsReport : Rock.Web.UI.RockBlock
     {
-        private RockContext rockContext = new RockContext();
-        private StarsProjectContext starsProjectContext = new StarsProjectContext();
+        private readonly RockContext _rockContext = new RockContext();
+        private readonly StarsProjectContext _starsProjectContext = new StarsProjectContext();
         
         public Person SelectedPerson;
 
@@ -62,10 +62,14 @@ namespace RockWeb.Plugins.org_newpointe.Stars
                 cpCampus.DataBind();  
             }
 
+            starsFilters.Show();
+
             mypMonth.MinimumYear = 2016;
             mypMonth.MaximumYear = 2017;
 
             DateTime selectedDate = mypMonth.SelectedDate ?? DateTime.Now;
+
+            mypMonth.SelectedDate = selectedDate;
 
             FilterMonth = selectedDate.Month;
             FilterYear = selectedDate.Year;
@@ -77,61 +81,65 @@ namespace RockWeb.Plugins.org_newpointe.Stars
 
         protected void BindGrid()
         {
-            StarsService starsService = new StarsService(starsProjectContext);
+            StarsService starsService = new StarsService(_starsProjectContext);
 
-            var starsList =
-                starsService.Queryable()
-                    .Where(a => a.TransactionDateTime.Month == FilterMonth && a.TransactionDateTime.Year == FilterYear)
-                    .GroupBy(a => a.PersonAlias.Person).Select(
-                        g =>
-                            new
-                            {
-                                Person = g.Key,
-                                PersonId = g.Key.Id,
-                                Sum = g.Sum(a => a.Value),
-                                Month = g.Select(a => a.TransactionDateTime.Month)
-                            });
+            //Get Sum of stars
+            var startsList = from x in starsService.Queryable().ToList()
+                where x.TransactionDateTime.Month == FilterMonth && x.TransactionDateTime.Year == FilterYear
+                group x by x.PersonAlias.Person into g
+                select new {
+                    Person = g.Key,
+                    PersonId = g.Key.Id,
+                    Sum = g.Sum(x => x.Value),
+                    Month = g.Select(x => x.TransactionDateTime.Month),
+                    PersonZip = g.Key.GetFamilies(_rockContext).FirstOrDefault().GroupLocations.FirstOrDefault().Location.PostalCode,
+                    PersonCampus = g.Key.GetFamilies(_rockContext).FirstOrDefault().Campus.Name
+                };
 
 
             //Filter Star Levels
-
             int starsValueFilter = 0;
 
             if (!ddlStars.SelectedValue.IsNullOrWhiteSpace())
             {
                 starsValueFilter = Convert.ToInt32(ddlStars.SelectedValue);
-                starsList = starsList.Where(a => a.Sum >= starsValueFilter && a.Sum < starsValueFilter + 10);
+                startsList = startsList.AsQueryable().Where(a => a.Sum >= starsValueFilter && a.Sum < starsValueFilter + 10);
             }
 
 
 
             //Filter Campuses
-
             var selectedCampuses = cpCampus.SelectedValues;
 
             if (selectedCampuses.Count > 0)
             {
-                starsList = starsList.Where(a => selectedCampuses.Contains(a.Person.GetCampus().Name));
+                var starsListWithCampus = (from x in startsList.ToList()
+                    let firstOrDefault = x.Person.GetFamilies(_rockContext).FirstOrDefault()
+                    where firstOrDefault != null && selectedCampuses.Contains(firstOrDefault.Campus.Name) select x);
+
+
+                startsList = starsListWithCampus;
+
             }
 
+            //Order the list
+            startsList = startsList.OrderBy(g => g.PersonCampus).ThenBy(g => g.PersonZip).ThenBy(g => g.Person.LastName).ThenBy(g => g.Person.FirstName);
 
-
-            var starsListForGrid = starsList.ToList();
-
-
-            gStars.DataSource = starsListForGrid;
+            //Bind list to grid
+            gStars.DataSource = startsList.ToList();
             gStars.DataBind();
         }
 
 
         protected void gStars_OnRowSelected(object sender, RowEventArgs e)
         {
-            Response.Redirect("~/Person/" + e.RowKeyValue);
+            Response.Redirect("~/Person/" + e.RowKeyValue + "/Stars");
         }
 
         protected void filters_ApplyFilterClick(object sender, EventArgs e)
         {
             BindGrid();
+            starsFilters.Show();
         }
 
     }

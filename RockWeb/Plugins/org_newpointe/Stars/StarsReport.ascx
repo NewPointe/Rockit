@@ -9,7 +9,7 @@
                 <h1 class="panel-title"><i class="fa fa-user"></i> Stars Report</h1>
             </div>
             
-            <Rock:GridFilter ID="workflowFilters" runat="server" OnApplyFilterClick="filters_ApplyFilterClick">
+            <Rock:GridFilter ID="starsFilters" runat="server" OnApplyFilterClick="filters_ApplyFilterClick">
                     <Rock:MonthYearPicker runat="server" ID="mypMonth" Label="Month / Year"/>
                     <Rock:CampusesPicker runat="server" ID="cpCampus" Label="Campus"/>
                     <Rock:RockDropDownList runat="server" ID="ddlStars" Label="Stars Level">
