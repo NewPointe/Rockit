@@ -9,7 +9,7 @@ namespace org.newpointe.Stars.Data
     /// <summary>
     /// 
     /// </summary>
-    public partial class StarsContext : Rock.Data.DbContext
+    public partial class StarsProjectContext : Rock.Data.DbContext
     {
 
         #region Models
@@ -19,9 +19,9 @@ namespace org.newpointe.Stars.Data
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StarsContext"/> class.
+        /// Initializes a new instance of the <see cref="StarsProjectContext"/> class.
         /// </summary>
-        public StarsContext()
+        public StarsProjectContext()
             : base( "RockContext" )
         {
              //intentionally left blank
@@ -45,7 +45,7 @@ namespace org.newpointe.Stars.Data
         protected override void OnModelCreating( DbModelBuilder modelBuilder )
         {
             // we don't want this context to create a database or look for EF Migrations, do set the Initializer to null
-            Database.SetInitializer<StarsContext>( new NullDatabaseInitializer<StarsContext>() );
+            Database.SetInitializer<StarsProjectContext>( new NullDatabaseInitializer<StarsProjectContext>() );
 
             Rock.Data.ContextHelper.AddConfigurations( modelBuilder );
             modelBuilder.Configurations.AddFromAssembly( System.Reflection.Assembly.GetExecutingAssembly() );

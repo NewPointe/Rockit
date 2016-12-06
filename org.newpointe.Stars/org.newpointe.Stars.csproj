@@ -103,14 +103,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\StarsService.cs" />
+    <Compile Include="Data\StarsProjectService.cs" />
     <Compile Include="Migrations\001_CreateDb.cs" />
     <Compile Include="Migrations\002_AddSystemData.cs" />
     <Compile Include="Model\Stars.cs" />
     <Compile Include="Model\StarsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\StarsContext.cs" />
+    <Compile Include="Data\StarsProjectContext.cs" />
     <Compile Include="Rest\StarsController.cs" />
+    <Compile Include="SaveStarsWorkflowAction.cs" />
     <Compile Include="SystemGuid\DefinedType.cs" />
   </ItemGroup>
   <ItemGroup />

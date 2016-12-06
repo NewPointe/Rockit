@@ -6,12 +6,12 @@ namespace org.newpointe.Stars.Data
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class StarsService<T> : Rock.Data.Service<T> where T : Rock.Data.Entity<T>, new()
+    public class StarsProjectService<T> : Rock.Data.Service<T> where T : Rock.Data.Entity<T>, new()
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentationService{T}"/> class.
         /// </summary>
-        public StarsService( StarsContext context )
+        public StarsProjectService( StarsProjectContext context )
             : base( context )
         {
         }

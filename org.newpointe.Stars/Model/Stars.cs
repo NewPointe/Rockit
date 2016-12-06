@@ -41,9 +41,19 @@ namespace org.newpointe.Stars.Model
         /// The description.
         /// </value>
         [Required(ErrorMessage = "Value is required")]
-        [MaxLength(10)]
         [DataMember]
         public decimal Value { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets the transaction note.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
+        [DataMember]
+        public string Note { get; set; }
+
 
         /// <summary>
         /// Gets or sets the Transaction Date and Time.
@@ -76,6 +86,9 @@ namespace org.newpointe.Stars.Model
         /// The campus.
         /// </value>
         public virtual Campus Campus { get; set; }
+
+
+        public virtual PersonAlias PersonAlias { get; set; }
 
         #endregion
 

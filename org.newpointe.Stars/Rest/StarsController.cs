@@ -18,6 +18,6 @@ namespace org.newpointe.Stars.Rest
         /// Initializes a new instance of the <see cref="StarsController"/> class.
         /// </summary>
 
-        public StarsController() : base(new StarsService(new Data.StarsContext())) { }
+        public StarsController() : base(new StarsService(new Data.StarsProjectContext())) { }
     }
 }
