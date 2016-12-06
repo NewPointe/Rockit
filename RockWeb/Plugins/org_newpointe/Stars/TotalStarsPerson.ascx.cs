@@ -57,18 +57,78 @@ namespace RockWeb.Plugins.org_newpointe.Stars
             SelectedPerson = Person;
             StarsService starsService = new StarsService(starsProjectContext);
 
-           var starsList = starsService.Queryable().GroupBy(a => a.PersonAlias.Id).Select(g => new { Person = g.Key, Sum = g.Sum(a => a.Value) }).Where(ab => ab.Person == SelectedPerson.PrimaryAliasId.Value).ToList();
+           var starsList = starsService.Queryable().GroupBy(a => a.PersonAlias.Id)
+                .Select(g => new
+                   {
+                       Person = g.Key,
+                       Sum = g.Sum(a => a.Value)
+                   }
+                ).Where(ab => ab.Person == SelectedPerson.PrimaryAliasId.Value).ToList();
+
+
+            var starsListThisMonth = starsService.Queryable()
+                .Where(a => a.TransactionDateTime.Month == DateTime.Now.Month && a.TransactionDateTime.Year == DateTime.Now.Year)
+                .GroupBy(a => a.PersonAlias.Id)
+                .Select(g => new
+                {
+                    Person = g.Key,
+                    Sum = g.Sum(a => a.Value)
+                }
+                ).Where(ab => ab.Person == SelectedPerson.PrimaryAliasId.Value).ToList();
+
+
+            var starsListLastMonth = starsService.Queryable()
+                .Where(a => a.TransactionDateTime.Month == DateTime.Now.Month - 1 && a.TransactionDateTime.Year == DateTime.Now.Year)
+                .GroupBy(a => a.PersonAlias.Id)
+                .Select(g => new
+                {
+                    Person = g.Key,
+                    Sum = g.Sum(a => a.Value)
+                }
+                ).Where(ab => ab.Person == SelectedPerson.PrimaryAliasId.Value).ToList();
+
+
+
+
+
 
             if (starsList.Any())
             {
-                hlStars.Text = starsList.FirstOrDefault().Sum.ToString();
+                hlStarsTotal.Text = starsList.FirstOrDefault().Sum.ToString() + " Stars All Time";
             }
             else
             {
-                hlStars.Text = "0";
+                hlStarsTotal.Text = "0 Stars All Time";
+                hlStarsTotal.LabelType = LabelType.Default;
             }
 
-            
+
+
+            if (starsListThisMonth.Any())
+            {
+                hlStarsThisMonth.Text = starsListThisMonth.FirstOrDefault().Sum.ToString() + " Stars This Month";
+            }
+            else
+            {
+                hlStarsThisMonth.Text = "0 Stars This Month";
+                hlStarsThisMonth.LabelType = LabelType.Default;
+            }
+
+
+
+
+
+            if (starsListLastMonth.Any())
+            {
+                hlStarsLastMonth.Text = starsListLastMonth.FirstOrDefault().Sum.ToString() + " Stars Last Month";
+            }
+            else
+            {
+                hlStarsLastMonth.Text = "0 Stars Last Month";
+                hlStarsLastMonth.LabelType = LabelType.Default;
+            }
+
+
         }
 
 
