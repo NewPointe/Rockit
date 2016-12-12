@@ -320,12 +320,17 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
 
             //Get CP Signature
             var campus = _targetPerson.GetCampus();
+            var sig = "";
             campus.LoadAttributes();
-            var sig = campus.AttributeValues["CampusPastorSignature"].ValueFormatted;
-            if (sig.IsNullOrWhiteSpace())
+            var signatureImage = campus.AttributeValues["CampusPastorSignature"].ValueFormatted;
+            if (!signatureImage.IsNullOrWhiteSpace())
             {
-                sig = "";
+                sig =
+                    String.Format(
+                        "<img src='https://newpointe.org/GetImage.ashx?guid={0}&width=300' class='img-responsive' />",
+                        signatureImage);
             }
+           
 
             // Email Body
             string body = String.Format(@"{0}<br>
