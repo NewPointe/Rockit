@@ -5,119 +5,120 @@
     <ContentTemplate>
         
         <Rock:ModalAlert ID="mdNotLoggedIn" runat="server" />
+        
+        <Rock:ModalDialog runat="server" ID="mdCampus" Title="Please Select Your Campus" OnSaveClick="mdCampus_OnSaveClick">
+            <Content>
+                <p>It looks like we don't have your Campus on record.  Please select the NewPointe Campus you attend:</p>
+                <Rock:CampusPicker runat="server" ID="cpCampus"/>
+            </Content>
+        </Rock:ModalDialog>
 
  
         <asp:Panel ID="pnlSignup" runat="server" CssClass="panel panel-block" Visible="True">
+            
+            <div class="panel panel-green">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-target="#collapsePartnership" aria-expanded="true" aria-controls="collapseExample">
+                        <i class="fa fa-pencil"></i> Partnership at NewPointe
+                    </a>
+                </h4>
+            </div>
+                
+                <div class="panel-body collapse in" id="collapsePartnership">
+
+                <h2><asp:Literal runat="server" ID="lYear"></asp:Literal> Partnership Covenant for <asp:Literal runat="server" ID="lPersonInfo"></asp:Literal></h2>
+                    
+                    
+                <asp:Literal runat="server" ID="lPartnershipText" />
+
+                
+            </div>
+                </div>
+                
+           <asp:Panel ID="pnlSignature" runat="server" CssClass="panel panel-block" Visible="True">
             <div class="panel-heading">
                 <h1 class="panel-title"><i class="fa fa-user"></i> NewPointe Partnership Agreement</h1>
             </div>
             <div class="panel-body">
 
-                <h2>Partnership Covenant for <asp:Literal runat="server" ID="lPersonInfo"></asp:Literal></h2>
-                
-                <p>Our Mission: To lead people realize and reach their full potential in Jesus Christ.</p>
-                
-                <p>As a partner with NewPointe Community Church, I am committing to uphold these values as we work together to fulfill our mission. And as we uphold these values, we will create a welcoming and beautiful community of Christ followers.</p>
-                
-                <ol>
-                   <li>I will protect the unity of my church
-                        <ul>
-                            <li>by acting in love toward others <small>(1 Peter 1:22)</small></li>
-                            <li>by refusing to gossip <small>(Ephesians 4:29)</small></li>
-                            <li>by submitting to church leadership <small>(Hebrews 13:17)</small></li>
-                        </ul>
-                    </li>
-                    
-                    <li>I will share the responsibilities of my church
-                        <ul>
-                            <li>by praying for our church <small>(1 Thessalonians 1:2)</small></li>
-                            <li>by inviting unconnected people to church <small>(Luke 14:23)</small></li>
-                            <li>by welcoming those who visit our church <small>(Romans 15:7)</small></li>
-                        </ul>
-                    </li>
-                    
-                    <li>I will serve my church
-                        <ul>
-                            <li>by cultivating a servant’s heart</li>
-                            <li>by using my spiritual gift in my church <small>(1 Peter 4:10)</small></li>
-                            <li>by participating in my church’s training gatherings <small>(Ephesians 4:11-12)</small></li>
-                        </ul>
-                    </li>
-                    
-                    <li>I will support my church
-                        <ul>
-                            <li>by attending faithfully <small>(Hebrews 10:25)</small></li>
-                            <li>by pursuing spiritual growth and holy living <small>(Philippians 1:27)</small></li>
-                            <li>by giving financially <small>(1 Corinthians 16:2 & Leviticus 27:30)</small></li>
-                        </ul>
-                    </li>
-                    
-                </ol>
-                
                 <br /><br />
-                <ul>
-                    <li>To develop these values within my personal life, I am committing to
-                        <ul>
-                            <li>faithfully pray for the ministry of NewPointe</li>
-                            <li>use my spiritual gifts in ministry at NewPointe</li>
-                            <li>give financially at NewPointe</li>
-                            <li>attend regularly at NewPointe</li>
-                        </ul>
-                    </li>
-                </ul>
-                
-                <br /><br />
-                
-            </div>
-        </asp:Panel>
-        
-        
-        
-        <asp:Panel ID="pnlSignature" runat="server" CssClass="panel panel-block" Visible="True">
-            <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-user"></i> NewPointe Partnership Agreement</h1>
-            </div>
-            <div class="panel-body">
+                <p>By signing <small>(typing my name in the box)</small> below, I agree to uphold the values of the NewPointe Partnership Covenant.</p>
 
-                <p>By signing <small>(typing my name in the box)</small> below, I agree to...</p>
-
-               <Rock:RockTextBox runat="server" ID="tbSignature" Label="Signature"/>
+               <Rock:RockTextBox runat="server" ID="tbSignature" Label="Signature" Required="True" Help="Please Type Your Signature in the Box Below"  />
                 
                 <Rock:BootstrapButton runat="server" ID="btnSubmit" DataLoadingText="Submitting Partnership Covenant" CssClass="btn btn-newpointe" OnClick="btnSubmit_OnClick">Submit</Rock:BootstrapButton>
                 
                 
+                <br />
+
+            </div>
+        </asp:Panel>
+                
+                
+                
+                <asp:Panel ID="pnlSuccess" runat="server" CssClass="panel panel-block" Visible="False">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="fa fa-user"></i> NewPointe Partnership Agreement</h1>
+            </div>
+            <div class="panel-body">
+                
                 <br /><br />
+                
+                <div class="panel-body">
+                
+                <h4>Thank you! Your Partnership Covenant has been signed and submitted.</h4>
+                
+                <div class="clearfix">
+                    <div class="pull-left">
+                    <a href="#" class="btn btn-primary hidden-print" onClick="window.print();"><i class="fa fa-print"></i> Print Partnership Covenant</a> 
+                    </div>
+                </div>
+                
+                <br />
+
 
             </div>
         </asp:Panel>
 
+                
+         <br/><br /><br/>
         
         
         <asp:Panel ID="pnlOpportunities" runat="server" CssClass="panel panel-block" Visible="False">
+            <div class="panel panel-green">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-user"></i> NewPointe Partnership Covenant</h1>
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-target="#collapseOpportunities" aria-expanded="true" aria-controls="collapseExample">
+                        <i class="fa fa-pencil"></i> My Partnership Opportunities
+                    </a>
+                </h4>
             </div>
-            <div class="panel-body">
-                
-                <h4>Thank you! Your Partnership Covenant has been submitted.</h4>
 
-                <div class="well">
-                <h3>My Partnership Opportunities</h3>
-                
-                <p><strong>Serving:</strong> <asp:Literal runat="server" ID="lServing"></asp:Literal> </p>
-                <p><strong>Giving:</strong> <asp:Literal runat="server" ID="lGiving"></asp:Literal> </p>
-                <p><strong>DISCOVER My Church:</strong> <asp:Literal runat="server" ID="lDiscover"></asp:Literal> </p> 
-                
+                <div class="panel-body collapse in" id="collapseOpportunities">
+                    <div class="col-md-6" style="outline: 1px solid #4d4d4d; padding: 10px;">
+                        <p style="font-family: 'Open Sans','Gotham',Helvetica,Arial,sans-serif;"><strong>Serving:</strong> <asp:Literal runat="server" ID="lServing"></asp:Literal> </p>
+                    </div>
+                    <div class="col-md-6" style="outline: 1px solid #4d4d4d; padding: 10px;">
+                        <p style="font-family: 'Open Sans','Gotham',Helvetica,Arial,sans-serif;"><strong>Giving:</strong> <asp:Literal runat="server" ID="lGiving"></asp:Literal> </p>
+                    </div>
+                    <div class="col-md-12" style="outline: 1px solid #4d4d4d; padding: 10px;">
+                        <p style="font-family: 'Open Sans','Gotham',Helvetica,Arial,sans-serif;"><strong>DISCOVER My Church:</strong> <asp:Literal runat="server" ID="lDiscover"></asp:Literal> </p> 
+                    </div>
                 </div>
 
             </div>
         </asp:Panel>
+                
+                
+
+   
+        </asp:Panel>
         
         
         
-        
-        
-        
+    
+
         
         <asp:Panel ID="pnlNotLoggedIn" runat="server" CssClass="panel panel-block" Visible="False">
             <div class="panel-heading">
@@ -125,12 +126,21 @@
             </div>
             <div class="panel-body">
 
-                <Rock:NotificationBox runat="server" NotificationBoxType="Danger" Text="You must be logged to sign the Partnership Covenant. " Visible="True" ID="nbNoPerson" Title="No Valid Person"></Rock:NotificationBox>
+                <Rock:NotificationBox runat="server" NotificationBoxType="Danger" Text="You must be logged to sign the Partnership Covenant." Visible="True" ID="nbNoPerson" Title="MyNewPointe Login Required"></Rock:NotificationBox>
 
             </div>
         </asp:Panel>
         
         
+        <asp:Panel ID="pnlContact" runat="server" CssClass="panel panel-block" Visible="True">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+
+                <p>Got Questions? <a href="https://newpointe.org/moreinfo?topic=Partnership" class="btn btn-newpointe">CONTACT US ABOUT PARTNERSHIP</a></p>
+
+            </div>
+        </asp:Panel>
 
 
     </ContentTemplate>

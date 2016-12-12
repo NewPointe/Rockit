@@ -16,6 +16,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Web;
 using DotLiquid.Tags;
+using Quartz.Util;
 
 namespace RockWeb.Plugins.org_newpointe.Partnership
 {
@@ -27,42 +28,63 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
     [Category( "NewPointe Partnership" )]
     [Description("Partnership Signup")]
 
+    [CodeEditorField("Partnership Text", "The text of the Partnership Agreement <span class='tip tip-lava'></span> <span class='tip tip-html'></span>", CodeEditorMode.Html, CodeEditorTheme.Rock, 400, true)]
+    [BooleanField("Send Confirmation Email","Should we send a confirmation email?",true)]
+    [CodeEditorField("Email Body", "The body text of the email that gets sent on completion <span class='tip tip-lava'></span> <span class='tip tip-html'></span>", CodeEditorMode.Html, CodeEditorTheme.Rock, 400, true)]
+
 
 
     public partial class PartnershipSignup : Rock.Web.UI.RockBlock
     {
 
         RockContext rockContext = new RockContext();
-        Person _activePerson = new Person();
+        Person _targetPerson = new Person();
+        public DateTime CurrentDateTime = DateTime.Now;
+        public int CurrentYearAdd = 0;
 
 
         protected override void OnLoad( EventArgs e )
         {
             if ( !IsPostBack )
             {
-                
+
+                var campusCacheEnabled = CampusCache.All().AsQueryable().Where(c => c.IsActive == true).ToList();
+                cpCampus.DataSource = campusCacheEnabled;
+                cpCampus.DataBind();
+
+                // Resolve the text field merge fields
+                var mergeFields = Rock.Lava.LavaHelper.GetCommonMergeFields(this.RockPage, _targetPerson);
+                if (_targetPerson != null)
+                {
+                    mergeFields.Add("Person", _targetPerson);
+                }
+
+                lPartnershipText.Text = GetAttributeValue("PartnershipText").ResolveMergeFields(mergeFields);
+
             }
+
+
+            if (DateTime.Now.Month == 12)
+            {
+                CurrentYearAdd++;
+                CurrentDateTime = CurrentDateTime.AddYears(CurrentYearAdd);
+            }
+
+            lYear.Text = CurrentDateTime.Year.ToString();
+
 
             if (CurrentPerson != null)
             {
-                _activePerson = CurrentPerson;
+                _targetPerson = CurrentPerson;
                 var currentPersonCampus = CurrentPerson.GetCampus();
 
-                string lastAttended = GetDiscoverAttendanceInfo(_activePerson);
-                string volunteerGroups = GetServingInfo(_activePerson);
-
-                lDiscover.Text = String.Format( "You attended DISCOVER My Church on {0}.", lastAttended);
-
-                if (lastAttended == "never")
+                if (currentPersonCampus == null)
                 {
-                    lDiscover.Text = "Upcoming DISCOVER My Church Opportunities at the " + currentPersonCampus.Name + ":<br />" + UpcomingDiscover(currentPersonCampus, "DISCOVER My Church");
+                    mdCampus.Show();
+                    tbSignature.Required = false;
                 }
 
-                lServing.Text = volunteerGroups;
-
-                lGiving.Text = "Thanks for Giving! Your donations are making an eternal difference.  <a href= \"https://newpointe.org/GiveNow \">Click here</a> to start or manage your online giving at NewPointe - it's quick and easy!";
-
-                lPersonInfo.Text = _activePerson.FullName;
+                lPersonInfo.Text = _targetPerson.FullName;
 
             }
             else
@@ -136,7 +158,7 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
 
                 if (x.AttributeValues["RegistrationLink"].ValueFormatted != "")
                 {
-                    registrationLink = String.Format("<a href= \"{0}\">Register Now!",
+                    registrationLink = String.Format("<a href= \"{0}\">Register Now!</a>",
                         x.AttributeValues["RegistrationLink"].Value);
                 }
 
@@ -186,23 +208,38 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
 
         protected void btnSubmit_OnClick(object sender, EventArgs e)
         {
-
-            //TODO: Also set partnership year attribute
-
             pnlOpportunities.Visible = true;
             pnlSignature.Visible = false;
+            pnlSuccess.Visible = true;
 
             AttributeValueService attributeValueService = new AttributeValueService(rockContext);
             PersonService personService = new PersonService(rockContext);
 
             List<Guid> personGuidList = new List<Guid>();
-            personGuidList.Add(_activePerson.Guid);
+            personGuidList.Add(_targetPerson.Guid);
 
-            var p = attributeValueService.GetByAttributeIdAndEntityId(906, _activePerson.Id);
+            var p = attributeValueService.GetByAttributeIdAndEntityId(906, _targetPerson.Id);
+            var p2 = attributeValueService.GetByAttributeIdAndEntityId(1434, _targetPerson.Id);
+
 
             var personFromService = personService.GetByGuids(personGuidList).FirstOrDefault();
 
-            p.Value = DateTime.Now.ToString();
+            DateTime dateToSave = DateTime.Now.AddYears(CurrentYearAdd);
+
+            p.Value = dateToSave.ToString();
+
+            if (p2.Value.IsNullOrWhiteSpace())
+            {
+                p2.Value = dateToSave.Year.ToString();
+            }
+            else
+            {
+                if (!p2.Value.Contains(dateToSave.Year.ToString()))
+                {
+                    p2.Value = p2.Value + "," + dateToSave.Year.ToString();
+                }
+                
+            }
 
 
             personFromService.ConnectionStatusValue.Value = "Partner";
@@ -212,6 +249,114 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
             rockContext.SaveChanges();
 
 
+            LoadOpportunities();
+
+            if (GetAttributeValue("SendConfirmationEmail") == "True")
+            {
+                SendEmail(personFromService.Email, CurrentDateTime.Year.ToString() + " Partnership Covenant", rockContext);
+            }
+
+            
+
+
         }
+
+        protected void mdCampus_OnSaveClick(object sender, EventArgs e)
+        {
+            GroupService groupService = new GroupService(rockContext);
+            CampusService campusService = new CampusService(rockContext);
+
+            var personFamily = _targetPerson.GetFamilies(rockContext).FirstOrDefault();
+
+            var theGroup = groupService.Queryable().Where(a => a.Id == personFamily.Id).FirstOrDefault();
+
+            var theCampus = campusService.Queryable().Where(c => c.Name == cpCampus.SelectedValue).FirstOrDefault();
+
+
+            theGroup.Campus = theCampus;
+
+            rockContext.SaveChanges();
+
+            mdCampus.Hide();
+
+
+
+        }
+
+        protected void LoadOpportunities()
+        {
+            var currentPersonCampus = CurrentPerson.GetCampus();
+            string lastAttended = GetDiscoverAttendanceInfo(_targetPerson);
+            string volunteerGroups = GetServingInfo(_targetPerson);
+
+            lDiscover.Text = String.Format("You attended DISCOVER My Church on {0}.", lastAttended);
+
+            if (lastAttended == "never")
+            {
+                lDiscover.Text = "Upcoming DISCOVER My Church Opportunities at the " + currentPersonCampus.Name + ":<br />" + UpcomingDiscover(currentPersonCampus, "DISCOVER My Church");
+            }
+
+            lServing.Text = volunteerGroups;
+
+            lGiving.Text = "Thanks for Giving! Your donations are making an eternal difference.  <a href= \"https://newpointe.org/GiveNow \">Click here</a> to start or manage your online giving at NewPointe - it's quick and easy!";
+
+            lPersonInfo.Text = _targetPerson.FullName;
+        }
+
+
+
+        private void SendEmail(string recipient, string subject, RockContext rockContext)
+        {
+
+            // Resolve the text field merge fields
+            var mergeFields = Rock.Lava.LavaHelper.GetCommonMergeFields(this.RockPage, _targetPerson);
+            if (_targetPerson != null)
+            {
+                mergeFields.Add("Person", _targetPerson);
+            }
+
+            string bodyText = GetAttributeValue("EmailBody").ResolveMergeFields(mergeFields);
+
+
+            // Email Body
+            string body = String.Format(@"{0}<br>
+            <p>Sincerely,<br>
+            <span style='font-size:125%; text-transform: uppercase; font-weight: bold;'>{1}</span><br>
+            {2} Pastor
+            ", bodyText, _targetPerson.GetCampus().LeaderPersonAlias.Person.FullName,_targetPerson.GetCampus().Name);
+
+            var fromEmailAddress = _targetPerson.GetCampus().LeaderPersonAlias.Person.Email;
+            var fromEmailName = _targetPerson.GetCampus().LeaderPersonAlias.Person.FullName;
+            var fromEmail = String.Format("{0}<{1}>", fromEmailName, fromEmailAddress);
+
+            // Get the Header and Footer
+            string emailHeader = Rock.Web.Cache.GlobalAttributesCache.Value("EmailHeader");
+            string emailFooter = Rock.Web.Cache.GlobalAttributesCache.Value("EmailFooter");
+
+            var recipients = new List<string>();
+            recipients.Add(recipient);
+
+            var mediumData = new Dictionary<string, string>();
+            mediumData.Add("From", fromEmail);
+            mediumData.Add("Subject", subject);
+            mediumData.Add("Body", emailHeader + body + emailFooter);
+
+            var mediumEntity = EntityTypeCache.Read(Rock.SystemGuid.EntityType.COMMUNICATION_MEDIUM_EMAIL.AsGuid(), rockContext);
+            if (mediumEntity != null)
+            {
+                var medium = MediumContainer.GetComponent(mediumEntity.Name);
+                if (medium != null && medium.IsActive)
+                {
+                    var transport = medium.Transport;
+                    if (transport != null && transport.IsActive)
+                    {
+                        var appRoot = GlobalAttributesCache.Read(rockContext).GetValue("InternalApplicationRoot");
+                        transport.Send(mediumData, recipients, appRoot, string.Empty);
+                    }
+                }
+            }
+        }
+
+
     }
 }
