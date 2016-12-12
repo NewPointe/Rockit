@@ -318,12 +318,21 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
             string bodyText = GetAttributeValue("EmailBody").ResolveMergeFields(mergeFields);
 
 
+            //Get CP Signature
+            var campus = _targetPerson.GetCampus();
+            campus.LoadAttributes();
+            var sig = campus.AttributeValues["CampusPastorSignature"].ValueFormatted;
+            if (sig.IsNullOrWhiteSpace())
+            {
+                sig = "";
+            }
+
             // Email Body
             string body = String.Format(@"{0}<br>
             <p>Sincerely,<br>
-            <span style='font-size:125%; text-transform: uppercase; font-weight: bold;'>{1}</span><br>
-            {2} Pastor
-            ", bodyText, _targetPerson.GetCampus().LeaderPersonAlias.Person.FullName,_targetPerson.GetCampus().Name);
+            <span style='font-size:125%; text-transform: uppercase; font-weight: bold;'>{1}<br>{2}</span><br>
+            {3} Pastor
+            ", bodyText, sig, campus.LeaderPersonAlias.Person.FullName, campus.Name);
 
             var fromEmailAddress = _targetPerson.GetCampus().LeaderPersonAlias.Person.Email;
             var fromEmailName = _targetPerson.GetCampus().LeaderPersonAlias.Person.FullName;
