@@ -12,6 +12,14 @@
                 <Rock:CampusPicker runat="server" ID="cpCampus"/>
             </Content>
         </Rock:ModalDialog>
+        
+        
+        <Rock:ModalDialog runat="server" ID="mdAge" Title="Please Select Your Birthdate" OnSaveClick="mdAge_OnSaveClick">
+            <Content>
+                <p>It looks like we don't have your birthdate on record.  Please enter your Date of Birth:</p>
+                <Rock:DatePicker runat="server" ID="dpBirthDate" Label="Birthdate"/>
+            </Content>
+        </Rock:ModalDialog>
 
  
         <asp:Panel ID="pnlSignup" runat="server" CssClass="panel panel-block" Visible="True">
@@ -127,6 +135,19 @@
             <div class="panel-body">
 
                 <Rock:NotificationBox runat="server" NotificationBoxType="Danger" Text="You must be logged to sign the Partnership Covenant." Visible="True" ID="nbNoPerson" Title="MyNewPointe Login Required"></Rock:NotificationBox>
+
+            </div>
+        </asp:Panel>
+        
+        
+        
+        <asp:Panel ID="pnlNotSixteen" runat="server" CssClass="panel panel-block" Visible="False">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="fa fa-user"></i> NewPointe Partnership Agreement</h1>
+            </div>
+            <div class="panel-body">
+
+                <Rock:NotificationBox runat="server" NotificationBoxType="Danger" Text="Sorry, you aren't old enough to sign the NewPointe Partnership Covenant" Visible="True" ID="nbAge" Title="Age Requirement"></Rock:NotificationBox>
 
             </div>
         </asp:Panel>

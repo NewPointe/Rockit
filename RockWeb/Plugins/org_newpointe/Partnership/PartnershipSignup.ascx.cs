@@ -31,6 +31,7 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
     [CodeEditorField("Partnership Text", "The text of the Partnership Agreement <span class='tip tip-lava'></span> <span class='tip tip-html'></span>", CodeEditorMode.Html, CodeEditorTheme.Rock, 400, true)]
     [BooleanField("Send Confirmation Email","Should we send a confirmation email?",true)]
     [CodeEditorField("Email Body", "The body text of the email that gets sent on completion <span class='tip tip-lava'></span> <span class='tip tip-html'></span>", CodeEditorMode.Html, CodeEditorTheme.Rock, 400, true)]
+    [IntegerField("Age Requirement","Person must be at least this old to sign up.",true,16)]
 
 
 
@@ -41,6 +42,7 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
         Person _targetPerson = new Person();
         public DateTime CurrentDateTime = DateTime.Now;
         public int CurrentYearAdd = 0;
+        public string RequiredAge = "16";
 
 
         protected override void OnLoad( EventArgs e )
@@ -63,6 +65,9 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
 
             }
 
+            int ageRequirement = Convert.ToInt32(GetAttributeValue("AgeRequirement"));
+            RequiredAge = GetAttributeValue("AgeRequirement");
+
 
             if (DateTime.Now.Month == 12)
             {
@@ -81,6 +86,24 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
                 if (currentPersonCampus == null)
                 {
                     mdCampus.Show();
+                    tbSignature.Required = false;
+                }
+
+                if (_targetPerson.Age != null)
+                {
+                    if (_targetPerson.Age < ageRequirement)
+                    {
+                        mdNotLoggedIn.Show(String.Format("Sorry, you must be at least {0} to sign the NewPointe Partnership Covenant", RequiredAge),ModalAlertType.Alert);
+
+                        pnlSignup.Visible = false;
+                        pnlNotSixteen.Visible = true;
+                        pnlSignature.Visible = false;
+                    }
+
+                }
+                else
+                {
+                    mdAge.Show();
                     tbSignature.Required = false;
                 }
 
@@ -322,7 +345,7 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
             var campus = _targetPerson.GetCampus();
             var sig = "";
             campus.LoadAttributes();
-            var signatureImage = campus.AttributeValues["CampusPastorSignature"].ValueFormatted;
+            var signatureImage = campus.AttributeValues["CampusPastorSignature"].Value;
             if (!signatureImage.IsNullOrWhiteSpace())
             {
                 sig =
@@ -372,5 +395,22 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
         }
 
 
+        protected void mdAge_OnSaveClick(object sender, EventArgs e)
+        {
+            PersonService personService = new PersonService(rockContext);
+
+            List<Guid> personGuidList = new List<Guid>();
+            personGuidList.Add(_targetPerson.Guid);
+            var personFromService = personService.GetByGuids(personGuidList).FirstOrDefault();
+
+            personFromService.SetBirthDate(dpBirthDate.SelectedDate);
+
+            rockContext.SaveChanges();
+
+            mdAge.Hide();
+
+            Response.Redirect(Request.RawUrl);
+
+        }
     }
 }
