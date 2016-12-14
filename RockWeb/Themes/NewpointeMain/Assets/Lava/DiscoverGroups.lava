@@ -6,6 +6,7 @@
   </p>
   <p>
     <strong>Time:</strong> {{item.StartDateTime | Date:'h:mm tt'}}
+	{% if item.EndTime != ''} - {{ item.EndTime }}{% endif %}
   </p>
   {% if item.Location != '' %}
   <p>
