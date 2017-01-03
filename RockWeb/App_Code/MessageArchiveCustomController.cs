@@ -34,7 +34,7 @@ public class MessageArchiveCustomController : ApiControllerBase
         var attrService = new AttributeService(rockContext);
 
 
-        var dailyItems = new List<MessageArchiveItem>();
+        var messageItems = new List<MessageArchiveItem>();
 
 
         var ids = rockContext.Database.SqlQuery<int>("exec GetMessageArchivesBySeriesId @seriesId", new SqlParameter("seriesId", seriesId)).ToList();
@@ -49,57 +49,46 @@ public class MessageArchiveCustomController : ApiControllerBase
         foreach (var item in items)
         {
 
-
-
             item.LoadAttributes(rockContext);
-
-            var link = GetVimeoLink(item.GetAttributeValue("VideoId"));
-
+            
             var newItem = new MessageArchiveItem();
 
             newItem.Id = item.Id;
 
-            var audio = item.AttributeValues["PodcastAudio"];
-            BinaryFileService binaryFileService = new BinaryFileService(rockContext);
-
-            var mp3CdnPath = "";
-            var binaryFile = binaryFileService.Get(Guid.Parse(audio.Value));
-
-            if (binaryFile != null)
-                mp3CdnPath = binaryFileService.Get(Guid.Parse(audio.Value)).Path;
-
             newItem.Content = DotLiquid.StandardFilters.StripHtml(item.Content).Replace("\n\n", "\r\n\r\n");
-
-            newItem.AudioLink = mp3CdnPath.ToString();
 
             newItem.Date = DateTime.Parse(item.GetAttributeValue("Date")).ToShortDateString();
             newItem.Speaker = item.GetAttributeValue("Speaker");
             newItem.SpeakerTitle = item.GetAttributeValue("SpeakerTitle");
             newItem.Title = item.Title;
 
-
+            var link = GetVimeoLink( item.GetAttributeValue( "VideoId" ) );
             newItem.VimeoLink = link.Url;
-            newItem.VimeoImage = link.Image; 
+            newItem.VimeoImage = link.Image;
+
+            BinaryFileService binaryFileService = new BinaryFileService( rockContext );
+
+            var audioAtt = item.AttributeValues["PodcastAudio"];
+            var audioFile = binaryFileService.Get( audioAtt.Value.AsGuid() );
+            if ( audioFile != null )
+                newItem.AudioLink = audioFile.Path;
+
+            var notesAtt = item.AttributeValues["MessageNotes"];
+            var notesFile = binaryFileService.Get( notesAtt.Value.AsGuid() );
+            if ( notesFile != null )
+                newItem.TalkItOver = notesFile.Path;
 
 
+            var tioAtt = item.AttributeValues["TalkItOver"];
+            var tioFile = binaryFileService.Get( tioAtt.Value.AsGuid());
+            if ( tioFile != null )
+                newItem.TalkItOver = tioFile.Path;
 
-            var notesAttr = item.AttributeValues["MessageNotes"];
-
-
-
-
-            var talkAttr = item.AttributeValues["TalkItOver"];
-            binaryFile = binaryFileService.Get(Guid.Parse(notesAttr.Value));
-            if (binaryFile != null)
-                newItem.TalkItOver = binaryFile.Path;
-
-
-
-            dailyItems.Add(newItem);
+            messageItems.Add(newItem);
         }
 
 
-        return Ok(dailyItems.AsQueryable());
+        return Ok(messageItems.AsQueryable());
     }
 
     private VimeoReturnObject GetVimeoLink(string id)
