@@ -76,7 +76,7 @@ public class MessageArchiveCustomController : ApiControllerBase
             var notesAtt = item.AttributeValues["MessageNotes"];
             var notesFile = binaryFileService.Get( notesAtt.Value.AsGuid() );
             if ( notesFile != null )
-                newItem.TalkItOver = notesFile.Path;
+                newItem.Notes = notesFile.Path;
 
 
             var tioAtt = item.AttributeValues["TalkItOver"];
