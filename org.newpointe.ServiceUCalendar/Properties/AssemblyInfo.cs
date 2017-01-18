@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("org.newpointe.ServiceUCalendar")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("NewPointe")]
+[assembly: AssemblyCompany( "NewPointe Community Church" )]
 [assembly: AssemblyProduct("org.newpointe.ServiceUCalendar")]
-[assembly: AssemblyCopyright("Copyright © 2016 NewPointe Community Church")]
+[assembly: AssemblyCopyright( "Copyright © 2017 NewPointe Community Church" )]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
