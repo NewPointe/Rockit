@@ -37,6 +37,7 @@ namespace RockWeb.Blocks.CheckIn
 
     [LinkedPage( "Family Select Page", "", false, "", "", 5 )]
     [LinkedPage( "Scheduled Locations Page", "", false, "", "", 6 )]
+    [TextField( "Check-in Button Text", "The text to display on the check-in button.", false, Key = "CheckinButtonText" )]
     public partial class Welcome : CheckInBlock
     {
         protected override void OnInit( EventArgs e )
@@ -56,6 +57,12 @@ namespace RockWeb.Blocks.CheckIn
             RockPage.AddScriptLink( "~/scripts/jquery.countdown.min.js" );
 
             RegisterScript();
+
+            var bodyTag = this.Page.Master.FindControl( "bodyTag" ) as HtmlGenericControl;
+            if ( bodyTag != null )
+            {
+                bodyTag.AddCssClass( "checkin-welcome-bg" );
+            }
         }
 
         protected override void OnLoad( EventArgs e )
@@ -83,7 +90,10 @@ namespace RockWeb.Blocks.CheckIn
                 SaveState();
                 RefreshView();
 
-                
+                if ( !string.IsNullOrWhiteSpace( GetAttributeValue( "CheckinButtonText" ) ) )
+                {
+                    lbSearch.Text = string.Format("<span>{0}</span>", GetAttributeValue( "CheckinButtonText" ));
+                }
             }
         }
 

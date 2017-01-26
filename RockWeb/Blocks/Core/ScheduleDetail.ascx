@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ScheduleDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.ScheduleDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ScheduleDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.ScheduleDetail" %>
 
 <asp:UpdatePanel ID="upScheduleDetail" runat="server">
     <ContentTemplate>
@@ -64,6 +64,7 @@
                 <div class="panel-heading">
                     <h1 class="panel-title"><i class="fa fa-calendar"></i> <asp:Literal ID="lReadOnlyTitle" runat="server" /></h1>
                 </div>
+                <Rock:PanelDrawer ID="pdAuditDetails" runat="server"></Rock:PanelDrawer>
                 <div class="panel-body">
 
                     <div class="row">

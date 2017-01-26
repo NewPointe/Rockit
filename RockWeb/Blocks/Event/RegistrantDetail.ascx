@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="RegistrantDetail.ascx.cs" Inherits="RockWeb.Blocks.Event.RegistrantDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="RegistrantDetail.ascx.cs" Inherits="RockWeb.Blocks.Event.RegistrantDetail" %>
 
 <asp:UpdatePanel ID="upnlRegistrantDetail" runat="server">
     <ContentTemplate>
@@ -80,6 +80,8 @@
                             <div id="divFees" runat="server" class="well registration-additional-options">
                                 <asp:PlaceHolder ID="phFees" runat="server" />
                             </div>
+                            <asp:HiddenField ID="hfSignedDocumentId" runat="server" />
+                            <Rock:FileUploader ID="fuSignedDocument" runat="server" Label="Signed Document" />
                         </div>
                     </div>
 

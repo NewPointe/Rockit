@@ -62,9 +62,9 @@ namespace RockWeb.Plugins.org_newpointe.LiveChat
                 System.Security.Cryptography.RSACryptoServiceProvider rsa = new System.Security.Cryptography.RSACryptoServiceProvider();
                 rsa.ImportCspBlob(cert.ExportCspBlob(true));
 
-                string token = Jose.JWT.Encode(payload, rsa, Jose.JwsAlgorithm.RS256, extraHeaders: header);
+//                string token = Jose.JWT.Encode(payload, rsa, Jose.JwsAlgorithm.RS256, extraHeaders: header);
 
-                hdnToken.Value = token;
+//                hdnToken.Value = token;
             }
             else
             {

@@ -860,7 +860,7 @@ namespace org.newpointe.CompositeScoresJob
                 metricValue.YValue = (decimal)CompositeScore;
                 metricValue.Note = "";
                 metricValue.MetricValueDateTime = dt;
-                metricValue.EntityId = CampusId;
+                //metricValue.EntityId = CampusId;
 
                 rockContext.SaveChanges();
             }

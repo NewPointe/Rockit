@@ -1,9 +1,9 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="EditPerson.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonDetail.EditPerson" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="EditPerson.ascx.cs" Inherits="RockWeb.Blocks.Crm.PersonDetail.EditPerson" %>
 
 
 <%--
     ******************************************************************************************************************************
-    * NOTE: The Security/AccountEdit.ascx block has very similiar functionality.  If updating this block, make sure to check
+    * NOTE: The Security/AccountEdit.ascx block has very similar functionality.  If updating this block, make sure to check
     * that block also.  It may need the same updates.
     ******************************************************************************************************************************
 --%>

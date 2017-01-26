@@ -39,7 +39,7 @@ namespace RockWeb.Blocks.Finance
     [Category( "Finance" )]
     [Description( "Used to match transactions to an individual and allocate the transaction amount to financial account(s)." )]
 
-    [AccountsField( "Accounts", "Select the accounts that transaction amounts can be allocated to.  Leave blank to show all accounts" )]
+    [AccountsField( "Accounts", "Select the accounts that transaction amounts can be allocated to.  Leave blank to show all accounts", false )]
     [LinkedPage( "Add Family Link", "Select the page where a new family can be added. If specified, a link will be shown which will open in a new window when clicked", DefaultValue = "6a11a13d-05ab-4982-a4c2-67a8b1950c74,af36e4c2-78c6-4737-a983-e7a78137ddc7" )]
     [LinkedPage( "Add Business Link", "Select the page where a new business can be added. If specified, a link will be shown which will open in a new window when clicked" )]
     public partial class TransactionMatching : RockBlock, IDetailBlock
@@ -435,6 +435,8 @@ namespace RockWeb.Blocks.Finance
                         }
                     }
 
+                    tbSummary.Text = transactionToMatch.Summary;
+
                     if ( transactionToMatch.Images.Any() )
                     {
                         var primaryImage = transactionToMatch.Images
@@ -704,6 +706,8 @@ namespace RockWeb.Blocks.Finance
                         History.EvaluateChange( changes, accountBox.Label, 0.0M.FormatAsCurrency(), amount.Value.FormatAsCurrency() );
                     }
                 }
+
+                financialTransaction.Summary = tbSummary.Text;
 
                 financialTransaction.ProcessedByPersonAliasId = this.CurrentPersonAlias.Id;
                 financialTransaction.ProcessedDateTime = RockDateTime.Now;

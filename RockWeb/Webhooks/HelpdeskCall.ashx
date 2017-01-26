@@ -113,28 +113,14 @@ public class HelpdeskCall : IHttpHandler
 
     private string PhoneString(string fromNumber)
     {
-        RockContext rockContext = new RockContext();
-        PersonService personService = new PersonService(rockContext);
-        List<Person> personList = null;
         string personResults = "";
 
         try
         {
-            var t = personService.GetByPhonePartial(fromNumber);
-
-            if (t != null)
+            foreach (var p in new PersonService(new RockContext()).GetByPhonePartial(fromNumber))
             {
-                personList = t.ToList();
+                personResults += " <https://rock.newpointe.org/Person/" + p.Id + "|" + p.FullName + ">  ";
             }
-            if (personList.Count != null)
-            {
-                foreach (var p in t)
-                {
-                    personResults += " <https://rock.newpointe.org/Person/" + p.Id + "|" + p.FullName + ">  ";
-                }
-
-            }
-
         }
         catch (NullReferenceException e)
         {

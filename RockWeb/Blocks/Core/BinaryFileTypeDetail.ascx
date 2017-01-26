@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="BinaryFileTypeDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.BinaryFileTypeDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="BinaryFileTypeDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.BinaryFileTypeDetail" %>
 
 <asp:UpdatePanel ID="upBinaryFileType" runat="server">
     <ContentTemplate>
@@ -10,6 +10,7 @@
                     <h1 class="panel-title"><i class="fa fa-file-o"></i>
                         <asp:Literal ID="lActionTitle" runat="server" /></h1>
                 </div>
+                <Rock:PanelDrawer ID="pdAuditDetails" runat="server"></Rock:PanelDrawer>
                 <div class="panel-body">
                     <asp:ValidationSummary ID="ValidationSummary1" runat="server" HeaderText="Please Correct the Following" CssClass="alert alert-danger" />
 

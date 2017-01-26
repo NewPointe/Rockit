@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TagDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.TagDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TagDetail.ascx.cs" Inherits="RockWeb.Blocks.Core.TagDetail" %>
 
 <asp:UpdatePanel ID="upPanel" runat="server">
     <ContentTemplate>
@@ -13,6 +13,7 @@
                         <Rock:HighlightLabel ID="hlEntityType" runat="server" LabelType="Type" />
                     </div>
                 </div>
+                <Rock:PanelDrawer ID="pdAuditDetails" runat="server"></Rock:PanelDrawer>
                 <div class="panel-body">
                     
                     <asp:HiddenField ID="hfId" runat="server" />

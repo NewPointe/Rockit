@@ -18,6 +18,9 @@
                             <Rock:BootstrapButton ID="bbtnApply" CssClass="btn btn-primary" runat="server" Text="Apply" OnClick="bbtnApply_Click" />
                         </div>
                     </div>
+                        <div class="col-md-6">
+                            <Rock:RockCheckBoxList ID="cblAccounts" runat="server" />
+                        </div>
          
                 </div>
 

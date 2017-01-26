@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Pages.ascx.cs" Inherits="RockWeb.Blocks.Administration.Pages" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Pages.ascx.cs" Inherits="RockWeb.Blocks.Administration.Pages" %>
 <asp:UpdatePanel ID="upPages" runat="server">
 <ContentTemplate>
 
@@ -16,6 +16,7 @@
                     <Rock:RockBoundField DataField="Id" HeaderText="Id" />
                     <asp:HyperLinkField DataNavigateUrlFormatString="~/page/{0}" DataNavigateUrlFields="Id" DataTextField="InternalName" HeaderText="Name" Target="_parent" />
                     <Rock:RockBoundField DataField="Layout.Name" HeaderText="Layout"  />
+                    <Rock:LinkButtonField HeaderText="Copy" CssClass="btn btn-default btn-sm fa fa-clone" OnClick="rGrid_Copy" HeaderStyle-HorizontalAlign="Center" />
                     <Rock:DeleteField OnClick="rGrid_Delete" />
                 </Columns>
             </Rock:Grid>

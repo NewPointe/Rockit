@@ -180,7 +180,7 @@ namespace org.newpointe.MetricsWorkflowActions
             //Does this metric already exist?
             var existingMetric = metricValueService
                 .Queryable(
-                    ).FirstOrDefault(a => a.MetricId == metric && a.MetricValueDateTime == dt && a.EntityId == campus);
+                    ).FirstOrDefault(a => a.MetricId == metric && a.MetricValueDateTime == dt && a.MetricValuePartitions.Select(p => p.EntityId).Contains(campus));
 
             if (existingMetric != null)
             {
@@ -205,7 +205,9 @@ namespace org.newpointe.MetricsWorkflowActions
             metricValue.YValue = value;
             metricValue.Note = notes;
             metricValue.MetricValueDateTime = dt;
-            metricValue.EntityId = campus;
+            var mvp = new MetricValuePartition();
+            mvp.EntityId = campus;
+            metricValue.MetricValuePartitions.Add(mvp);
 
             rockContext.SaveChanges();
 

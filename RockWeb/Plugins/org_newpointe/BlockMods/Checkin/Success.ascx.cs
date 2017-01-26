@@ -23,6 +23,7 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+
 using Rock;
 using Rock.Attribute;
 using Rock.CheckIn;
@@ -36,6 +37,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
     [DisplayName("Custom Success")]
     [Category("NewPointe Check-in")]
     [Description("Displays the details of a successful checkin.")]
+
     [LinkedPage("Person Select Page", "", false, "", "", 5)]
     public partial class Success : CheckInBlock
     {
@@ -52,6 +54,12 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
 
             RockPage.AddScriptLink("~/Scripts/iscroll.js");
             RockPage.AddScriptLink("~/Scripts/CheckinClient/checkin-core.js");
+
+            var bodyTag = this.Page.Master.FindControl( "bodyTag" ) as HtmlGenericControl;
+            if ( bodyTag != null )
+            {
+                bodyTag.AddCssClass( "checkin-success-bg" );
+            }
         }
 
         /// <summary>
@@ -101,8 +109,11 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
                                         }
                                     }
 
-                                    printFromClient.AddRange(groupType.Labels.Where(l => l.PrintFrom == Rock.Model.PrintFrom.Client));
-                                    printFromServer.AddRange(groupType.Labels.Where(l => l.PrintFrom == Rock.Model.PrintFrom.Server));
+                                    if ( groupType.Labels != null && groupType.Labels.Any() )
+                                    {
+                                        printFromClient.AddRange( groupType.Labels.Where( l => l.PrintFrom == Rock.Model.PrintFrom.Client ) );
+                                        printFromServer.AddRange( groupType.Labels.Where( l => l.PrintFrom == Rock.Model.PrintFrom.Server ) );
+                                    }
                                 }
                             }
                         }
@@ -111,12 +122,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
                         {
                             var urlRoot = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Authority);
                             printFromClient.ToList().ForEach(l => l.LabelFile = urlRoot + l.LabelFile.Replace("GetFile.ashx", "GetCheckinLabel.ashx"));
-                            for (int i = 0; i < printFromClient.Count() - 1; i++)
-                            {
-                                printFromClient.ElementAt(i).LabelFile += "&delaycut=T";
-                            }
-
-                            //printFromClient.OrderBy(l => l.Order).ToList().ForEach(l => l.LabelFile = urlRoot + l.LabelFile);
+                            printFromClient.OrderBy( l => l.Order ).ToList().ForEach( l => l.LabelFile = urlRoot + l.LabelFile );
+                            printFromClient.Take( printFromClient.Count() - 1 ).ToList().ForEach( l => l.LabelFile += "&delaycut=T" );
                             AddLabelScript(printFromClient.ToJson());
                         }
 

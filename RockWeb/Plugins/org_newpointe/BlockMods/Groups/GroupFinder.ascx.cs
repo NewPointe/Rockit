@@ -46,7 +46,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
     /// Block for people to find a group that matches their search parameters.
     /// </summary>
     [DisplayName( "Newpointe Group Finder" )]
-    [Category( "Groups" )]
+    [Category( "NewPointe -> Groups" )]
     [Description( "Block for people to find a group that matches their search parameters." )]
 
     // Linked Pages
@@ -59,6 +59,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
     [TextField( "ScheduleFilters", "", false, "", "CustomSetting" )]
     [BooleanField( "Display Campus Filter", "", false, "CustomSetting" )]
     [BooleanField( "Enable Campus Context", "", false, "CustomSetting" )]
+    [BooleanField( "Hide Overcapacity Groups", "When set to true, groups that are at capacity or whose default GroupTypeRole are at capacity are hidden.", true )]
     [BooleanField( "Auto Search", "", false, "CustomSetting" )]
     [AttributeField( Rock.SystemGuid.EntityType.GROUP, "Attribute Filters", "", false, true, "", "CustomSetting" )]
 
@@ -69,21 +70,25 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
     [BooleanField( "Show Fence", "", false, "CustomSetting" )]
     [ValueListField( "Polygon Colors", "", false, "#f37833|#446f7a|#afd074|#649dac|#f8eba2|#92d0df|#eaf7fc", "#ffffff", null, null, "CustomSetting" )]
     [CodeEditorField( "Map Info", "", CodeEditorMode.Lava, CodeEditorTheme.Rock, 200, false, @"
-<h4 class='margin-t-none'>{{ Group.Name }}</h4> 
+<h4 class='margin-t-none'>{{ Group.Name }}</h4>
+ 
 <div class='margin-b-sm'>
 {% for attribute in Group.AttributeValues %}
     <strong>{{ attribute.AttributeName }}:</strong> {{ attribute.ValueFormatted }} <br />
 {% endfor %}
 </div>
+
 <div class='margin-v-sm'>
 {% if Location.FormattedHtmlAddress && Location.FormattedHtmlAddress != '' %}
 	{{ Location.FormattedHtmlAddress }}
 {% endif %}
 </div>
-{% if LinkedPages.GroupDetailPage != '' %}
-    <a class='btn btn-xs btn-action margin-r-sm' href='{{ LinkedPages.GroupDetailPage }}?GroupId={{ Group.Id }}'>View {{ Group.GroupType.GroupTerm }}</a>
+
+{% if LinkedPages.GroupDetailPage and LinkedPages.GroupDetailPage != '' %}
+    <a class='btn btn-xs btn-action margin-r-sm' href='|{{ LinkedPages.GroupDetailPage }}|?GroupId={{ Group.Id }}'>View {{ Group.GroupType.GroupTerm }}</a>
 {% endif %}
-{% if LinkedPages.RegisterPage != '' %}
+
+{% if LinkedPages.RegisterPage and LinkedPages.RegisterPage != '' %}
     {% if LinkedPages.RegisterPage contains '?' %}
         <a class='btn btn-xs btn-action' href='{{ LinkedPages.RegisterPage }}&GroupId={{ Group.Id }}'>Register</a>
     {% else %}
@@ -210,14 +215,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 BindAttributes();
                 BuildDynamicControls();
 
-                if ( _targetPersonGuid != Guid.Empty )
-                {
-                    ShowViewForPerson( _targetPersonGuid );
-                }
-                else
-                {
-                    ShowView();
-                }
                 if ( GetAttributeValue( "EnableCampusContext" ).AsBoolean() )
                 {
                     var campusEntityType = EntityTypeCache.Read( "Rock.Model.Campus" );
@@ -228,6 +225,16 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                         cblCampus.SetValue( contextCampus.Id.ToString() );
                     }
                 }
+
+                if ( _targetPersonGuid != Guid.Empty )
+                {
+                    ShowViewForPerson( _targetPersonGuid );
+                }
+                else
+                {
+                    ShowView();
+                }
+
                 if ( GetAttributeValue( "AutoSearch" ).AsBoolean() )
                 {
                     ShowResults();
@@ -507,7 +514,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     group.LoadAttributes();
                     foreach ( var attribute in group.Attributes )
                     {
-                        cblAttributes.Items.Add( new ListItem( attribute.Value.Name, attribute.Value.Guid.ToString() ) );
+                        if ( attribute.Value.FieldType.Field.HasFilterControl() )
+                        {
+                            cblAttributes.Items.Add( new ListItem( attribute.Value.Name, attribute.Value.Guid.ToString() ) );
+                        }
                         cblGridAttributes.Items.Add( new ListItem( attribute.Value.Name, attribute.Value.Guid.ToString() ) );
                     }
                 }
@@ -622,7 +632,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 if ( attributeGuid.HasValue )
                 {
                     var attribute = AttributeCache.Read( attributeGuid.Value );
-                    if ( attribute != null )
+                    if ( attribute != null && attribute.FieldType.Field.HasFilterControl() )
                     {
                         AttributeFilters.Add( attribute );
                     }
@@ -687,7 +697,10 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 foreach ( var attribute in AttributeFilters )
                 {
                     var control = attribute.FieldType.Field.FilterControl( attribute.QualifierValues, "filter_" + attribute.Id.ToString(), false, Rock.Reporting.FilterMode.SimpleFilter );
-                    AddFilterControl( control, attribute.Name, attribute.Description );
+                    if ( control != null )
+                    {
+                        AddFilterControl( control, attribute.Name, attribute.Description );
+                    }
                 }
             }
 
@@ -706,8 +719,8 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     {
                         AttributeField boundField = new AttributeField();
                         boundField.DataField = dataFieldExpression;
+                        boundField.AttributeId = attribute.Id;
                         boundField.HeaderText = attribute.Name;
-                        boundField.SortExpression = string.Empty;
 
                         var attributeCache = AttributeCache.Read( attribute.Id );
                         if ( attributeCache != null )
@@ -846,6 +859,21 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 {
                     groupQry = groupQry.Where( c => searchCampus == c.CampusId );
                 }
+            }
+
+            // This hides the groups that are at or over capacity by doing two things:
+            // 1) If the group has a GroupCapacity, check that we haven't met or exceeded that.
+            // 2) When someone registers for a group on the front-end website, they automatically get added with the group's default
+            //    GroupTypeRole. If that role exists and has a MaxCount, check that we haven't met or exceeded it yet.
+            if ( GetAttributeValue( "HideOvercapacityGroups" ).AsBoolean() )
+            {
+                groupQry = groupQry.Where( g => g.GroupCapacity == null || g.Members.Count() < g.GroupCapacity );
+
+                groupQry = groupQry.Where( g =>
+                     g.GroupType == null ||
+                     g.GroupType.DefaultGroupRole == null ||
+                     g.GroupType.DefaultGroupRole.MaxCount == null ||
+                     g.Members.Where( m => m.GroupRoleId == g.GroupType.DefaultGroupRole.Id ).Count() < g.GroupType.DefaultGroupRole.MaxCount );
             }
 
             // Filter query by any configured attribute filters
@@ -1249,6 +1277,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                             #map_wrapper {{
                                 height: {0}px;
                             }}
+
                             #map_canvas {{
                                 width: 100%;
                                 height: 100%;
@@ -1293,24 +1322,34 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
 
             // write script to page
             string mapScriptFormat = @"
+
         var locationData = {0};
         var fenceData = {1};
         var groupData = {2}; 
+
         var allMarkers = [];
+
         var map;
         var bounds = new google.maps.LatLngBounds();
         var infoWindow = new google.maps.InfoWindow();
+
         var mapStyle = {3};
+
         var pinShadow = new google.maps.MarkerImage('//chart.googleapis.com/chart?chst=d_map_pin_shadow',
             new google.maps.Size(40, 37),
             new google.maps.Point(0, 0),
             new google.maps.Point(12, 35));
+
         var polygonColorIndex = 0;
         var polygonColors = [{5}];
+
         var min = .999999;
         var max = 1.000001;
+
         initializeMap();
+
         function initializeMap() {{
+
             // Set default map options
             var mapOptions = {{
                  mapTypeId: 'roadmap'
@@ -1318,9 +1357,11 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 ,center: new google.maps.LatLng({7}, {8})
                 ,zoom: {9}
             }};
+
             // Display a map on the page
             map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
             map.setTilt(45);
+
             if ( locationData != null )
             {{
                 var items = addMapItem(0, locationData, '{4}');
@@ -1328,6 +1369,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     items[j].setMap(map);
                 }}
             }}
+
             if ( fenceData != null ) {{
                 for (var i = 0; i < fenceData.length; i++) {{
                     var items = addMapItem(i, fenceData[i] );
@@ -1336,6 +1378,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     }}
                 }}
             }}
+
             if ( groupData != null ) {{
                 for (var i = 0; i < groupData.length; i++) {{
                     var items = addMapItem(i, groupData[i], '{6}');
@@ -1344,24 +1387,34 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     }}
                 }}
             }}
+
             // adjust any markers that may overlap
             adjustOverlappedMarkers();
+
             if (!bounds.isEmpty()) {{
                 map.fitBounds(bounds);
             }}
+
         }}
+
         function addMapItem( i, mapItem, color ) {{
+
             var items = [];
+
             if (mapItem.Point) {{ 
+
                 var position = new google.maps.LatLng(mapItem.Point.Latitude, mapItem.Point.Longitude);
                 bounds.extend(position);
+
                 if (!color) {{
                     color = 'FE7569'
                 }}
+
                 var pinImage = new google.maps.MarkerImage('//chart.googleapis.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + color,
                     new google.maps.Size(21, 34),
                     new google.maps.Point(0,0),
                     new google.maps.Point(10, 34));
+
                 marker = new google.maps.Marker({{
                     position: position,
                     map: map,
@@ -1372,6 +1425,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
     
                 items.push(marker);
                 allMarkers.push(marker);
+
                 if ( mapItem.InfoWindow != null ) {{ 
                     google.maps.event.addListener(marker, 'click', (function (marker, i) {{
                         return function () {{
@@ -1380,40 +1434,52 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                         }}
                     }})(marker, i));
                 }}
+
                 if ( mapItem.EntityId && mapItem.EntityId > 0 ) {{ 
                     google.maps.event.addListener(marker, 'mouseover', (function (marker, i) {{
                         return function () {{
                             $(""tr[datakey='"" + mapItem.EntityId + ""']"").addClass('row-highlight');
                         }}
                     }})(marker, i));
+
                     google.maps.event.addListener(marker, 'mouseout', (function (marker, i) {{
                         return function () {{
                             $(""tr[datakey='"" + mapItem.EntityId + ""']"").removeClass('row-highlight');
                         }}
                     }})(marker, i));
+
                 }}
+
             }}
+
             if (typeof mapItem.PolygonPoints !== 'undefined' && mapItem.PolygonPoints.length > 0) {{
+
                 var polygon;
                 var polygonPoints = [];
+
                 $.each(mapItem.PolygonPoints, function(j, point) {{
                     var position = new google.maps.LatLng(point.Latitude, point.Longitude);
                     bounds.extend(position);
                     polygonPoints.push(position);
                 }});
+
                 var polygonColor = getNextPolygonColor();
+
                 polygon = new google.maps.Polygon({{
                     paths: polygonPoints,
                     map: map,
                     strokeColor: polygonColor,
                     fillColor: polygonColor
                 }});
+
                 items.push(polygon);
+
                 // Get Center
                 var polyBounds = new google.maps.LatLngBounds();
                 for ( j = 0; j < polygonPoints.length; j++) {{
                     polyBounds.extend(polygonPoints[j]);
                 }}
+
                 if ( mapItem.InfoWindow != null ) {{ 
                     google.maps.event.addListener(polygon, 'click', (function (polygon, i) {{
                         return function () {{
@@ -1424,7 +1490,9 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     }})(polygon, i));
                 }}
             }}
+
             return items;
+
         }}
         
         function setAllMap(markers, map) {{
@@ -1432,11 +1500,13 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 markers[i].setMap(map);
             }}
         }}
+
         function htmlDecode(input) {{
             var e = document.createElement('div');
             e.innerHTML = input;
             return e.childNodes.length === 0 ? """" : e.childNodes[0].nodeValue;
         }}
+
         function getNextPolygonColor() {{
             var color = 'FE7569';
             if ( polygonColors.length > polygonColorIndex ) {{
@@ -1448,6 +1518,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
             }}
             return color;
         }}
+
         function adjustOverlappedMarkers() {{
             
             if (allMarkers.length > 1) {{
@@ -1465,6 +1536,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     }}
                 }}
             }}
+
         }}
 ";
 

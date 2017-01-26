@@ -169,7 +169,7 @@ namespace RockWeb.Webhooks
             metricValue.YValue = attendance.AsDecimalOrNull();
             metricValue.Note = notes;
             metricValue.MetricValueDateTime = dt;
-            metricValue.EntityId = campusEntityId;
+//            metricValue.EntityId = campusEntityId;
 
             rockContext.SaveChanges();
             

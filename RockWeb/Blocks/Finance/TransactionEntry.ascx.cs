@@ -32,15 +32,15 @@ using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 using Rock.Communication;
 
-namespace RockWeb.Blocks.Finance
+namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 {
     #region Block Attributes
 
     /// <summary>
     /// Add a new one-time or scheduled transaction
     /// </summary>
-    [DisplayName( "Transaction Entry" )]
-    [Category( "Finance" )]
+    [DisplayName( "Customised Transaction Entry" )]
+    [Category( "Newpointe.org Finance" )]
     [Description( "Creates a new financial transaction or scheduled transaction." )]
     [FinancialGatewayField( "Credit Card Gateway", "The payment gateway to use for Credit Card transactions", false, "", "", 0, "CCGateway" )]
     [FinancialGatewayField( "ACH Gateway", "The payment gateway to use for ACH (bank account) transactions", false, "", "", 1, "ACHGateway" )]
@@ -86,10 +86,10 @@ namespace RockWeb.Blocks.Finance
 </div>
 ", "Text Options", 20 )]
     [TextField( "Success Title", "The text to display as heading of section for displaying details of gift.", false, "Gift Information", "Text Options", 21 )]
-    [CodeEditorField( "Success Header", "The text (HTML) to display at the top of the success section. <span class='tip tip-lava'></Fspan> <span class='tip tip-html'></span>",
+    [CodeEditorField( "Success Header", "The text (HTML) to display at the top of the success section. <span class='tip tip-lava'></span> <span class='tip tip-html'></span>",
         CodeEditorMode.Html, CodeEditorTheme.Rock, 200, true, @"
 <p>
-    Thank you for your generous contribution.  Your support is helping {{ OrganizationName }} actively
+    Thank you for your generous contribution.  Your support is helping {{ 'Global' | Attribute:'OrganizationName' }} actively
     achieve our mission.  We are so grateful for your commitment.
 </p>
 ", "Text Options", 22 )]
@@ -101,7 +101,45 @@ namespace RockWeb.Blocks.Finance
     [DefinedValueField( "8522BADD-2871-45A5-81DD-C76DA07E2E7E", "Record Status", "The record status to use for new individuals (default: 'Pending'.)", true, false, "283999EC-7346-42E3-B807-BCE9B2BABB49", "", 26 )]
 
     [SystemEmailField( "Receipt Email", "The system email to use to send the receipt.", false, "", "Email Templates", 27 )]
-    [TextField( "Payment Comment", "The comment to include with the payment transaction when sending to Gateway", false, "Online Contribution", "", 28 )]
+    [CodeEditorField( "Payment Comment", @"The comment to include with the payment transaction when sending to Gateway. <span class='tip tip-lava'></span>. Merge fields include: <pre>CurrentPerson: {},
+PageParameters {},
+TransactionDateTime: '8/29/2016',
+CurrencyType: {
+  'AttributeIds': [],
+  'IsSystem': true,
+  'DefinedTypeId': 10,
+  'Order': 2,
+  'Value': 'Credit Card',
+  'Description': 'Credit Card',
+  'TypeId': 31,
+  'TypeName': 'Rock.Model.DefinedValue',
+  'AttributeValues': {},
+  'Id': 156,
+  'Guid': '928a2e04-c77b-4282-888f-ec549cee026a',
+  'ForeignId': null,
+  'ForeignGuid': null,
+  'ForeignKey': null
+}
+TransactionAcountDetails: [
+  {
+    'Id': 1,
+    'Order': 0,
+    'Name': 'General Fund',
+    'CampusId': null,
+    'Amount': 50.00,
+    'PublicName': 'General Fund',
+    'AmountFormatted': '$50.00'
+  },
+  {
+    'Id': 2,
+    'Order': 1,
+    'Name': 'Building Fund',
+    'CampusId': null,
+    'Amount': 10.00,
+    'PublicName': 'Building Fund',
+    'AmountFormatted': '$10.00'
+  }
+]</pre>", CodeEditorMode.Lava, CodeEditorTheme.Rock, 100, false, "Online Contribution", "", 28 )]
     [BooleanField( "Enable Comment Entry", "Allows the guest to enter the the value that's put into the comment field (will be appended to the 'Payment Comment' setting)", false, "", 29 )]
     [TextField( "Comment Entry Label", "The label to use on the comment edit field (e.g. Trip Name to give to a specific trip).", false, "Comment", "", 30 )]
     #endregion
@@ -245,6 +283,15 @@ namespace RockWeb.Blocks.Finance
             lSuccessHeader.Text = GetAttributeValue( "SuccessHeader" ).ResolveMergeFields( configValues );
             lSuccessFooter.Text = GetAttributeValue( "SuccessFooter" ).ResolveMergeFields( configValues );
 
+            //Personal info panel
+            CollapsePersonData.Value = (
+                _targetPerson != null &&
+                _targetPerson.FirstName != null &&
+                _targetPerson.LastName != null &&
+                _targetPerson.Email != null &&
+                acAddress != null
+                ) ? "true" : "false";
+
             RegisterScript();
         }
 
@@ -282,6 +329,39 @@ namespace RockWeb.Blocks.Finance
 
             if ( !Page.IsPostBack )
             {
+
+                string prefill_pNumber = PageParameter( "pn" );
+                if ( !string.IsNullOrWhiteSpace( prefill_pNumber ) )
+                {
+                    pnbPhone.Text = prefill_pNumber;
+                }
+
+                int? prefill_frequency = PageParameter( "freq" ).AsIntegerOrNull();
+                if ( prefill_frequency.HasValue )
+                {
+                    btnFrequency.SetValue( PageParameter( "freq" ) );
+                }
+
+                DateTime startdate = PageParameter( "sdate" ).AsDateTime() ?? RockDateTime.Today;
+                if ( startdate < RockDateTime.Today )
+                {
+                    int fid = btnFrequency.SelectedValueAsInt() ?? -1;
+                    int freq =
+                        fid == 135 ? 30 :
+                        fid == 134 ? 15 :
+                        fid == 133 ? 15 :
+                        fid == 132 ? 7 :
+                        1;
+                    int adit = ( int ) Math.Ceiling( Math.Abs( ( startdate - RockDateTime.Today ).Days / ( double ) freq ) );
+                    startdate = startdate.AddDays( freq * adit );
+                }
+                dtpStartDate.SelectedDate = startdate;
+
+
+
+
+                hfTransactionGuid.Value = Guid.NewGuid().ToString();
+                
                 SetControlOptions();
 
                 SetPage( 1 );
@@ -302,7 +382,7 @@ namespace RockWeb.Blocks.Finance
                         if ( SelectedAccounts.Count > item.ItemIndex )
                         {
                             decimal amount = decimal.MinValue;
-                            if ( decimal.TryParse( accountAmount.Text, out amount ) )
+                            if ( decimal.TryParse( "0" + accountAmount.Text, out amount ) )
                             {
                                 SelectedAccounts[item.ItemIndex].Amount = amount;
                             }
@@ -519,7 +599,9 @@ namespace RockWeb.Blocks.Finance
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void btnConfirm_Click( object sender, EventArgs e )
         {
+            // They are hitting Confirm on the "Possible Duplicate" warning, so reset the TransactionCode and Transaction.Guid which would have preventing them from doing a duplicate
             TransactionCode = string.Empty;
+            hfTransactionGuid.Value = Guid.NewGuid().ToString();
 
             string errorMessage = string.Empty;
             if ( ProcessConfirmation( out errorMessage ) )
@@ -932,6 +1014,7 @@ namespace RockWeb.Blocks.Finance
                     {
                         rblSavedAccount.Items[0].Selected = true;
                     }
+                    CollapseCardData.Value = "true";
                 }
 
             }
@@ -1104,6 +1187,7 @@ namespace RockWeb.Blocks.Finance
                     }
                 }
             }
+            setupAccountList();
         }
 
         /// <summary>
@@ -1114,9 +1198,99 @@ namespace RockWeb.Blocks.Finance
             rptAccountList.DataSource = SelectedAccounts.ToList();
             rptAccountList.DataBind();
 
-            btnAddAccount.Visible = AvailableAccounts.Any();
-            btnAddAccount.DataSource = AvailableAccounts;
-            btnAddAccount.DataBind();
+            btnCamp.Visible = AvailableAccounts.Any();
+
+            List<Campus> camps = new List<Campus>();
+            foreach ( Campus camp in ( new CampusService( new RockContext() ) ).Queryable().Where( x => x.Id != 7 && x.Id != 8 ).SortBy( "Name" ) )
+            {
+                if ( AvailableAccounts.Select( y => y.CampusId ).Contains( camp.Id ) )
+                {
+                    camps.Add( camp );
+                }
+            }
+
+            btnCamp.DataSource = camps;
+            btnCamp.DataBind();
+
+            int campFilter = int.TryParse( btnCamp.SelectedValue, out campFilter ) ? campFilter : ( _targetPerson != null ? _targetPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1 );
+            btnCamp.SelectedValue = campFilter.ToString();
+
+            if ( !string.IsNullOrWhiteSpace( PageParameter( "act" ) ) && !IsPostBack )
+            {
+                btnCamp.ClearSelection();
+                //string spacing = string.Concat(Enumerable.Repeat("&nbsp;", 20));
+                btnCamp.Items.Insert( 0, "" );
+                btnCamp.SelectedValue = "";
+            }
+
+        }
+
+        private void setupAccountList()
+        {
+
+            var oldSelectedAccounts = SelectedAccounts.Where( x => x.Amount > 0 ).ToList();
+            SelectedAccounts.Clear();
+
+            string prefill_accounts = PageParameter( "act" );
+            string prefill_amounts = PageParameter( "amt" );
+
+            foreach ( var acct in oldSelectedAccounts )
+            {
+                if ( !SelectedAccounts.Exists( x => x.Id == acct.Id ) )
+                    SelectedAccounts.Add( acct );
+            }
+
+            if ( string.IsNullOrWhiteSpace( prefill_accounts ) || IsPostBack )
+            {
+                int campFilter = int.TryParse( btnCamp.SelectedValue, out campFilter ) ? campFilter : ( CurrentPerson != null ? CurrentPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1 );
+                var spAccnt = AvailableAccounts.Where( x => x.CampusId == 7 );
+                var avAccnt = AvailableAccounts.Where( x => x.CampusId == campFilter && x.CampusId != 7 );
+
+                foreach ( var acct in avAccnt )
+                {
+                    if ( !oldSelectedAccounts.Exists( x => x.Id == acct.Id ) )
+                        SelectedAccounts.Add( acct );
+                }
+                foreach ( var acct in spAccnt )
+                {
+                    if ( !oldSelectedAccounts.Exists( x => x.Id == acct.Id ) )
+                        SelectedAccounts.Add( acct );
+                }
+            }
+
+
+            if ( !string.IsNullOrWhiteSpace( prefill_accounts ) )
+            {
+                FinancialAccountService acctServ = new FinancialAccountService( new RockContext() );
+                string[] pAccounts = prefill_accounts.Split( ',' );
+                string[] pAmounts = prefill_amounts.Split( ',' );
+
+                for ( int i = 0; i < pAccounts.Count(); i++ )
+                {
+                    int? aId = pAccounts[i].AsIntegerOrNull();
+                    decimal amt = ( i < pAmounts.Count() ) ? pAmounts[i].AsDecimal() : 0;
+                    if ( aId.HasValue )
+                    {
+                        AccountItem acct = AvailableAccounts.Where( x => x.Id == aId.Value ).FirstOrDefault();
+                        if ( acct != null )
+                        {
+                            acct.Amount = amt;
+                            if ( !IsPostBack )
+                            {
+                                SelectedAccounts.RemoveAll( x => x.Id == acct.Id );
+                                SelectedAccounts.Add( acct );
+                            }
+                            else
+                            {
+                                if ( !SelectedAccounts.Exists( x => x.Id == acct.Id ) )
+                                    SelectedAccounts.Add( acct );
+                            }
+                        }
+                    }
+                }
+            }
+
+            lblTotalAmount.Text = SelectedAccounts.Sum( f => f.Amount ).ToString( "F2" );
         }
 
         /// <summary>
@@ -1621,6 +1795,8 @@ namespace RockWeb.Blocks.Finance
             var rockContext = new RockContext();
             if ( string.IsNullOrWhiteSpace( TransactionCode ) )
             {
+                var transactionGuid = hfTransactionGuid.Value.AsGuid();
+                
                 bool isACHTxn = hfPaymentTab.Value == "ACH";
                 var financialGateway = isACHTxn ? _achGateway : _ccGateway;
                 var gateway = isACHTxn ? _achGatewayComponent : _ccGatewayComponent;
@@ -1656,22 +1832,44 @@ namespace RockWeb.Blocks.Finance
                 {
                     schedule.PersonId = person.Id;
 
+                    var scheduledTransactionAlreadyExists = new FinancialScheduledTransactionService( rockContext ).Queryable().FirstOrDefault( a => a.Guid == transactionGuid );
+                    if ( scheduledTransactionAlreadyExists != null )
+                    {
+                        // hopefully shouldn't happen, but just in case the scheduledtransaction already went thru, show the success screen
+                        ShowSuccess( gateway, person, paymentInfo, schedule, scheduledTransactionAlreadyExists.FinancialPaymentDetail, rockContext );
+                        return true;
+                    }
+
                     var scheduledTransaction = gateway.AddScheduledPayment( financialGateway, schedule, paymentInfo, out errorMessage );
                     if ( scheduledTransaction == null )
                     {
                         return false;
                     }
 
+                    // manually assign the Guid that we generated at the beginning of the transaction UI entry to help make duplicate scheduled transactions impossible
+                    scheduledTransaction.Guid = transactionGuid;
+
                     SaveScheduledTransaction( financialGateway, gateway, person, paymentInfo, schedule, scheduledTransaction, rockContext );
                     paymentDetail = scheduledTransaction.FinancialPaymentDetail.Clone( false );
                 }
                 else
                 {
+                    var transactionAlreadyExists = new FinancialTransactionService( rockContext ).Queryable().FirstOrDefault( a => a.Guid == transactionGuid );
+                    if ( transactionAlreadyExists != null )
+                    {
+                        // hopefully shouldn't happen, but just in case the transaction already went thru, show the success screen
+                        ShowSuccess( gateway, person, paymentInfo, null, transactionAlreadyExists.FinancialPaymentDetail, rockContext );
+                        return true;
+                    }
+
                     var transaction = gateway.Charge( financialGateway, paymentInfo, out errorMessage );
                     if ( transaction == null )
                     {
                         return false;
                     }
+
+                    // manually assign the Guid that we generated at the beginning of the transaction UI entry to help make duplicate transactions impossible
+                    transaction.Guid = transactionGuid;
 
                     SaveTransaction( financialGateway, gateway, person, paymentInfo, transaction, rockContext );
                     paymentDetail = transaction.FinancialPaymentDetail.Clone( false );
@@ -1693,7 +1891,10 @@ namespace RockWeb.Blocks.Finance
         private bool ProcessStep3( string resultQueryString, out string errorMessage )
         {
             var rockContext = new RockContext();
+            
 
+            var transactionGuid = hfTransactionGuid.Value.AsGuid();
+            
             bool isACHTxn = hfPaymentTab.Value == "ACH";
             var financialGateway = isACHTxn ? _achGateway : _ccGateway;
             var gateway = ( isACHTxn ? _achGatewayComponent : _ccGatewayComponent ) as ThreeStepGatewayComponent;
@@ -1743,6 +1944,15 @@ namespace RockWeb.Blocks.Finance
                 paymentInfo.Comment1 = GetAttributeValue( "PaymentComment" );
             }
 
+            var transactionAlreadyExists = new FinancialTransactionService( rockContext ).Queryable().FirstOrDefault( a => a.Guid == transactionGuid );
+            if ( transactionAlreadyExists != null )
+            {
+                // hopefully shouldn't happen, but just in case the transaction already went thru, show the success screen
+                ShowSuccess( gateway, person, paymentInfo, null, transactionAlreadyExists.FinancialPaymentDetail, rockContext );
+                errorMessage = string.Empty;
+                return true;
+            }
+
             PaymentSchedule schedule = GetSchedule();
             FinancialPaymentDetail paymentDetail = null;
             if ( schedule != null )
@@ -1763,6 +1973,9 @@ namespace RockWeb.Blocks.Finance
                 {
                     return false;
                 }
+
+                // manually assign the Guid that we generated at the beginning of the transaction UI entry to help make duplicate transactions impossible
+                transaction.Guid = transactionGuid;
 
                 paymentDetail = transaction.FinancialPaymentDetail.Clone( false );
                 SaveTransaction( financialGateway, gateway, person, paymentInfo, transaction, rockContext );
@@ -1794,13 +2007,28 @@ namespace RockWeb.Blocks.Finance
                 CreditCardTypeValueId = paymentInfo.CreditCardTypeValue.Id;
             }
 
+            // get the payment comment 
+            var mergeFields = Rock.Lava.LavaHelper.GetCommonMergeFields( this.RockPage, this.CurrentPerson );
+            mergeFields.Add( "TransactionDateTime", RockDateTime.Now );
+
+            if ( paymentInfo != null )
+            {
+                mergeFields.Add( "CurrencyType", paymentInfo.CurrencyTypeValue );
+            }
+            if ( SelectedAccounts != null )
+            {
+                mergeFields.Add( "TransactionAccountDetails", SelectedAccounts.Where( a => a.Amount != 0 ).ToList() );
+            }
+
+            string paymentComment = GetAttributeValue( "PaymentComment" ).ResolveMergeFields( mergeFields );
+
             if ( GetAttributeValue( "EnableCommentEntry" ).AsBoolean() )
             {
-                paymentInfo.Comment1 = !string.IsNullOrWhiteSpace( GetAttributeValue( "PaymentComment" ) ) ? string.Format( "{0}: {1}", GetAttributeValue( "PaymentComment" ), txtCommentEntry.Text ) : txtCommentEntry.Text;
+                paymentInfo.Comment1 = !string.IsNullOrWhiteSpace( paymentComment ) ? string.Format( "{0}: {1}", paymentComment, txtCommentEntry.Text ) : txtCommentEntry.Text;
             }
             else
             {
-                paymentInfo.Comment1 = GetAttributeValue( "PaymentComment" );
+                paymentInfo.Comment1 = paymentComment;
             }
 
             errorMessage = string.Empty;
@@ -2023,22 +2251,38 @@ namespace RockWeb.Blocks.Finance
                 // If current person does not have a login, have them create a username and password
                 phCreateLogin.Visible = !new UserLoginService( rockContext ).GetByPersonId( person.Id ).Any();
             }
+            else if ( !new UserLoginService( rockContext ).GetByPersonId( person.Id ).Any() )
+            {
+                pnlSaveAccount.Visible = true;
+                phCreateLogin.Visible = true;
+                cbSaveAccount.Visible = false;
+                txtSaveAccount.Visible = false;
+            }
             else
             {
                 pnlSaveAccount.Visible = false;
             }
+
+
+
+            if ( PageParameter( "argsd" ) == "1" )
+            {
+                person.SetAttributeValue( "AutomatedRecurringGiftSetupDate", DateTime.Now.ToString( "o" ) );
+                person.SaveAttributeValues();
+            }
+
         }
 
 
         private void SendReceipt( int transactionId )
         {
-            Guid? recieptEmail = GetAttributeValue( "ReceiptEmail" ).AsGuidOrNull();
-            if ( recieptEmail.HasValue )
+            Guid? receiptEmail = GetAttributeValue( "ReceiptEmail" ).AsGuidOrNull();
+            if ( receiptEmail.HasValue )
             {
-                // Queue a transaction to send reciepts
+                // Queue a transaction to send receipts
                 var newTransactionIds = new List<int> { transactionId };
-                var sendPaymentRecieptsTxn = new Rock.Transactions.SendPaymentReciepts( recieptEmail.Value, newTransactionIds );
-                Rock.Transactions.RockQueue.TransactionQueue.Enqueue( sendPaymentRecieptsTxn );
+                var sendPaymentReceiptsTxn = new Rock.Transactions.SendPaymentReceipts( receiptEmail.Value, newTransactionIds );
+                Rock.Transactions.RockQueue.TransactionQueue.Enqueue( sendPaymentReceiptsTxn );
             }
         }
 
@@ -2163,6 +2407,7 @@ namespace RockWeb.Blocks.Finance
             else if ($(this).val() != 0 && radioDisplay != 'none') {{
                 $content.slideToggle();
             }}
+            $('.contribution-payment .currentSetting').text($(this).parent().text());
         }});
 
         // Hide or show a div based on selection of checkbox
@@ -2185,11 +2430,13 @@ namespace RockWeb.Blocks.Finance
 			    }});
             }}
         }});
+
+        onASPReload && onASPReload();
     }});
 
     // sets the scroll position to the top of the page after partial postbacks
     // without this the scroll position is the bottom of the page.
-    setTimeout('window.scrollTo(0,0)',0);
+    // setTimeout('window.scrollTo(0,0)',0);
 
     // Posts the iframe (step 2)
     $('#aStep2Submit').on('click', function(e) {{
@@ -2310,7 +2557,8 @@ namespace RockWeb.Blocks.Finance
         /// Lightweight object for each contribution item
         /// </summary>
         [Serializable]
-        protected class AccountItem
+        [DotLiquid.LiquidType("Id", "Order", "Name", "CampusId", "Amount", "PublicName", "AmountFormatted")]
+        protected class AccountItem 
         {
             public int Id { get; set; }
 
@@ -2346,5 +2594,10 @@ namespace RockWeb.Blocks.Finance
 
         #endregion
 
+        protected void btnCamp_SelectionChanged( object sender, EventArgs e )
+        {
+            setupAccountList();
+            BindAccounts();
+        }
     }
 }

@@ -1,9 +1,10 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupRegistration.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupRegistration" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupRegistration.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupRegistration" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
 
         <Rock:NotificationBox ID="nbNotice" runat="server" Visible="false" NotificationBoxType="Danger"/>
+        <Rock:NotificationBox ID="nbWarning" runat="server" Visible="false" NotificationBoxType="Warning" />
 
         <asp:Panel ID="pnlView" runat="server">
 

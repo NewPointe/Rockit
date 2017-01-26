@@ -1,11 +1,11 @@
 ﻿// <copyright>
-// Copyright 2013 by the Spark Development Network
+// Copyright by the Spark Development Network
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Rock Community License (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+// http://www.rockrms.com/license
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,16 +17,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+
 using Rock;
 using Rock.Data;
 using Rock.Model;
 using Rock.Web.Cache;
-using Rock.Web.UI.Controls;
 using Rock.Attribute;
 
 namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
@@ -41,17 +40,6 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
     [TextField("Account Label", "The label to use to describe accounts.", true, "Accounts", "", 2)]
     public partial class TransactionReport : Rock.Web.UI.RockBlock
     {
-        #region Fields
-
-        // used for private variables
-
-        #endregion
-
-        #region Properties
-
-        // used for public / protected properties
-
-        #endregion
 
         #region Base Control Methods
 
@@ -68,10 +56,13 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             // this event gets fired after block settings are updated. it's nice to repaint the screen if these settings would alter it
             this.BlockUpdated += Block_BlockUpdated;
             this.AddConfigurationUpdateTrigger( upnlContent );
+            cblAccounts.Label = GetAttributeValue( "AccountLabel" );
             gTransactions.DataKeyNames = new string[] { "Id" };
             gTransactions.RowItemText = GetAttributeValue( "TransactionLabel" );
             gTransactions.EmptyDataText = string.Format( "No {0} found with the provided criteria.", GetAttributeValue( "TransactionLabel" ).ToLower() );
             gTransactions.GridRebind += gTransactions_GridRebind;
+
+            gTransactions.Actions.ShowMergeTemplate = false;
         }
 
         /// <summary>
@@ -87,6 +78,9 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
                 // set default date range
                 drpFilterDates.LowerValue = new DateTime( DateTime.Now.Year, 1, 1 );
                 drpFilterDates.UpperValue = DateTime.Now;
+
+                // load account list
+                LoadAccounts();
 
                 BindGrid();
             }
@@ -105,7 +99,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void Block_BlockUpdated( object sender, EventArgs e )
         {
-
+            //
         }
 
         /// <summary>
@@ -132,6 +126,48 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
 
         #region Methods
 
+        /// <summary>
+        /// Loads the accounts.
+        /// </summary>
+        private void LoadAccounts()
+        {
+            var rockContext = new RockContext();
+            FinancialAccountService accountService = new FinancialAccountService( rockContext );
+
+            List<Guid> selectedAccounts = new List<Guid>();
+
+            if ( !string.IsNullOrWhiteSpace( GetAttributeValue( "Accounts" ) ) )
+            {
+                selectedAccounts = GetAttributeValue( "Accounts" ).Split( ',' ).AsGuidList();
+            }
+
+            var accountList = accountService.Queryable()
+                                .Where( a => selectedAccounts.Contains( a.Guid ) )
+                                .OrderBy( a => a.Order )
+                                .Select( a => new
+                                {
+                                    a.Id,
+                                    a.PublicName
+                                } ).ToList();
+
+            if ( accountList.Any() )
+            {
+                foreach ( var account in accountList )
+                {
+                    ListItem checkbox = new ListItem( account.PublicName, account.Id.ToString(), true );
+                    checkbox.Selected = true;
+
+                    cblAccounts.Items.Add( checkbox );
+                }
+            }
+            else
+            {
+                cblAccounts.Items.Clear();
+            }
+
+            // only show Account Checkbox list if there are accounts are configured for the block
+            cblAccounts.Visible = accountList.Any();
+        }
 
         /// <summary>
         /// Binds the grid.
@@ -140,16 +176,26 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
         {
             RockContext rockContext = new RockContext();
             FinancialTransactionService transService = new FinancialTransactionService( rockContext );
-
+            var qry = transService.Queryable( "TransactionDetails.Account,FinancialPaymentDetail" );
 
             string currentPersonGivingId = CurrentPerson.GivingId;
 
-            var qry = transService.Queryable( "TransactionDetails.Account,FinancialPaymentDetail" )
-                        .Where( t =>
+            qry = qry.Where( t =>
                             t.TransactionDetails.Any(d => d.AccountId != 263) &&
                             t.AuthorizedPersonAlias != null &&
                             t.AuthorizedPersonAlias.Person != null &&
                             t.AuthorizedPersonAlias.Person.GivingId == currentPersonGivingId );
+
+
+            // if the Account Checkboxlist is visible, filter to what was selected.  Otherwise, show all the accounts that the person contributed to
+            if ( cblAccounts.Visible )
+            {
+                // get list of selected accounts
+                List<int> selectedAccountIds = cblAccounts.Items.Cast<ListItem>()
+                                                .Where( i => i.Selected == true )
+                                                .Select( i => int.Parse( i.Value ) ).ToList();
+                qry = qry.Where( t => t.TransactionDetails.Any( d => selectedAccountIds.Contains( d.AccountId ) ) );
+            }
 
             if (drpFilterDates.LowerValue.HasValue) {
                 qry = qry.Where(t => t.TransactionDateTime.Value >= drpFilterDates.LowerValue.Value);
@@ -158,8 +204,18 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
             if ( drpFilterDates.UpperValue.HasValue )
             {
                 var lastDate = drpFilterDates.UpperValue.Value.AddDays( 1 ); // add one day to ensure we get all transactions till midnight
-                qry = qry.Where( t => t.TransactionDateTime.Value < lastDate ); 
+                qry = qry.Where( t => t.TransactionDateTime.Value < lastDate );
             }
+
+            // Transaction Types
+            var transactionTypeValueIdList = GetAttributeValue( "TransactionTypes" ).SplitDelimitedValues().AsGuidList().Select( a => DefinedValueCache.Read( a ) ).Where( a => a != null ).Select( a => a.Id ).ToList();
+
+            if ( transactionTypeValueIdList.Any() )
+            {
+                qry = qry.Where( t => transactionTypeValueIdList.Contains( t.TransactionTypeValueId ) );
+            }
+
+            qry = qry.OrderByDescending( a => a.TransactionDateTime );
 
             var txns = qry.ToList();
 

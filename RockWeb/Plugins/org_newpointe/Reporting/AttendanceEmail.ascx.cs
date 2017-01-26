@@ -194,7 +194,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
               int year = theDate.Year;
                       
                       //add data to dictionary
-                      if (!dictionary.ContainsKey(metricsvar.EntityId.ToString() + year.ToString()))
+/*                      if (!dictionary.ContainsKey(metricsvar.EntityId.ToString() + year.ToString()))
                       {
                           dictionary.Add(metricsvar.EntityId.ToString() + year.ToString(), metricsvar.YValue ?? 0);
                       }
@@ -207,7 +207,7 @@ public partial class AttendanceEmail : Rock.Web.UI.RockBlock
                       if (metricsvar.EntityId != 8) {
                       dictionary["ORG" + year.ToString()] += metricsvar.YValue ?? 0 ;
                       }
-
+                      */
           }
 
           //find the percent increase/decrease

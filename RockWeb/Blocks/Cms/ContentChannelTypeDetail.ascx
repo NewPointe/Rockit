@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ContentChannelTypeDetail.ascx.cs" Inherits="RockWeb.Blocks.Cms.ContentChannelTypeDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ContentChannelTypeDetail.ascx.cs" Inherits="RockWeb.Blocks.Cms.ContentChannelTypeDetail" %>
 
 <script type="text/javascript">
     function clearActiveDialog() {
@@ -18,7 +18,7 @@
                     <asp:Literal ID="lTitle" runat="server" />
                 </h1>
             </div>
-
+            <Rock:PanelDrawer ID="pdAuditDetails" runat="server"></Rock:PanelDrawer>
             <div class="panel-body">
 
                 <Rock:NotificationBox ID="nbWarningMessage" runat="server" NotificationBoxType="Warning" />
@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-xs-3">
+                            <div class="col-xs-6">
                                 <Rock:RockDropDownList ID="ddlDateRangeType" runat="server" Label="Date Range Type" />
                             </div>
                             <div class="col-xs-6">

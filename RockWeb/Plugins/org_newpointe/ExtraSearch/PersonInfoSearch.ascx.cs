@@ -310,7 +310,7 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
                 {
                     if ( !search.Contains( '@' ) && Regex.Matches( search, @"[0-9]" ).Count == 0 )
                     {
-                        var similiarNames = personService.GetSimiliarNames( term,
+                        var similiarNames = personService.GetSimilarNames( term,
                             personList.Select( p => p.Id ).ToList(), true );
                         if ( similiarNames.Any() )
                         {

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttributeCategories.ascx.cs" Inherits="RockWeb.Blocks.Core.AttributeCategories" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AttributeCategories.ascx.cs" Inherits="RockWeb.Blocks.Core.AttributeCategories" %>
 
 <asp:UpdatePanel ID="upPanel" runat="server">
     <ContentTemplate>
@@ -34,8 +34,6 @@
 
                 </div>
             </div>
-
-            
 
         </asp:Panel>
 

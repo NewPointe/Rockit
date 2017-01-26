@@ -978,7 +978,7 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
             {
                 InactiveFollowupColor = "success";
             }
-
+            
         }
     }
 }

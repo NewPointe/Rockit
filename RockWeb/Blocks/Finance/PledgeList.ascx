@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PledgeList.ascx.cs" Inherits="RockWeb.Blocks.Finance.PledgeList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PledgeList.ascx.cs" Inherits="RockWeb.Blocks.Finance.PledgeList" %>
 
 <asp:UpdatePanel ID="upPanel" runat="server">
     <ContentTemplate>
@@ -20,7 +20,8 @@
                     <Rock:Grid ID="gPledges" runat="server" AutoGenerateColumns="False" AllowSorting="True" AllowPaging="True" OnRowSelected="gPledges_Edit">
                         <Columns>
                             <Rock:RockBoundField DataField="PersonAlias.Person" HeaderText="Person" SortExpression="PersonAlias.Person.LastName,PersonAlias.Person.NickName"/>
-                            <Rock:RockBoundField DataField="Account" HeaderText="Account" SortExpression="AccountId"/>
+                            <Rock:RockBoundField DataField="Group.Name" HeaderText="For" SortExpression="Group.Name"/>
+                            <Rock:RockBoundField DataField="Account.Name" HeaderText="Account" SortExpression="Account.Name"/>
                             <Rock:CurrencyField DataField="TotalAmount" HeaderText="Total Amount" SortExpression="TotalAmount" />
                             <Rock:RockBoundField DataField="PledgeFrequencyValue" HeaderText="Payment Schedule" SortExpression="PledgeFrequencyValue" />
                             <Rock:DateField DataField="StartDate" HeaderText="Starts" SortExpression="StartDate"/>

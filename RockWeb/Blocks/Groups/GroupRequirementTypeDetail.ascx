@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupRequirementTypeDetail.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupRequirementTypeDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupRequirementTypeDetail.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupRequirementTypeDetail" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -15,6 +15,7 @@
                     
                 </div>
             </div>
+            <Rock:PanelDrawer ID="pdAuditDetails" runat="server"></Rock:PanelDrawer>
             <div class="panel-body">
 
                 <asp:ValidationSummary ID="ValidationSummary1" runat="server" HeaderText="Please Correct the Following" CssClass="alert alert-danger" />

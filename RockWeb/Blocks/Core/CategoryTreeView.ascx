@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="CategoryTreeView.ascx.cs" Inherits="RockWeb.Blocks.Core.CategoryTreeView" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="CategoryTreeView.ascx.cs" Inherits="RockWeb.Blocks.Core.CategoryTreeView" %>
 
 <asp:UpdatePanel ID="upCategoryTree" runat="server" UpdateMode="Conditional" ChildrenAsTriggers="false">
     <ContentTemplate>
@@ -143,7 +143,7 @@
                             else {
                                 var detailPageUrl = $('#<%=hfDetailPageUrl.ClientID%>').val();
                                 if (detailPageUrl) {
-                                    locationUrl = Rock.settings.get('baseUrl') + detailPageUrl + itemSearch;
+                                    locationUrl = detailPageUrl + itemSearch;
                                 }
                                 else {
                                     locationUrl = window.location.href.split('?')[0] + itemSearch;
