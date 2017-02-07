@@ -1,26 +1,60 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="Rock.Web.UI.RockMasterPage" %>
+
 <%@ Import Namespace="System.Web.Optimization" %>
 <!DOCTYPE html>
 
 <html class="no-js">
 <head runat="server">
 
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <!-- set character encoding for the document -->
     <meta charset="utf-8">
 
+    <!-- Disable scaling/pinch-to-zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no">
+
+    <!-- Allows control over where resources are loaded from -->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'">-->
+
+    <!-- Name of web application (only should be used if the website is used as an app) -->
+    <meta name="application-name" content="New Family Check-In">
+
+    <!-- Short description of the page (limit to 150 characters) -->
+    <meta name="description" content="New Family Check-In for NewPointe Community Church">
+
+    <!-- Control the behavior of search engine crawling and indexing -->
+    <meta name="robots" content="noindex,nofollow,noodp">
+
+    <!-- Tells Google not to show the sitelinks search box -->
+    <meta name="google" content="nositelinkssearchbox">
+
+    <!-- Tells Google not to provide a translation for this page -->
+    <meta name="google" content="notranslate">
+
+    <!-- Used to name software used to build the website (i.e. - WordPress, Dreamweaver) -->
+    <meta name="generator" content="RockRMS">
+
+    <!-- Allows control over how referrer information is passed -->
+    <meta name="referrer" content="no-referrer">
+
+    <!-- Disable automatic detection and formatting of possible phone numbers -->
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Apple Add to Home Screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="New Family Check-In">
+
+    <!-- Android Add to Home Screen -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <meta name="theme-color" content="#404040">
+
     <title></title>
-    
-    <script src="<%# ResolveRockUrl("~/Scripts/modernizr.js", true) %>" ></script>
-    <script src="<%# ResolveRockUrl("~/Scripts/jquery-1.10.2.min.js", true) %>"></script>
-    <script src="<%# ResolveRockUrl("~/Scripts/fastclick.js", true) %>" ></script>
+
+    <link rel="stylesheet" href="<%# ResolveRockUrl("~~/Styles/bootstrap.css", true) %>" />
+    <link rel="stylesheet" href="<%# ResolveRockUrl("~~/Styles/theme.css", true) %>" />
 
     <asp:ContentPlaceHolder ID="css" runat="server" />
-    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
-
-    <link rel="stylesheet" href="<%# ResolveRockUrl("~~/Styles/bootstrap.css", true) %>"/>
-    <link rel="stylesheet" href="<%# ResolveRockUrl("~~/Styles/theme.css", true) %>"/>
 
     <!-- Icons -->
     <link rel="shortcut icon" href="<%# ResolveRockUrl("~/Assets/Icons/favicon.ico", true) %>">
@@ -29,21 +63,29 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<%# ResolveRockUrl("~/Assets/Icons/touch-icon-ipad.png", true) %>">
     <link rel="apple-touch-icon-precomposed" href="<%# ResolveRockUrl("~/Assets/Icons/touch-icon-iphone.png", true) %>">
 
+    <script src="<%# ResolveRockUrl("~/Scripts/modernizr.js", true) %>"></script>
+    <script src="<%# ResolveRockUrl("~/Scripts/jquery-1.10.2.min.js", true) %>"></script>
+    <script src="<%# ResolveRockUrl("~/Scripts/fastclick.js", true) %>"></script>
+
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+
 </head>
 <body style="display: none;">
     <form id="form1" runat="server">
-            
+
         <asp:ContentPlaceHolder ID="main" runat="server"></asp:ContentPlaceHolder>
-            
+
     </form>
 
     <script>
-        window.addEventListener('load', function () {
+        window.addEventListener('load', function ()
+        {
             new FastClick(document.body);
         }, false);
 
         // add quick fade-in effect to the page
-        $(document).ready(function () {
+        $(document).ready(function ()
+        {
             $("body").rockFadeIn();
         });
     </script>

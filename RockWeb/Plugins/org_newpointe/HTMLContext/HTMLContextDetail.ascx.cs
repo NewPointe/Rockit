@@ -140,7 +140,7 @@ namespace RockWeb.Plugins.org_newpointe.HTMLContext
             if ( hc != null )
             {
                 var oldBlockId = hc.BlockId;
-                hc.BlockId = rtbBlockId.Text.AsInteger();
+                hc.BlockId = rtbBlockId.Text.AsIntegerOrNull() ?? BlockId;
                 var oldEntityValue = hc.EntityValue;
                 hc.EntityValue = rtbContextParameter.Text + ( String.IsNullOrWhiteSpace( rtbContextName.Text ) ? "" : ( "&ContextName=" + rtbContextName.Text ) );
                 hc.Version = rtbVersion.Text.AsInteger();
@@ -179,8 +179,8 @@ namespace RockWeb.Plugins.org_newpointe.HTMLContext
         protected void lbSaveAs_Click( object sender, EventArgs e )
         {
             var hc = new HtmlContent();
-            hc.BlockId = rtbBlockId.Text.AsInteger();
-            hc.EntityValue = rtbContextParameter.Text + ( String.IsNullOrWhiteSpace( rtbContextName.Text ) ? "" : ( "&ContextName=" + rtbContextName.Text ) );
+            hc.BlockId = rtbBlockId.Text.AsIntegerOrNull() ?? BlockId;
+            hc.EntityValue = rtbContextParameter.Text + ( string.IsNullOrWhiteSpace( rtbContextName.Text ) ? "" : ( "&ContextName=" + rtbContextName.Text ) );
             hc.Version = rtbVersion.Text.AsInteger();
             hc.StartDateTime = dtpStartTime.SelectedDateTime;
             hc.ExpireDateTime = dtpExpire.SelectedDateTime;

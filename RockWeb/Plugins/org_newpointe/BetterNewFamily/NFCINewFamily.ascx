@@ -50,15 +50,14 @@
                                         </td>
                                         <td><Rock:DatePicker runat="server" ID="dpBirthdate"></Rock:DatePicker></td>
                                         <td><Rock:GradePicker runat="server" ID="gpGrade" Required="true" Label="" RequiredErrorMessage="Grade is Required for all Children"></Rock:GradePicker></td>
-                                        <td><asp:LinkButton ID="lbDelete" runat="server" Text='<i class="fa fa-times"></i>' CssClass="btn btn-danger" CommandName="Delete" CausesValidation="false"></asp:LinkButton></td>
+                                        <td><asp:LinkButton ID="lbDelete" runat="server" Text='<i class="fa fa-times"></i>' CssClass="btn btn-danger pull-right" CommandName="Delete" CausesValidation="false"></asp:LinkButton></td>
                                     </tr>
                                 </ItemTemplate>
                             </asp:Repeater>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5"></td>
-                                <td><asp:LinkButton runat="server" ID="lbAddKid" Text='<i class="fa fa-plus"></i>' CssClass="btn btn-success" OnClick="lbAddKid_Click" CausesValidation="false" /></td>
+                                <td colspan="6" class="text-right"><asp:LinkButton runat="server" ID="lbAddKid" Text='<i class="fa fa-plus"></i>' CssClass="btn btn-success" OnClick="lbAddKid_Click" CausesValidation="false" /></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -91,11 +90,11 @@
                     </table>
                 
                 </asp:Panel>
-
+                <hr />
                 <div class="actions">
                     <asp:LinkButton runat="server" ID="lbBack" CssClass="btn btn-default" Text="Back" OnClick="lbBack_Click"></asp:LinkButton>
-                    <asp:LinkButton runat="server" ID="lbNext" CssClass="btn btn-primary" Text="Next" OnClick="lbNext_Click"></asp:LinkButton>
-                    <asp:LinkButton runat="server" ID="lbSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="lbSubmit_Click"></asp:LinkButton>
+                    <asp:LinkButton runat="server" ID="lbNext" CssClass="btn btn-primary pull-right" Text="Next" OnClick="lbNext_Click"></asp:LinkButton>
+                    <asp:LinkButton runat="server" ID="lbSubmit" CssClass="btn btn-primary pull-right" Text="Submit" OnClick="lbSubmit_Click"></asp:LinkButton>
                 </div>
             
             </div>

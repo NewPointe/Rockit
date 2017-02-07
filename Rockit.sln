@@ -6,7 +6,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb", "RockWeb\", "{223
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.1"
-		ProjectReferences = "{496ec024-71ed-4ad1-b677-2a3fa60ccd05}|org.newpointe.ServiceUCalendar.dll;{1018d6f2-dd34-4aa6-a22b-2c5f5c339cc8}|org.newpointe.Giving.dll;{3fe48220-bb2b-4796-91c4-02ede591aa91}|org.newpointe.WorkflowEntities.dll;{b56f8c96-c5b6-4f7e-8b0d-7c6fc930fea2}|org.newpointe.ProtectMyMinistry.dll;{054e242b-9622-4c7a-ad13-657940bec32b}|org.newpointe.PrivateChat.dll;{e202cf81-6268-4aa1-9f50-d69d36833b40}|org.newpointe.LiveService.dll;{614438b1-0d2b-4940-bb5a-64160945a270}|org.newpointe.ExpiredCards.dll;{a3e1f519-ddc7-4a2a-bb76-3009d021b31b}|org.newpointe.Stars.dll;{0d48339e-1cef-4363-bf90-cd8ba1cc61f1}|org.newpointe.ExtraSearch.dll;"
+		ProjectReferences = "{496ec024-71ed-4ad1-b677-2a3fa60ccd05}|org.newpointe.ServiceUCalendar.dll;{3fe48220-bb2b-4796-91c4-02ede591aa91}|org.newpointe.WorkflowEntities.dll;{b56f8c96-c5b6-4f7e-8b0d-7c6fc930fea2}|org.newpointe.ProtectMyMinistry.dll;{054e242b-9622-4c7a-ad13-657940bec32b}|org.newpointe.PrivateChat.dll;{a3e1f519-ddc7-4a2a-bb76-3009d021b31b}|org.newpointe.Stars.dll;{0d48339e-1cef-4363-bf90-cd8ba1cc61f1}|org.newpointe.ExtraSearch.dll;{844ca612-5a67-4b9c-8e55-2c574456cc18}|org.newpointe.MetricsWorkflowActions.dll;{5084ec22-2e98-4405-8ec8-b3dec657b2c4}|org.newpointe.ExtraJobs.dll;{48035437-0ad8-4428-8df9-9401ad96178a}|org.newpointe.ExtraActions.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_50345"
 		Debug.AspNetCompiler.PhysicalPath = "RockWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_50345\"
@@ -28,12 +28,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb", "RockWeb\", "{223
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ServiceUCalendar", "org.newpointe.ServiceUCalendar\org.newpointe.ServiceUCalendar.csproj", "{496EC024-71ED-4AD1-B677-2A3FA60CCD05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.Giving", "org.newpointe.Giving\org.newpointe.Giving.csproj", "{1018D6F2-DD34-4AA6-A22B-2C5F5C339CC8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.LiveService", "org.newpointe.LiveService\org.newpointe.LiveService.csproj", "{E202CF81-6268-4AA1-9F50-D69D36833B40}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ExpiredCards", "org.newpointe.ExpiredCards\org.newpointe.ExpiredCards.csproj", "{614438B1-0D2B-4940-BB5A-64160945A270}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.WorkflowEntities", "org.newpointe.WorkflowEntities\org.newpointe.WorkflowEntities.csproj", "{3FE48220-BB2B-4796-91C4-02EDE591AA91}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ProtectMyMinistry", "org.newpointe.ProtectMyMinistry\org.newpointe.ProtectMyMinistry.csproj", "{B56F8C96-C5B6-4F7E-8B0D-7C6FC930FEA2}"
@@ -45,6 +39,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.Stars", "org.newpointe.Stars\org.newpointe.Stars.csproj", "{A3E1F519-DDC7-4A2A-BB76-3009D021B31B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ExtraSearch", "org.newpointe.ExtraSearch\org.newpointe.ExtraSearch.csproj", "{0D48339E-1CEF-4363-BF90-CD8BA1CC61F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ExtraJobs", "..\ExtraJobs\ExtraJobs\org.newpointe.ExtraJobs.csproj", "{5084EC22-2E98-4405-8EC8-B3DEC657B2C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.ExtraActions", "..\ExtraActions\org.newpointe.ExtraActions\org.newpointe.ExtraActions.csproj", "{48035437-0AD8-4428-8DF9-9401AD96178A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,18 +58,6 @@ Global
 		{496EC024-71ED-4AD1-B677-2A3FA60CCD05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{496EC024-71ED-4AD1-B677-2A3FA60CCD05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{496EC024-71ED-4AD1-B677-2A3FA60CCD05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1018D6F2-DD34-4AA6-A22B-2C5F5C339CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1018D6F2-DD34-4AA6-A22B-2C5F5C339CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1018D6F2-DD34-4AA6-A22B-2C5F5C339CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1018D6F2-DD34-4AA6-A22B-2C5F5C339CC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E202CF81-6268-4AA1-9F50-D69D36833B40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E202CF81-6268-4AA1-9F50-D69D36833B40}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E202CF81-6268-4AA1-9F50-D69D36833B40}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E202CF81-6268-4AA1-9F50-D69D36833B40}.Release|Any CPU.Build.0 = Release|Any CPU
-		{614438B1-0D2B-4940-BB5A-64160945A270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{614438B1-0D2B-4940-BB5A-64160945A270}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{614438B1-0D2B-4940-BB5A-64160945A270}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{614438B1-0D2B-4940-BB5A-64160945A270}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3FE48220-BB2B-4796-91C4-02EDE591AA91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3FE48220-BB2B-4796-91C4-02EDE591AA91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FE48220-BB2B-4796-91C4-02EDE591AA91}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -96,6 +82,14 @@ Global
 		{0D48339E-1CEF-4363-BF90-CD8BA1CC61F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D48339E-1CEF-4363-BF90-CD8BA1CC61F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D48339E-1CEF-4363-BF90-CD8BA1CC61F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5084EC22-2E98-4405-8EC8-B3DEC657B2C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5084EC22-2E98-4405-8EC8-B3DEC657B2C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5084EC22-2E98-4405-8EC8-B3DEC657B2C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5084EC22-2E98-4405-8EC8-B3DEC657B2C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48035437-0AD8-4428-8DF9-9401AD96178A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48035437-0AD8-4428-8DF9-9401AD96178A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48035437-0AD8-4428-8DF9-9401AD96178A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48035437-0AD8-4428-8DF9-9401AD96178A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
