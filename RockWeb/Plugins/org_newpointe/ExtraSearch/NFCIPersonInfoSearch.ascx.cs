@@ -67,7 +67,7 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
         {
             if ( e.Row.RowType == DataControlRowType.DataRow )
             {
-                var person = e.Row.DataItem as PersonSearchResult;
+                var person = e.Row.DataItem as PersonSearchResult2;
                 if ( person != null )
                 {
                     if ( _inactiveStatus != null &&
@@ -232,7 +232,7 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
                 Guid familyGuid = new Guid( Rock.SystemGuid.GroupType.GROUPTYPE_FAMILY );
                 Guid homeAddressTypeGuid = new Guid( Rock.SystemGuid.DefinedValue.GROUP_LOCATION_TYPE_HOME );
 
-                var personList = people.Select( p => new PersonSearchResult
+                var personList = people.Select( p => new PersonSearchResult2
                 {
                     Id = p.Id,
                     FirstName = p.FirstName,
@@ -302,7 +302,7 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
 
     }
     #region result models
-    public class PersonSearchResult
+    public class PersonSearchResult2
     {
         /// <summary>
         /// Gets or sets the id.
