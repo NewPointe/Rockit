@@ -67,7 +67,7 @@ namespace RockWeb.Plugins.org_newpointe.Reporting
                 cpCampus.DataTextField = "Name";
                 cpCampus.DataBind();
 
-                cpCampus.SelectedValue = CurrentPerson.Members.Where( gm => gm.Group.GroupType.Name == "Staff" ).FirstOrDefault().Group.CampusId.ToString();
+                cpCampus.SelectedValue = CurrentPerson.Members.Where( gm => gm.Group.GroupType.Name == "Staff" && gm.Group.CampusId != null).FirstOrDefault().Group.CampusId.ToString();
                 if ( cpCampus.SelectedValueAsId() == null )
                     cpCampus.SelectedValue = "0";
 

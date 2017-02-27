@@ -6,8 +6,3 @@
 *.orig
 
 org.newpointe.*/bin
-com.minecartstudio.*/bin
-
-prepros.cfg
-
-*.css

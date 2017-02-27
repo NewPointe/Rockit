@@ -264,8 +264,7 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
                 
             }
 
-
-            personFromService.ConnectionStatusValue.Value = "Partner";
+            
             personFromService.ConnectionStatusValueId = 65;
 
 

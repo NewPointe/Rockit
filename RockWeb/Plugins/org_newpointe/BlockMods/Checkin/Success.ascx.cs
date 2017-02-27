@@ -121,8 +121,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.CheckIn
                         if (printFromClient.Any())
                         {
                             var urlRoot = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Authority);
-                            printFromClient.ToList().ForEach(l => l.LabelFile = urlRoot + l.LabelFile.Replace("GetFile.ashx", "GetCheckinLabel.ashx"));
-                            printFromClient.OrderBy( l => l.Order ).ToList().ForEach( l => l.LabelFile = urlRoot + l.LabelFile );
+                            printFromClient.OrderBy( l => l.Order ).ToList().ForEach( l => l.LabelFile = urlRoot + l.LabelFile.Replace("GetFile.ashx", "GetCheckinLabel.ashx") );
                             printFromClient.Take( printFromClient.Count() - 1 ).ToList().ForEach( l => l.LabelFile += "&delaycut=T" );
                             AddLabelScript(printFromClient.ToJson());
                         }

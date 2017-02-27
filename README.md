@@ -25,17 +25,7 @@ Blocks
 [/RockWeb/Styles/autocomplete-styles.css](/RockWeb/Styles/autocomplete-styles.css)  
 [/RockWeb/Scripts/tmpls/](/RockWeb/Scripts/tmpls/)  
 [/RockWeb/Scripts/components/](/RockWeb/Scripts/components/)  
-[/RockWeb/Scripts/?](/RockWeb/Scripts/?)  
-
-
-#### SiteMap?
-[/RockWeb/Blocks/Cms/SiteMap.ashx](/RockWeb/Blocks/Cms/SiteMap.ashx)  
-[/RockWeb/Blocks/Cms/SiteMap.ashx.cs](/RockWeb/Blocks/Cms/SiteMap.ashx.cs)  
-
-
-#### PersonFollowingList
-[/RockWeb/Blocks/Crm/PersonFollowingList.ascx](/RockWeb/Blocks/Crm/PersonFollowingList.ascx)  
-[/RockWeb/Blocks/Crm/PersonFollowingList.ascx.cs](/RockWeb/Blocks/Crm/PersonFollowingList.ascx.cs)  
+[/RockWeb/Scripts/?](/RockWeb/Scripts/)  
 
 
 #### AzureUpload
@@ -43,9 +33,9 @@ Generic file upload block. Need to change hard-coded URL in success message.
 [/RockWeb/Plugins/org_newpointe/AzureUpload/](/RockWeb/Plugins/org_newpointe/AzureUpload/)  
 
 
-#### CampusMenu
+#### LiveMenu
 Creates a popup and shows global attribute 'LiveServiceTextLive' when global attribute 'LiveService' is `true`. Otherwise shows global attribute 'LiveServiceTextNotLive'. Need to change hard-coded Watch Live link.  
-[/RockWeb/Plugins/org_newpointe/CampusMenu/](/RockWeb/Plugins/org_newpointe/CampusMenu/)  
+[/RockWeb/Plugins/org_newpointe/LiveMenu/](/RockWeb/Plugins/org_newpointe/LiveMenu/)  
 
 
 #### CheckinAutoStart

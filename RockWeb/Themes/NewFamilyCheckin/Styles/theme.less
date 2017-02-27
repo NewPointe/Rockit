@@ -1,16 +1,20 @@
 
 
-// Load Master Styles
-// -------------------------
+// ----------------------------
+// Master Styles
+// ----------------------------
+
 @import "../../../Styles/Bootstrap/variables.less";
 @import "../../../Styles/_rock-core.less";
 @import "../../../Styles/_rock-variables.less";
 @import "_variables.less";
 @import "_variable-overrides.less";
 
+
 // ----------------------------
 // Background
 // ----------------------------
+
 body {
     background: #f78d1f url('../Assets/Images/background.jpg') top right no-repeat fixed;
     -webkit-background-size: cover;
@@ -27,77 +31,10 @@ body {
     }
 }
 
+
 // ----------------------------
-// Components
+// Flex Box
 // ----------------------------
-
-.header, .header small {
-    color: #ffffff;
-}
-
-.btn {
-    padding: 15px 30px;
-}
-
-.btn-touch {
-    padding: 15px;
-    margin-right: 10px;
-    width: 200px;
-    height: 200px;
-    border-radius: 5px;
-}
-
-.btn-touch .fa {
-    font-size: 60px;
-    display: block;
-    line-height: 2;
-}
-
-body {
-    margin-bottom: 60px;
-}
-
-.checkbox label,
-.radio label,
-.radio-inline {
-    padding: 10px 20px 10px 35px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-}
-
-.checkbox label,
-.radio label {
-    display: block;
-    text-align: center;
-}
-
-.panel-block {
-    margin-top: 15px;
-
-    .panel-heading {
-        display: none;
-    }
-}
-
-a.back {
-    color: #ffffff;
-}
-
-a.back:hover,
-a.back:active,
-a.back:focus {
-    color: #dddddd;
-}
-
-h1, h2, h3, h4 {
-    margin-top: 5px;
-}
-
-.grid {
-    background-color: #fff;
-}
-
 
 .flex {
     display: flex;
@@ -136,7 +73,35 @@ h1, h2, h3, h4 {
 }
 
 
-.clickItem {
+// ----------------------------
+// Tappable Checkboxes
+// ----------------------------
+
+.checkbox label,
+.radio label,
+.radio-inline {
+    padding: 10px 20px 10px 35px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+
+    &:active, &:focus {
+        background-color: #eee;
+    }
+}
+
+.checkbox label,
+.radio label {
+    display: block;
+    text-align: center;
+}
+
+
+// ----------------------------
+// Tappable Info Tiles
+// ----------------------------
+
+.info-tile {
     margin-bottom: 10px;
     margin-right: 10px;
     border-radius: 4px;
@@ -145,20 +110,17 @@ h1, h2, h3, h4 {
     color: #000;
     min-width: 200px;
     border: 1px solid #ccc;
-}
 
-.clickItem:focus {
-    color: #000;
-}
+    &:focus {
+        color: #000;
+    }
 
-.clickItem:hover {
-    color: #000;
-    background-color: #ebebeb;
-    border-radius: 4px;
-    text-decoration: none;
-}
-
-.clickItem-person {
+    &:hover {
+        color: #000;
+        background-color: #ebebeb;
+        border-radius: 4px;
+        text-decoration: none;
+    }
 
     .person-image {
         -webkit-transition: all 0.6s ease;
@@ -172,16 +134,14 @@ h1, h2, h3, h4 {
         height: 60px;
     }
 
-    h4 {
+    h3 {
         font-size: 16px;
         font-weight: 600;
         text-overflow: ellipsis;
         overflow: hidden;
         margin: 0;
     }
-}
 
-.clickItem-address {
     h4 {
         margin: 0;
         font-size: 14px;
@@ -189,25 +149,81 @@ h1, h2, h3, h4 {
     }
 }
 
-.person-row {
-    background: #fff;
-    border-bottom: 1px solid #e6e6e6;
-    color: #000;
-    min-height: 60px;
+.info-tile-fa {
+    text-align: center;
+    line-height: 2;
+    font-size: 30px;
+    min-width: 90px;
+    color: #ccc;
 
-    header {
-        font-size: 16px;
-        margin-bottom: 7.5px;
+    &:focus {
+        color: #ccc;
+    }
+
+    &:hover {
+        color: #aaa;
     }
 }
-.person-row-heading,
-.person-row-body {
-    padding: 15px;
+
+// ----------------------------
+// 
+// ----------------------------
+
+.title.name {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 300;
+    font-size: 36px;
+}
+.title .first-word {
+    font-weight: 700;
 }
 
-.person-row-heading {
-    background-color: #f9eadc;
+header, header small, footer {
+    color: #ffffff;
 }
+
+.btn-touch {
+    padding: 15px;
+    margin-right: 10px;
+    width: 200px;
+    height: 200px;
+    border-radius: 5px;
+}
+
+.btn-touch .fa {
+    font-size: 60px;
+    display: block;
+    line-height: 2;
+}
+
+body {
+    touch-action: manipulation;
+}
+
+.panel-block {
+    margin-top: 15px;
+
+    .panel-heading {
+        display: none;
+    }
+}
+
+a.back {
+    color: #ffffff;
+}
+
+a.back:hover,
+a.back:active,
+a.back:focus {
+    color: #dddddd;
+}
+
+.grid {
+    background-color: #fff;
+}
+
+
 
 .dropdown-menu li > a {
     padding: 15px 30px;
@@ -217,7 +233,7 @@ h1, h2, h3, h4 {
     //background-color: rgba(0,0,0,0.5);
 }
 
-.nav>li>a.btn-warning:focus, .nav>li>a.btn-warning:hover {
+.nav > li > a.btn-warning:focus, .nav > li > a.btn-warning:hover {
     color: @btn-warning-color;
     background-color: darken(@btn-warning-bg, 10%);
 }
@@ -227,68 +243,32 @@ h1, h2, h3, h4 {
     background-color: @gray-lighter;
 }
 
-.panel-title {
+h2.panel-title {
     font-size: 26px;
 }
 
-
-
-/*
-
-#cms-admin-footer {
-    //display: none;
+h3.panel-title {
+    font-size: 22px;
 }
 
 
-.personprofilebar-bio .nav li .persondetails-actions {
-    &:hover, &:focus {
-        color: #333;
-        text-decoration: none;
-    }
+// ----------------------------
+// Sticky Footer
+// ----------------------------
+@footer-height: 60px;
 
-    &:hover, &:focus, &:active, &.active {
-        color: #fff;
-        background-color: #cf5e10;
-        border-color: #ae4f0d;
-    }
-
-    display: inline-block;
-    margin-bottom: 0;
-    font-weight: normal;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    background-image: none;
-    border: 1px solid transparent;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    color: #fff;
-    background-color: #ee7624;
-    border-color: #e76812;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 3px;
-    padding: 15px 30px !important;
+html {
+    position: relative;
+    min-height: 100%;
 }
 
-.personprofilebar-bio .nav-actions {
-    width: auto;
+body {
+    margin-bottom: @footer-height;
 }
 
-.nav-actions .dropdown-menu > li > a {
-    padding: 15px 20px;
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: @footer-height;
 }
-
-.personprofilebar-bio .actions.rollover-item {
-    display: none;
-}
-
-
-.title {
-    color: #000000;
-}
-
-*/

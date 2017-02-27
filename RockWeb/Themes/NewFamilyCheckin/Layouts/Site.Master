@@ -70,10 +70,18 @@
     <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
 
 </head>
-<body style="display: none;">
+<body>
     <form id="form1" runat="server">
 
+        <header class="header">
+            <Rock:Zone Name="Header" runat="server" />
+        </header>
+
         <asp:ContentPlaceHolder ID="main" runat="server"></asp:ContentPlaceHolder>
+
+        <footer class="footer">
+            <Rock:Zone Name="Footer" runat="server" />
+        </footer>
 
     </form>
 
@@ -82,12 +90,6 @@
         {
             new FastClick(document.body);
         }, false);
-
-        // add quick fade-in effect to the page
-        $(document).ready(function ()
-        {
-            $("body").rockFadeIn();
-        });
     </script>
 </body>
 </html>

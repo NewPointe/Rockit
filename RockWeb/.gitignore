@@ -1,8 +1,6 @@
-/web.ConnectionStrings.config
-/Content
 /App_Data
 /Assets/calendar-full.json
 /Assets/calendar.json
+/Content
 /web.config*
-/wp-content
-/newrelic
+/web.ConnectionStrings.config

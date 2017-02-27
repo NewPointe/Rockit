@@ -106,7 +106,7 @@ public class HelpdeskCall : IHttpHandler
 
 
         response.Write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        response.Write("<Response>\r\n    <Say>Thank you for calling the NewPointe Community Church Helpline!  Please hold while we connect you.</Say>\r\n    <Dial action=\"vm.xml\" method=\"GET\" timeout=\"15\">\r\n         <Number>13303652226</Number> \r\n         <Number>13303652224</Number>\r\n         <Number>13303652220</Number>\r\n         <Number>13303652280</Number>\r\n    </Dial>\r\n</Response>");
+        response.Write("<Response>\r\n    <Say>Thank you for calling the NewPointe Community Church Helpline!  Please hold while we connect you.</Say>\r\n    <Dial action=\"vm.xml\" method=\"GET\" timeout=\"15\">\r\n         <Number>13303652240</Number> \r\n         <Number>13303652224</Number>\r\n         <Number>13303652220</Number>\r\n         <Number>13303652280</Number>\r\n    </Dial>\r\n</Response>");
         response.StatusCode = 200;
 
     }

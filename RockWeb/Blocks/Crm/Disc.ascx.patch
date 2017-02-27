@@ -1,0 +1,4 @@
+21c21
+<                 $("body").animate({ scrollTop: $nextPanel.offset().top - 20 }, 400);
+---
+>                 $("body").animate({ scrollTop: $nextPanel.offset().top - 60 }, 400);

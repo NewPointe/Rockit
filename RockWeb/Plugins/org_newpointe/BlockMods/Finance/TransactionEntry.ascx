@@ -109,7 +109,7 @@
                                     <fieldset>
 
                                         <Rock:ButtonDropDownList ID="btnCamp" runat="server" CssClass="btn btn-primary" Visible="false" Label=" "
-                                            DataTextField="Name" DataValueField="Id" OnSelectionChanged="btnCamp_SelectionChanged" />
+                                            DataTextField="Name" DataValueField="Id" OnSelectionChanged="btnCamp_SelectionChanged" AutoPostBack="true" />
 
                                         <asp:Repeater ID="rptAccountList" runat="server">
                                             <ItemTemplate>
@@ -118,7 +118,7 @@
                                             </ItemTemplate>
                                         </asp:Repeater>
                                         <Rock:ButtonDropDownList ID="btnAddAccount" runat="server" Visible="false" Label=" "
-                                            DataTextField="PublicName" DataValueField="Id" OnSelectionChanged="btnAddAccount_SelectionChanged" />
+                                            DataTextField="PublicName" DataValueField="Id" OnSelectionChanged="btnAddAccount_SelectionChanged" AutoPostBack="true" />
 
                                         <div class="form-group">
                                             <label>Total</label>

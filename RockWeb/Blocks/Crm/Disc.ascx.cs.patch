@@ -1,0 +1,6 @@
+414a415,419
+>             // NewPointe alteration: redirect to SHAPE profile page instead
+>             string shapeRedirectUrl = "https://newpointe.org/ShapeProfile?PersonId=" + _targetPerson.Id;
+>             Response.Redirect(shapeRedirectUrl, true);
+>             // end NewPointe alteration:
+> 

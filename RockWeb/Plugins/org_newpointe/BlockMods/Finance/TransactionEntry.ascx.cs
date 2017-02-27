@@ -327,6 +327,8 @@ TransactionAcountDetails: [
                 return;
             }
 
+            FluidLayout = GetAttributeValue( "LayoutStyle" ) == "Fluid";
+
             if ( !Page.IsPostBack )
             {
 
@@ -361,7 +363,7 @@ TransactionAcountDetails: [
 
 
                 hfTransactionGuid.Value = Guid.NewGuid().ToString();
-                
+
                 SetControlOptions();
 
                 SetPage( 1 );
@@ -453,7 +455,7 @@ TransactionAcountDetails: [
         protected void btnAddAccount_SelectionChanged( object sender, EventArgs e )
         {
             var selected = AvailableAccounts.Where( a => a.Id == ( btnAddAccount.SelectedValueAsId() ?? 0 ) ).ToList();
-            AvailableAccounts = AvailableAccounts.Except( selected ).ToList();
+            //AvailableAccounts = AvailableAccounts.Except( selected ).ToList();
             SelectedAccounts.AddRange( selected );
 
             BindAccounts();
@@ -469,7 +471,7 @@ TransactionAcountDetails: [
 
             if ( !oneTime && ( !dtpStartDate.SelectedDate.HasValue || dtpStartDate.SelectedDate.Value.Date <= RockDateTime.Today ) )
             {
-                dtpStartDate.SelectedDate = RockDateTime.Today.AddDays( 1 ); 
+                dtpStartDate.SelectedDate = RockDateTime.Today.AddDays( 1 );
             }
 
             using ( var rockContext = new RockContext() )
@@ -888,7 +890,7 @@ TransactionAcountDetails: [
 
         }
 
-        private string GetSavedAcccountFreqSupported ( GatewayComponent component )
+        private string GetSavedAcccountFreqSupported( GatewayComponent component )
         {
             if ( component != null )
             {
@@ -927,7 +929,7 @@ TransactionAcountDetails: [
         }
 
         private GatewayComponent GetGatewayComponent( RockContext rockContext, FinancialGateway gateway )
-        { 
+        {
             if ( gateway != null )
             {
                 gateway.LoadAttributes( rockContext );
@@ -965,8 +967,8 @@ TransactionAcountDetails: [
                 var ccSavedAccountIds = new List<int>();
                 var ccCurrencyType = DefinedValueCache.Read( new Guid( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD ) );
                 if ( _ccGateway != null &&
-                    _ccGatewayComponent != null && 
-                    _ccGatewayComponent.SupportsSavedAccount( !oneTime ) && 
+                    _ccGatewayComponent != null &&
+                    _ccGatewayComponent.SupportsSavedAccount( !oneTime ) &&
                     _ccGatewayComponent.SupportsSavedAccount( ccCurrencyType ) )
                 {
                     ccSavedAccountIds = savedAccounts
@@ -1170,13 +1172,13 @@ TransactionAcountDetails: [
                 var accountItem = new AccountItem( account.Id, account.Order, account.Name, account.CampusId, account.PublicName );
                 if ( showAll )
                 {
-                    SelectedAccounts.Add( accountItem );
+                    AvailableAccounts.Add( accountItem );
                 }
                 else
                 {
                     if ( selectedGuids.Contains( account.Guid ) )
                     {
-                        SelectedAccounts.Add( accountItem );
+                        AvailableAccounts.Add( accountItem );
                     }
                     else
                     {
@@ -1590,7 +1592,7 @@ TransactionAcountDetails: [
             }
 
             tdWhenConfirm.Description = schedule != null ? schedule.ToString() : "Today";
-            
+
             return true;
         }
 
@@ -1796,7 +1798,7 @@ TransactionAcountDetails: [
             if ( string.IsNullOrWhiteSpace( TransactionCode ) )
             {
                 var transactionGuid = hfTransactionGuid.Value.AsGuid();
-                
+
                 bool isACHTxn = hfPaymentTab.Value == "ACH";
                 var financialGateway = isACHTxn ? _achGateway : _ccGateway;
                 var gateway = isACHTxn ? _achGatewayComponent : _ccGatewayComponent;
@@ -1891,10 +1893,10 @@ TransactionAcountDetails: [
         private bool ProcessStep3( string resultQueryString, out string errorMessage )
         {
             var rockContext = new RockContext();
-            
+
 
             var transactionGuid = hfTransactionGuid.Value.AsGuid();
-            
+
             bool isACHTxn = hfPaymentTab.Value == "ACH";
             var financialGateway = isACHTxn ? _achGateway : _ccGateway;
             var gateway = ( isACHTxn ? _achGatewayComponent : _ccGatewayComponent ) as ThreeStepGatewayComponent;
@@ -2334,10 +2336,18 @@ TransactionAcountDetails: [
                 NotificationBox nb = nbMessage;
                 switch ( hfCurrentPage.Value.AsInteger() )
                 {
-                    case 1: nb = nbSelectionMessage; break;
-                    case 2: nb = nbSelectionMessage; break;
-                    case 3: nb = nbConfirmationMessage; break;
-                    case 4: nb = nbSuccessMessage; break;
+                    case 1:
+                        nb = nbSelectionMessage;
+                        break;
+                    case 2:
+                        nb = nbSelectionMessage;
+                        break;
+                    case 3:
+                        nb = nbConfirmationMessage;
+                        break;
+                    case 4:
+                        nb = nbSuccessMessage;
+                        break;
                 }
 
                 nb.Text = text;
@@ -2505,7 +2515,7 @@ TransactionAcountDetails: [
     }});
 
 ";
-            string script = string.Format( 
+            string script = string.Format(
                 scriptFormat,
                 divCCPaymentInfo.ClientID,      // {0} 
                 hfPaymentTab.ClientID,          // {1}
@@ -2528,7 +2538,7 @@ TransactionAcountDetails: [
                 txtCardFirstName.ClientID,      // {18}
                 txtCardLastName.ClientID,       // {19}
                 txtCardName.ClientID            // {20}
-            ); 
+            );
 
             ScriptManager.RegisterStartupScript( upPayment, this.GetType(), "giving-profile", script, true );
 
@@ -2557,8 +2567,8 @@ TransactionAcountDetails: [
         /// Lightweight object for each contribution item
         /// </summary>
         [Serializable]
-        [DotLiquid.LiquidType("Id", "Order", "Name", "CampusId", "Amount", "PublicName", "AmountFormatted")]
-        protected class AccountItem 
+        [DotLiquid.LiquidType( "Id", "Order", "Name", "CampusId", "Amount", "PublicName", "AmountFormatted" )]
+        protected class AccountItem
         {
             public int Id { get; set; }
 

@@ -742,9 +742,9 @@ namespace org.newpointe.ProtectMyMinistry
             if ( stateId != null )
                 loc.State = stateId;
 
-            loc.County = loc.County.Trim().ToLower().ReplaceLastOccurrence( " co.", "" );
+            loc.County = loc.County.Trim().ToLower().Replace( " co.", "" );
 
-            if ( loc.County == "apo" || loc.County == "fpo" )
+            if ( loc.County == "apo" || loc.County == "fpo" || loc.State == "vi")
                 return null;
 
             return loc;
