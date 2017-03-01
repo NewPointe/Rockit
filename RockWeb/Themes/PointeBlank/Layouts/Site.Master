@@ -119,7 +119,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p>&#169; 2016 NewPointe Community Church</p>
+                                    <p>&#169; 2017 NewPointe Community Church</p>
                                     <Rock:Zone Name="Footer" runat="server" />
                                 </div>
                             </div>
