@@ -169,12 +169,6 @@ namespace RockWeb.Blocks.CheckIn
                                             }
                                         }
 
-                                        if ( label != printFromServer.OrderBy( l => l.Order ).LastOrDefault() )
-                                        {
-                                            printContent = printContent.Replace( "^PQ1,1,1,Y", "" );
-                                            printContent = printContent.Replace( "^XZ", "^XB^XZ" );
-                                        }
-
                                         if ( socket.Connected )
                                         {
                                             var ns = new NetworkStream( socket );
