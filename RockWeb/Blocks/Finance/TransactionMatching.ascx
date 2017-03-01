@@ -108,7 +108,7 @@
 
             <Rock:ModalDialog ID="mdAccountsPersonalFilter" runat="server" Title="Accounts Filter" OnSaveClick="mdAccountsPersonalFilter_SaveClick">
                 <Content>
-                    <Rock:AccountPicker ID="apPersonalAccounts" runat="server" AllowMultiSelect="true" Label="Select Account(s)" DisplayActiveOnly="false" />
+                    <Rock:AccountPicker ID="apPersonalAccounts" runat="server" AllowMultiSelect="true" Label="Select Account(s)" DisplayActiveOnly="true" />
                 </Content>
             </Rock:ModalDialog>
 
