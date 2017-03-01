@@ -32,15 +32,15 @@ using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 using Rock.Communication;
 
-namespace RockWeb.Plugins.org_newpointe.BlockMods.Finance
+namespace RockWeb.Blocks.Finance
 {
     #region Block Attributes
 
     /// <summary>
     /// Add a new one-time or scheduled transaction
     /// </summary>
-    [DisplayName( "Customised Transaction Entry" )]
-    [Category( "Newpointe.org Finance" )]
+    [DisplayName( "Transaction Entry" )]
+    [Category( "Finance" )]
     [Description( "Creates a new financial transaction or scheduled transaction." )]
     [FinancialGatewayField( "Credit Card Gateway", "The payment gateway to use for Credit Card transactions", false, "", "", 0, "CCGateway" )]
     [FinancialGatewayField( "ACH Gateway", "The payment gateway to use for ACH (bank account) transactions", false, "", "", 1, "ACHGateway" )]
@@ -283,15 +283,6 @@ TransactionAcountDetails: [
             lSuccessHeader.Text = GetAttributeValue( "SuccessHeader" ).ResolveMergeFields( configValues );
             lSuccessFooter.Text = GetAttributeValue( "SuccessFooter" ).ResolveMergeFields( configValues );
 
-            //Personal info panel
-            CollapsePersonData.Value = (
-                _targetPerson != null &&
-                _targetPerson.FirstName != null &&
-                _targetPerson.LastName != null &&
-                _targetPerson.Email != null &&
-                acAddress != null
-                ) ? "true" : "false";
-
             RegisterScript();
         }
 
@@ -329,37 +320,6 @@ TransactionAcountDetails: [
 
             if ( !Page.IsPostBack )
             {
-
-                string prefill_pNumber = PageParameter( "pn" );
-                if ( !string.IsNullOrWhiteSpace( prefill_pNumber ) )
-                {
-                    pnbPhone.Text = prefill_pNumber;
-                }
-
-                int? prefill_frequency = PageParameter( "freq" ).AsIntegerOrNull();
-                if ( prefill_frequency.HasValue )
-                {
-                    btnFrequency.SetValue( PageParameter( "freq" ) );
-                }
-
-                DateTime startdate = PageParameter( "sdate" ).AsDateTime() ?? RockDateTime.Today;
-                if ( startdate < RockDateTime.Today )
-                {
-                    int fid = btnFrequency.SelectedValueAsInt() ?? -1;
-                    int freq =
-                        fid == 135 ? 30 :
-                        fid == 134 ? 15 :
-                        fid == 133 ? 15 :
-                        fid == 132 ? 7 :
-                        1;
-                    int adit = ( int ) Math.Ceiling( Math.Abs( ( startdate - RockDateTime.Today ).Days / ( double ) freq ) );
-                    startdate = startdate.AddDays( freq * adit );
-                }
-                dtpStartDate.SelectedDate = startdate;
-
-
-
-
                 hfTransactionGuid.Value = Guid.NewGuid().ToString();
                 
                 SetControlOptions();
@@ -382,7 +342,7 @@ TransactionAcountDetails: [
                         if ( SelectedAccounts.Count > item.ItemIndex )
                         {
                             decimal amount = decimal.MinValue;
-                            if ( decimal.TryParse( "0" + accountAmount.Text, out amount ) )
+                            if ( decimal.TryParse( accountAmount.Text, out amount ) )
                             {
                                 SelectedAccounts[item.ItemIndex].Amount = amount;
                             }
@@ -1014,7 +974,6 @@ TransactionAcountDetails: [
                     {
                         rblSavedAccount.Items[0].Selected = true;
                     }
-                    CollapseCardData.Value = "true";
                 }
 
             }
@@ -1187,7 +1146,6 @@ TransactionAcountDetails: [
                     }
                 }
             }
-            setupAccountList();
         }
 
         /// <summary>
@@ -1198,99 +1156,9 @@ TransactionAcountDetails: [
             rptAccountList.DataSource = SelectedAccounts.ToList();
             rptAccountList.DataBind();
 
-            btnCamp.Visible = AvailableAccounts.Any();
-
-            List<Campus> camps = new List<Campus>();
-            foreach ( Campus camp in ( new CampusService( new RockContext() ) ).Queryable().Where( x => x.Id != 7 && x.Id != 8 ).SortBy( "Name" ) )
-            {
-                if ( AvailableAccounts.Select( y => y.CampusId ).Contains( camp.Id ) )
-                {
-                    camps.Add( camp );
-                }
-            }
-
-            btnCamp.DataSource = camps;
-            btnCamp.DataBind();
-
-            int campFilter = int.TryParse( btnCamp.SelectedValue, out campFilter ) ? campFilter : ( _targetPerson != null ? _targetPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1 );
-            btnCamp.SelectedValue = campFilter.ToString();
-
-            if ( !string.IsNullOrWhiteSpace( PageParameter( "act" ) ) && !IsPostBack )
-            {
-                btnCamp.ClearSelection();
-                //string spacing = string.Concat(Enumerable.Repeat("&nbsp;", 20));
-                btnCamp.Items.Insert( 0, "" );
-                btnCamp.SelectedValue = "";
-            }
-
-        }
-
-        private void setupAccountList()
-        {
-
-            var oldSelectedAccounts = SelectedAccounts.Where( x => x.Amount > 0 ).ToList();
-            SelectedAccounts.Clear();
-
-            string prefill_accounts = PageParameter( "act" );
-            string prefill_amounts = PageParameter( "amt" );
-
-            foreach ( var acct in oldSelectedAccounts )
-            {
-                if ( !SelectedAccounts.Exists( x => x.Id == acct.Id ) )
-                    SelectedAccounts.Add( acct );
-            }
-
-            if ( string.IsNullOrWhiteSpace( prefill_accounts ) || IsPostBack )
-            {
-                int campFilter = int.TryParse( btnCamp.SelectedValue, out campFilter ) ? campFilter : ( CurrentPerson != null ? CurrentPerson.GetFamilies().FirstOrDefault().CampusId ?? 1 : 1 );
-                var spAccnt = AvailableAccounts.Where( x => x.CampusId == 7 );
-                var avAccnt = AvailableAccounts.Where( x => x.CampusId == campFilter && x.CampusId != 7 );
-
-                foreach ( var acct in avAccnt )
-                {
-                    if ( !oldSelectedAccounts.Exists( x => x.Id == acct.Id ) )
-                        SelectedAccounts.Add( acct );
-                }
-                foreach ( var acct in spAccnt )
-                {
-                    if ( !oldSelectedAccounts.Exists( x => x.Id == acct.Id ) )
-                        SelectedAccounts.Add( acct );
-                }
-            }
-
-
-            if ( !string.IsNullOrWhiteSpace( prefill_accounts ) )
-            {
-                FinancialAccountService acctServ = new FinancialAccountService( new RockContext() );
-                string[] pAccounts = prefill_accounts.Split( ',' );
-                string[] pAmounts = prefill_amounts.Split( ',' );
-
-                for ( int i = 0; i < pAccounts.Count(); i++ )
-                {
-                    int? aId = pAccounts[i].AsIntegerOrNull();
-                    decimal amt = ( i < pAmounts.Count() ) ? pAmounts[i].AsDecimal() : 0;
-                    if ( aId.HasValue )
-                    {
-                        AccountItem acct = AvailableAccounts.Where( x => x.Id == aId.Value ).FirstOrDefault();
-                        if ( acct != null )
-                        {
-                            acct.Amount = amt;
-                            if ( !IsPostBack )
-                            {
-                                SelectedAccounts.RemoveAll( x => x.Id == acct.Id );
-                                SelectedAccounts.Add( acct );
-                            }
-                            else
-                            {
-                                if ( !SelectedAccounts.Exists( x => x.Id == acct.Id ) )
-                                    SelectedAccounts.Add( acct );
-                            }
-                        }
-                    }
-                }
-            }
-
-            lblTotalAmount.Text = SelectedAccounts.Sum( f => f.Amount ).ToString( "F2" );
+            btnAddAccount.Visible = AvailableAccounts.Any();
+            btnAddAccount.DataSource = AvailableAccounts;
+            btnAddAccount.DataBind();
         }
 
         /// <summary>
@@ -2251,26 +2119,10 @@ TransactionAcountDetails: [
                 // If current person does not have a login, have them create a username and password
                 phCreateLogin.Visible = !new UserLoginService( rockContext ).GetByPersonId( person.Id ).Any();
             }
-            else if ( !new UserLoginService( rockContext ).GetByPersonId( person.Id ).Any() )
-            {
-                pnlSaveAccount.Visible = true;
-                phCreateLogin.Visible = true;
-                cbSaveAccount.Visible = false;
-                txtSaveAccount.Visible = false;
-            }
             else
             {
                 pnlSaveAccount.Visible = false;
             }
-
-
-
-            if ( PageParameter( "argsd" ) == "1" )
-            {
-                person.SetAttributeValue( "AutomatedRecurringGiftSetupDate", DateTime.Now.ToString( "o" ) );
-                person.SaveAttributeValues();
-            }
-
         }
 
 
@@ -2407,7 +2259,6 @@ TransactionAcountDetails: [
             else if ($(this).val() != 0 && radioDisplay != 'none') {{
                 $content.slideToggle();
             }}
-            $('.contribution-payment .currentSetting').text($(this).parent().text());
         }});
 
         // Hide or show a div based on selection of checkbox
@@ -2430,13 +2281,11 @@ TransactionAcountDetails: [
 			    }});
             }}
         }});
-
-        onASPReload && onASPReload();
     }});
 
     // sets the scroll position to the top of the page after partial postbacks
     // without this the scroll position is the bottom of the page.
-    // setTimeout('window.scrollTo(0,0)',0);
+    setTimeout('window.scrollTo(0,0)',0);
 
     // Posts the iframe (step 2)
     $('#aStep2Submit').on('click', function(e) {{
@@ -2594,10 +2443,5 @@ TransactionAcountDetails: [
 
         #endregion
 
-        protected void btnCamp_SelectionChanged( object sender, EventArgs e )
-        {
-            setupAccountList();
-            BindAccounts();
-        }
     }
 }
