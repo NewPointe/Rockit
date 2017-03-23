@@ -355,9 +355,8 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
            
 
             // Email Body
-            string body = String.Format(@"{0}<br>
-            <p>Sincerely,<br>
-            <span style='font-size:125%; text-transform: uppercase; font-weight: bold;'>{1}<br>{2}</span><br>
+            string body = String.Format(@"{0}
+            <p><span style='font-size:125%; text-transform: uppercase; font-weight: bold;'>{1}<br>{2}</span><br>
             {3} Pastor
             ", bodyText, sig, campus.LeaderPersonAlias.Person.FullName, campus.Name);
 
