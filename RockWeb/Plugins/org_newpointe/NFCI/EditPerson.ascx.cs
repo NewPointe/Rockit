@@ -22,6 +22,8 @@ namespace RockWeb.Plugins.org_newpointe.NFCI
     [Description( "Allows for quickly editing a Person" )]
 
     [LinkedPage( "Person Details Page", "The page to use to show person details.", false, "", "", 0 )]
+    [LinkedPage( "Workflow Entry Page", "The Workflow Entry page.", false, "", "", 1 )]
+    [WorkflowTypeField( "Request Change Workflow", "The type of workflow to launch for a change request.", false, false, "", "", 2 )]
     public partial class EditPerson : Rock.Web.UI.RockBlock
     {
 
@@ -192,6 +194,22 @@ namespace RockWeb.Plugins.org_newpointe.NFCI
                         History.EvaluateChange( changes, "Birth Day", birthDay, personSave.BirthDay );
                         History.EvaluateChange( changes, "Birth Year", birthYear, personSave.BirthYear );
 
+
+                        DateTime gradeTransitionDate = GlobalAttributesCache.Read().GetValue( "GradeTransitionDate" ).AsDateTime() ?? new DateTime( RockDateTime.Now.Year, 6, 1 );
+
+                        // add a year if the next graduation mm/dd won't happen until next year
+                        int gradeOffsetRefactor = ( RockDateTime.Now < gradeTransitionDate ) ? 0 : 1;
+
+
+                        int? graduationYear = null;
+                        if ( gpGrade.SelectedValue.AsIntegerOrNull() != null )
+                        {
+                            graduationYear = gradeTransitionDate.Year + gradeOffsetRefactor + gpGrade.SelectedValue.AsIntegerOrNull();
+                        }
+
+                        History.EvaluateChange( changes, "Graduation Year", person.GraduationYear, graduationYear );
+                        personSave.GraduationYear = graduationYear;
+
                         var newGender = rblGender.SelectedValue.ConvertToEnum<Gender>();
                         History.EvaluateChange( changes, "Gender", personSave.Gender, newGender );
                         personSave.Gender = newGender;
@@ -293,6 +311,24 @@ namespace RockWeb.Plugins.org_newpointe.NFCI
                     }
                 } );
             }
+        }
+
+        protected void lbRequestChange_Click( object sender, EventArgs e )
+        {
+            var pars = new Dictionary<string, string>();
+
+            var wfType = new WorkflowTypeService( rContext ).Get( GetAttributeValue( "RequestChangeWorkflow" ).AsGuid() );
+            if ( wfType != null )
+            {
+                pars.Add( "WorkflowTypeId", wfType.Id.ToString() );
+            }
+
+            if ( person != null )
+            {
+                pars.Add( "PersonId", person.Id.ToString() );
+            }
+
+            NavigateToLinkedPage( "WorkflowEntryPage", pars );
         }
     }
 }

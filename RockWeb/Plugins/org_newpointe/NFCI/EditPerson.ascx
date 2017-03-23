@@ -55,7 +55,7 @@
 
                     <Rock:GradePicker ID="gpGrade" runat="server" UseGradeOffsetAsValue="true" />
 
-                    <Rock:RockTextBox ID="rtbAllergy" runat="server" />
+                    <Rock:RockTextBox ID="rtbAllergy" runat="server" Label="Allergy" />
 
                     <br />
                     <h1>Contact Info</h1>
@@ -93,12 +93,16 @@
 
 
                 </div>
-                <div class="panel-footer actions text-center">
+                <div class="panel-footer actions clearfix">
                     <asp:LinkButton runat="server" ID="lbCancel" CssClass="btn btn-lg btn-default pull-left" Text="Cancel" OnClientClick="history.back();" CausesValidation="false"></asp:LinkButton>
-                    <asp:LinkButton runat="server" ID="lbRequestChange" CssClass="btn btn-lg btn-warning" Text="Request Change" CausesValidation="false"></asp:LinkButton>
                     <asp:LinkButton runat="server" ID="lbSubmit" CssClass="btn btn-lg btn-success pull-right" Text="Save" OnClick="lbSubmit_Click"></asp:LinkButton>
                 </div>
             </asp:Panel>
+        </div>
+        <div class="panel panel-block">
+            <div class="panel-body text-center">
+                <asp:LinkButton runat="server" ID="lbRequestChange" CssClass="btn btn-lg btn-warning" Text="Request Additional Change" CausesValidation="false" OnClick="lbRequestChange_Click"></asp:LinkButton>
+            </div>
         </div>
 
     </ContentTemplate>

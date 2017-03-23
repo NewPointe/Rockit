@@ -28,6 +28,7 @@ namespace RockWeb.Plugins.org_newpointe.NFCI
         protected override void OnInit( EventArgs e )
         {
             base.OnInit( e );
+            //pError.Visible = false;
 
         }
 
@@ -138,7 +139,15 @@ namespace RockWeb.Plugins.org_newpointe.NFCI
                 var adultRole = new GroupTypeRoleService( rockContext ).Get( Rock.SystemGuid.GroupRole.GROUPROLE_FAMILY_MEMBER_ADULT.AsGuid() );
                 var childRole = new GroupTypeRoleService( rockContext ).Get( Rock.SystemGuid.GroupRole.GROUPROLE_FAMILY_MEMBER_CHILD.AsGuid() );
 
+                var personRecordType = new DefinedValueService( rockContext ).Get( Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON.AsGuid() );
+                var personRecordStatus = new DefinedValueService( rockContext ).Get( Rock.SystemGuid.DefinedValue.PERSON_RECORD_STATUS_ACTIVE.AsGuid() );
+                var personConnectionStatus = new DefinedValueService( rockContext ).Get( Rock.SystemGuid.DefinedValue.PERSON_CONNECTION_STATUS_VISITOR.AsGuid() );
+
                 Person parent = new Person();
+                parent.RecordTypeValue = personRecordType;
+                parent.RecordStatusValue = personRecordStatus;
+                parent.ConnectionStatusValue = personConnectionStatus;
+
                 parent.FirstName = rtbParentFirstName.Text;
                 parent.LastName = rtbParentLastName.Text;
 
@@ -160,11 +169,17 @@ namespace RockWeb.Plugins.org_newpointe.NFCI
                 foreach ( KidData kidData in kidsList )
                 {
                     Person kid = new Person();
+                    kid.RecordTypeValue = personRecordType;
+                    kid.RecordStatusValue = personRecordStatus;
+                    kid.ConnectionStatusValue = personConnectionStatus;
                     kid.FirstName = kidData.FirstName;
                     kid.LastName = kidData.LastName;
                     kid.Gender = kidData.Gender;
                     kid.SetBirthDate( kidData.Birthdate );
-                    kid.GradeOffset = kidData.Grade.Value.AsIntegerOrNull();
+                    if ( kidData.Grade != null )
+                    {
+                        kid.GradeOffset = kidData.Grade.Value.AsIntegerOrNull();
+                    }
 
                     kid.LoadAttributes( rockContext );
                     kid.SetAttributeValue( "Allergy", kidData.Allergy );

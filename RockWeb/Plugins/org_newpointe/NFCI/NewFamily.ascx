@@ -53,7 +53,7 @@
                                         <td>
                                             <Rock:DatePicker runat="server" ID="dpBirthdate" Label="" Required="true" RequiredErrorMessage="Birthdate is Required for all Children"></Rock:DatePicker>
                                             <div style="margin-top:5px;">
-                                                <Rock:GradePicker runat="server" ID="gpGrade" Label="" Required="true" RequiredErrorMessage="Grade is Required for all Children"></Rock:GradePicker>
+                                                <Rock:GradePicker runat="server" ID="gpGrade" Label=""></Rock:GradePicker>
                                             </div>
                                         </td>
                                         <td><Rock:RockTextBox runat="server" ID="rtbAllergy"></Rock:RockTextBox></td>

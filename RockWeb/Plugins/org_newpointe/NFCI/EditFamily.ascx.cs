@@ -109,5 +109,23 @@ namespace RockWeb.Plugins.org_newpointe.NFCI
                 } );
             }
         }
+
+        protected void lbRequestChange_Click( object sender, EventArgs e )
+        {
+            var pars = new Dictionary<string, string>();
+
+            var wfType = new WorkflowTypeService( rContext ).Get( GetAttributeValue( "RequestChangeWorkflow" ).AsGuid() );
+            if ( wfType != null )
+            {
+                pars.Add( "WorkflowTypeId", wfType.Id.ToString() );
+            }
+
+            if ( family != null )
+            {
+                pars.Add( "GroupId", family.Id.ToString() );
+            }
+
+            NavigateToLinkedPage( "WorkflowEntryPage", pars );
+        }
     }
 }
