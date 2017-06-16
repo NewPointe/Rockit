@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Data.Linq.SqlClient;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Rock;
-using Rock.Attribute;
 using Rock.Data;
 using Rock.Model;
 using Rock.Search;
@@ -27,15 +24,7 @@ namespace org.newpointe.ExtraSearch
         /// <value>
         /// The attribute defaults.
         /// </value>
-        public override Dictionary<string, string> AttributeValueDefaults
-        {
-            get
-            {
-                var defaults = new Dictionary<string, string>();
-                defaults.Add( "SearchLabel", "Page Title" );
-                return defaults;
-            }
-        }
+        public override Dictionary<string, string> AttributeValueDefaults => new Dictionary<string, string> { { "SearchLabel", "Page Title" } };
 
         /// <summary>
         /// Returns a list of matching people
@@ -44,8 +33,13 @@ namespace org.newpointe.ExtraSearch
         /// <returns></returns>
         public override IQueryable<string> Search( string searchterm )
         {
-            var regExp = String.Join( "\\w* ", searchterm.Split( ' ' ).Select( t => Regex.Escape( t ) ) );
-            return new PageService( new RockContext() ).Queryable().ToList().Where( p => Regex.IsMatch( p.PageTitle, regExp, RegexOptions.IgnoreCase ) ).Select( p => p.PageTitle ).AsQueryable();
+            return SearchPages(searchterm).Select(p => p.PageTitle);
+        }
+
+        public static IQueryable<Page> SearchPages(string searchterm)
+        {
+            var likeExp = "%" + searchterm.Replace( "%", "[%]" ).Replace( " ", "%" ) + "%";
+            return new PageService(new RockContext()).Queryable().Where( p => SqlMethods.Like(p.PageTitle, likeExp) );
         }
     }
 }

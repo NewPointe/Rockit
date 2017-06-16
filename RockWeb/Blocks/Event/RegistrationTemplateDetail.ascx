@@ -11,7 +11,9 @@
             if ($(this).val() == '1') {
                 $('.js-current-family-members').slideDown();
             } else {
-                $('.js-current-family-members').slideUp();
+                var $div = $('.js-current-family-members');
+                $div.find('input:checkbox').prop('checked', false);
+                $div.slideUp();
             }
         });
     });
@@ -333,6 +335,7 @@
                 <asp:ValidationSummary ID="ValidationSummaryAttribute" runat="server" HeaderText="Please Correct the Following" CssClass="alert alert-danger" ValidationGroup="Field" />
                 <div class="row">
                     <div class="col-md-3">
+                        <Rock:RockLiteral ID="lFieldSource" runat="server" Label="Source" Visible="false" />
                         <Rock:RockDropDownList ID="ddlFieldSource" runat="server" Label="Source" AutoPostBack="true" OnSelectedIndexChanged="ddlFieldSource_SelectedIndexChanged" ValidationGroup="Field" />
                         <Rock:RockLiteral ID="lPersonField" runat="server" Label="Person Field" Visible="false" />
                         <Rock:RockDropDownList ID="ddlPersonField" runat="server" Label="Person Field" Visible="false" ValidationGroup="Field" />

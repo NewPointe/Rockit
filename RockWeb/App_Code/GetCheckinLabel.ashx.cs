@@ -1,11 +1,11 @@
 // <copyright>
-// Copyright 2013 by the Spark Development Network
+// Copyright by the Spark Development Network
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Rock Community License (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+// http://www.rockrms.com/license
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -209,6 +209,12 @@ namespace RockWeb
             int fileLength = (int)fileContents.Length;
             int responseLength = fileLength;
 
+            if (responseLength > 1000000)
+            {
+                SendNotAuthorized(context);
+                return;
+            }
+
             // resumable logic from http://stackoverflow.com/a/6475414/1755417
             if ( context.Request.Headers["Range"] != null && ( context.Request.Headers["If-Range"] == null ) )
             {
@@ -230,7 +236,6 @@ namespace RockWeb
             context.Response.Cache.SetETag( eTag ); // required for IE9 resumable downloads
             context.Response.ContentType = mimeType;
             byte[] buffer = new byte[4096];
-
             String labelData = "";
 
             if ( context.Response.IsClientConnected )
@@ -257,7 +262,6 @@ namespace RockWeb
 
                         try
                         {
-                            //context.Response.OutputStream.Write( buffer, 0, bytesRead );
                             labelData += System.Text.Encoding.UTF8.GetString( buffer, 0, bytesRead );
                         }
                         catch ( HttpException ex )
@@ -274,13 +278,11 @@ namespace RockWeb
                     }
                 }
 
+
                 if ( context.Response.IsClientConnected )
                 {
                     if ( (context.Request.QueryString["delaycut"] ?? "F").AsBoolean() )
                     {
-
-                        //labelData = ( new Regex( "\\^PQ[0-9]+,[0-9]+,[0-9]+,Y") ).Replace( labelData, "" );
-
                         labelData = labelData.Replace( "^PQ1,1,1,Y", "" );
                         labelData = labelData.Replace( "^XZ", "^XB^XZ" );
                     }
@@ -292,6 +294,7 @@ namespace RockWeb
                     }
                     context.Response.OutputStream.Write( bytes, 0, bytes.Length );
                 }
+
             }
 
             context.ApplicationInstance.CompleteRequest();

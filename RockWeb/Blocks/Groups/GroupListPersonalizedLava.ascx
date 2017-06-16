@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupListPersonalizedLava.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupListPersonalizedLava" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupListPersonalizedLava.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupListPersonalizedLava" %>
 
 <asp:UpdatePanel ID="upnlGroupList" runat="server">
     <ContentTemplate>

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="LayoutBlockList.ascx.cs" Inherits="RockWeb.Blocks.Cms.LayoutBlockList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="LayoutBlockList.ascx.cs" Inherits="RockWeb.Blocks.Cms.LayoutBlockList" %>
 
 <asp:UpdatePanel ID="upList" runat="server">
     <ContentTemplate>

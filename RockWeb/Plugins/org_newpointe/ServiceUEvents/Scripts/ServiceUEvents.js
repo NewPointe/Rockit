@@ -71,7 +71,7 @@
         var options = {
             events_source: searchData, //'/assets/calendar.json',
             view: 'month',
-            tmpl_path: '/Scripts/tmpls/',
+            tmpl_path: 'Plugins/org_newpointe/ServiceUEvents/Scripts/tmpls/',
             tmpl_cache: false,
             format12: true,
             day: 'now',

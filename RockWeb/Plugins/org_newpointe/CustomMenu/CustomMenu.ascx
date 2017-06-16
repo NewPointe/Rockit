@@ -71,7 +71,7 @@
     }
 
     div.gsc-result {
-        box-shadow: 0px 0px 0px #c0c0c0 !important;
+        box-shadow: 0 0 0 #c0c0c0 !important;
         margin-bottom: 20px !important;
         padding: 20px !important;
         border-bottom: 1px solid #c0c0c0;
@@ -141,7 +141,7 @@
             </div>
             <div class="col-md-11 pull-right">
                 <ul class="npCustomMenu">
-                    <asp:Repeater ID="rptMenuLinks" OnItemDataBound="rptMenuLinks_ItemDataBound" runat="server">
+                    <asp:Repeater ID="rptMenuLinks" runat="server">
                         <ItemTemplate>
                             <li><a href="#" id="<%#DataBinder.Eval(Container.DataItem, "ID") %>" onclick="ShowPopup(<%#DataBinder.Eval(Container.DataItem, "ID") %>);"><%# DataBinder.Eval(Container.DataItem, "PageTitle") %></a></li>
                         </ItemTemplate>
@@ -154,7 +154,7 @@
             <asp:Repeater ID="rptMenuDivs" runat="server">
                 <ItemTemplate>
                     <div id="popup-<%#DataBinder.Eval(Container.DataItem, "ID") %>" style="display: none;" class="pop-over">
-                        <%#((string)DataBinder.Eval(Container.DataItem, "HtmlContent")).Replace(replaceId,replacedId).Replace(replaceImage,replacedImage) %>
+                        <%#(string)DataBinder.Eval(Container.DataItem, "HtmlContent") %>
                     </div>
                 </ItemTemplate>
             </asp:Repeater>

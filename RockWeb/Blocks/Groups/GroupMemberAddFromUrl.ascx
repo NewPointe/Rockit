@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupMemberAddFromUrl.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupMemberAddFromUrl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GroupMemberAddFromUrl.ascx.cs" Inherits="RockWeb.Blocks.Groups.GroupMemberAddFromUrl" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>

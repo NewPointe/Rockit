@@ -36,30 +36,11 @@ namespace RockWeb.Webhooks
             HttpRequest request = context.Request;
             HttpResponse response = context.Response;
 
-
-            /*try
-            {
-                var rockContext = new Rock.Data.RockContext();
-
-                string logFile = HttpContext.Current.Server.MapPath( "~/App_Data/Logs/PMMLog.txt" );
-
-                using ( System.IO.FileStream fs = new System.IO.FileStream( logFile, System.IO.FileMode.Append, System.IO.FileAccess.Write ) )
-                using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( fs ) )
-                {
-                    sw.WriteLine( string.Format( "{0} - Recieved Request: {1}: {2}", RockDateTime.Now.ToString(),request.HttpMethod , HttpUtility.UrlDecode( request.Form.ToString() ) ) );
-                }
-            }
-            catch ( SystemException ex )
-            {
-                ExceptionLogService.LogException( ex, context );
-            }*/
-
-
             response.ContentType = "text/plain";
 
             if ( request.HttpMethod != "POST" )
             {
-	            ExceptionLogService.LogException( new ArgumentException( "Invalid HttpMethod: " + request.HttpMethod ), context );
+                ExceptionLogService.LogException( new ArgumentException( "Invalid HttpMethod: " + request.HttpMethod ), context );
                 response.Write( "Invalid request type." );
                 return;
             }
@@ -68,18 +49,14 @@ namespace RockWeb.Webhooks
             {
                 try
                 {
-                    var rockContext = new Rock.Data.RockContext();
-
-                    XDocument xResult = null;
-                    string orderId = string.Empty;
-
-                    xResult = XDocument.Parse( HttpUtility.UrlDecode( request.Form["REQUEST"] ) );
+                    XDocument xResult = XDocument.Parse( HttpUtility.UrlDecode( request.Form["REQUEST"] ) );
 
                     // Get the orderid from the XML
-                    orderId = ( from o in xResult.Descendants( "OrderDetail" ) select ( string ) o.Attribute( "orderID" ) ).FirstOrDefault() ?? "OrderIdUnknown";
+                    string orderId = ( from o in xResult.Descendants( "OrderDetail" ) select (string)o.Attribute( "orderID" ) ).FirstOrDefault() ?? "OrderIdUnknown";
 
-                    if(string.IsNullOrEmpty( orderId ) || orderId == "OrderIdUnknown") {
-                    	orderId = ( from o in xResult.Descendants( "OrderDetail" ) select ( string ) o.Attribute( "OrderId" ) ).FirstOrDefault() ?? "OrderIdUnknown";
+                    if ( string.IsNullOrEmpty( orderId ) || orderId == "OrderIdUnknown" )
+                    {
+                        orderId = ( from o in xResult.Descendants( "OrderDetail" ) select (string)o.Attribute( "OrderId" ) ).FirstOrDefault() ?? "OrderIdUnknown";
                     }
 
                     // Return the success XML to PMM
@@ -90,18 +67,13 @@ namespace RockWeb.Webhooks
                     if ( !string.IsNullOrEmpty( orderId ) && orderId != "OrderIdUnknown" )
                     {
                         // Find and update the associated workflow
-                        var workflowService = new WorkflowService( rockContext );
+                        var rockContext = new Rock.Data.RockContext();
                         var workflow = new WorkflowService( rockContext ).Get( orderId.AsInteger() );
                         if ( workflow != null && workflow.IsActive )
                         {
                             workflow.LoadAttributes();
 
-                            var backgroundCheckService = new BackgroundCheckService( rockContext );
-                            var backgroundCheck = backgroundCheckService.Queryable()
-                                .Where( c =>
-                                    c.WorkflowId.HasValue &&
-                                    c.WorkflowId.Value == workflow.Id )
-                                .FirstOrDefault();
+                            var backgroundCheck = new BackgroundCheckService( rockContext ).Queryable().FirstOrDefault( c => c.WorkflowId == workflow.Id );
 
                             var xTransaction = new XElement( "Transaction",
                                 new XAttribute( "TransactionType", "RESPONSE" ),
@@ -131,22 +103,20 @@ namespace RockWeb.Webhooks
                         ExceptionLogService.LogException( new ArgumentException( "Could not find OrderId." ), context );
                     }
 
-                    try
-                    {
-                        response.StatusCode = 200;
-                        response.ContentType = "text/xml";
-                        response.AddHeader( "Content-Type", "text/xml" );
-                        xdocResult.Save( response.OutputStream );
-                    }
-                    catch { }
+                    response.StatusCode = 200;
+                    response.ContentType = "text/xml";
+                    response.AddHeader( "Content-Type", "text/xml" );
+                    xdocResult.Save( response.OutputStream );
 
                 }
                 catch ( SystemException ex )
                 {
                     ExceptionLogService.LogException( ex, context );
                 }
-            } else {
-            	ExceptionLogService.LogException( new ArgumentException( "Could not find 'REQUEST' parameter." ), context );
+            }
+            else
+            {
+                ExceptionLogService.LogException( new ArgumentException( "Could not find 'REQUEST' parameter." ), context );
             }
         }
 

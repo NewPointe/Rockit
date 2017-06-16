@@ -2,15 +2,14 @@
 
 using System;
 using System.Web;
-using org.newpointe.ServiceUCalendar.Model;
-using Newtonsoft.Json;
 using System.IO;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Common;
-using System.Data.Entity.Core.Objects;
-using System.EnterpriseServices.Internal;
+
+using Newtonsoft.Json;
+
+using org.newpointe.ServiceUCalendar.Model;
 
 public class Calendar : IHttpHandler
 {
@@ -111,27 +110,27 @@ public class Calendar : IHttpHandler
         List<additionalInfo> result;
         using (var rc = new Rock.Data.RockContext())
         {
-
-
             result = rc.Database.SqlQuery<additionalInfo>("exec newpointe_getAdditionalInfoByEventID @id", new SqlParameter("id", Id)).ToList<additionalInfo>();
         }
-        if (!string.IsNullOrEmpty(result[0].Image.ToString()))
+
+        if (!string.IsNullOrEmpty(result[0].Image))
         {
-            description = "<div class='text-center'><img src='" + string.Format(url, result[0].Image.ToString()) + "' alt='" + title + "' /></div>";
+            description = "<div class='text-center'><img src='" + string.Format(url, result[0].Image) + "' alt='" + title + "' /></div>";
         }
+
         description = description + "<p>" + Description + "</p>";
 
-        if (!string.IsNullOrEmpty(result[0].Details.ToString()))
+        if (!string.IsNullOrEmpty(result[0].Details))
         {
-            description = description + System.Text.RegularExpressions.Regex.Replace(result[0].Details.ToString(), @"\t|\n|\r", "");
+            description = description + System.Text.RegularExpressions.Regex.Replace(result[0].Details, @"\t|\n|\r", "");
         }
 
-        if (!string.IsNullOrEmpty(result[0].RegistrationURL.ToString()))
+        if (!string.IsNullOrEmpty(result[0].RegistrationURL))
         {
-            description = description + "<p><a class=\"btn btn-primary\" data-loading-text=\"&lt;i class='fa fa-refresh fa-spin'&gt;&lt;/i&gt; Let's go!\" href=\" " + result[0].RegistrationURL.ToString() + "\" id=\"ctl00_main_ctl23_ctl01_ctl06_lbSave\" onclick=\"Rock.controls.bootstrapButton.showLoading(this);\">Register Now</a></p>";
+            description = description + "<p><a class=\"btn btn-primary\" data-loading-text=\"&lt;i class='fa fa-refresh fa-spin'&gt;&lt;/i&gt; Let's go!\" href=\" " + result[0].RegistrationURL + "\" id=\"ctl00_main_ctl23_ctl01_ctl06_lbSave\" onclick=\"Rock.controls.bootstrapButton.showLoading(this);\">Register Now</a></p>";
         }
 
-        if (!string.IsNullOrEmpty(result[0].ShowReleaseForm.ToString()) && result[0].ShowReleaseForm.ToString() == "True")
+        if (!string.IsNullOrEmpty(result[0].ShowReleaseForm) && result[0].ShowReleaseForm == "True")
         {
             description = description + "<p><a class=\"btn btn-primary\" data-loading-text=\"&lt;i class='fa fa-refresh fa-spin'&gt;&lt;/i&gt; Let's go!\" href=\" " + "https://newpointe.org/form/163" + "\" id=\"ctl00_main_ctl23_ctl01_ctl06_lbSave\" onclick=\"Rock.controls.bootstrapButton.showLoading(this);\">Release Form</a></p>";
         } 
@@ -142,13 +141,10 @@ public class Calendar : IHttpHandler
     {
         return c.id.ToString() + '-' + FromMS(Convert.ToInt64(c.start)).ToShortDateString();
     }
-    private static DateTime FromMS(long microSec)
-    {
-        long milliSec = (long)(microSec);
-        DateTime startTime = new DateTime(1970, 1, 1);
 
-        TimeSpan time = TimeSpan.FromMilliseconds(milliSec);
-        return startTime.Add(time);
+    private static DateTime FromMS(long milliSec)
+    {
+        return new DateTime(1970, 1, 1).Add(TimeSpan.FromMilliseconds(milliSec));
     }
 
     public bool IsReusable

@@ -890,7 +890,7 @@ TransactionAcountDetails: [
 
         }
 
-        private string GetSavedAcccountFreqSupported( GatewayComponent component )
+        private string GetSavedAcccountFreqSupported ( GatewayComponent component )
         {
             if ( component != null )
             {
@@ -2265,14 +2265,11 @@ TransactionAcountDetails: [
                 pnlSaveAccount.Visible = false;
             }
 
-
-
             if ( PageParameter( "argsd" ) == "1" )
             {
                 person.SetAttributeValue( "AutomatedRecurringGiftSetupDate", DateTime.Now.ToString( "o" ) );
                 person.SaveAttributeValues();
             }
-
         }
 
 
@@ -2336,18 +2333,10 @@ TransactionAcountDetails: [
                 NotificationBox nb = nbMessage;
                 switch ( hfCurrentPage.Value.AsInteger() )
                 {
-                    case 1:
-                        nb = nbSelectionMessage;
-                        break;
-                    case 2:
-                        nb = nbSelectionMessage;
-                        break;
-                    case 3:
-                        nb = nbConfirmationMessage;
-                        break;
-                    case 4:
-                        nb = nbSuccessMessage;
-                        break;
+                    case 1: nb = nbSelectionMessage; break;
+                    case 2: nb = nbSelectionMessage; break;
+                    case 3: nb = nbConfirmationMessage; break;
+                    case 4: nb = nbSuccessMessage; break;
                 }
 
                 nb.Text = text;
@@ -2567,7 +2556,7 @@ TransactionAcountDetails: [
         /// Lightweight object for each contribution item
         /// </summary>
         [Serializable]
-        [DotLiquid.LiquidType( "Id", "Order", "Name", "CampusId", "Amount", "PublicName", "AmountFormatted" )]
+        [DotLiquid.LiquidType("Id", "Order", "Name", "CampusId", "Amount", "PublicName", "AmountFormatted")]
         protected class AccountItem
         {
             public int Id { get; set; }

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TagsByLetter.ascx.cs" Inherits="RockWeb.Blocks.Core.TagsByLetter" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TagsByLetter.ascx.cs" Inherits="RockWeb.Blocks.Core.TagsByLetter" %>
 
 <asp:UpdatePanel ID="upnlTagCloud" runat="server">
     <ContentTemplate>

@@ -2,7 +2,5 @@
 /packages/*.*
 .vs
 
-*/obj/
-*.orig
-
-org.newpointe.*/bin
+org.newpointe.*/obj/
+org.newpointe.*/bin/

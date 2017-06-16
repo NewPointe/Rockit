@@ -1,3 +1,78 @@
+Rock McKinley 6.5
+
++ Fixed an issue with ValueList and KeyValueList block settings not allowing user to add new values.
++ Fixed a backward-compatibility issue with migration helper method that was affecting plugin installs.
++ Fixed an exception that would occur when saving a change to a family.
+
+
+Rock McKinley 6.4
+
++ Updated the Edit Family block to create history correctly when adding a new person (Fixes #1726).
++ Fixed mispelled 'amount' in NumberBox validation message.
++ Fixed business photo reference.
++ Fixed the GroupRegistration block to not erase matched person's data if the user did not fully fill out the form.
++ Fixed issue with not being able to delete a non note (Fixes #2123)
++ Fixed SignNow issue with document getting sent to "Applies To" person instead of "Assigned to" and an exception that would occur when sending a required registration document (Fixes #2176, Fixes #2177)
++ Updated the Communication Entry block to validate the future send date/time (Fixes #1999)
++ Updated giving analytics to display accounts in configured order rather than alphabetically.
++ Added option to show NickName when adding a new family
++ Update the Facebook authentication to deal with their "[Oauth Access Token] Format" change (Fixes #2117).
++ Fixed blocks and stock lava that use the Google Static Map API to include the Google API Key since it is now required (Fixes #1991).
++ Updated the Global Attribute Filter so that it passes original merge fields when resolving contents of attribute (Fixes #2162).
++ Updated check-in to support numeric-only security codes.
++ Added option to display phone numbers, gender, and/or spouse on the person search results.
++ Added optional phone and email fields to the new person dialog when editing an existing family. These are not displayed by default.
++ Updated transaction matching to include 'Finish' button that will mark batch as being open instead of pending, and added a campus filter to limit selected accounts by campus.
+
+
+Rock McKinley 6.3
+
++ Updated the Protect My Ministry integration to include email address when sending a request to PMM.
++ Updated PayFlowPro to update the saved transaction code whenever a payment is made using a saved payment method. This is because PayPal only allows transaction codes that are less than 12 months old.
++ Update Relationships block so that a custom Relationships group type can be used.
++ Added new Giving person badge.
++ Added new Attended Group of Type person badge.
++ Updated the Transaction Entry block to allow anonymous person to still give as a business.
++ Added Features to the Transaction Entry Block.
++ Fixed issue with not being able to unselect all the phone types on the directory block (Fixes #1983).
++ Added logic to the Registration Entry block to prevent a registration if login is associated with a business (only occurs if bad data was created during import) (fixes #1772).
++ Fixed issue with not being able to do a Place Elsewhere workflow on a member who is associated with a registration (Fixes #2022).
++ Updated Registration Entry block to persist the discount code when hitting Previous button (Fixes #2015).
++ Fixed issue with Current Family Member option persisting incorrectly (Fixes #2074).
++ Updated Lava commands to clean up Lava variable space to keep things less cluttered for the user.
++ Added new group data view filter that pulls all groups that meet the criteria of a group type data view.
++ Update Actions to use helper method for saving attribute values so that it works with either a workflow or activity attribute.
++ Update Sliding Date Range picker to clear controls when set to a null value.
++ Update Benevolence Request action to set attribute value correctly.
++ Add workflow action to create Benevolence Result.
++ Added additional merge fields available to check-in labels that summarize the schedule/group type/group/location selected for each person.
++ Fixed registration issue when using NMI that would result in not being able to submit a payment if first attempt was unsuccessful (i.e. wrong card number entered).
++ Added the ability to search by Birthdate.
++ Added the ability to use the Prayer Request List and Entry blocks on a Person Profile page.
++ Updated the Person Directory block to display families in order by family name rather than by id.
++ Updated the Protect My Ministry block so that when changes are saved, it does not requires a Rock restart, or editing of background check components before changes are used. Also fixed issue with error message not being displayed correctly in workflow entry form.
+
+
+Rock McKinley 6.2
+
++ Fixed issue with icons printing incorrectly when using ipad checkin and client printing (fixes #1971).
++ Changed the list of event's registrants (shown in RegistrationInstanceDetail block) to display Grade field (when used) as Grade instead of Graduation Year (fixes #1946).
++ Updated the Registration Template detail block so that it will no longer change a person attribute to a registration attribute (fixes #1856).
++ Fixed the regsitration entry block to set the person's group member status to that of the registration template even if they are already in the group (previously it only set it when adding a new group member).
++ Added two additional block settings to allow restricting the Group Registration block even further (fixes #1799).
++ Changed campus field to be optional on the Background Check Request workflow and created Cancel type button (fixes #1701).
++ Changed Group Attendance Detail block's lava template setting to be optional (fixes #1952).
++ Updated Statement Generator to use Public Account Name vs the Standard Account Name.
++ Updated Person Attributes (Adults and Children) in Block Settings to not have a default checked when none selected (fixes #1880).
++ Updated Address Detail in person profile to hide Threshold fields (fixes #1665).
++ Fixed Address not saving on public person profile block.
++ Changed EditGroup and EditPerson block to mark family group inactive if all members people's record status are inactive (fixes #1103).
++ Changed EditGroup block to prevent a person's status from changing if they were formerly inactive/deceased (fixes #1887).
++ Changed EditPerson block to inactivate a person's family groups if, when changing the person to inactive, the family has no members except inactive people (fixes #1103).
++ Corrected "or" operator to be valid Lava (fixes #1912).
++ Added option to configure check-in areas/groups by Birth Date in addition to Age and/or Grade.
+
+
 Rock McKinley 6.1
 
 + Changed lava conditional to use the 'or' (||) operator in the PodcastMessageDetail lava (fixes #1912).

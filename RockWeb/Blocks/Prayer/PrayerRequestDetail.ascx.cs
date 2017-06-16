@@ -15,6 +15,7 @@
 // </copyright>
 //
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
@@ -131,6 +132,27 @@ namespace RockWeb.Blocks.Prayer
             if ( !Page.IsPostBack )
             {
                 ShowDetail( PageParameter( "prayerRequestId" ).AsInteger() );
+            }
+            else
+            {
+                if ( pnlEditDetails.Visible )
+                {
+                    var rockContext = new RockContext();
+                    PrayerRequest prayerRequest;
+                    int? prayerRequestId = PageParameter( "prayerRequestId" ).AsIntegerOrNull();
+                    if ( prayerRequestId.HasValue && prayerRequestId.Value > 0 )
+                    {
+                        prayerRequest = new PrayerRequestService( rockContext ).Get( prayerRequestId.Value );
+                    }
+                    else
+                    {
+                        prayerRequest = new PrayerRequest { Id = 0 };
+                    }
+
+                    prayerRequest.LoadAttributes();
+                    phAttributes.Controls.Clear();
+                    Rock.Attribute.Helper.AddEditControls( prayerRequest, phAttributes, false, BlockValidationGroup );
+                }
             }
 
             base.OnLoad( e );
@@ -279,6 +301,13 @@ namespace RockWeb.Blocks.Prayer
             descriptionList.Add( "Answer", prayerRequest.Answer.ScrubHtmlAndConvertCrLfToBr() );
             lMainDetails.Text = descriptionList.Html;
 
+            prayerRequest.LoadAttributes();
+            var attributes = prayerRequest.Attributes.Select( a => a.Value ).OrderBy( a => a.Order ).ThenBy( a => a.Name ).ToList();
+
+            var attributeCategories = Helper.GetAttributeCategories( attributes );
+
+            Rock.Attribute.Helper.AddDisplayControls( prayerRequest, attributeCategories, phDisplayAttributes, null, false );
+
             ShowStatus( prayerRequest, this.CurrentPerson, hlblFlaggedMessageRO );
             ShowPrayerCount( prayerRequest );
 
@@ -323,7 +352,17 @@ namespace RockWeb.Blocks.Prayer
             }
             else
             {
-                ppRequestor.SetValue( null );
+                if ( !string.IsNullOrWhiteSpace( PageParameter( "PersonId" ) ) )
+                {
+                    var requestor = new PersonService( new RockContext() ).Get( PageParameter( "PersonId" ).AsInteger() );
+                    ppRequestor.SetValue( requestor );
+                    tbFirstName.Text = requestor.NickName;
+                    tbLastName.Text = requestor.LastName;
+                }
+                else
+                {
+                    ppRequestor.SetValue( null );
+                }
             }
 
             // If no expiration date is set, then use the default setting.
@@ -343,6 +382,10 @@ namespace RockWeb.Blocks.Prayer
             cbIsUrgent.Checked = prayerRequest.IsUrgent ?? false;
             cbIsActive.Checked = prayerRequest.IsActive ?? false;
             cbAllowComments.Checked = prayerRequest.AllowComments ?? false;
+
+            prayerRequest.LoadAttributes();
+            phAttributes.Controls.Clear();
+            Rock.Attribute.Helper.AddEditControls( prayerRequest, phAttributes, true, BlockValidationGroup );
         }
 
         /// <summary>
@@ -507,6 +550,9 @@ namespace RockWeb.Blocks.Prayer
             prayerRequest.Text = dtbText.Text.Trim();
             prayerRequest.Answer = dtbAnswer.Text.Trim();
 
+            prayerRequest.LoadAttributes( rockContext );
+            Rock.Attribute.Helper.GetEditValues( phAttributes, prayerRequest );
+
             if ( !Page.IsValid )
             {
                 return;
@@ -519,8 +565,15 @@ namespace RockWeb.Blocks.Prayer
             }
 
             rockContext.SaveChanges();
+            prayerRequest.SaveAttributeValues( rockContext );
 
-            NavigateToParentPage();
+            var queryParms = new Dictionary<string, string>();
+            if ( !string.IsNullOrWhiteSpace( PageParameter( "PersonId" ) ) )
+            {
+                queryParms.Add( "PersonId", PageParameter( "PersonId" ) );
+            }
+
+            NavigateToParentPage( queryParms );
         }
 
         #endregion

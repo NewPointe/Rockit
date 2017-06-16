@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -18,95 +19,53 @@ using Rock.Data;
 using System.Diagnostics;
 
 
-
 namespace RockWeb.Plugins.org_newpointe.Checkin
 {
 
     /// <summary>
     /// Template block for developers to use to start a new block.
     /// </summary>
-    [DisplayName("Checkin AutoStart")]
-    [Category("NewPointe Check-in")]
-    [Description("Auto-start check-in with all Group Types selected based on Location.")]
-   
-
-
+    [DisplayName( "Checkin AutoStart" )]
+    [Category( "NewPointe Check-in" )]
+    [Description( "Auto-start check-in with all Group Types selected based on Location." )]
+    
     public partial class CheckinAutoStart : Rock.Web.UI.RockBlock
     {
 
-       // public string redirectURL = "";
-        public string listofareas = "";
-        public string selectedkiosk = "";
-        public int kioskID = 0;
-        
-
-
-        protected override void OnLoad(EventArgs e)
+        protected override void OnLoad( EventArgs e )
         {
-            RockPage.AddScriptLink("~/Blocks/CheckIn/Scripts/geo-min.js");
-            RockPage.AddScriptLink("~/Scripts/iscroll.js");
-            RockPage.AddScriptLink("~/Scripts/CheckinClient/checkin-core.js");
+            RockPage.AddScriptLink( "~/Blocks/CheckIn/Scripts/geo-min.js" );
+            RockPage.AddScriptLink( "~/Scripts/iscroll.js" );
+            RockPage.AddScriptLink( "~/Scripts/CheckinClient/checkin-core.js" );
 
-            //Get the campus from the URL
-            string campus = PageParameter("Campus");
-
-            switch (campus)
-            {
-                case "AKR":
-                case "Akron":
-                    kioskID = 17;
-                    ddlKiosk.SelectedValue = kioskID.ToString();
-                    break;
-
-                case "CAN":
-                case "Canton":
-                    kioskID = 13;
-                    ddlKiosk.SelectedValue = kioskID.ToString();
-                    break;
-
-                case "COS":
-                case "Coshocton":
-                    kioskID = 16;
-                    ddlKiosk.SelectedValue = kioskID.ToString();
-                    break;
-
-                case "DOV":
-                case "Dover":
-                    kioskID = 14;
-                    ddlKiosk.SelectedValue = kioskID.ToString();
-                    break;
-
-                case "MIL":
-                case "Millersburg":
-                    kioskID = 15;
-                    ddlKiosk.SelectedValue = kioskID.ToString();
-                    break;
-
-                case "WST":
-                case "Wooster":
-                    kioskID = 18;
-                    ddlKiosk.SelectedValue = kioskID.ToString();
-                    break;
-
-
-            }
-
-            if (!Page.IsPostBack)
+            if ( !Page.IsPostBack )
             {
 
-
+                var rockContext = new RockContext();
                 Guid kioskDeviceType = Rock.SystemGuid.DefinedValue.DEVICE_TYPE_CHECKIN_KIOSK.AsGuid();
-                ddlKiosk.Items.Clear();
-                using (var rockContext = new RockContext())
-                {
-                    ddlKiosk.DataSource = new DeviceService(rockContext).Queryable()
-                        .Where(d => d.DeviceType.Guid.Equals(kioskDeviceType))
+                var devices = new DeviceService( rockContext ).Queryable()
+                        .Where( d => d.DeviceType.Guid.Equals( kioskDeviceType ) )
                         .ToList();
-                }
+                ddlKiosk.Items.Clear();
+                ddlKiosk.DataSource = devices;
                 ddlKiosk.DataBind();
-                ddlKiosk.Items.Insert(0, new ListItem(None.Text, None.IdValue));
+                ddlKiosk.Items.Insert( 0, new ListItem( None.Text, None.IdValue ) );
 
-                string script = string.Format(@"
+                //Get the campus from the URL
+                var campusParam = PageParameter( "Campus" );
+
+                var campus = CampusCache.All().FirstOrDefault( c => c.ShortCode == campusParam || c.Name == campusParam );
+                if ( campus != null )
+                {
+                    var device = devices.FirstOrDefault( d => d.Locations.Select( l => (int?)l.Id ).Contains( campus.LocationId ) );
+
+                    if ( device != null )
+                    {
+                        ddlKiosk.SelectedValue = device.Id.ToString();
+                    }
+                }
+
+                string script = string.Format( @"
                     <script>
                         $(document).ready(function (e) {{
                             if (localStorage) {{
@@ -123,9 +82,8 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                             }}
                         }});
                     </script>
-                ", this.Page.ClientScript.GetPostBackEventReference(lbRefresh, ""));
-                phScript.Controls.Add(new LiteralControl(script));
-
+                ", this.Page.ClientScript.GetPostBackEventReference( lbRefresh, "" ) );
+                phScript.Controls.Add( new LiteralControl( script ) );
 
             }
             else
@@ -133,20 +91,8 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                 phScript.Controls.Clear();
             }
 
-
-            //if (ddlKiosk.SelectedValue != None.IdValue)
-            //{
-                BindGroupTypes();
-                //Response.Redirect(Session["redirectURL"].ToString());
-            //}
+            BindGroupTypes();
         }
-
-
-        protected void ddlKiosk_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //BindGroupTypes();
-        }
-
 
         /// <summary>
         /// Used by the local storage script to rebind the group types if they were previously
@@ -154,159 +100,88 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected void lbRefresh_Click(object sender, EventArgs e)
+        protected void lbRefresh_Click( object sender, EventArgs e )
         {
-
-                ListItem item = ddlKiosk.Items.FindByValue(hfKiosk.Value);
-                if (item != null)
-                {
-                    ddlKiosk.SelectedValue = item.Value;
-                }
-
-                BindGroupTypes(hfGroupTypes.Value);
-         }
-
-        
-        /// <summary>
-        /// Sets the "DeviceId" cookie to expire after TimeToCacheKioskGeoLocation minutes
-        /// if IsMobile is set.
-        /// </summary>
-        /// <param name="kiosk"></param>
-        private void SetDeviceIdCookie(Device kiosk)
-        {
-            // set an expiration cookie for these coordinates.
-            double timeCacheMinutes = double.Parse(GetAttributeValue("TimetoCacheKioskGeoLocation") ?? "0");
-
-            HttpCookie deviceCookie = Request.Cookies[Rock.CheckIn.CheckInBlock.CheckInCookie.DEVICEID];
-            if (deviceCookie == null)
+            ListItem item = ddlKiosk.Items.FindByValue( hfKiosk.Value );
+            if ( item != null )
             {
-                deviceCookie = new HttpCookie(Rock.CheckIn.CheckInBlock.CheckInCookie.DEVICEID, kiosk.Id.ToString());
+                ddlKiosk.SelectedValue = item.Value;
             }
 
-            deviceCookie.Expires = (timeCacheMinutes == 0) ? DateTime.MaxValue : RockDateTime.Now.AddMinutes(timeCacheMinutes);
-            Response.Cookies.Set(deviceCookie);
-
-            HttpCookie isMobileCookie = new HttpCookie(Rock.CheckIn.CheckInBlock.CheckInCookie.ISMOBILE, "true");
-            Response.Cookies.Set(isMobileCookie);
+            BindGroupTypes( hfGroupTypes.Value );
         }
-
-        /// <summary>
-        /// Clears the flag cookie that indicates this is a "mobile" device kiosk.
-        /// </summary>
-        private void ClearMobileCookie()
-        {
-            HttpCookie isMobileCookie = new HttpCookie(Rock.CheckIn.CheckInBlock.CheckInCookie.ISMOBILE);
-            isMobileCookie.Expires = RockDateTime.Now.AddDays(-1d);
-            Response.Cookies.Set(isMobileCookie);
-        }
-
 
         /// <summary>
         /// Gets the device group types.
         /// </summary>
         /// <param name="deviceId">The device identifier.</param>
         /// <returns></returns>
-        private List<GroupType> GetDeviceGroupTypes(int deviceId, RockContext rockContext)
+        private List<GroupType> GetDeviceGroupTypes( int deviceId, RockContext rockContext )
         {
             var groupTypes = new Dictionary<int, GroupType>();
 
-            var locationService = new LocationService(rockContext);
+            var locationService = new LocationService( rockContext );
 
             // Get all locations (and their children) associated with device
             var locationIds = locationService
-                .GetByDevice(deviceId, true)
-                .Select(l => l.Id)
+                .GetByDevice( deviceId, true )
+                .Select( l => l.Id )
                 .ToList();
 
             // Requery using EF
-            foreach (var groupType in locationService.Queryable()
-                .Where(l => locationIds.Contains(l.Id))
-                .SelectMany(l => l.GroupLocations)
-                .Where(gl => gl.Group.GroupType.TakesAttendance)
-                .Select(gl => gl.Group.GroupType)
-                .Distinct()
-                .ToList())
+            foreach ( var groupType in locationService
+                .Queryable().AsNoTracking()
+                .Where( l => locationIds.Contains( l.Id ) )
+                .SelectMany( l => l.GroupLocations )
+                .Where( gl => gl.Group.GroupType.TakesAttendance )
+                .Select( gl => gl.Group.GroupType )
+                .ToList() )
             {
-                if (!groupTypes.ContainsKey(groupType.Id))
-                {
-                    groupTypes.Add(groupType.Id, groupType);
-                }
+                groupTypes.AddOrIgnore( groupType.Id, groupType );
             }
 
-            return groupTypes.Select(g => g.Value).ToList();
+            return groupTypes
+                .Select( g => g.Value )
+                .OrderBy( g => g.Order )
+                .ToList();
         }
-
 
         private void BindGroupTypes()
         {
-            BindGroupTypes(string.Empty);
+            BindGroupTypes( string.Empty );
         }
 
-        protected void BindGroupTypes(string selectedValues)
+        protected void BindGroupTypes( string selectedValues )
         {
-
-            if (ddlKiosk.SelectedValue != None.IdValue)
+            if ( ddlKiosk.SelectedValue != None.IdValue && ddlKiosk.SelectedValue != null )
             {
-                using (var rockContext = new RockContext())
+                var rockContext = new RockContext();
+                var kiosk = new DeviceService( rockContext ).Get( ddlKiosk.SelectedValue.AsInteger() );
+                if ( kiosk != null )
                 {
-                    var kiosk = new DeviceService(rockContext).Get(Int32.Parse(ddlKiosk.SelectedValue));
-                    if (kiosk != null)
-                    {
-                        foreach (var id in GetDeviceGroupTypes(kiosk.Id, rockContext))
-                        {
-                            listofareas += id.Id + ",";
-                            selectedkiosk = kiosk.Id.ToString();
-
-                        }
-                    }
+                    Session["redirectURL"] = "~/checkin?KioskId=" + kiosk.Id + "&GroupTypeIds=" + string.Join( ",", GetDeviceGroupTypes( kiosk.Id, rockContext ) );
+                    Response.Redirect( Session["redirectURL"].ToString() );
                 }
+
             }
-
-            //grouplist.Text = "?KioskId=" + selectedkiosk + "&GroupTypeIds=" + listofareas.TrimEnd(',');
-            Session["redirectURL"] = "~/checkin?KioskId=" + selectedkiosk + "&GroupTypeIds=" + listofareas.TrimEnd(',');
-
-            if (kioskID != 0)
-            {
-                Response.Redirect(Session["redirectURL"].ToString());
-            }
-
         }
 
-        public void lbOk_Click(object sender, EventArgs e)
+        public void lbOk_Click( object sender, EventArgs e )
         {
-            if (ddlKiosk.SelectedValue == None.IdValue)
+            if ( ddlKiosk.SelectedValue == None.IdValue || ddlKiosk.SelectedValue == null )
             {
-                maWarning.Show("A Kiosk Device needs to be selected!", ModalAlertType.Warning);
-                return;
+                maWarning.Show( "A Kiosk Device needs to be selected!", ModalAlertType.Warning );
             }
-
-            else if (ddlKiosk.SelectedValue == null)
-            {
-                maWarning.Show("A Kiosk Device needs to be selected!", ModalAlertType.Warning);
-                return;
-            }
-
             else
             {
                 BindGroupTypes();
-                Response.Redirect(Session["redirectURL"].ToString());
             }
-
         }
 
-
-        protected void lbManual_Click(object sender, EventArgs e)
+        protected void lbManual_Click( object sender, EventArgs e )
         {
-            if (ddlKiosk.SelectedValue == None.IdValue)
-            {
-                maWarning.Show("A Kiosk Device needs to be selected!", ModalAlertType.Warning);
-                return;
-            }
-
-            Response.Redirect("~/checkin");
-
+            Response.Redirect( "~/checkin" );
         }
-
 
     }
 }

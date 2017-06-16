@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ProtectMyMinistrySettings.ascx.cs" Inherits="RockWeb.Blocks.Security.BackgroundCheck.ProtectMyMinistrySettings" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ProtectMyMinistrySettings.ascx.cs" Inherits="RockWeb.Blocks.Security.BackgroundCheck.ProtectMyMinistrySettings" %>
 
 <script type="text/javascript">
     function clearActiveDialog() {

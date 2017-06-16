@@ -21,6 +21,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -388,53 +389,75 @@ namespace RockWeb.Blocks.Event
 
             if ( !Page.IsPostBack )
             {
-                // Get the a registration if it has not already been loaded ( breadcrumbs may have loaded it )
-                if ( RegistrationState != null || SetRegistrationState() )
+                var personDv = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON.AsGuid() );
+                if ( CurrentPerson != null && personDv != null && CurrentPerson.RecordTypeValue.Guid != personDv.Guid )
                 {
-                    if ( RegistrationTemplate != null )
+                    ShowError( "Invalid Login", "Sorry, the login you are using doesn't appear to be tied to a valid person record. Try logging out and logging in with a different username, or create a new account before registering for the selected event." );
+                }
+                else
+                {
+                    // Get the a registration if it has not already been loaded ( breadcrumbs may have loaded it )
+                    if ( RegistrationState != null || SetRegistrationState() )
                     {
-                        bool instanceFull = false;
-                        if ( !RegistrationState.RegistrationId.HasValue && RegistrationInstanceState.MaxAttendees > 0 )
+                        if ( RegistrationTemplate != null )
                         {
-                            int registrants = RegistrationInstanceState.Registrations
-                                .Where( r => !r.IsTemporary )
-                                .Sum( r => r.Registrants.Count() );
-
-                            instanceFull = registrants >= RegistrationInstanceState.MaxAttendees;
-                        }
-
-                        if ( instanceFull )
-                        {
-                            ShowWarning(
-                                string.Format( "{0} Full", RegistrationTerm ),
-                                string.Format( "There are not any more {0} available for {1}.", RegistrationTerm.ToLower().Pluralize(), RegistrationInstanceState.Name ) );
-
-                        }
-                        else
-                        {
-                            // Check Login Requirement
-                            if ( RegistrationTemplate.LoginRequired && CurrentUser == null )
+                            bool instanceFull = false;
+                            if ( !RegistrationState.RegistrationId.HasValue && RegistrationInstanceState.MaxAttendees > 0 )
                             {
-                                var site = RockPage.Site;
-                                if ( site.LoginPageId.HasValue )
-                                {
-                                    site.RedirectToLoginPage( true );
-                                }
-                                else
-                                {
-                                    System.Web.Security.FormsAuthentication.RedirectToLoginPage();
-                                }
+                                int registrants = RegistrationInstanceState.Registrations
+                                    .Where( r => !r.IsTemporary )
+                                    .Sum( r => r.Registrants.Count() );
+
+                                instanceFull = registrants >= RegistrationInstanceState.MaxAttendees;
+                            }
+
+                            if ( instanceFull )
+                            {
+                                ShowWarning(
+                                    string.Format( "{0} Full", RegistrationTerm ),
+                                    string.Format( "There are not any more {0} available for {1}.", RegistrationTerm.ToLower().Pluralize(), RegistrationInstanceState.Name ) );
+
                             }
                             else
                             {
-                                // show the panel for asking how many registrants ( it may be skipped )
-                                ShowHowMany();
+                                // Check Login Requirement
+                                if ( RegistrationTemplate.LoginRequired && CurrentUser == null )
+                                {
+                                    var site = RockPage.Site;
+                                    if ( site.LoginPageId.HasValue )
+                                    {
+                                        site.RedirectToLoginPage( true );
+                                    }
+                                    else
+                                    {
+                                        System.Web.Security.FormsAuthentication.RedirectToLoginPage();
+                                    }
+                                }
+                                else
+                                {
+                                    if ( SignInline &&
+                                        !PageParameter( "redirected" ).AsBoolean() &&
+                                        DigitalSignatureComponent != null &&
+                                        !string.IsNullOrWhiteSpace( DigitalSignatureComponent.CookieInitializationUrl ) )
+                                    {
+                                        // Redirect for Digital Signature Cookie Initialization 
+                                        var returnUrl = GlobalAttributesCache.Read().GetValue( "PublicApplicationRoot" ).EnsureTrailingForwardslash() + Request.Url.PathAndQuery.RemoveLeadingForwardslash();
+                                        returnUrl = returnUrl + ( returnUrl.Contains( "?" ) ? "&" : "?" ) + "redirected=True";
+                                        string redirectUrl = string.Format( "{0}?redirect_uri={1}", DigitalSignatureComponent.CookieInitializationUrl, HttpUtility.UrlEncode( returnUrl ) );
+                                        Response.Redirect( redirectUrl, false );
+                                    }
+                                    else
+                                    {
+                                        // show the panel for asking how many registrants ( it may be skipped )
+                                        ShowHowMany();
+                                    }
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        ShowWarning( "Sorry", string.Format( "The selected {0} could not be found or is no longer active.", RegistrationTerm.ToLower() ) );
+                        else
+                        {
+                            ShowWarning( "Sorry", string.Format( "The selected {0} could not be found or is no longer active.", RegistrationTerm.ToLower() ) );
+                        }
                     }
                 }
             }
@@ -446,6 +469,7 @@ namespace RockWeb.Blocks.Event
                 // Show or Hide the Credit card entry panel based on if a saved account exists and it's selected or not.
                 divNewCard.Style[HtmlTextWriterStyle.Display] = ( rblSavedCC.Items.Count == 0 || rblSavedCC.Items[rblSavedCC.Items.Count - 1].Selected ) ? "block" : "none";
             }
+            
         }
 
         public override List<BreadCrumb> GetBreadCrumbs( PageReference pageReference )
@@ -730,12 +754,7 @@ namespace RockWeb.Blocks.Event
                 CurrentRegistrantIndex = RegistrationState != null ? RegistrationState.RegistrantCount - 1 : 0;
                 CurrentFormIndex = FormCount - 1;
 
-                tbDiscountCode.Text = string.Empty;
                 nbAmountPaid.Text = string.Empty;
-
-                RegistrationState.DiscountCode = string.Empty;
-                RegistrationState.DiscountPercentage = 0.0M;
-                RegistrationState.DiscountAmount = 0.0M;
                 RegistrationState.PaymentAmount = null;
 
                 ShowRegistrant();
@@ -842,7 +861,16 @@ namespace RockWeb.Blocks.Event
                     }
                     else
                     {
-                        ShowPayment();
+                        // Failure on entering payment info, resubmit step 1
+                        string errorMessage = string.Empty;
+                        if ( ProcessStep1( out errorMessage ) )
+                        {
+                            ShowPayment();
+                        }
+                        else
+                        {
+                            ShowSummary();
+                        }
                     }
                 }
             }
@@ -2671,7 +2699,6 @@ namespace RockWeb.Blocks.Event
                                 RegistrationTemplate.GroupMemberRoleId.HasValue )
                             {
                                 groupMember.GroupRoleId = RegistrationTemplate.GroupMemberRoleId.Value;
-                                groupMember.GroupMemberStatus = RegistrationTemplate.GroupMemberStatus;
                             }
                             else
                             {
@@ -2686,6 +2713,8 @@ namespace RockWeb.Blocks.Event
                                 groupMember.GroupMemberStatus = GroupMemberStatus.Active;
                             }
                         }
+
+                        groupMember.GroupMemberStatus = RegistrationTemplate.GroupMemberStatus;
 
                         rockContext.SaveChanges();
 
@@ -3189,7 +3218,10 @@ namespace RockWeb.Blocks.Event
                     if ( CurrentFormIndex == 0 && RegistrationState != null && RegistrationState.RegistrantCount > CurrentRegistrantIndex )
                     {
                         var registrant = RegistrationState.Registrants[CurrentRegistrantIndex];
-                        if ( registrant.Id <= 0 && CurrentFormIndex == 0 && RegistrationTemplate.ShowCurrentFamilyMembers && CurrentPerson != null )
+                        if ( registrant.Id <= 0 && 
+                            CurrentFormIndex == 0 && 
+                            RegistrationTemplate.RegistrantsSameFamily == RegistrantsSameFamily.Yes && 
+                            RegistrationTemplate.ShowCurrentFamilyMembers && CurrentPerson != null )
                         {
                             var familyMembers = CurrentPerson.GetFamilyMembers( true )
                                 .Select( m => m.Person )
@@ -3567,11 +3599,15 @@ namespace RockWeb.Blocks.Event
     // The qry parameter value is saved to a hidden field and a post back is performed
     $('#iframeRequiredDocument').on('load', function(e) {{
         var location = this.contentWindow.location;
-        var qryString = this.contentWindow.location.search;
-        if ( qryString && qryString != '' && qryString.startsWith('?document_id') ) {{ 
-            debugger;
-            $('#{19}').val(qryString);
-            {20};
+        try {{
+            var qryString = this.contentWindow.location.search;
+            if ( qryString && qryString != '' && qryString.startsWith('?document_id') ) {{ 
+                $('#{19}').val(qryString);
+                {20};
+            }}
+        }}
+        catch (e) {{
+            console.log(e.message);
         }}
     }});
 

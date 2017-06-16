@@ -1,6 +1,7 @@
 /App_Data
 /Assets/calendar-full.json
 /Assets/calendar.json
+/Bin/org.newpointe.*
 /Content
 /web.config*
 /web.ConnectionStrings.config

@@ -3,7 +3,6 @@ using System.Web.UI;
 
 using Rock;
 using Rock.Web.Cache;
-using Rock.Model;
 using Rock.Web.UI;
 using System.ComponentModel;
 
@@ -20,14 +19,14 @@ namespace RockWeb.Plugins.org_newpointe.LiveMenu
 
         protected void Page_Load( object sender, EventArgs e )
         {
-            string sessionLive = ( string ) Session["livePopup"] ?? "false";
 
-            if ( GlobalAttributesCache.Value( "LiveService" ).AsBoolean(false) )
+            if ( GlobalAttributesCache.Value( "LiveService" ).AsBoolean() )
             {
                 LiveServiceText = GlobalAttributesCache.Value( "LiveServiceTextLive" );
-                if ( sessionLive != "true" )
+                
+                if ( (string)Session["livePopup"] != "true" )
                 {
-                    ScriptManager.RegisterStartupScript( this, this.GetType(), "Pop", "openModal();", true );
+                    ScriptManager.RegisterStartupScript( this, GetType(), "Pop", "openModal();", true );
                     Session["livePopup"] = "true";
                 }
 

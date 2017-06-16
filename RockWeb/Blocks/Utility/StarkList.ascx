@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="StarkList.ascx.cs" Inherits="RockWeb.Blocks.Utility.StarkList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="StarkList.ascx.cs" Inherits="RockWeb.Blocks.Utility.StarkList" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>

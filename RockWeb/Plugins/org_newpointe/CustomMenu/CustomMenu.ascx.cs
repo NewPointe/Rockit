@@ -1,72 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
-using Rock;
-using Rock.Attribute;
 using Rock.Model;
 using Rock.Web.UI;
-using Rock.Web.Cache;
-using Rock.Web.UI.Controls;
 using Rock.Data;
-using Rock.Security;
 using System.ComponentModel;
-using System.Data;
-using System.Web.Script.Serialization;
+using Rock;
 
-[DisplayName("Custom Menu")]
-[Category("NewPointe.org Web Blocks")]
-[Description("Main menu")]
+[DisplayName( "Custom Menu" )]
+[Category( "NewPointe.org Web Blocks" )]
+[Description( "Main menu" )]
 public partial class Plugins_org_newpointe_CustomMenu_CustomMenu : RockBlock
 {
 
-    public string jsonSearch { get; set; }
-    public string replaceId = "{{seriesid}}";
-    public string replaceImage= "{{seriesimage}}";
-    public string replacedId = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesId");
-    public string replacedImage = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesImage");
+    private static readonly Guid MessageSeriesContentChannelGuid = "06e29efc-a70a-4636-b558-c1ad6f46cd2b".AsGuid();
 
-
-    protected void Page_Load(object sender, EventArgs e)
+    protected void Page_Load( object sender, EventArgs e )
     {
-        var rc = new RockContext();
-        var customer = rc.Database.SqlQuery<Aaron>("EXEC newpointe_GetMenuData").ToList();
-        rptMenuLinks.DataSource = customer;
+        var replacedId = "";
+        var replacedImage = "";
+
+        var lastMessageSeries = new ContentChannelService(new RockContext())
+            .Get( MessageSeriesContentChannelGuid )
+            .Items
+            .Where(i => i.StartDateTime < DateTime.Now)
+            .OrderByDescending(i => i.StartDateTime)
+            .FirstOrDefault();
+
+        if (lastMessageSeries != null)
+        {
+            replacedId = lastMessageSeries.Id.ToString();
+            replacedImage = lastMessageSeries.GetAttributeValue( "SmallSeriesFeatureImage" ) ?? "";
+        }
+
+        var rootPageId = RockPage.Site.DefaultPageId;
+        var menuData = new HtmlContentService( new RockContext() ).Queryable()
+            .Where( h => h.Block.Page.ParentPageId == rootPageId && h.Block.Page.InternalName != "support-pages" )
+            .Select( h => new
+            {
+                h.Block.Page.Id,
+                h.Block.Page.PageTitle,
+                HtmlContent = h.Content.Replace( "{{seriesid}}", replacedId ).Replace( "{{seriesimage}}", replacedImage )
+            } );
+
+        rptMenuLinks.DataSource = rptMenuDivs.DataSource = menuData.ToList();
         rptMenuLinks.DataBind();
-        rptMenuDivs.DataSource = customer;
         rptMenuDivs.DataBind();
-
-        replacedId = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesId");
-        replacedImage = Rock.Web.Cache.GlobalAttributesCache.Value("LatestMessageSeriesImage");
-    }
-
-    public class Aaron
-    {
-        public int ID { get; set; }
-        public string PageTitle { get; set; }
-        public string HtmlContent { get; set; }
-    }
-
-    public class NPSearch
-    {
-        public int ID  { get; set; }
-        public string PageTitle { get; set; }
-    }
-
-
-    protected void rptMenuLinks_ItemDataBound(object sender, RepeaterItemEventArgs e)
-    {
-        //if(e.Item.ItemType == ListItemType.Footer)
-        //{
-        //    Repeater repeater = e.Item.FindControl("rptMenuDivs") as Repeater;
-
-        //    var rc = new RockContext();
-        //    var data = rc.Database.SqlQuery<Aaron>("EXEC GetAaronData").ToList();
-        //    repeater.DataSource = data;
-        //    repeater.DataBind();
-        //}
     }
 }

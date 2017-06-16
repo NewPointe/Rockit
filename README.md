@@ -11,8 +11,8 @@ NewPointe's Implementation of the Rock (SDK)
  - [Mods](#mods)
  - [Misc](#misc)
 
- 
- 
+
+
 Blocks
 =======
 
@@ -28,25 +28,34 @@ Blocks
 [/RockWeb/Scripts/?](/RockWeb/Scripts/)  
 
 
-#### AzureUpload
-Generic file upload block. Need to change hard-coded URL in success message.  
-[/RockWeb/Plugins/org_newpointe/AzureUpload/](/RockWeb/Plugins/org_newpointe/AzureUpload/)  
+#### Custom CheckinSuccess
+Custom Checkin Success block modded to allow batch-cutting labels.  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Checkin/](/RockWeb/Plugins/org_newpointe/BlockMods/Checkin/)  
+
+
+#### Custom Financial TransactionEntry
+Custom Financial TransactionEntry block. Adds a camus selector to the list of accounts, adds auto-hiding acordians for pre-filled fields on mobile, adds query parameter handling to pre-fill accounts, values, and the date, and a few other minor tweeks.  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Finance/](/RockWeb/Plugins/org_newpointe/BlockMods/Finance/)  
+
+
+#### Custom GroupFinder
+Custom GroupFinder block modded to change the campus checkboxes into a dropdown.  
+[/RockWeb/Plugins/org_newpointe/BlockMods/Groups/](/RockWeb/Plugins/org_newpointe/BlockMods/Groups/)  
+
+
+#### CheckinAutoStart
+Auto-starts check-in with all Group Types selected and allows specifying a campus query parameter to auto-select a kiosk.  
+[/RockWeb/Plugins/org_newpointe/Checkin/](/RockWeb/Plugins/org_newpointe/Checkin/)  
+
+
+#### CustomMenu
+The floating nav menu for our website.  
+[/RockWeb/Plugins/org_newpointe/CustomMenu](/RockWeb/Plugins/org_newpointe/CustomMenu)  
 
 
 #### LiveMenu
 Creates a popup and shows global attribute 'LiveServiceTextLive' when global attribute 'LiveService' is `true`. Otherwise shows global attribute 'LiveServiceTextNotLive'. Need to change hard-coded Watch Live link.  
 [/RockWeb/Plugins/org_newpointe/LiveMenu/](/RockWeb/Plugins/org_newpointe/LiveMenu/)  
-
-
-#### CheckinAutoStart
-Auto-start check-in with all Group Types selected.  
-[/RockWeb/Plugins/org_newpointe/Checkin/CheckinAutoStart.ascx](/RockWeb/Plugins/org_newpointe/Checkin/CheckinAutoStart.ascx)  
-[/RockWeb/Plugins/org_newpointe/Checkin/CheckinAutoStart.ascx.cs](/RockWeb/Plugins/org_newpointe/Checkin/CheckinAutoStart.ascx.cs)  
-
-
-#### CustomMenu
-Custom nav menu.  
-[/RockWeb/Plugins/org_newpointe/CustomMenu](/RockWeb/Plugins/org_newpointe/CustomMenu)  
 
 
 #### MachFormEmbed

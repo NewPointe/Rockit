@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PluginManager.ascx.cs" Inherits="RockWeb.Blocks.Core.PluginManager" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PluginManager.ascx.cs" Inherits="RockWeb.Blocks.Core.PluginManager" %>
 
 <asp:UpdatePanel ID="upRockPackages" runat="server">
 <ContentTemplate>

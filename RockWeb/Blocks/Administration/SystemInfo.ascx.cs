@@ -131,6 +131,9 @@ namespace RockWeb.Blocks.Administration
             // Flush Site Domains
             Rock.Web.Cache.SiteCache.Flush();
 
+            // Flush today's Check-in Codes
+            Rock.Model.AttendanceCodeService.FlushTodaysCodes();
+
             string webAppPath = Server.MapPath( "~" );
 
             // Check for any unregistered entity types, field types, and block types
@@ -202,7 +205,10 @@ namespace RockWeb.Blocks.Administration
             ResponseWrite( "Server Variables:", "", response );
             foreach ( string key in Request.ServerVariables )
             {
-                ResponseWrite( key, Request.ServerVariables[key], response );
+                if ( !key.Equals("HTTP_COOKIE", StringComparison.OrdinalIgnoreCase ) )
+                {
+                    ResponseWrite( key, Request.ServerVariables[key], response );
+                } 
             }
 
             response.Flush();

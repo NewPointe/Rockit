@@ -40,7 +40,9 @@ namespace RockWeb.Blocks.Groups
     [Category( "Groups" )]
     [Description( "Allows a person to register for a group." )]
 
-    [GroupField("Group", "Optional group to add person to. If omitted, the group should be passed in the Query string.", false, "", "", 0)]
+    [GroupTypesField( "Allowed Group Types", "This setting restricts which types of groups a person can be added to, however selecting a specific group via the Group setting will override this restriction.", true, Rock.SystemGuid.GroupType.GROUPTYPE_SMALL_GROUP, "", 0 )]
+    [GroupField( "Group", "Optional group to add person to. If omitted, the group's Guid should be passed via the Query string (GroupGuid=).", false, "", "", 0 )]
+    [BooleanField( "Enable Passing Group Id", "If enabled, allows the ability to pass in a group's Id (GroupId=) instead of the Guid.", true, "", 0 )]
     [CustomRadioListField("Mode", "The mode to use when displaying registration details.", "Simple^Simple,Full^Full,FullSpouse^Full With Spouse", true, "Simple", "", 1)]
     [CustomRadioListField( "Group Member Status", "The group member status to use when adding person to group (default: 'Pending'.)", "2^Pending,1^Active,0^Inactive", true, "2", "", 2 )]
     [DefinedValueField( "2E6540EA-63F0-40FE-BE50-F2A84735E600", "Connection Status", "The connection status to use for new individuals (default: 'Web Prospect'.)", true, false, "368DD475-242C-49C4-A42C-7278BE690CC2", "", 3 )]
@@ -70,6 +72,7 @@ namespace RockWeb.Blocks.Groups
         GroupTypeCache _familyType = null;
         GroupTypeRoleCache _adultRole = null;
         bool _autoFill = true;
+        bool _isValidSettings = true;
 
         #endregion
 
@@ -144,6 +147,7 @@ namespace RockWeb.Blocks.Groups
 
             if ( !CheckSettings() )
             {
+                _isValidSettings = false;
                 nbNotice.Visible = true;
                 pnlView.Visible = false;
             }
@@ -180,7 +184,8 @@ namespace RockWeb.Blocks.Groups
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void btnRegister_Click( object sender, EventArgs e )
         {
-            if ( Page.IsValid )
+            // Check _isValidSettings in case the form was showing and they clicked the visible register button.
+            if ( Page.IsValid && _isValidSettings )
             {
                 var rockContext = new RockContext();
                 var personService = new PersonService( rockContext );
@@ -189,6 +194,7 @@ namespace RockWeb.Blocks.Groups
                 Person spouse = null;
                 Group family = null;
                 GroupLocation homeLocation = null;
+                bool isMatch = false;
 
                 var changes = new List<string>();
                 var spouseChanges = new List<string>();
@@ -212,6 +218,7 @@ namespace RockWeb.Blocks.Groups
                     if ( matches.Count() == 1 )
                     {
                         person = matches.First();
+                        isMatch = true;
                     }
                 }
 
@@ -269,40 +276,49 @@ namespace RockWeb.Blocks.Groups
                 // If using a 'Full' view, save the phone numbers and address
                 if ( !IsSimple )
                 {
-                    SetPhoneNumber( rockContext, person, pnHome, null, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME.AsGuid(), changes );
-                    SetPhoneNumber( rockContext, person, pnCell, cbSms, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_MOBILE.AsGuid(), changes );
-
-                    string oldLocation = homeLocation != null ? homeLocation.Location.ToString() : string.Empty;
-                    string newLocation = string.Empty;
-
-                    var location = new LocationService( rockContext ).Get( acAddress.Street1, acAddress.Street2, acAddress.City, acAddress.State, acAddress.PostalCode, acAddress.Country );
-                    if ( location != null )
+                    if ( !isMatch || !string.IsNullOrWhiteSpace( pnHome.Number ) )
                     {
-                        if ( homeLocation == null )
+                        SetPhoneNumber( rockContext, person, pnHome, null, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_HOME.AsGuid(), changes );
+                    }
+                    if ( !isMatch || !string.IsNullOrWhiteSpace( pnHome.Number ) )
+                    {
+                        SetPhoneNumber( rockContext, person, pnCell, cbSms, Rock.SystemGuid.DefinedValue.PERSON_PHONE_TYPE_MOBILE.AsGuid(), changes );
+                    }
+
+                    if ( !isMatch || !string.IsNullOrWhiteSpace( acAddress.Street1 ) )
+                    {
+                        string oldLocation = homeLocation != null ? homeLocation.Location.ToString() : string.Empty;
+                        string newLocation = string.Empty;
+
+                        var location = new LocationService( rockContext ).Get( acAddress.Street1, acAddress.Street2, acAddress.City, acAddress.State, acAddress.PostalCode, acAddress.Country );
+                        if ( location != null )
                         {
-                            homeLocation = new GroupLocation();
-                            homeLocation.GroupLocationTypeValueId = _homeAddressType.Id;
-                            family.GroupLocations.Add( homeLocation );
+                            if ( homeLocation == null )
+                            {
+                                homeLocation = new GroupLocation();
+                                homeLocation.GroupLocationTypeValueId = _homeAddressType.Id;
+                                family.GroupLocations.Add( homeLocation );
+                            }
+                            else
+                            {
+                                oldLocation = homeLocation.Location.ToString();
+                            }
+
+                            homeLocation.Location = location;
+                            newLocation = location.ToString();
                         }
                         else
                         {
-                            oldLocation = homeLocation.Location.ToString();
+                            if ( homeLocation != null )
+                            {
+                                homeLocation.Location = null;
+                                family.GroupLocations.Remove( homeLocation );
+                                new GroupLocationService( rockContext ).Delete( homeLocation );
+                            }
                         }
 
-                        homeLocation.Location = location;
-                        newLocation = location.ToString();
+                        History.EvaluateChange( familyChanges, "Home Location", oldLocation, newLocation );
                     }
-                    else
-                    {
-                        if ( homeLocation != null )
-                        {
-                            homeLocation.Location = null;
-                            family.GroupLocations.Remove( homeLocation );
-                            new GroupLocationService( rockContext ).Delete( homeLocation );
-                        }
-                    }
-
-                    History.EvaluateChange( familyChanges, "Home Location", oldLocation, newLocation );
 
                     // Check for the spouse
                     if ( IsFullWithSpouse && !string.IsNullOrWhiteSpace(tbSpouseFirstName.Text) && !string.IsNullOrWhiteSpace(tbSpouseLastName.Text) )
@@ -585,9 +601,10 @@ namespace RockWeb.Blocks.Groups
         }
 
         /// <summary>
-        /// Checks the settings.
+        /// Checks the settings.  If false is returned, it's expected that the caller will make
+        /// the nbNotice visible to inform the user of the "settings" error.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>true if settings are valid; false otherwise</returns>
         private bool CheckSettings()
         {
             _rockContext = _rockContext ?? new RockContext();
@@ -624,7 +641,7 @@ namespace RockWeb.Blocks.Groups
                 }
             }
 
-            if ( _group == null )
+            if ( _group == null && GetAttributeValue( "EnablePassingGroupId" ).AsBoolean( false ) )
             {
                 int? groupId = PageParameter( "GroupId" ).AsIntegerOrNull();
                 if ( groupId.HasValue )
@@ -636,15 +653,18 @@ namespace RockWeb.Blocks.Groups
             if ( _group == null )
             {
                 nbNotice.Heading = "Unknown Group";
-                nbNotice.Text = "<p>This page requires a valid group id parameter, and there was not one provided.</p>";
+                nbNotice.Text = "<p>This page requires a valid group identifying parameter and there was not one provided.</p>";
                 return false;
             }
             else
             {
-                if ( groupIsFromQryString && ( _group.IsSecurityRole || _group.GroupType.Guid == Rock.SystemGuid.GroupType.GROUPTYPE_SECURITY_ROLE.AsGuid() ) )
+                var groupTypeGuids = this.GetAttributeValue( "AllowedGroupTypes" ).SplitDelimitedValues().AsGuidList();
+
+                if ( groupIsFromQryString && groupTypeGuids.Any() && !groupTypeGuids.Contains( _group.GroupType.Guid ) )
                 {
+                    _group = null;
                     nbNotice.Heading = "Invalid Group";
-                    nbNotice.Text = "<p>The selected group is a security group and this block cannot be used to add people to a security group (unless configured for that specific group).</p>";
+                    nbNotice.Text = "<p>The selected group is a restricted group type therefore this block cannot be used to add people to these groups (unless configured to allow).</p>";
                     return false;
                 }
                 else
@@ -682,7 +702,6 @@ namespace RockWeb.Blocks.Groups
             }
 
             return true;
-
         }
 
         /// <summary>

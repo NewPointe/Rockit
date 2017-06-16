@@ -1,22 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Web.UI.WebControls;
 
-using Rock;
-using Rock.Attribute;
 using Rock.Model;
 using Rock.Web.UI.Controls;
 using System.Text.RegularExpressions;
-using System.Data.Entity.SqlServer;
 using Rock.Data;
 using Rock.Web.Cache;
-using System.Diagnostics;
-using System.Data.Entity.Core.Objects;
-using System.Text;
-using RestSharp.Extensions;
 
 namespace RockWeb.Plugins.org_newpointe.ExtraSearch
 {
@@ -58,9 +49,7 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
             if ( !string.IsNullOrWhiteSpace( term ) )
             {
 
-                var terms = term.Trim().Split( ' ' );
-                
-                var pages = new PageService( new RockContext() ).Queryable().ToList().Where( p => Regex.IsMatch( p.PageTitle, String.Join("\\w* ", terms.Select(t => Regex.Escape(t))), RegexOptions.IgnoreCase ) ).ToList();
+                var pages = org.newpointe.ExtraSearch.PageTitle.SearchPages(term).Take(50).ToList();
     
                 if ( pages.Count == 1 )
                 {
@@ -69,7 +58,7 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
                 }
                 else
                 {
-                    gPages.DataKeyNames = new string[] { "Guid" };
+                    gPages.DataKeyNames = new [] { "Guid" };
                     gPages.EntityTypeId = EntityTypeCache.GetId<Page>();
                     gPages.DataSource = pages.Select( p => new
                     {

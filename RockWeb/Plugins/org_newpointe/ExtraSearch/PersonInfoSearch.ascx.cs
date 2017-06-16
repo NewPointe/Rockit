@@ -219,52 +219,22 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
 
             if ( !string.IsNullOrWhiteSpace( term ) )
             {
-                term = term.Trim();
-                var rockContext = new RockContext();
+                bool reversed;
+                var people = org.newpointe.ExtraSearch.Person.SearchPersons(term, out reversed).Select(p => p.Person);
 
-                var personService = new PersonService( rockContext );
-                IQueryable<Person> people = null;
-
-                var terms = term.Split( ':' );
-                var search = terms[0];
-                var person = terms.Count() > 1 ? terms[1].Trim().ToLower() : null;
-                var personServ = new PersonService( rockContext );
-                List<Person> searchQuery = new List<Person>();
-
-                if ( search.Contains( '@' ) )
-                {
-                    searchQuery.AddRange( personServ.Queryable().Where( p => p.Email.StartsWith( search ) ).OrderBy( p => p.Email ) );
-                }
-                else
-                {
-                    if ( Regex.Matches( search, @"[0-9]" ).Count == 0 )
-                    {
-                        searchQuery.AddRange( personServ.GetByFullName( term, true ) );
-                    }
-                    if ( Regex.Matches( search, @" " ).Count == 0 )
-                    {
-                        searchQuery.AddRange( personServ.Queryable().Where( p => p.Email.StartsWith( search ) ).OrderBy( p => p.Email ) );
-                    }
-                    if ( Regex.Matches( search, @"[a-zA-Z]" ).Count == 0 )
-                    {
-                        searchQuery.AddRange( new PhoneNumberService( rockContext ).GetBySearchterm( term ).DistinctBy( pn => pn.Person ).Select( pn => pn.Person ) );
-                    }
-                }
-                if ( person != null )
-                    people = searchQuery.Where( p => ( p.NickName + " " + p.LastName ).ToLower().StartsWith( person ) ).Distinct().AsQueryable();
-                else
-                    people = searchQuery.Distinct().AsQueryable();
-
-
-
+                
                 SortProperty sortProperty = gPeople.SortProperty;
                 if ( sortProperty != null )
                 {
                     people = people.Sort( sortProperty );
                 }
+                else if ( reversed )
+                {
+                    people = people.OrderBy( p => p.LastName ).ThenBy( p => p.NickName );
+                }
                 else
                 {
-                    people = people.OrderBy( p => p.LastName ).ThenBy( p => p.FirstName );
+                    people = people.OrderBy( p => p.NickName ).ThenBy( p => p.LastName );
                 }
 
                 Guid familyGuid = new Guid( Rock.SystemGuid.GroupType.GROUPTYPE_FAMILY );
@@ -308,9 +278,9 @@ namespace RockWeb.Plugins.org_newpointe.ExtraSearch
                 }
                 else
                 {
-                    if ( !search.Contains( '@' ) && Regex.Matches( search, @"[0-9]" ).Count == 0 )
+                    if ( !term.Contains( '@' ) && Regex.Matches( term, @"[0-9]" ).Count == 0 )
                     {
-                        var similiarNames = personService.GetSimilarNames( term,
+                        var similiarNames = new PersonService(new RockContext()).GetSimilarNames( term,
                             personList.Select( p => p.Id ).ToList(), true );
                         if ( similiarNames.Any() )
                         {

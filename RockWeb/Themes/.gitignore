@@ -1,3 +1,3 @@
-prepros.cfg
-prepros*.config
-*.css
+*/Styles/bootstrap.css
+*/Styles/theme.css
+*/Styles/checkin-theme.css

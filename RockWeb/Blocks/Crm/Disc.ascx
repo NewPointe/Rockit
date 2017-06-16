@@ -18,7 +18,7 @@
         if ($checkedItem.length > 0) {
             var $nextPanel = $pRow.closest(".disc-assessment").next();
             if ($nextPanel.length > 0) {
-                $("body").animate({ scrollTop: $nextPanel.offset().top - 60 }, 400);
+                $("body").animate({ scrollTop: $nextPanel.offset().top - 20 }, 400);
             }
         }
     }
