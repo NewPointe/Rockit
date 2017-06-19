@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-md-6">
                     <% } %>
-
+                            <asp:Literal ID="lTransactionHeader" runat="server" />
                             <div class="panel panel-default contribution-info">
                                 <div class="panel-heading"><h3 class="panel-title"><asp:Literal ID="lContributionInfoTitle" runat="server" /></h3></div>
                                 <div class="panel-body">
@@ -111,22 +111,22 @@
                                         <Rock:ButtonDropDownList ID="btnCamp" runat="server" CssClass="btn btn-primary" Visible="false" Label=" "
                                             DataTextField="Name" DataValueField="Id" OnSelectionChanged="btnCamp_SelectionChanged" AutoPostBack="true" />
 
-                                        <asp:Repeater ID="rptAccountList" runat="server">
+                                        <asp:Repeater ID="rptAccountList" runat="server" OnItemDataBound="rptAccountList_ItemDataBound">
                                             <ItemTemplate>
-                                                <Rock:CurrencyBox ID="txtAccountAmount" runat="server" Label='<%# Eval("PublicName") %>' Text='<%# ((decimal)Eval("Amount") != 0) ? ((decimal)Eval("Amount")).ToString("N2") : "" %>' Placeholder="0.00" CssClass="account-amount" TextMode="Number" />
-                                                <%# ((decimal)Eval("Amount") != 0) ? "<hr />" : "" %>
+                                                <Rock:CurrencyBox ID="txtAccountAmount" runat="server" Placeholder="0.00" CssClass="account-amount" TextMode="Number"/>
                                             </ItemTemplate>
                                         </asp:Repeater>
                                         <Rock:ButtonDropDownList ID="btnAddAccount" runat="server" Visible="false" Label=" "
-                                            DataTextField="PublicName" DataValueField="Id" OnSelectionChanged="btnAddAccount_SelectionChanged" AutoPostBack="true" />
+                                            DataTextField="PublicName" DataValueField="Id" OnSelectionChanged="btnAddAccount_SelectionChanged" />
 
                                         <div class="form-group">
-                                            <label>Total</label>
+                                            <label runat="server" id="lblTotalAmountLabel">Total</label>
                                             <asp:Label ID="lblTotalAmount" runat="server" CssClass="form-control-static total-amount" />
                                         </div>
                                     </fieldset>
                                 </div>
                             </div>
+                            
                             <div class="panel panel-default contribution-info-freq">
                                 <div class="panel-heading" data-toggle="collapse" data-target=".contribution-info-freq .panel-collapse">
                                     <h3 class="panel-title">Frequency <small class="panel-collapse collapse-inline collapse">Tap to Edit</small></h3>
@@ -163,16 +163,43 @@
                                 <div class="panel-heading" data-toggle="collapse" data-target=".contribution-personal .panel-collapse">
                                     <h3 class="panel-title"><asp:Literal ID="lPersonalInfoTitle" runat="server" /> <small class="panel-collapse collapse-inline collapse">Tap to Edit</small></h3>
                                     <h5 class="panel-collapse collapse"><span class="currentSetting"></span></h5>
+                                        <div class="panel-labels">
+                                            <asp:PlaceHolder ID="phGiveAsOption" runat="server">
+                                                <span class="panel-text">Give As &nbsp;</span>
+                                                <Rock:Toggle ID="tglGiveAsOption" runat="server" CssClass="pull-right" OnText="Person" OffText="Business" ButtonSizeCssClass="btn-xs" OnCheckedChanged="tglGiveAsOption_CheckedChanged" />
+                                            </asp:PlaceHolder>
+                                        </div>
                                 </div>
                                 <div class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <fieldset>
-                                            <Rock:RockLiteral ID="txtCurrentName" runat="server" Label="Name" Visible="false" />
-                                            <Rock:RockTextBox ID="txtFirstName" runat="server" Label="First Name" />
-                                            <Rock:RockTextBox ID="txtLastName" runat="server" Label="Last Name" />
+                                            <asp:PlaceHolder ID="phGiveAsPerson" runat="server">
+                                                <Rock:RockLiteral ID="txtCurrentName" runat="server" Label="Name" Visible="false" />
+                                                <Rock:RockTextBox ID="txtFirstName" runat="server" Label="First Name" />
+                                                <Rock:RockTextBox ID="txtLastName" runat="server" Label="Last Name" />
+                                            </asp:PlaceHolder>
+                                            <asp:PlaceHolder ID="phGiveAsBusiness" runat="server" Visible="false">
+                                                <asp:HiddenField ID="hfBusinessesLoaded" runat="server" />
+                                                <Rock:RockRadioButtonList ID="cblBusiness" runat="server" Label="Business" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="cblBusinessOption_SelectedIndexChanged" />
+                                                <Rock:RockTextBox ID="txtBusinessName" runat="server" Label="Business Name" />
+                                            </asp:PlaceHolder>
+                                            <Rock:AddressControl ID="acAddress" runat="server" UseStateAbbreviation="true" UseCountryAbbreviation="false" Label="Address" />
                                             <Rock:PhoneNumberBox ID="pnbPhone" runat="server" Label="Phone"></Rock:PhoneNumberBox>
-                                            <Rock:RockTextBox ID="txtEmail" runat="server" Label="Email"></Rock:RockTextBox>
-                                            <Rock:AddressControl ID="acAddress" runat="server" UseStateAbbreviation="false" UseCountryAbbreviation="false" Label="Address" />
+                                            <Rock:EmailBox ID="txtEmail" runat="server" Label="Email"></Rock:EmailBox>
+                                        <asp:PlaceHolder ID="phBusinessContact" runat="server" Visible="false">
+                                            <hr />
+                                            <h4>Business Contact</h4>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <Rock:RockTextBox ID="txtBusinessContactFirstName" runat="server" Label="First Name" />
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <Rock:RockTextBox ID="txtBusinessContactLastName" runat="server" Label="Last Name" />
+                                                </div>
+                                            </div>
+                                            <Rock:PhoneNumberBox ID="pnbBusinessContactPhone" runat="server" Label="Phone"></Rock:PhoneNumberBox>
+                                            <Rock:RockTextBox ID="txtBusinessContactEmail" runat="server" Label="Email"></Rock:RockTextBox>
+                                        </asp:PlaceHolder>
                                         </fieldset>
                                     </div>
                                 </div>
@@ -221,7 +248,7 @@
                                             <Rock:RockTextBox ID="txtCardFirstName" runat="server" Label="First Name on Card" Visible="false"></Rock:RockTextBox>
                                             <Rock:RockTextBox ID="txtCardLastName" runat="server" Label="Last Name on Card" Visible="false"></Rock:RockTextBox>
                                             <Rock:RockTextBox ID="txtCardName" runat="server" Label="Name on Card" Visible="false" FormGroupCssClass="col-lg-3"></Rock:RockTextBox>
-                                            <Rock:RockTextBox ID="txtCreditCard" runat="server" Label="Credit Card #" MaxLength="19" CssClass="credit-card"  FormGroupCssClass="col-lg-4"/>
+                                            <Rock:RockTextBox ID="txtCreditCard" runat="server" Label="Credit Card #" MaxLength="19" CssClass="credit-card"  FormGroupCssClass="col-lg-4" />
                                             <div class="row col-lg-5">
                                                 <div class="col-sm-8">
                                                     <Rock:MonthYearPicker ID="mypExpiration" runat="server" Label="Expiration Date" />
@@ -272,6 +299,7 @@
             <Rock:NotificationBox ID="nbSelectionMessage" runat="server" Visible="false"></Rock:NotificationBox>
 
             <div class="actions clearfix margin-b-lg">
+                <a id="lHistoryBackButton" runat="server" class="btn btn-link" href="javascript: window.history.back();" >Previous</a>
                 <asp:LinkButton ID="btnPaymentInfoNext" runat="server" Text="Next" CssClass="btn btn-primary pull-right" OnClick="btnPaymentInfoNext_Click" />
                 <asp:LinkButton ID="btnStep2PaymentPrev" runat="server" Text="Previous" CssClass="btn btn-link" OnClick="btnStep2PaymentPrev_Click" />
                 <asp:Label ID="aStep2Submit" runat="server" ClientIDMode="Static" CssClass="btn btn-primary pull-right" Text="Next" />
