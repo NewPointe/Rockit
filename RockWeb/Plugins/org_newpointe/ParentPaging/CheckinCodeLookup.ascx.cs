@@ -76,8 +76,7 @@ namespace RockWeb.Plugins.org_newpointe.ParentPage
                 {
                     ShowPanel( 2 );
                     var SelectedAttendance = new AttendanceService( rockContext ).Get( SelectedAttendanceGuid );
-                    SelectedAttendance.LoadAttributes();
-                    var attSearch = SelectedAttendance.GetAttributeValue( "SearchValue" );
+                    var attSearch = SelectedAttendance.SearchValue;
                     var hasSearch = !String.IsNullOrWhiteSpace( attSearch );
                     if ( hasSearch )
                         attSearch = attSearch.AsNumeric();
