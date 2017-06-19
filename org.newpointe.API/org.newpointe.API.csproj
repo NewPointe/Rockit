@@ -63,18 +63,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\NPMyNotesController.cs" />
-    <Compile Include="Controllers\NPAboutController.cs" />
-    <Compile Include="Controllers\NPRegisterController.cs" />
-    <Compile Include="Controllers\NPMessagesController.cs" />
-    <Compile Include="Controllers\NPMessageSeriesController.cs" />
-    <Compile Include="Controllers\NPPrayerRequestsController.cs" />
-    <Compile Include="Controllers\NPProfileController.cs" />
-    <Compile Include="Controllers\NPTheDailyController.cs" />
+    <Compile Include="NPMyNotesController.cs" />
+    <Compile Include="NPAboutController.cs" />
+    <Compile Include="NPRegisterController.cs" />
+    <Compile Include="NPMessagesController.cs" />
+    <Compile Include="NPMessageSeriesController.cs" />
+    <Compile Include="NPPrayerRequestsController.cs" />
+    <Compile Include="NPProfileController.cs" />
+    <Compile Include="NPTheDailyController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Filters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

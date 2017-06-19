@@ -35,6 +35,7 @@
     <Compile Include="ExpiredCardsJob.cs" />
     <Compile Include="LiveServiceJsonJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlToWorkflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="DotLiquid">
@@ -57,7 +58,9 @@
       <HintPath>..\RockWeb\Bin\Rock.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
