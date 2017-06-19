@@ -3464,6 +3464,7 @@ TransactionAcountDetails: [
 
         protected void btnCamp_SelectionChanged( object sender, EventArgs e )
         {
+            CustomGetAccounts();
             BindAccounts();
         }
     }
