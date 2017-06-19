@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Entity;
-using System.Diagnostics;
 using System.Linq;
 
 using Rock;
@@ -15,7 +13,6 @@ using Rock.Web.UI.Controls;
 using System.Web.UI.WebControls;
 using System.Data;
 using System.Web;
-using DotLiquid.Tags;
 using Quartz.Util;
 
 namespace RockWeb.Plugins.org_newpointe.Partnership
@@ -235,52 +232,29 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
             pnlSignature.Visible = false;
             pnlSuccess.Visible = true;
 
-            AttributeValueService attributeValueService = new AttributeValueService(rockContext);
-            PersonService personService = new PersonService(rockContext);
-
-            List<Guid> personGuidList = new List<Guid>();
-            personGuidList.Add(_targetPerson.Guid);
-
-            var p = attributeValueService.GetByAttributeIdAndEntityId(906, _targetPerson.Id);
-            var p2 = attributeValueService.GetByAttributeIdAndEntityId(1434, _targetPerson.Id);
-
-
-            var personFromService = personService.GetByGuids(personGuidList).FirstOrDefault();
-
             DateTime dateToSave = DateTime.Now.AddYears(CurrentYearAdd);
 
-            p.Value = dateToSave.ToString();
+            var person = new PersonService( rockContext ).Get( _targetPerson.Guid );
+            person.LoadAttributes();
 
-            if (p2.Value.IsNullOrWhiteSpace())
-            {
-                p2.Value = dateToSave.Year.ToString();
-            }
-            else
-            {
-                if (!p2.Value.Contains(dateToSave.Year.ToString()))
-                {
-                    p2.Value = p2.Value + "," + dateToSave.Year.ToString();
-                }
-                
-            }
+            person.SetAttributeValue( "MembershipDate", dateToSave.ToString() );
 
-            
-            personFromService.ConnectionStatusValueId = 65;
+            var partnershipYears = ( person.GetAttributeValue( "Partnership" ) ?? "" ).Split( ',' ).ToList();
+            partnershipYears.Add( dateToSave.Year.ToString() );
+            person.SetAttributeValue( "Partnership", string.Join(",", partnershipYears) );
 
+            person.ConnectionStatusValueId = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.PERSON_CONNECTION_STATUS_MEMBER.AsGuid(), rockContext ).Id;
 
             rockContext.SaveChanges();
-
-
+            person.SaveAttributeValues();
+            
             LoadOpportunities();
 
             if (GetAttributeValue("SendConfirmationEmail") == "True")
             {
-                SendEmail(personFromService.Email, CurrentDateTime.Year.ToString() + " Partnership Covenant", rockContext);
+                SendEmail( person.Email, CurrentDateTime.Year.ToString() + " Partnership Covenant", rockContext);
             }
-
             
-
-
         }
 
         protected void mdCampus_OnSaveClick(object sender, EventArgs e)
