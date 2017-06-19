@@ -90,9 +90,9 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
 
 {% if LinkedPages.RegisterPage and LinkedPages.RegisterPage != '' %}
     {% if LinkedPages.RegisterPage contains '?' %}
-        <a class='btn btn-xs btn-action' href='{{ LinkedPages.RegisterPage }}&GroupId={{ Group.Id }}'>Register</a>
+        <a class='btn btn-xs btn-action' href='{{ LinkedPages.RegisterPage }}&GroupGuid={{ Group.Guid }}'>Register</a>
     {% else %}
-        <a class='btn btn-xs btn-action' href='{{ LinkedPages.RegisterPage }}?GroupId={{ Group.Id }}'>Register</a>
+        <a class='btn btn-xs btn-action' href='{{ LinkedPages.RegisterPage }}?GroupGuid={{ Group.Guid }}'>Register</a>
     {% endif %}
 {% endif %}
 ", "CustomSetting" )]
@@ -239,6 +239,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                 {
                     ShowResults();
                 }
+
             }
         }
 
@@ -390,10 +391,21 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
         /// <param name="e">The <see cref="RowEventArgs"/> instance containing the event data.</param>
         void registerColumn_Click( object sender, RowEventArgs e )
         {
-            _urlParms.Add( "GroupId", e.RowKeyId.ToString() );
-            if ( !NavigateToLinkedPage( "RegisterPage", _urlParms ) )
+            using ( var rockContext = new RockContext() )
             {
-                ShowResults();
+                var group = new GroupService( rockContext ).Get( e.RowKeyId );
+                if ( group != null )
+                {
+                    _urlParms.Add( "GroupGuid", group.Guid.ToString() );
+                    if ( !NavigateToLinkedPage( "RegisterPage", _urlParms ) )
+                    {
+                        ShowResults();
+                    }
+                }
+                else
+                {
+                    ShowResults();
+                }
             }
         }
 
@@ -636,6 +648,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
                     {
                         AttributeFilters.Add( attribute );
                     }
+                    
                 }
             }
 
@@ -749,6 +762,7 @@ namespace RockWeb.Plugins.org_newpointe.BlockMods.Groups
             if ( registerPage.PageId > 0 )
             {
                 var registerColumn = new EditField();
+                registerColumn.ToolTip = "Register";
                 registerColumn.HeaderText = "Register";
                 registerColumn.Click += registerColumn_Click;
                 gGroups.Columns.Add( registerColumn );
