@@ -30,6 +30,7 @@ public partial class Plugins_org_newpointe_CustomMenu_CustomMenu : RockBlock
         if (lastMessageSeries != null)
         {
             replacedId = lastMessageSeries.Id.ToString();
+            lastMessageSeries.LoadAttributes();
             replacedImage = lastMessageSeries.GetAttributeValue( "SmallSeriesFeatureImage" ) ?? "";
         }
 
