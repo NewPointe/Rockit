@@ -32,6 +32,8 @@
   <ItemGroup>
     <Compile Include="AddPersonToGroup.cs" />
     <Compile Include="CreateEntity.cs" />
+    <Compile Include="CustomFilterByAge.cs" />
+    <Compile Include="CustomFilterGroupsByAge.cs" />
     <Compile Include="GetShortUrl.cs" />
     <Compile Include="ObjectConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
