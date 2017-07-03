@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-using Rock.Attribute;
-using Rock.CheckIn;
 using Rock.Constants;
 using Rock.Model;
 using Rock.Web.Cache;
 using Rock.Web.UI.Controls;
 using Rock;
+using Rock.CheckIn;
 using Rock.Data;
-using System.Diagnostics;
-
+using System.IO;
 
 namespace RockWeb.Plugins.org_newpointe.Checkin
 {
@@ -28,8 +24,8 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
     [DisplayName( "Checkin AutoStart" )]
     [Category( "NewPointe Check-in" )]
     [Description( "Auto-start check-in with all Group Types selected based on Location." )]
-    
-    public partial class CheckinAutoStart : Rock.Web.UI.RockBlock
+
+    public partial class CheckinAutoStart : CheckInBlock
     {
 
         protected override void OnLoad( EventArgs e )
@@ -51,21 +47,62 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                 ddlKiosk.DataBind();
                 ddlKiosk.Items.Insert( 0, new ListItem( None.Text, None.IdValue ) );
 
-                //Get the campus from the URL
-                var campusParam = PageParameter( "Campus" );
+                Device device = null;
 
+                // Get the campus from the URL
+                var campusParam = PageParameter( "Campus" );
                 var campus = CampusCache.All().FirstOrDefault( c => c.ShortCode == campusParam || c.Name == campusParam );
                 if ( campus != null )
                 {
-                    var device = devices.FirstOrDefault( d => d.Locations.Select( l => (int?)l.Id ).Contains( campus.LocationId ) );
-
-                    if ( device != null )
+                    device = devices.FirstOrDefault( d => d.Locations.Select( l => (int?)l.Id ).Contains( campus.LocationId ) );
+                }
+                else
+                {
+                    // Get the kiosk from the URL
+                    var kioskIdParam = PageParameter( "KioskId" );
+                    if ( kioskIdParam != null )
                     {
-                        ddlKiosk.SelectedValue = device.Id.ToString();
+                        var kioskId = kioskIdParam.AsIntegerOrNull();
+                        if ( kioskId != null )
+                        {
+                            device = devices.FirstOrDefault( d => d.Id == kioskId );
+                        }
                     }
                 }
 
-                string script = string.Format( @"
+                if ( device != null )
+                {
+                    ddlKiosk.SelectedValue = device.Id.ToString();
+                }
+
+                ddlTheme.Items.Clear();
+                DirectoryInfo di = new DirectoryInfo( this.Page.Request.MapPath( ResolveRockUrl( "~~" ) ) );
+                foreach ( var themeDir in di.Parent.EnumerateDirectories().OrderBy( a => a.Name ) )
+                {
+                    ddlTheme.Items.Add( new ListItem( themeDir.Name, themeDir.Name.ToLower() ) );
+                }
+
+                if ( !string.IsNullOrWhiteSpace( CurrentTheme ) )
+                {
+                    ddlTheme.SetValue( CurrentTheme );
+                }
+                else
+                {
+                    ddlTheme.SetValue( RockPage.Site.Theme.ToLower() );
+                }
+
+                bool themeRedirect = PageParameter( "ThemeRedirect" ).AsBoolean( false );
+
+                if ( !themeRedirect )
+                {
+
+                    if ( device != null )
+                    {
+                        RedirectConfig();
+                    }
+                    else
+                    {
+                        string script = string.Format( @"
                     <script>
                         $(document).ready(function (e) {{
                             if (localStorage) {{
@@ -74,24 +111,21 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                                     if (localStorage.theme) {{
                                         $('[id$=""hfTheme""]').val(localStorage.theme);
                                     }}
-                                    if (localStorage.checkInGroupTypes) {{
-                                        $('[id$=""hfGroupTypes""]').val(localStorage.checkInGroupTypes);
-                                    }}
                                     {0};
                                 }}
                             }}
                         }});
                     </script>
                 ", this.Page.ClientScript.GetPostBackEventReference( lbRefresh, "" ) );
-                phScript.Controls.Add( new LiteralControl( script ) );
-
+                        phScript.Controls.Add( new LiteralControl( script ) );
+                    }
+                }
             }
             else
             {
                 phScript.Controls.Clear();
             }
 
-            BindGroupTypes();
         }
 
         /// <summary>
@@ -108,7 +142,7 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                 ddlKiosk.SelectedValue = item.Value;
             }
 
-            BindGroupTypes( hfGroupTypes.Value );
+            RedirectConfig();
         }
 
         /// <summary>
@@ -146,12 +180,7 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                 .ToList();
         }
 
-        private void BindGroupTypes()
-        {
-            BindGroupTypes( string.Empty );
-        }
-
-        protected void BindGroupTypes( string selectedValues )
+        protected void RedirectConfig()
         {
             if ( ddlKiosk.SelectedValue != None.IdValue && ddlKiosk.SelectedValue != null )
             {
@@ -159,7 +188,7 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
                 var kiosk = new DeviceService( rockContext ).Get( ddlKiosk.SelectedValue.AsInteger() );
                 if ( kiosk != null )
                 {
-                    Session["redirectURL"] = "~/checkin?KioskId=" + kiosk.Id + "&GroupTypeIds=" + string.Join( ",", GetDeviceGroupTypes( kiosk.Id, rockContext ) );
+                    Session["redirectURL"] = "~/checkin?KioskId=" + kiosk.Id + "&GroupTypeIds=" + string.Join( ",", GetDeviceGroupTypes( kiosk.Id, rockContext ).Select( g => g.Id ) );
                     Response.Redirect( Session["redirectURL"].ToString() );
                 }
 
@@ -174,7 +203,7 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
             }
             else
             {
-                BindGroupTypes();
+                RedirectConfig();
             }
         }
 
@@ -183,5 +212,23 @@ namespace RockWeb.Plugins.org_newpointe.Checkin
             Response.Redirect( "~/checkin" );
         }
 
+
+        protected void ddlTheme_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            CurrentTheme = ddlTheme.SelectedValue;
+            RedirectToNewTheme( ddlTheme.SelectedValue );
+        }
+
+        private void RedirectToNewTheme( string theme )
+        {
+            var pageRef = RockPage.PageReference;
+            pageRef.QueryString = new System.Collections.Specialized.NameValueCollection();
+            pageRef.Parameters = new Dictionary<string, string>();
+            pageRef.Parameters.Add( "theme", theme );
+            pageRef.Parameters.Add( "KioskId", ddlKiosk.SelectedValue );
+            pageRef.Parameters.Add( "ThemeRedirect", "True" );
+
+            Response.Redirect( pageRef.BuildUrl(), false );
+        }
     }
 }
