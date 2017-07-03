@@ -1,7 +1,6 @@
 ﻿<%@ WebHandler Language="C#" Class="ParentPageBlinker" %>
 
 using System;
-using System.Collections.Generic;
 using System.Web;
 using System.Linq;
 
@@ -29,7 +28,7 @@ public class ParentPageBlinker : IHttpHandler
         var rockContext = new RockContext();
 
         IQueryable<Workflow> activePagerWorkflows = new WorkflowService(rockContext).Queryable().Where(w => w.CompletedDateTime == null && w.WorkflowTypeId == 193);
-            
+
         if ( !string.IsNullOrWhiteSpace( request.Params["Campus"] ) )
         {
             CampusCache campus = CampusCache.All( false ).FirstOrDefault( c => c.ShortCode.Equals( request.Params["Campus"], StringComparison.OrdinalIgnoreCase ) );
@@ -38,10 +37,10 @@ public class ParentPageBlinker : IHttpHandler
         }
 
         DefinedValueCache statusToShow = activePagerWorkflows.ToList().Select( p =>
-            {
-                p.LoadAttributes();
-                return DefinedValueCache.Read( p.GetAttributeValue( "PagerStatus" ).AsGuid(), rockContext );
-            } )
+        {
+            p.LoadAttributes();
+            return DefinedValueCache.Read( p.GetAttributeValue( "PagerStatus" ).AsGuid(), rockContext );
+        } )
             .Where( dv => dv != null )
             .OrderBy( dv => dv.Order )
             .FirstOrDefault();
@@ -52,8 +51,9 @@ public class ParentPageBlinker : IHttpHandler
             return;
         }
 
-        statusToShow.LoadAttributes();
-        response.Write( statusToShow.GetAttributeValue( request.Params["Production"] == "true" ? "ProductionTeamBlinkCode" : "KidsTeamBlinkCode" ) );
+        var statusToShow2 = new DefinedValueService( rockContext ).Get( statusToShow.Id );
+        statusToShow2.LoadAttributes();
+        response.Write( statusToShow2.GetAttributeValue( request.Params["Production"] == "true" ? "ProductionTeamBlinkCode" : "KidsTeamBlinkCode" ) );
     }
 
     public bool IsReusable
