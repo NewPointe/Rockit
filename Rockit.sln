@@ -6,7 +6,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb(3)", "http://localh
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
-		ProjectReferences = "{526c47b7-7b7e-453f-ae5b-ef14ff180b4d}|org.newpointe.ExtraSearch.dll;{c4f91120-fd92-49be-81a5-6b10e870aad9}|org.newpointe.ExtraJobs.dll;{89d22c1d-7a5d-4255-a2b5-3165fe85f168}|org.newpointe.ExtraActions.dll;{8a3ad405-6f35-43e8-96ff-9d1f57e84ff5}|org.newpointe.ProtectMyMinistry.dll;{054e242b-9622-4c7a-ad13-657940bec32b}|org.newpointe.PrivateChat.dll;{a3e1f519-ddc7-4a2a-bb76-3009d021b31b}|org.newpointe.Stars.dll;"
+		ProjectReferences = "{526c47b7-7b7e-453f-ae5b-ef14ff180b4d}|org.newpointe.ExtraSearch.dll;{c4f91120-fd92-49be-81a5-6b10e870aad9}|org.newpointe.ExtraJobs.dll;{89d22c1d-7a5d-4255-a2b5-3165fe85f168}|org.newpointe.ExtraActions.dll;{8a3ad405-6f35-43e8-96ff-9d1f57e84ff5}|org.newpointe.ProtectMyMinistry.dll;{054e242b-9622-4c7a-ad13-657940bec32b}|org.newpointe.PrivateChat.dll;{a3e1f519-ddc7-4a2a-bb76-3009d021b31b}|org.newpointe.Stars.dll;{786a2681-4340-4860-b8df-5087a328e0b6}|org.newpointe.RockU.dll;{6d905485-7535-45ac-ad55-acea35062601}|org.newpointe.API.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_60842"
 		Debug.AspNetCompiler.PhysicalPath = "RockWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60842\"
@@ -37,6 +37,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.Stars", "org.newpointe.Stars\org.newpointe.Stars.csproj", "{A3E1F519-DDC7-4A2A-BB76-3009D021B31B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.API", "org.newpointe.API\org.newpointe.API.csproj", "{6D905485-7535-45AC-AD55-ACEA35062601}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.newpointe.RockU", "org.newpointe.RockU\org.newpointe.RockU.csproj", "{786A2681-4340-4860-B8DF-5087A328E0B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 		{6D905485-7535-45AC-AD55-ACEA35062601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D905485-7535-45AC-AD55-ACEA35062601}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D905485-7535-45AC-AD55-ACEA35062601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{786A2681-4340-4860-B8DF-5087A328E0B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{786A2681-4340-4860-B8DF-5087A328E0B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{786A2681-4340-4860-B8DF-5087A328E0B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{786A2681-4340-4860-B8DF-5087A328E0B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
