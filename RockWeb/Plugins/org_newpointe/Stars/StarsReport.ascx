@@ -20,9 +20,11 @@
                         </Rock:RockDropDownList>
                     </Rock:GridFilter>
 
-                    <Rock:Grid ID="gStars" runat="server" AllowSorting="true" AllowPaging="True" EmptyDataText="No Data Found" RowClickEnabled="True" OnRowSelected="gStars_OnRowSelected" EntityTypeId="15" DataKeyNames="PersonId">
+                    <Rock:Grid ID="gStars" runat="server" AllowSorting="true" AllowPaging="True" EmptyDataText="No Data Found" RowClickEnabled="True" OnRowSelected="gStars_OnRowSelected" EntityTypeId="15" DataKeyNames="Id" OnGridRebind="gStars_GridRebind">
                         <Columns>
+                            <asp:BoundField DataField="Campus" HeaderText="Campus" />
                             <asp:BoundField DataField="Person" HeaderText="Person" />
+                            <asp:BoundField DataField="Person.GradeFormatted" HeaderText="GradeFormatted" />
                             <asp:BoundField DataField="Sum" HeaderText="Stars" />
                         </Columns>
                     </Rock:Grid>

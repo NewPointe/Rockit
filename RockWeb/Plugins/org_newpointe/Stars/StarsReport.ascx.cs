@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web.UI.WebControls;
 using System.Data;
-using System.Data.Entity.SqlServer;
 
 using Rock;
 using Rock.Data;
@@ -54,28 +53,20 @@ namespace RockWeb.Plugins.org_newpointe.Stars
             StarsService starsService = new StarsService( _starsProjectContext );
 
             DateTime selectedDate = mypMonth.SelectedDate ?? DateTime.Now;
-            var selectedDateBefore = selectedDate.AddMonths( -2 );
-            var selectedDateAfter = selectedDate.AddMonths( 2 );
-
+            var selectedDateBefore = selectedDate.SundayDate().AddDays( -6 );
+            var selectedDateAfter = selectedDate.AddMonths( 1 ).SundayDate().AddDays( -6 );
+            
             var starsList = starsService.Queryable()
                 .Where( x => x.TransactionDateTime > selectedDateBefore && x.TransactionDateTime < selectedDateAfter )
-                .Select( x => new
-                {
-                    Star = x,
-                    Person = x.PersonAlias.Person,
-                    SundayDate = SqlFunctions.DateAdd( "day", 7 - ( ( SqlFunctions.DateDiff( "day", x.TransactionDateTime, "19000101" ) % 7 ) + 1 ), x.TransactionDateTime )
-                } )
-                .Where( x => x.SundayDate != null && ( x.SundayDate.Value.Month == selectedDate.Month && x.SundayDate.Value.Year == selectedDate.Year ) )
-                .GroupBy( x => x.Person)
-                .Select(x => new { Person = x.Key, Sum = x.Sum( y => y.Star.Value ) } )
+                .GroupBy( x => x.PersonAlias.Person, (x, y) => new { Person = x, Sum = y.Sum( z => z.Value ) })
                 .ToList()
                 .Select( x => new { x.Person, x.Sum, Campus = x.Person.GetCampus() } );
-
+            
             //Filter Campuses
             var selectedCampuses = cpCampus.SelectedValues;
             if ( selectedCampuses.Count > 0 )
             {
-                starsList = starsList.Where( x => x.Campus == null || selectedCampuses.Contains( x.Campus.Name ));
+                starsList = starsList.Where( x => x.Campus == null || selectedCampuses.Contains( x.Campus.Name )).ToList();
             }
 
             //Get Sum of stars
@@ -84,12 +75,12 @@ namespace RockWeb.Plugins.org_newpointe.Stars
                 var personLoc = g.Person.GetHomeLocation();
                 return new
                 {
+                    Month = selectedDate.Month,
+                    g.Person.Id,
                     g.Person,
                     g.Sum,
-                    PersonId = g.Person.Id,
-                    Month = selectedDate.Month,
-                    PersonZip = personLoc != null ? personLoc.PostalCode : "",
-                    PersonCampus = g.Campus != null ? g.Campus.Name : ""
+                    g.Campus,
+                    PersonZip = personLoc != null ? personLoc.PostalCode : ""
                 };
             } );
 
@@ -103,11 +94,12 @@ namespace RockWeb.Plugins.org_newpointe.Stars
             }
 
             //Order the list
-            startsList = startsList.OrderBy( g => g.PersonCampus ).ThenBy( g => g.PersonZip ).ThenBy( g => g.Person.LastName ).ThenBy( g => g.Person.FirstName );
+            startsList = startsList.OrderBy( g => g.Campus != null ? g.Campus.Name : "" ).ThenBy( g => g.PersonZip ).ThenBy( g => g.Person.LastName ).ThenBy( g => g.Person.FirstName );
 
             //Bind list to grid
             gStars.DataSource = startsList.ToList();
             gStars.DataBind();
+            
         }
 
 
@@ -122,5 +114,10 @@ namespace RockWeb.Plugins.org_newpointe.Stars
             starsFilters.Show();
         }
 
+
+        protected void gStars_GridRebind( object sender, GridRebindEventArgs e )
+        {
+            BindGrid();
+        }
     }
 }
