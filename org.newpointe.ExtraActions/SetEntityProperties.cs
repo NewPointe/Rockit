@@ -13,6 +13,7 @@ using Rock.Workflow;
 using Rock;
 
 using org.newpointe.ExtraActions;
+using Rock.Field;
 
 namespace org.newpointe.WorkflowEntities
 {
@@ -35,7 +36,14 @@ namespace org.newpointe.WorkflowEntities
 
             if ( !entityGuid.IsEmpty() )
             {
-                IEntity entityObject = ( (Rock.Field.IEntityFieldType)AttributeCache.Read( workflowAttributeGuid ).FieldType.Field ).GetEntity( entityGuid.ToString(), rockContext );
+                IEntityFieldType entityField = AttributeCache.Read( workflowAttributeGuid ).FieldType.Field as IEntityFieldType;
+                if ( entityField == null )
+                {
+                    errorMessages.Add( "Attribute Type is not an Entity." );
+                    return false;
+                }
+
+                IEntity entityObject = entityField.GetEntity( entityGuid.ToString(), rockContext );
 
                 if ( entityObject == null )
                 {

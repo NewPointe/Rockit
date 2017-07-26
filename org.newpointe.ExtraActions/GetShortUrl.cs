@@ -17,13 +17,13 @@ using System.Linq;
 namespace org.newpointe.Giving.Workflow
 {
     [ActionCategory( "Extra Actions" )]
-    [Description( "Gets the Short URL." )]
+    [Description( "Gets a Short URL using a YOURLS service. NOTE: Rock v7 should have a built-in way of doing this! You should replace this once you upgrade!" )]
     [Export( typeof( ActionComponent ) )]
     [ExportMetadata( "ComponentName", "Get Short URL (YOURLS)" )]
 
     [WorkflowAttribute( "Attribute", "The workflow attribute to store the short URL in.", true, "", "", 0, null, new[] { "Rock.Field.Types.TextFieldType", "Rock.Field.Types.UrlLinkFieldType", "Rock.Field.Types.VideoUrlFieldType", "Rock.Field.Types.VideoUrlFieldType" } )]
     [WorkflowTextOrAttribute( "URL", "URL", "Workflow attribute that contains the url to shorten.", true, "", "", 1, "URL", new[] { "Rock.Field.Types.TextFieldType", "Rock.Field.Types.UrlLinkFieldType", "Rock.Field.Types.VideoUrlFieldType", "Rock.Field.Types.VideoUrlFieldType" } )]
-    [WorkflowTextOrAttribute( "URL Shortener", "URL Shortener", "Workflow attribute that contains the url of the YOURLS url shortener to use. {0} is the url, and {1} is the shortened keyword.", true, "https://npgive.org/yourls-api.php?signature=05e2685fc7&action=shorturl&url={0}&keyword={1}&format=simple", "", 1, "URL", new[] { "Rock.Field.Types.TextFieldType", "Rock.Field.Types.UrlLinkFieldType", "Rock.Field.Types.VideoUrlFieldType", "Rock.Field.Types.VideoUrlFieldType" } )]
+    [WorkflowTextOrAttribute( "URL Shortener", "URL Shortener", "Workflow attribute that contains the url of the YOURLS url shortener to use. {0} is the url, and {1} is the shortened keyword.", true, "https://example.com/yourls-api.php?signature=05e2685fc7&action=shorturl&url={0}&keyword={1}&format=simple", "", 1, "URL", new[] { "Rock.Field.Types.TextFieldType", "Rock.Field.Types.UrlLinkFieldType", "Rock.Field.Types.VideoUrlFieldType", "Rock.Field.Types.VideoUrlFieldType" } )]
     public class GetShortUrl : ActionComponent
     {
 

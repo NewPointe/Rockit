@@ -32,7 +32,7 @@ namespace org.newpointe.ExtraActions
     /// <summary>
     /// Removes (or excludes) the grouptypes from each family member that are not specific to their age
     /// </summary>
-    [ActionCategory( "[NPCustom] Check-In" )]
+    [ActionCategory( "Extra Actions -> Check-In" )]
     [Description( "Removes (or excludes) the grouptypes from each family member that are not specific to their age" )]
     [Export( typeof( ActionComponent ) )]
     [ExportMetadata( "ComponentName", "Custom Filter By Age" )]

@@ -16,7 +16,7 @@ namespace org.newpointe.ExtraActions
     /// Redirects the user to a different page.
     /// </summary>
     [ActionCategory( "Extra Actions" )]
-    [Description( "Redirects the user to a different page." )]
+    [Description( "Redirects the user to a different page. NOTE: This will be replaced with a built-in action in Rock v7! You should replace this once you upgrade!" )]
     [Export( typeof( ActionComponent ) )]
     [ExportMetadata( "ComponentName", "Redirect to Page" )]
 

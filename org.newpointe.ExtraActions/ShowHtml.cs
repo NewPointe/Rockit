@@ -18,7 +18,7 @@ namespace org.newpointe.ExtraActions
     /// InjectHtml
     /// </summary>
     [ActionCategory( "Extra Actions" )]
-    [Description( "Shows HTML in the WorkflowEntry block." )]
+    [Description( "Shows HTML in the WorkflowEntry block. NOTE: This will be replaced with a built-in action in Rock v7! You should replace this once you upgrade!" )]
     [Export( typeof( ActionComponent ) )]
     [ExportMetadata( "ComponentName", "Show HTML (Workflow Entry Only)" )]
 
