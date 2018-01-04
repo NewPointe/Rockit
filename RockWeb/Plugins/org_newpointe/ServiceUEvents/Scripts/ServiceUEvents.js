@@ -157,7 +157,7 @@
         var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         if (date != '') {
             date = new Date(date);
-            $("#event-date").html(monthNames[date.getMonth()] + ' ' + date.getUTCDate());
+            $("#event-date").html(monthNames[date.getMonth()] + ' ' + date.getDate());
             search = "/Plugins/org_newpointe/Calendar.ashx?date=" + (date.getUTCMonth() + 1) + "/" + date.getUTCDate() + "/" + date.getUTCFullYear();
         } else if (id != undefined) {
             search = "/Plugins/org_newpointe/Calendar.ashx?id=" + id;
@@ -178,7 +178,7 @@
                 searchData = data;
                 if (data.length > 0) {
                     date = new Date(data[0].start);
-                    $("#event-date").html(monthNames[date.getMonth()] + ' ' + date.getUTCDate());
+                    $("#event-date").html(monthNames[date.getMonth()] + ' ' + date.getDate());
                 }
             }
             if ($(window).width() <= 992) {
