@@ -1,26 +1,27 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb(3)", "http://localhost:60842", "{22348267-9BDF-4B5E-BB6E-37B5FA770224}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb", "RockWeb\", "{22348267-9BDF-4B5E-BB6E-37B5FA770224}"
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
 		ProjectReferences = "{526c47b7-7b7e-453f-ae5b-ef14ff180b4d}|org.newpointe.ExtraSearch.dll;{c4f91120-fd92-49be-81a5-6b10e870aad9}|org.newpointe.ExtraJobs.dll;{89d22c1d-7a5d-4255-a2b5-3165fe85f168}|org.newpointe.ExtraActions.dll;{8a3ad405-6f35-43e8-96ff-9d1f57e84ff5}|org.newpointe.ProtectMyMinistry.dll;{054e242b-9622-4c7a-ad13-657940bec32b}|org.newpointe.PrivateChat.dll;{a3e1f519-ddc7-4a2a-bb76-3009d021b31b}|org.newpointe.Stars.dll;"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_60842"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_8080"
 		Debug.AspNetCompiler.PhysicalPath = "RockWeb\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60842\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_8080\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_60842"
+		Release.AspNetCompiler.VirtualPath = "/localhost_8080"
 		Release.AspNetCompiler.PhysicalPath = "RockWeb\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60842\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_8080\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "1585"
 		SlnRelativePath = "RockWeb\"
 	EndProjectSection
 EndProject
@@ -79,5 +80,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1FF2FC8C-D50A-44E7-A34E-14DB511EF7B7}
 	EndGlobalSection
 EndGlobal
