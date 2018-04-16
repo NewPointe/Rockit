@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.Entity;
 using System.Data;
-using System.Diagnostics;
-using System.Text;
 
 using Rock;
 using Rock.Data;
@@ -16,14 +12,6 @@ using Rock.Model;
 using Rock.Web.Cache;
 using Rock.Web.UI.Controls;
 using Rock.Attribute;
-using Rock.Workflow;
-
-
-using System.Text.RegularExpressions;
-using System.Web.UI.HtmlControls;
-using Quartz.Util;
-using Rock.Security;
-using Rock.Web.UI;
 
 namespace RockWeb.Plugins.org_newpointe.Shape
 {

@@ -13,7 +13,6 @@ using Rock.Web.UI.Controls;
 using System.Web.UI.WebControls;
 using System.Data;
 using System.Web;
-using Quartz.Util;
 
 namespace RockWeb.Plugins.org_newpointe.Partnership
 {
@@ -319,7 +318,7 @@ namespace RockWeb.Plugins.org_newpointe.Partnership
             var sig = "";
             campus.LoadAttributes();
             var signatureImage = campus.AttributeValues["CampusPastorSignature"].Value;
-            if (!signatureImage.IsNullOrWhiteSpace())
+            if (!string.IsNullOrWhiteSpace(signatureImage))
             {
                 sig =
                     String.Format(
