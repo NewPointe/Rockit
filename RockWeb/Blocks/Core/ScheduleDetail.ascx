@@ -17,10 +17,12 @@
                     <asp:ValidationSummary ID="ValidationSummary1" runat="server" HeaderText="Please Correct the Following" CssClass="alert alert-danger" />
                     <Rock:NotificationBox ID="nbWarningMessage" runat="server" NotificationBoxType="Warning" />
 
-                    <fieldset>
                     <div class="row">
                         <div class="col-md-6">
                             <Rock:DataTextBox ID="tbScheduleName" runat="server" SourceTypeName="Rock.Model.Schedule, Rock" PropertyName="Name" Required="true" />
+                        </div>
+                        <div class="col-md-6">
+                            <Rock:RockCheckBox ID="cbIsActive" runat="server" Text="Active" />
                         </div>
                     </div>
 
@@ -51,10 +53,10 @@
 
 
                     <div class="actions">
-                        <asp:LinkButton ID="btnSave" runat="server" AccessKey="s" Text="Save" CssClass="btn btn-primary" OnClick="btnSave_Click" />
-                        <asp:LinkButton ID="btnCancel" runat="server" AccessKey="c" Text="Cancel" CssClass="btn btn-link" CausesValidation="false" OnClick="btnCancel_Click" />
+                        <asp:LinkButton ID="btnSave" runat="server" AccessKey="s" ToolTip="Alt+s" Text="Save" CssClass="btn btn-primary" OnClick="btnSave_Click" />
+                        <asp:LinkButton ID="btnCancel" runat="server" AccessKey="c" ToolTip="Alt+c" Text="Cancel" CssClass="btn btn-link" CausesValidation="false" OnClick="btnCancel_Click" />
                     </div>
-                </fieldset>
+
                 </div>
 
             </div>
@@ -63,13 +65,18 @@
 
                 <div class="panel-heading">
                     <h1 class="panel-title"><i class="fa fa-calendar"></i> <asp:Literal ID="lReadOnlyTitle" runat="server" /></h1>
+
+                    <div class="panel-labels">
+                        <Rock:HighlightLabel ID="hlInactive" runat="server" LabelType="Danger" Text="Inactive" />
+                    </div>
                 </div>
+
                 <Rock:PanelDrawer ID="pdAuditDetails" runat="server"></Rock:PanelDrawer>
+
                 <div class="panel-body">
 
-                    <div class="row">
-                        <Rock:NotificationBox ID="nbEditModeMessage" runat="server" NotificationBoxType="Info" />
-                    </div>
+                    <Rock:NotificationBox ID="nbEditModeMessage" runat="server" NotificationBoxType="Info" />
+                    <Rock:NotificationBox ID="nbExclusions" runat="server" NotificationBoxType="Warning" Heading="Exclusions" Visible="false" />
 
                     <fieldset>
                         <div class="row">
@@ -78,8 +85,10 @@
                             </div>
                         </div>
                         <div class="actions">
-                            <asp:LinkButton ID="btnEdit" runat="server" AccessKey="m" Text="Edit" CssClass="btn btn-primary" OnClick="btnEdit_Click" />
-                            <asp:LinkButton ID="btnDelete" runat="server" Text="Delete" CssClass="btn btn-link" OnClientClick="Rock.dialogs.confirmDelete(event, 'schedule');" OnClick="btnDelete_Click" />
+                            <asp:LinkButton ID="btnEdit" runat="server" AccessKey="m" ToolTip="Alt+m" Text="Edit" CssClass="btn btn-primary" OnClick="btnEdit_Click" />
+                            
+                            <asp:HiddenField ID="hfHasAttendanceHistory" runat="server" />
+                            <asp:LinkButton ID="btnDelete" runat="server" Text="Delete" CssClass="btn btn-link" OnClientClick="confirmScheduleDelete(event);" OnClick="btnDelete_Click" />
                             <Rock:ModalAlert ID="mdDeleteWarning" runat="server" />
                         </div>
                     </fieldset>
@@ -87,6 +96,32 @@
                 </div>
 
             </div>
+
+            <script type="text/javascript">
+                function confirmScheduleDelete(e)
+                {
+                    e.preventDefault();
+                    Rock.dialogs.confirm('Are you sure you want to delete this schedule?', function (result)
+                    {
+                        if (result)
+                        {
+                            if ($('#<%=hfHasAttendanceHistory.ClientID%>').val() == "1")
+                            {
+                                Rock.dialogs.confirm('This schedule has attendance history. Are you sure that you want to delete this schedule and all of its attendance history?', function (result)
+                                {
+                                    if (result)
+                                    {
+                                        window.location = e.target.href ? e.target.href : e.target.parentElement.href;
+                                    }
+                                });
+                            } else
+                            {
+                                window.location = e.target.href ? e.target.href : e.target.parentElement.href;
+                            }
+                        }
+                    });
+                }
+            </script>
 
         </asp:Panel>
     </ContentTemplate>

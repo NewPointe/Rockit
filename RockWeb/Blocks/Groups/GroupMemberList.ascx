@@ -25,7 +25,7 @@
                         <Rock:ModalAlert ID="mdGridWarning" runat="server" />
 
                         <div class="grid grid-panel">
-                            <Rock:GridFilter ID="rFilter" runat="server" OnDisplayFilterValue="rFilter_DisplayFilterValue">
+                            <Rock:GridFilter ID="rFilter" runat="server" OnDisplayFilterValue="rFilter_DisplayFilterValue" OnClearFilterClick="rFilter_ClearFilterClick">
                                 <Rock:RockTextBox ID="tbFirstName" runat="server" Label="First Name" />
                                 <Rock:RockTextBox ID="tbLastName" runat="server" Label="Last Name" />
                                 <Rock:RockCheckBoxList ID="cblRole" runat="server" Label="Role" DataTextField="Name" DataValueField="Id" RepeatDirection="Horizontal" />
@@ -36,6 +36,7 @@
                                     <asp:ListItem Text="Female" Value="Female" />
                                     <asp:ListItem Text="Unknown" Value="Unknown" />
                                 </Rock:RockCheckBoxList>
+                                <Rock:RockDropDownList ID="ddlRegistration" runat="server" Label="Registration" DataTextField="Name" DataValueField="Id" />
                                 <Rock:RockDropDownList ID="ddlSignedDocument" runat="server" Label="Signed Document" >
                                     <asp:ListItem Text="" Value="" />
                                     <asp:ListItem Text="Yes" Value="Yes" />
@@ -47,6 +48,7 @@
                                 <Columns>
                                     <Rock:SelectField></Rock:SelectField>
                                     <Rock:RockBoundField DataField="Name" HeaderText="Name" SortExpression="Person.LastName,Person.NickName" HtmlEncode="false" />
+                                    <Rock:DefinedValueField DataField="MaritalStatusValueId" HeaderText="Marital Status" SortExpression="Person.MaritalStatusValue.Value"/>
                                     <Rock:DefinedValueField DataField="ConnectionStatusValueId" HeaderText="Connection Status" SortExpression="Person.ConnectionStatusValue.Value"/>
                                     <Rock:RockTemplateFieldUnselected HeaderText="Registration">
                                         <ItemTemplate>
@@ -55,6 +57,7 @@
                                     </Rock:RockTemplateFieldUnselected>
                                     <Rock:RockBoundField DataField="GroupRole" HeaderText="Role" SortExpression="GroupRole.Name" />
                                     <Rock:RockBoundField DataField="GroupMemberStatus" HeaderText="Member Status" SortExpression="GroupMemberStatus" />
+                                    <Rock:DateField DataField="DateTimeAdded" HeaderText="Date Added" SortExpression="DateTimeAdded" />
                                     <Rock:DateField DataField="FirstAttended" HeaderText="First Attended" SortExpression="FirstAttended" />
                                     <Rock:DateField DataField="LastAttended" HeaderText="Last Attended" SortExpression="LastAttended" />
                                 </Columns>

@@ -25,7 +25,7 @@
                         </div>
 
                         <div class="actions margin-t-md">
-                            <asp:LinkButton ID="btnFilter" runat="server" AccessKey="m" Text="Filter" CssClass="btn btn-primary btn-sm" OnClick="btnFilter_Click" />
+                            <asp:LinkButton ID="btnFilter" runat="server" AccessKey="m" ToolTip="Alt+m" Text="Filter" CssClass="btn btn-primary btn-sm" OnClick="btnFilter_Click" />
                             <asp:LinkButton ID="btnFilterSetDefault" runat="server" Text="Set Default" ToolTip="Set the filter to its default values" CssClass="btn btn-link btn-sm pull-right" OnClick="btnFilterSetDefault_Click" />
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                     <Rock:RockTextBox ID="txtFilterIconCssClass" runat="server" Label="Filter Icon CSS Class" />
                     <Rock:RockTextBox ID="txtFilterTitle" runat="server" Label="Filter Title" />
 
-                    <Rock:RockDropDownList ID="ddlReport" runat="server" Label="Report" Help="Select the report to present to the user. Then set which of the report's dataview's filters to show." Required="false" ValidationGroup="vgConfigure" OnSelectedIndexChanged="ddlReport_SelectedIndexChanged" AutoPostBack="true" />
+                    <Rock:RockDropDownList ID="ddlReport" runat="server" Label="Report" Help="Select the report to present to the user. Then set which of the report's dataview's filters to show." Required="false" ValidationGroup="vgConfigure" OnSelectedIndexChanged="ddlReport_SelectedIndexChanged" AutoPostBack="true" EnhanceForLongLists="true" />
                     <Rock:RockDropDownList ID="ddlPersonIdField" runat="server" Label="PersonID Field" Help="If this report has a field for the PersonId, what is the name of that field" />
                     <Rock:HelpBlock ID="hbDataFilters" runat="server">
                         <p>Select which filters that will be visible to the user.</p>
