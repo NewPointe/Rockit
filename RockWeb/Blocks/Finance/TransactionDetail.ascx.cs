@@ -1322,18 +1322,31 @@ namespace RockWeb.Blocks.Finance
                         txn.ScheduledTransaction.GatewayScheduleId );
                 }
 
-                if ( txn.FinancialPaymentDetail != null )
+                if ( txn.FinancialPaymentDetail != null && txn.FinancialPaymentDetail.CurrencyTypeValue != null )
                 {
-                    detailsLeft.Add( "Account #", txn.FinancialPaymentDetail.AccountNumberMasked );
-                    if ( txn.FinancialPaymentDetail.CurrencyTypeValue != null )
+                    var paymentMethodDetails = new DescriptionList();
+
+                    var currencyType = txn.FinancialPaymentDetail.CurrencyTypeValue;
+                    if ( currencyType.Guid.Equals( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD.AsGuid() ) )
                     {
-                        string currencyType = txn.FinancialPaymentDetail.CurrencyTypeValue.Value;
-                        if ( txn.FinancialPaymentDetail.CurrencyTypeValue.Guid.Equals( Rock.SystemGuid.DefinedValue.CURRENCY_TYPE_CREDIT_CARD.AsGuid() ) )
-                        {
-                            currencyType += txn.FinancialPaymentDetail.CreditCardTypeValue != null ? ( " - " + txn.FinancialPaymentDetail.CreditCardTypeValue.Value ) : string.Empty;
-                        }
-                        detailsLeft.Add( "Currency Type", currencyType );
+                        // Credit Card
+                        paymentMethodDetails.Add( "Type", currencyType.Value + ( txn.FinancialPaymentDetail.CreditCardTypeValue != null ? ( " - " + txn.FinancialPaymentDetail.CreditCardTypeValue.Value ) : string.Empty ) );
+                        paymentMethodDetails.Add( "Name on Card", txn.FinancialPaymentDetail.NameOnCard.Trim() );
+                        paymentMethodDetails.Add( "Account Number", txn.FinancialPaymentDetail.AccountNumberMasked );
+                        paymentMethodDetails.Add( "Expires", txn.FinancialPaymentDetail.ExpirationDate );
                     }
+                    else
+                    {
+                        // ACH
+                        paymentMethodDetails.Add( "Type", currencyType.Value );
+                        paymentMethodDetails.Add( "Account Number", txn.FinancialPaymentDetail.AccountNumberMasked );
+                    }
+
+                    detailsLeft.Add( "Payment Method", paymentMethodDetails.GetFormattedList( "{0}: {1}" ).AsDelimited( "<br/>" ) );
+                }
+                else
+                {
+                    detailsLeft.Add( "Payment Method", "<div class='alert alert-warning'>No Payment Information found. This could be due to transaction that was imported from external system.</div>" );
                 }
 
                 var registrationEntityType = EntityTypeCache.Read( typeof( Rock.Model.Registration ) );

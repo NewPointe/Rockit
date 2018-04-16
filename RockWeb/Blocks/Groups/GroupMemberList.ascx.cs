@@ -45,6 +45,7 @@ namespace RockWeb.Blocks.Groups
     [BooleanField("Show Campus Filter", "Setting to show/hide campus filter.", true, order: 4)]
     [BooleanField( "Show First/Last Attendance", "If the group allows attendance, should the first and last attendance date be displayed for each group member?", false, "", 5, "ShowAttendance" )]
     [BooleanField( "Show Date Added", "Should the date that person was added to the group be displayed for each group member?", false, "", 6 )]
+    [BooleanField( "Show Note Column", "Should the note be displayed as a seperate grid column (instead of displaying a note icon under person's name)?", false, "", 7 )]
     public partial class GroupMemberList : RockBlock, ISecondaryBlock, ICustomGridColumns
     {
         #region Private Variables
@@ -183,7 +184,7 @@ namespace RockWeb.Blocks.Groups
                     gGroupMembers.ShowConfirmDeleteDialog = false;
 
                     // make sure they have Auth to edit the block OR edit to the Group
-                    bool canEditBlock = IsUserAuthorized( Authorization.EDIT ) || _group.IsAuthorized( Authorization.EDIT, this.CurrentPerson );
+                    bool canEditBlock = IsUserAuthorized( Authorization.EDIT ) || _group.IsAuthorized( Authorization.EDIT, this.CurrentPerson ) || _group.IsAuthorized( Authorization.MANAGE_MEMBERS, this.CurrentPerson );
                     gGroupMembers.Actions.ShowAdd = canEditBlock;
                     gGroupMembers.IsDeleteEnabled = canEditBlock;
                 }
@@ -633,20 +634,26 @@ namespace RockWeb.Blocks.Groups
             AvailableAttributes = new List<AttributeCache>();
             if ( _group != null )
             {
+                var rockContext = new RockContext();
                 int entityTypeId = new GroupMember().TypeId;
                 string groupQualifier = _group.Id.ToString();
                 string groupTypeQualifier = _group.GroupTypeId.ToString();
-                foreach ( var attributeModel in new AttributeService( new RockContext() ).Queryable()
+                foreach ( var attributeModel in new AttributeService( rockContext ).Queryable()
                     .Where( a =>
                         a.EntityTypeId == entityTypeId &&
                         a.IsGridColumn &&
-                        ( ( a.EntityTypeQualifierColumn.Equals( "GroupId", StringComparison.OrdinalIgnoreCase ) && a.EntityTypeQualifierValue.Equals( groupQualifier ) ) ||
-                         ( a.EntityTypeQualifierColumn.Equals( "GroupTypeId", StringComparison.OrdinalIgnoreCase ) && a.EntityTypeQualifierValue.Equals( groupTypeQualifier ) ) ) )
+                        ( ( a.EntityTypeQualifierColumn.Equals( "GroupId", StringComparison.OrdinalIgnoreCase ) && a.EntityTypeQualifierValue.Equals( groupQualifier ) ) ) )
                     .OrderByDescending( a => a.EntityTypeQualifierColumn )
                     .ThenBy( a => a.Order )
                     .ThenBy( a => a.Name ) )
                 {
                     AvailableAttributes.Add( AttributeCache.Read( attributeModel ) );
+                }
+
+                var inheritedAttribute = ( new GroupMember() { GroupId=_group.Id } ).GetInheritedAttributes( rockContext );
+                if ( inheritedAttribute.Count > 0 )
+                {
+                    AvailableAttributes.AddRange( inheritedAttribute );
                 }
             }
         }
@@ -1204,29 +1211,33 @@ namespace RockWeb.Blocks.Groups
                     bool showDateAdded = GetAttributeValue( "ShowDateAdded" ).AsBoolean();
                     gGroupMembers.ColumnsOfType<DateField>().First( a => a.DataField == "DateTimeAdded" ).Visible = showDateAdded;
 
-                    var dataSource = groupMembersList.Select( m => new
+                    bool showNoteColumn = GetAttributeValue( "ShowNoteColumn" ).AsBoolean();
+                    gGroupMembers.ColumnsOfType<RockBoundField>().First( a => a.DataField == "Note" ).Visible = showNoteColumn;
+
+                    var dataSource = groupMembersList.Select( m => new GroupMemberDataRow
                     {
-                        m.Id,
-                        m.Guid,
-                        m.PersonId,
-                        m.Person.NickName,
-                        m.Person.LastName,
+                        Id = m.Id,
+                        Guid = m.Guid,
+                        PersonId = m.PersonId,
+                        NickName = m.Person.NickName,
+                        LastName = m.Person.LastName,
                         Name =
                         ( isExporting ? m.Person.LastName + ", " + m.Person.NickName : string.Format( photoFormat, m.PersonId, m.Person.PhotoUrl, ResolveUrl( "~/Assets/Images/person-no-photo-male.svg" ) ) +
                             m.Person.NickName + " " + m.Person.LastName
                             + ( ( hasGroupRequirements && groupMemberIdsThatLackGroupRequirements.Contains( m.Id ) ) 
                                 ? " <i class='fa fa-exclamation-triangle text-warning'></i>"
                                 : string.Empty )
-                            + ( !string.IsNullOrEmpty( m.Note )
-                                ? " <i class='fa fa-file-text-o text-info'></i>"
+                            + ( ( !showNoteColumn && !string.IsNullOrEmpty( m.Note ) )
+                                ? " <span class='js-group-member-note' data-toggle='tooltip' data-placement='top' title='" + m.Note.EncodeHtml() + "'><i class='fa fa-file-text-o text-info'></i></span>"
                                 : string.Empty )
-                            + ((personIdsThatHaventSigned.Contains( m.PersonId ))
+                            + ( ( personIdsThatHaventSigned.Contains( m.PersonId ) )
                                 ? " <i class='fa fa-pencil-square-o text-danger'></i>"
                                 : string.Empty)),
-                        m.Person.BirthDate,
-                        m.Person.Age,
-                        m.Person.ConnectionStatusValueId,
-                        m.DateTimeAdded,
+                        BirthDate = m.Person.BirthDate,
+                        Age = m.Person.Age,
+                        ConnectionStatusValueId = m.Person.ConnectionStatusValueId,
+                        DateTimeAdded = m.DateTimeAdded,
+                        Note = m.Note,
                         FirstAttended = attendanceFirstLast.Where( a => a.Key == m.PersonId ).Select( a => a.Value.Start ).FirstOrDefault(),
                         LastAttended = attendanceFirstLast.Where( a => a.Key == m.PersonId ).Select( a => a.Value.End ).FirstOrDefault(),
                         Email = m.Person.Email,
@@ -1248,10 +1259,10 @@ namespace RockWeb.Blocks.Groups
                         Longitude = homeLocations.ContainsKey( m.Id ) && homeLocations[m.Id] != null ?
                             homeLocations[m.Id].Longitude : (double?)null,
                         GroupRole = m.GroupRole.Name,
-                        m.GroupMemberStatus,
+                        GroupMemberStatus = m.GroupMemberStatus,
                         RecordStatusValueId = m.Person.RecordStatusValueId,
                         IsDeceased = m.Person.IsDeceased,
-                        m.Person.MaritalStatusValueId
+                        MaritalStatusValueId = m.Person.MaritalStatusValueId,
                     } ).ToList();
 
                     if ( sortProperty != null )
@@ -1356,5 +1367,38 @@ namespace RockWeb.Blocks.Groups
         #endregion
 
        
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="DotLiquid.Drop" />
+    public class GroupMemberDataRow : DotLiquid.Drop
+    {
+        public int Id { get; set; }
+        public Guid Guid { get; set; }
+        public int PersonId { get; set; }
+        public string NickName { get; set; }
+        public string LastName { get; set; }
+        public string Name { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public int? Age { get; set; }
+        public int? ConnectionStatusValueId { get; set; }
+        public DateTime? DateTimeAdded { get; set; }
+        public string Note { get; set; }
+        public DateTime? FirstAttended { get; set; }
+        public DateTime? LastAttended { get; set; }
+        public string Email { get; set; }
+        public string Gender { get; set; }
+        public string HomePhone { get; set; }
+        public string CellPhone { get; set; }
+        public string HomeAddress { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        public string GroupRole { get; set; }
+        public GroupMemberStatus GroupMemberStatus { get; set; }
+        public int? RecordStatusValueId { get; set; }
+        public bool IsDeceased { get; set; }
+        public int? MaritalStatusValueId { get; set; }
     }
 }
