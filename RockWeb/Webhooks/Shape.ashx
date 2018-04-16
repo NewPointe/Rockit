@@ -27,7 +27,6 @@ using Rock.Data;
 using Rock.Model;
 using Rock.Web.Cache;
 using Rock.Communication;
-using Microsoft.Ajax.Utilities;
 
 namespace RockWeb.Webhooks
 {
