@@ -40,12 +40,15 @@ namespace RockWeb.Blocks.Finance
     [Description( "Builds a list of all financial transactions which can be filtered by date, account, transaction type, etc." )]
 
     [ContextAware]
+    [SecurityAction( "FilterByPerson", "The roles and/or users that can filter transactions by person." )]
+
     [LinkedPage( "Detail Page", order: 0 )]
     [TextField( "Title", "Title to display above the grid. Leave blank to hide.", false, order: 1 )]
     [BooleanField( "Show Only Active Accounts on Filter", "If account filter is displayed, only list active accounts", false, "", 2, "ActiveAccountsOnlyFilter" )]
     [BooleanField( "Show Options", "Show an Options button in the title panel for showing images or summary.", false, order: 3 )]
     [IntegerField( "Image Height", "If the Show Images option is selected, the image height", false, 200, order: 4 )]
     [DefinedValueField( Rock.SystemGuid.DefinedType.FINANCIAL_TRANSACTION_TYPE, "Transaction Types", "Optional list of transation types to limit the list to (if none are selected all types will be included).", false, true, "", "", 5 )]
+    [BooleanField( "Show Account Summary", "Should the account summary be displayed at the bottom of the list?", false, order: 6 )]
     public partial class TransactionList : Rock.Web.UI.RockBlock, ISecondaryBlock, IPostBackEventHandler
     {
         private bool _isExporting = false;
@@ -374,6 +377,7 @@ namespace RockWeb.Blocks.Finance
                     break;
 
                 case "Campus":
+                case "CampusAccount":
                     var campus = CampusCache.Read( e.Value.AsInteger() );
                     if ( campus != null )
                     {
@@ -382,6 +386,15 @@ namespace RockWeb.Blocks.Finance
                     else
                     {
                         e.Value = string.Empty;
+                    }
+
+                    if ( e.Key == "Campus" )
+                    {
+                        e.Name = "Campus (of Batch)";
+                    }
+                    else if ( e.Key == "CampusAccount" )
+                    {
+                        e.Name = "Campus (of Account)";
                     }
 
                     break;
@@ -423,7 +436,13 @@ namespace RockWeb.Blocks.Finance
             gfTransactions.SaveUserPreference( "Currency Type", ddlCurrencyType.SelectedValue != All.Id.ToString() ? ddlCurrencyType.SelectedValue : string.Empty );
             gfTransactions.SaveUserPreference( "Credit Card Type", ddlCreditCardType.SelectedValue != All.Id.ToString() ? ddlCreditCardType.SelectedValue : string.Empty );
             gfTransactions.SaveUserPreference( "Source Type", ddlSourceType.SelectedValue != All.Id.ToString() ? ddlSourceType.SelectedValue : string.Empty );
-            gfTransactions.SaveUserPreference( "Campus", campCampus.SelectedValue );
+
+            // Campus of Batch
+            gfTransactions.SaveUserPreference( "Campus", campCampusBatch.SelectedValue );
+
+            // Campus of Account
+            gfTransactions.SaveUserPreference( "CampusAccount", campCampusAccount.SelectedValue );
+
             gfTransactions.SaveUserPreference( "Person", ppPerson.SelectedValue.ToString() );
 
             BindGrid();
@@ -817,17 +836,22 @@ namespace RockWeb.Blocks.Finance
             if ( this.ContextEntity() == null )
             {
                 var campusi = CampusCache.All();
-                campCampus.Campuses = campusi;
-                campCampus.Visible = campusi.Any();
-                campCampus.SetValue( gfTransactions.GetUserPreference( "Campus" ) );
+                campCampusBatch.Campuses = campusi;
+                campCampusBatch.Visible = campusi.Any();
+                campCampusBatch.SetValue( gfTransactions.GetUserPreference( "Campus" ) );
+
+                campCampusAccount.Campuses = campusi;
+                campCampusAccount.Visible = campusi.Any();
+                campCampusAccount.SetValue( gfTransactions.GetUserPreference( "CampusAccount" ) );
             }
             else
             {
-                campCampus.Visible = false;
+                campCampusBatch.Visible = false;
+                campCampusAccount.Visible = false;
             }
 
             // don't show the person picker if the the current context is already a specific person
-            if ( this.ContextEntity() is Person )
+            if ( this.ContextEntity() is Person || !IsUserAuthorized( "FilterByPerson" ) )
             {
                 ppPerson.Visible = false;
             }
@@ -1045,13 +1069,19 @@ namespace RockWeb.Blocks.Finance
                     qry = qry.Where( t => t.SourceTypeValueId == sourceTypeId );
                 }
 
-                // Campus
+                // Campus of Batch and/or Account
                 if ( this.ContextEntity() == null )
                 {
-                    var campus = CampusCache.Read( gfTransactions.GetUserPreference( "Campus" ).AsInteger() );
-                    if ( campus != null )
+                    var campusOfBatch = CampusCache.Read( gfTransactions.GetUserPreference( "Campus" ).AsInteger() );
+                    if ( campusOfBatch != null )
                     {
-                        qry = qry.Where( b => b.Batch != null && b.Batch.CampusId == campus.Id );
+                        qry = qry.Where( b => b.Batch != null && b.Batch.CampusId == campusOfBatch.Id );
+                    }
+
+                    var campusOfAccount = CampusCache.Read( gfTransactions.GetUserPreference( "CampusAccount" ).AsInteger() );
+                    if ( campusOfAccount != null )
+                    {
+                        qry = qry.Where( b => b.TransactionDetails.Any( a => a.Account.CampusId.HasValue && a.Account.CampusId == campusOfAccount.Id ) );
                     }
                 }
 
@@ -1126,12 +1156,7 @@ namespace RockWeb.Blocks.Finance
             gTransactions.SetLinqDataSource( qry.AsNoTracking() );
             gTransactions.DataBind();
 
-            _isExporting = false;
-
-            if ( _batch == null &&
-                _scheduledTxn == null &&
-                _registration == null &&
-                _person == null )
+            if ( GetAttributeValue( "ShowAccountSummary" ).AsBoolean() && !isExporting )
             {
                 pnlSummary.Visible = true;
 
@@ -1167,6 +1192,8 @@ namespace RockWeb.Blocks.Finance
             {
                 pnlSummary.Visible = false;
             }
+
+            _isExporting = false;
         }
 
         /// <summary>

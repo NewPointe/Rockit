@@ -373,15 +373,9 @@ namespace RockWeb.Blocks.Finance
             }
 
             // Date Range
-            var drp = new DateRangePicker();
-            drp.DelimitedValues = gfPledges.GetUserPreference( "Date Range" );
-            var filterStartDate = drp.LowerValue ?? DateTime.MinValue;
-            var filterEndDate = drp.UpperValue ?? DateTime.MaxValue;
-
-            if (filterEndDate != DateTime.MaxValue)
-            {
-                filterEndDate = filterEndDate.AddDays( 1 );
-            }
+            DateRange filterDateRange = DateRangePicker.CalculateDateRangeFromDelimitedValues( gfPledges.GetUserPreference( "Date Range" ) );
+            var filterStartDate = filterDateRange.Start ?? DateTime.MinValue;
+            var filterEndDate = filterDateRange.End ?? DateTime.MaxValue;
 
             /****
              * Include any pledges whose Start/EndDates overlap with the Filtered Date Range
@@ -403,24 +397,19 @@ namespace RockWeb.Blocks.Finance
              ***/
 
             // exclude pledges that start after the filter's end date or end before the filter's start date
-            if ( drpDates.Visible )
+            if ( drpDates.Visible && ( filterDateRange.Start.HasValue || filterDateRange.End.HasValue ) )
             {
                 pledges = pledges.Where( p => !(p.StartDate > filterEndDate) && !(p.EndDate < filterStartDate) );
             }
 
             // Last Modified
-            drp.DelimitedValues = gfPledges.GetUserPreference( "Last Modified" );
-            filterStartDate = drp.LowerValue ?? DateTime.MinValue;
-            filterEndDate = drp.UpperValue ?? DateTime.MaxValue;
+            DateRange filterModifiedDateRange = DateRangePicker.CalculateDateRangeFromDelimitedValues( gfPledges.GetUserPreference( "Last Modified" ) );
+            var filterModifiedStartDate = filterModifiedDateRange.Start ?? DateTime.MinValue;
+            var filterModifiedEndDate = filterModifiedDateRange.End ?? DateTime.MaxValue;
 
-            if (filterEndDate != DateTime.MaxValue)
+            if ( drpLastModifiedDates.Visible && ( filterModifiedDateRange.Start.HasValue || filterModifiedDateRange.End.HasValue ) )
             {
-                filterEndDate = filterEndDate.AddDays( 1 );
-            }
-
-            if ( drpLastModifiedDates.Visible )
-            {
-                pledges = pledges.Where( p => !(p.ModifiedDateTime >= filterEndDate) && !(p.ModifiedDateTime <= filterStartDate) );
+                pledges = pledges.Where( p => !( p.ModifiedDateTime >= filterModifiedEndDate ) && !( p.ModifiedDateTime <= filterModifiedStartDate ) );
             }
 
             gPledges.DataSource = sortProperty != null ? pledges.Sort( sortProperty ).ToList() : pledges.OrderBy( p => p.AccountId ).ToList();

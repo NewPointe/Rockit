@@ -390,7 +390,7 @@ namespace RockWeb.Blocks.Event
             if ( !Page.IsPostBack )
             {
                 var personDv = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON.AsGuid() );
-                if ( CurrentPerson != null && personDv != null && CurrentPerson.RecordTypeValue.Guid != personDv.Guid )
+                if ( CurrentPerson != null && CurrentPerson.RecordTypeValue != null && personDv != null && CurrentPerson.RecordTypeValue.Guid != personDv.Guid )
                 {
                     ShowError( "Invalid Login", "Sorry, the login you are using doesn't appear to be tied to a valid person record. Try logging out and logging in with a different username, or create a new account before registering for the selected event." );
                 }
@@ -1385,8 +1385,9 @@ namespace RockWeb.Blocks.Event
                         foreach( var field in RegistrationTemplate.Forms
                             .SelectMany( f => f.Fields )
                             .Where( f => 
-                                f.PersonFieldType == RegistrationPersonFieldType.FirstName ||
-                                f.PersonFieldType == RegistrationPersonFieldType.LastName ) )
+                                ( f.PersonFieldType == RegistrationPersonFieldType.FirstName ||
+                                f.PersonFieldType == RegistrationPersonFieldType.LastName ) &&
+                                f.FieldSource == RegistrationFieldSource.PersonField ) )
                         {
                             registrant.FieldValues.AddOrReplace( field.Id, 
                                 new FieldValueObject( field, field.PersonFieldType == RegistrationPersonFieldType.FirstName ? CurrentPerson.NickName : CurrentPerson.LastName ) );
@@ -2580,16 +2581,20 @@ namespace RockWeb.Blocks.Event
                             var noteText = new StringBuilder();
                             noteText.AppendFormat( "Registered for {0}", RegistrationInstanceState.Name );
 
+                            string registrarFullName = string.Empty;
+
                             if ( registrar != null && registrar.Id != registrant.Id )
                             {
-                                noteText.AppendFormat( " by {0}", registrar.FullName );
+                                registrarFullName = string.Format( " by {0}", registrar.FullName );
                                 registrantNames.Add( registrant.FullName );
                             }
 
                             if ( registrar != null && ( RegistrationState.FirstName != registrar.NickName || RegistrationState.LastName != registrar.LastName ) )
                             {
-                                noteText.AppendFormat( " by {0}", RegistrationState.FirstName + " " + RegistrationState.LastName );
+                                registrarFullName = string.Format( " by {0}", RegistrationState.FirstName + " " + RegistrationState.LastName );
                             }
+
+                            noteText.Append( registrarFullName );
 
                             if ( noteText.Length > 0 )
                             {
@@ -4553,8 +4558,9 @@ namespace RockWeb.Blocks.Event
                             object dbValue = null;
 
                             if ( field.ShowCurrentValue ||
-                                field.PersonFieldType == RegistrationPersonFieldType.FirstName ||
-                                field.PersonFieldType == RegistrationPersonFieldType.LastName )
+                                ( ( field.PersonFieldType == RegistrationPersonFieldType.FirstName || 
+                                field.PersonFieldType == RegistrationPersonFieldType.LastName ) &&
+                                field.FieldSource == RegistrationFieldSource.PersonField ) )
                             {
                                 dbValue = registrant.GetRegistrantValue( null, person, family, field, rockContext );
                             }
@@ -4971,6 +4977,5 @@ namespace RockWeb.Blocks.Event
         #endregion
 
         #endregion
-
     }
 }

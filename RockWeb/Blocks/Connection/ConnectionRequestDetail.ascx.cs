@@ -127,6 +127,16 @@ namespace RockWeb.Blocks.Connection
 
             nbErrorMessage.Visible = false;
             nbRequirementsErrors.Visible = false;
+            nbNoParameterMessage.Visible = false;
+
+            if ( PageParameter( "ConnectionRequestId" ).AsInteger() == 0 && PageParameter( "ConnectionOpportunityId" ).AsIntegerOrNull() == null )
+            {
+                nbNoParameterMessage.Visible = true;
+                pnlContents.Visible = false;
+                wpConnectionRequestWorkflow.Visible = false;
+                wpConnectionRequestActivities.Visible = false;
+                return;
+            }
 
             if ( !Page.IsPostBack )
             {
@@ -1039,7 +1049,11 @@ namespace RockWeb.Blocks.Connection
 
                 if ( connectionRequest == null )
                 {
-                    connectionOpportunity = connectionOpportunityService.Get( connectionOpportunityId.Value );
+                    if ( connectionOpportunityId.HasValue )
+                    {
+                         connectionOpportunity = connectionOpportunityService.Get( connectionOpportunityId.Value );
+                    }
+                    
                     if ( connectionOpportunity != null )
                     {
                         var connectionStatus = connectionStatusService
@@ -1339,7 +1353,7 @@ namespace RockWeb.Blocks.Connection
 
                 groups = new GroupService( new RockContext() )
                                 .Queryable().AsNoTracking()
-                                .Where( g => g.GroupTypeId == placementGroupTypeId
+                                .Where( g => g.GroupTypeId == placementGroupTypeId && g.IsActive
                                              && ( g.Campus == null || g.CampusId == connectionRequest.CampusId ) )
                                 .ToList();
 
@@ -1349,6 +1363,7 @@ namespace RockWeb.Blocks.Connection
                 var opportunityGroupIds = connectionRequest.ConnectionOpportunity.ConnectionOpportunityGroups.Select( o => o.Id ).ToList();
 
                 groups = connectionRequest.ConnectionOpportunity.ConnectionOpportunityGroups
+                                    .Where(g => g.Group.IsActive)
                                     .Where( g =>
                                         g.Group.Campus == null ||
                                         g.Group.CampusId == connectionRequest.CampusId ||

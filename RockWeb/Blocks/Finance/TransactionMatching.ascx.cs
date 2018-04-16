@@ -41,8 +41,9 @@ namespace RockWeb.Blocks.Finance
     [Description( "Used to match transactions to an individual and allocate the transaction amount to financial account(s)." )]
 
     [AccountsField( "Accounts", "Select the accounts that transaction amounts can be allocated to.  Leave blank to show all accounts", false, "", "", 0 )]
-    [LinkedPage( "Add Family Link", "Select the page where a new family can be added. If specified, a link will be shown which will open in a new window when clicked", false, "6a11a13d-05ab-4982-a4c2-67a8b1950c74,af36e4c2-78c6-4737-a983-e7a78137ddc7", "", 1 )]
-    [LinkedPage( "Add Business Link", "Select the page where a new business can be added. If specified, a link will be shown which will open in a new window when clicked", false, "", "", 2 )]
+    [BooleanField("Show Selected Accounts Only", "If transaction already has allocated amounts, should only the accounts that transaction is allocated to be displayed by default?", false, "", 1 )]
+    [LinkedPage( "Add Family Link", "Select the page where a new family can be added. If specified, a link will be shown which will open in a new window when clicked", false, "6a11a13d-05ab-4982-a4c2-67a8b1950c74,af36e4c2-78c6-4737-a983-e7a78137ddc7", "", 2 )]
+    [LinkedPage( "Add Business Link", "Select the page where a new business can be added. If specified, a link will be shown which will open in a new window when clicked", false, "", "", 3 )]
     [LinkedPage( "Batch Detail Page", "Select the page for displaying batch details", false, "", "", 3)]
     public partial class TransactionMatching : RockBlock, IDetailBlock
     {
@@ -52,6 +53,44 @@ namespace RockWeb.Blocks.Finance
         /// The _focus control
         /// </summary>
         private Control _focusControl = null;
+        private List<int> _visibleDisplayedAccountIds
+        {
+            get
+            {
+                return this.ViewState["_visibleDisplayedAccountIds"] as List<int>;
+            }
+
+            set
+            {
+                this.ViewState["_visibleDisplayedAccountIds"] = value;
+            }
+        }
+
+        private List<int> _visibleOptionalAccountIds
+        {
+            get
+            {
+                return this.ViewState["_visibleOptionalAccountIds"] as List<int>;
+            }
+
+            set
+            {
+                this.ViewState["_visibleOptionalAccountIds"] = value;
+            }
+        }
+
+        private List<int> _allOptionalAccountIds
+        {
+            get
+            {
+                return this.ViewState["_allOptionalAccountIds"] as List<int>;
+            }
+
+            set
+            {
+                this.ViewState["_allOptionalAccountIds"] = value;
+            }
+        }
 
         #endregion
 
@@ -65,14 +104,22 @@ namespace RockWeb.Blocks.Finance
         {
             base.OnInit( e );
 
-            string script = @"
-    $('.transaction-image-thumbnail').click( function() {
+            string script = string.Format( @"
+    $('.transaction-image-thumbnail').click( function() {{
         var $primaryImg = $('.transaction-image');
         var primarySrc = $primaryImg.attr('src');
         $primaryImg.attr('src', $(this).attr('src'));
         $(this).attr('src', primarySrc);
-    });
-";
+    }});
+
+    $('.js-add-account').on('change', function (evt, params) {{
+        console.log(evt.type);
+        console.log(params);
+        $('#{0}').attr('disabled', 'disabled');
+        __doPostBack('{1}', '');
+    }});
+", btnNext.ClientID, ddlAddAccount.ClientID );
+
             // this event gets fired after block settings are updated. it's nice to repaint the screen if these settings would alter it
             this.BlockUpdated += Block_BlockUpdated;
             this.AddConfigurationUpdateTrigger( upnlContent );
@@ -96,6 +143,13 @@ namespace RockWeb.Blocks.Finance
                 hfBackNextHistory.Value = string.Empty;
                 LoadDropDowns();
                 ShowDetail( PageParameter( "BatchId" ).AsInteger() );
+            }
+            else
+            {
+                if ( this.Request.Params["__EVENTTARGET"] == ddlAddAccount.ClientID )
+                {
+                    ddlAddAccount_SelectionChanged( ddlAddAccount, new EventArgs() );
+                }
             }
         }
 
@@ -132,24 +186,37 @@ namespace RockWeb.Blocks.Finance
         {
             // get accounts that are both allowed by the BlockSettings and also in the personal AccountList setting
             var rockContext = new RockContext();
-            var accountGuidList = GetAttributeValue( "Accounts" ).SplitDelimitedValues().Select( a => a.AsGuid() );
+            var blockAccountGuidList = GetAttributeValue( "Accounts" ).SplitDelimitedValues().Select( a => a.AsGuid() ).ToList();
 
             string keyPrefix = string.Format( "transaction-matching-{0}-", this.BlockId );
             var personalAccountGuidList = ( this.GetUserPreference( keyPrefix + "account-list" ) ?? string.Empty ).SplitDelimitedValues().Select( a => a.AsGuid() ).ToList();
+            var optionalAccountGuidList = ( this.GetUserPreference( keyPrefix + "optional-account-list" ) ?? string.Empty ).SplitDelimitedValues().Select( a => a.AsGuid() ).ToList();
 
             var accountQry = new FinancialAccountService( rockContext )
                 .Queryable()
                 .Where( a => a.IsActive );
 
             // no accounts specified means "all Active"
-            if ( accountGuidList.Any() )
+            if ( blockAccountGuidList.Any() )
             {
-                accountQry = accountQry.Where( a => accountGuidList.Contains( a.Guid ) );
+                accountQry = accountQry.Where( a => blockAccountGuidList.Contains( a.Guid ) );
             }
-
-            // no personal accounts specified means "all(that are allowed in block settings)"
-            if ( personalAccountGuidList.Any() )
+            
+            if ( !personalAccountGuidList.Any() )
             {
+                if (!optionalAccountGuidList.Any())
+                {
+                    // if no personal accounts are selected, and there are no optional accounts either, show all the accounts that are allowed in block settings
+                }
+                else
+                {
+                    // if no personal accounts are selected, but there are optional accounts, only show the optional accounts
+                    accountQry = accountQry.Where( a => false );
+                }
+            }
+            else
+            {
+                // if there are person accounts selected, limit accounts to personal accounts
                 accountQry = accountQry.Where( a => personalAccountGuidList.Contains( a.Guid ) );
             }
 
@@ -159,8 +226,23 @@ namespace RockWeb.Blocks.Finance
                 accountQry = accountQry.Where( a => !a.CampusId.HasValue || a.CampusId.Value == campusId.Value );
             }
 
-            rptAccounts.DataSource = accountQry.OrderBy( a => a.Order ).ThenBy( a => a.Name ).ToList();
+            _visibleDisplayedAccountIds = new List<int>( accountQry.OrderBy(a=>a.Order).Select( a => a.Id ).ToList() );
+            _visibleOptionalAccountIds = new List<int>();
+
+            // make the datasource all accounts, but only show the ones that are in _visibleAccountIds or have a non-zero amount
+            var allAccountList = new FinancialAccountService( rockContext ).Queryable().AsNoTracking().OrderBy( a => a.Order ).ThenBy( a => a.Name ).ToList();
+            rptAccounts.DataSource = allAccountList;
             rptAccounts.DataBind();
+
+            var optionalAccounts = allAccountList.Where( a => optionalAccountGuidList.Contains( a.Guid ) && !_visibleDisplayedAccountIds.Contains( a.Id ) ).ToList();
+            if ( blockAccountGuidList.Any() )
+            {
+                optionalAccounts = optionalAccounts.Where( a => blockAccountGuidList.Contains( a.Guid ) ).ToList();
+            }
+
+            _allOptionalAccountIds = optionalAccounts.Select( a => a.Id ).ToList();
+
+            UpdateVisibleAccountBoxes();
 
             rcwEnvelope.Visible = GlobalAttributesCache.Read().EnableGivingEnvelopeNumber;
         }
@@ -200,7 +282,8 @@ namespace RockWeb.Blocks.Finance
         private enum Direction
         {
             Prev,
-            Next
+            Next,
+            Current
         }
 
         /// <summary>
@@ -220,6 +303,10 @@ namespace RockWeb.Blocks.Finance
                 nbSaveError.Visible = false;
                 int? fromTransactionId = hfTransactionId.Value.AsIntegerOrNull();
                 int? toTransactionId = null;
+
+                // reset the visible optional account ids everytime they navigate to a new transaction
+                _visibleOptionalAccountIds = new List<int>();
+
                 List<int> historyList = hfBackNextHistory.Value.Split( new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries ).AsIntegerList().Where( a => a > 0 ).ToList();
                 int position = hfHistoryPosition.Value.AsIntegerOrNull() ?? -1;
 
@@ -227,12 +314,17 @@ namespace RockWeb.Blocks.Finance
                 {
                     position--;
                 }
-                else
+                else if ( direction == Direction.Next)
                 {
                     position++;
                 }
+                else if ( direction == Direction.Current )
+                {
+                    // If navigate is set to stay on current, stay on the current transaction ( and don't change history position )
+                    toTransactionId = fromTransactionId;
+                }
 
-                if ( historyList.Count > position )
+                if ( ( toTransactionId == null ) && ( historyList.Count > position ) )
                 {
                     if ( position >= 0 )
                     {
@@ -274,6 +366,7 @@ namespace RockWeb.Blocks.Finance
                     qryTransactionsToMatch = qryTransactionsToMatch.Where( a => !historyList.Contains( a.Id ) );
                 }
 
+                // put them in a predictable order
                 qryTransactionsToMatch = qryTransactionsToMatch.OrderBy( a => a.CreatedDateTime ).ThenBy( a => a.Id );
 
                 FinancialTransaction transactionToMatch = qryTransactionsToMatch.FirstOrDefault();
@@ -288,6 +381,9 @@ namespace RockWeb.Blocks.Finance
                     {
                         qryRemainingTransactionsToMatch = qryRemainingTransactionsToMatch.Where( a => a.BatchId == batchId );
                     }
+
+                    // put them in a predictable order
+                    qryRemainingTransactionsToMatch = qryRemainingTransactionsToMatch.OrderBy( a => a.CreatedDateTime ).ThenBy( a => a.Id );
 
                     // get the first transaction that we haven't visited yet, or the next one we have visited after one we are on, or simple the first unmatched one
                     transactionToMatch = qryRemainingTransactionsToMatch.Where( a => a.Id > fromTransactionId && !historyList.Contains( a.Id ) ).FirstOrDefault()
@@ -356,6 +452,10 @@ namespace RockWeb.Blocks.Finance
                     }
 
                     hfTransactionId.Value = transactionToMatch.Id.ToString();
+
+                    // stored the value in cents to avoid javascript floating point math issues
+                    hfOriginalTotalAmount.Value = (transactionToMatch.TotalAmount*100).ToString();
+                    hfCurrencySymbol.Value = GlobalAttributesCache.Value( "CurrencySymbol" );
 
                     // get the first 2 images (should be no more than 2, but just in case)
                     var transactionImages = transactionToMatch.Images.OrderBy( a => a.Order ).Take( 2 ).ToList();
@@ -451,13 +551,26 @@ namespace RockWeb.Blocks.Finance
                         accountBox.Text = string.Empty;
                     }
 
+                    bool existingAmounts = false;
                     foreach ( var detail in transactionToMatch.TransactionDetails )
                     {
                         var accountBox = rptAccounts.ControlsOfTypeRecursive<CurrencyBox>().Where( a => a.Attributes["data-account-id"].AsInteger() == detail.AccountId ).FirstOrDefault();
                         if ( accountBox != null )
                         {
+                            existingAmounts = true;
                             accountBox.Text = detail.Amount.ToString();
                         }
+                    }
+
+                    if ( existingAmounts )
+                    {
+                        string keyPrefix = string.Format( "transaction-matching-{0}-", this.BlockId );
+                        bool onlyShowSelectedAccounts = this.GetUserPreference( keyPrefix + "only-show-selected-accounts" ).AsBoolean();
+                        UpdateVisibleAccountBoxes( onlyShowSelectedAccounts );
+                    }
+                    else
+                    {
+                        UpdateVisibleAccountBoxes();
                     }
 
                     tbSummary.Text = transactionToMatch.Summary;
@@ -516,9 +629,49 @@ namespace RockWeb.Blocks.Finance
 
                 if ( _focusControl == null )
                 {
-                    _focusControl = rptAccounts.ControlsOfTypeRecursive<Rock.Web.UI.Controls.CurrencyBox>().FirstOrDefault();
+                    _focusControl = rptAccounts.ControlsOfTypeRecursive<Rock.Web.UI.Controls.CurrencyBox>().Where( a => a.Visible ).FirstOrDefault();
                 }
             }
+        }
+
+        private void UpdateVisibleAccountBoxes( bool onlyShowSelectedAccounts = false )
+        {
+            List<int> _sortedAccountIds = _visibleDisplayedAccountIds.ToList();
+            _sortedAccountIds.AddRange( _visibleOptionalAccountIds );
+
+            List<int> _visibleAccountBoxes = new List<int>();
+
+            foreach ( var accountBox in rptAccounts.ControlsOfTypeRecursive<CurrencyBox>() )
+            {
+                int accountBoxAccountId = accountBox.Attributes["data-account-id"].AsInteger();
+                accountBox.Visible = !onlyShowSelectedAccounts && ( _visibleDisplayedAccountIds.Contains( accountBoxAccountId ) || _visibleOptionalAccountIds.Contains( accountBoxAccountId ) );
+
+                if ( !accountBox.Visible && accountBox.Text.AsDecimal() != 0 )
+                {
+                    // if there is a non-zero amount, show the edit box regardless of the account filter settings
+                    accountBox.Visible = true;
+                }
+
+                if ( accountBox.Visible )
+                {
+                    _visibleAccountBoxes.Add( accountBoxAccountId );
+                }
+
+                accountBox.Attributes["data-sort-order"] = _sortedAccountIds.IndexOf( accountBoxAccountId ).ToString();
+            }
+
+            var optionalAccounts = new FinancialAccountService( new RockContext() ).GetByIds( _allOptionalAccountIds ).OrderBy( a => a.Order ).ThenBy( a => a.Name ).ToList();
+            ddlAddAccount.Items.Clear();
+            ddlAddAccount.Items.Add( new ListItem() );
+            foreach ( var account in optionalAccounts )
+            {
+                if ( !_visibleAccountBoxes.Contains( account.Id ) )
+                {
+                    ddlAddAccount.Items.Add( new ListItem( account.PublicName, account.Id.ToString() ) );
+                }
+            }
+
+            pnlAddOptionalAccount.Visible = ddlAddAccount.Items.Count > 1;
         }
 
         #endregion
@@ -534,15 +687,26 @@ namespace RockWeb.Blocks.Finance
         {
             string keyPrefix = string.Format( "transaction-matching-{0}-", this.BlockId );
 
-            var selectedAccountIdList = apPersonalAccounts.SelectedValuesAsInt().ToList();
+            var selectedAccountIdList = apDisplayedPersonalAccounts.SelectedValuesAsInt().ToList();
             var selectedAccountGuidList = new FinancialAccountService( new RockContext() ).GetByIds( selectedAccountIdList ).Select( a => a.Guid ).ToList();
             this.SetUserPreference( keyPrefix + "account-list", selectedAccountGuidList.AsDelimited( "," ) );
 
-            int campusId = cpAccounts.SelectedCampusId ?? 0;
-            this.SetUserPreference( keyPrefix + "account-campus", campusId.ToString() );
+            var optionalAccountIdList = apOptionalPersonalAccounts.SelectedValuesAsInt().ToList();
+            var optionalAccountGuidList = new FinancialAccountService( new RockContext() ).GetByIds( optionalAccountIdList ).Select( a => a.Guid ).ToList();
+            this.SetUserPreference( keyPrefix + "optional-account-list", optionalAccountGuidList.AsDelimited( "," ) );
+
+            this.SetUserPreference( keyPrefix + "only-show-selected-accounts", cbOnlyShowSelectedAccounts.Checked.ToString() );
+
+            int? campusId = cpAccounts.SelectedCampusId;
+            this.SetUserPreference( keyPrefix + "account-campus", campusId.HasValue ? campusId.Value.ToString() : "" );
 
             mdAccountsPersonalFilter.Hide();
+
+            // load the dropdowns again since account filter may have changed
             LoadDropDowns();
+
+            // load the current transaction again to make sure UI shows the accounts based on the updated filter settings
+            NavigateToTransaction( Direction.Current );
         }
 
         /// <summary>
@@ -559,7 +723,16 @@ namespace RockWeb.Blocks.Finance
                 .GetByGuids( personalAccountGuidList )
                 .Where( a => a.IsActive )
                 .ToList();
-            apPersonalAccounts.SetValues( personalAccountList );
+            apDisplayedPersonalAccounts.SetValues( personalAccountList );
+
+            var optionalAccountGuidList = ( this.GetUserPreference( keyPrefix + "optional-account-list" ) ?? string.Empty ).SplitDelimitedValues().Select( a => a.AsGuid() ).ToList();
+            var optionalAccountList = new FinancialAccountService( new RockContext() )
+                .GetByGuids( optionalAccountGuidList )
+                .Where( a => a.IsActive )
+                .ToList();
+            apOptionalPersonalAccounts.SetValues( optionalAccountList );
+
+            cbOnlyShowSelectedAccounts.Checked = this.GetUserPreference( keyPrefix + "only-show-selected-accounts" ).AsBoolean();
 
             cpAccounts.Campuses = Rock.Web.Cache.CampusCache.All();
             cpAccounts.SelectedCampusId = ( this.GetUserPreference( keyPrefix + "account-campus" ) ?? string.Empty ).AsIntegerOrNull();
@@ -797,7 +970,7 @@ namespace RockWeb.Blocks.Finance
                 // if a person was selected using the PersonPicker, set the PersonDropDown to unselected
                 ddlIndividual.SetValue( string.Empty );
                 LoadPersonPreview( ppSelectNew.PersonId.Value );
-                _focusControl = rptAccounts.ControlsOfTypeRecursive<Rock.Web.UI.Controls.CurrencyBox>().FirstOrDefault();
+                _focusControl = rptAccounts.ControlsOfTypeRecursive<Rock.Web.UI.Controls.CurrencyBox>().Where(a => a.Visible).FirstOrDefault();
                 
                 nbSaveError.Text = string.Empty;
                 nbSaveError.Visible = false;
@@ -928,6 +1101,41 @@ namespace RockWeb.Blocks.Finance
             string width = maxWidth.HasValue ? string.Format( "&maxWidth={0}", maxWidth.Value ) : string.Empty;
             string height = maxHeight.HasValue ? string.Format( "&maxHeight={0}", maxHeight.Value ) : string.Empty;
             return ResolveRockUrl( string.Format( "~/GetImage.ashx?id={0}{1}{2}", binaryFileId, width, height ) );
+        }
+
+        /// <summary>
+        /// Handles the SelectionChanged event of the ddlAddAccount control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void ddlAddAccount_SelectionChanged( object sender, EventArgs e )
+        {
+            // update accountboxes
+            var accountId = ddlAddAccount.SelectedValue.AsIntegerOrNull();
+            if ( accountId.HasValue && !_visibleOptionalAccountIds.Contains( accountId.Value ) )
+            {
+                _visibleOptionalAccountIds.Add( accountId.Value );
+                var itemToRemove = ddlAddAccount.Items.FindByValue( accountId.Value.ToString() );
+                ddlAddAccount.Items.Remove( itemToRemove );
+            }
+
+            UpdateVisibleAccountBoxes();
+
+            if ( ddlAddAccount.Items.Count <= 1 )
+            {
+                pnlAddOptionalAccount.Visible = false;
+            }
+
+            foreach ( var accountBox in rptAccounts.ControlsOfTypeRecursive<CurrencyBox>() )
+            {
+                if ( accountBox.Attributes["data-account-id"].AsInteger() == accountId )
+                {
+                    accountBox.Text = cbOptionalAccountAmount.Text;
+                    cbOptionalAccountAmount.Text = string.Empty;
+                    _focusControl = accountBox;
+                    break;
+                }
+            }
         }
 
         #endregion

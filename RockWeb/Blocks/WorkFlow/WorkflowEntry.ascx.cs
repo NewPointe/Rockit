@@ -770,7 +770,10 @@ namespace RockWeb.Blocks.WorkFlow
 
                     if ( HydrateObjects() && _action != null && _action.Id != previousActionId )
                     {
-                        BuildForm( true );
+                        var cb = CurrentPageReference;
+                        cb.Parameters.AddOrReplace( "WorkflowId", _workflow.Id.ToString() );
+                        Response.Redirect( cb.BuildUrl(), false );
+                        Context.ApplicationInstance.CompleteRequest();
                     }
                     else
                     {

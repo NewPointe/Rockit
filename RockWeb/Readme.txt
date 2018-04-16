@@ -1,3 +1,166 @@
+Rock McKinley 6.10
+
++ Added a new "In Group(s)" filter for person dataviews that allows filtering just by the group and updates existing filter to be "In Group(s) Advanced".
++ Added a new following event for when a person submits a new public prayer request.
++ Added a new following suggestion type that allows following people that are in any groups that are followed.
++ Added a new Group Attribute report field for Group Member reports.
++ Added a warning to the Protect My Ministry configuration page when configured to use a non-secure URL.
++ Added an option on registration group placement that can be used to set the value of group member attributes when a registrant is placed in a group.
++ Added an option to have new prayer requests default to being public.
++ Added Group Placement Filters to Event Registration.
++ Added new Campus filters for person data views that allow filtering based only on active campuses (existing filters include inactive campuses).
++ Added the ability to filter the calendar Lava block using page parameters.
++ Fixed a bug in Registration List Lava block that would cause exception on the My Account page.
++ Fixed an exception that would occur in Connection Request Detail block if no query string parameters are provided.
++ Fixed an issue that prevented following when multiple followable items exist on single page.
++ Fixed an issue with Transaction Entry block incorrectly determining if saved accounts should be enabled when making a future one-time transaction.
++ Fixed check-in label details to not erase existing merge codes when re-uploading file.
++ Fixed confusing help text on site domains.
++ Fixed Event Template Details from showing duplicate forms in certain situations.
++ Fixed exception that would occur in the Group Registration block if a spouse phone number was left blank.
++ Fixed GroupList block to respect security.
++ Fixed issue with text not being aligned correctly in the ButtonDropDownList control.
++ Fixed issue with the Public Profile Edit block not saving person attribute values when adding new people.
++ Fixed Prayer Request Detail block to set default category correctly.
++ Fixed Scheduled Transaction Summary so that it does not always show a recurring NMI schedule as having a next payment of 'Today'.
++ Fixed the Email Validation on new prayer requests.
++ Fixed the fact that logging of the Twilio transport was on by default. If using Twilio you may want to delete the log file (~/App_Data/Logs/TwilioLog.txt) to regain some disk space on your web server.
++ Fixed the Financial Pledge block to prevent a negative pledge.
++ Fixed the Fundraising Matching block to not display inactive groups.
++ Fixed the Fundraising Participant block to not throw an exception when donor does not have an address.
++ Fixed the Group Finder block to link to detail page correctly.
++ Fixed the Group Finder to display the search button correctly when configured to only filter by campus.
++ Fixed the Group Finder to handle groups with a "\" character in their name.
++ Fixed the My Connection Opportunities to correctly hide the "Last Activity Note" column when configured to not show the note.
++ Fixed the PageListAsBlocks lava template in the Flat and Stark themes.
++ Fixed the required field validation for the RockRating Control.
++ Fixed the Rock REST API missing some 'special' fields when an $expand clause is specified. This fixes an issue where PrimaryAliasId was not included when using GET ~/api/People with an $expand clause.
++ Fixed the Rock REST API to include attributes when an $expand clause and loadAttributes are specified.
++ Updated the ToCssClass Lava filter to handle complex string that could contain special characters. 
++ Updated Attendance Analytics to exclude inactive campuses by default in the campus filter (This can be changed to include inactive campuses using a new block setting).
++ Updated check-in type configuration to only display phone number details if a search type of phone number is configured.
++ Updated DynamicReport to include the DataFilters from any parent dataviews that it uses.
++ Updated exception logging to obfuscate sensitive form fields or any field name that contains 'nolog'.
++ Updated File Uploader to clean invalid characters from filenames before storing on file system.
++ Updated following suggestions so that it does not send an additional reminder if the number of days for a reminder is left blank.
++ Updated My Connections block to display a total count of each opportunity type.
++ Updated Person Search to better handle businesses with a comma in their name.
++ Updated the Add Family block to optionally require a birthdate for children, a phone number for adults, and be able to launch workflows for each adult, child, and or family.
++ Updated the admin toolbar to allow those with edit rights on a page to edit the page properties.
++ Updated the Attendance Analytics block so it can optionally be configured to use a group picker instead of listing every group with a checkbox.
++ Updated the Campus field type to use the "Include Inactive" configuration setting when generating the UI for filtering attributes of this type.
++ Updated the Campus Pickers to load campuses automatically (with option to override list).
++ Updated the Communication Entry block so that it does not allow removing all recipients when in simple mode.
++ Updated the Connection Opportunity Details block to allow selecting multiple groups at a time when configuring placement groups.
++ Updated the Connection Request block to optionally display the total number of requests for the given campus and opportunity types that user is authorized to view.
++ Updated the Content Channel detail block to prevent adding Item attributes with same key that the content channel type has defined.
++ Updated the Content Channel View block to check security and not allow viewing of an item that doesn't belong to configured channel.
++ Updated the ContentChannelView block to require a value for Channel.
++ Updated the Contribution Lava Statement block to more accurately show pledge data.
++ Updated the cron expression for the 'Download Transction' job to run every day at 5am. Before it only ran on weekdays.
++ Updated the Group Detail block to optionally be able to prevent setting the campus to an inactive campus.
++ Updated the Group Finder block to optionally be able to display a campus column for the groups in the grid.
++ Updated the Group List Block to sort correctly on Date Added.
++ Updated the Group Picker control to allow easily selecting all groups, or all child groups.
++ Updated the Group Registration block to only count active members when determining over capacity.
++ Updated the Group Type block to prevent adding a circular reference for inherited group types.
++ Updated the Login block to honor the locked/unconfirmed settings for external accounts.
++ Updated the Person Merge block so that the invalidating of logins when people with different emails are merged can be disabled.
++ Updated the Person Picker to show the person's age and spouse name when hovering over the name.
++ Updated the PostAttendanceToGroup workflow action to add campusid and allow attendance without group membership.
++ Updated the Public Profile block to support a View Only mode.
++ Updated the Tooltip text on the family attendance badge to indicate that attendance is only for child when viewing a child's record.
++ Updated the Transaction Detail block to optionally show transaction detail attributes in the list of accounts for the transaction.
++ Updated the transaction entry block so that it does not default to 0.00 and uses place-holder text instead.
++ Updated the Transaction List block to optionally be able to display the Total Results account summary even when used within context of a batch, person, registration or scheduled transaction.
++ Updated the Transaction Matching block to support only showing accounts that already have amounts allocated to them by default.
++ Updated the Workflow Entry block so that it will reset browser view to top of page on each form when workflow has multiple user entry forms.
++ Updated work flow processing to not process any workflows/actions that are configured to be inactive.
+
+
+Rock McKinley 6.9
+
++ Added GivingId to the Attendance Analytics Excel Export
++ Updated the active users block to show hints at color dot meanings
++ Fixed an exception that would occur in Attendance History block if a valid group id was not used.
++ Fixed an exception that would occur when attempting to configure Transaction Entry block with only an ACH gateway.
++ Fixed issue with not being able to logout when the current URL contains an Encoded Key parameter.
++ Fixed misspelled word in description of field in Check-in Label.
++ Added 'ReopenBatch' as a security action on Batch Detail
++ Fixed the "My Assigned Workflow" lists so they would not show a duplicate workflow when an assigned activity had more than one active form.
++ Fixed the IdleRedirect block so that it will not redirect prior to the configured idle seconds.
++ Fixed the person picker to correctly display 'Pending' record status.
++ Fixed the Pledge List block so that when exporting to Excel it includes all of the columns displayed in the list.
++ Fixed incorrect HTML in the default podcast series detail Lava file.
++ Fixed an issue with the Check-in Details page (under Attendance Analytics), sometimes not showing all of the correct groups.
++ Improved the GroupDetailLava block so that when editing an existing group member, the person picker field is disabled.
++ Fixed the Content Channel View block so that if Query Parameter Filtering is enabled, the items are not cached (regardless of Cache Duration setting). The Lava template will still be cached based on Cache Duration setting.
++ Fixed the NMI payment gateway to prompt for the "Name on Account" field correctly when adding a bank account (ACH) transaction.
++ Added new My Connection Opportunities Lava block
++ Added block setting to allow prayer requests to be public by default.
++ Added option to Batch List to hide the Accounts column
++ Added Campus Filter to the top of My Connections block that will filter both the Summary and the Grid by Campus
++ Fixed Date Attribute showing a required validation error when 'Use Current' is checked.
++ Fixed select columns on grids so that their selection will be persisted through a postback.
++ Fixed the date range filter in Pledge List block.
++ Updated Connection Requests to show the status dots for each connection request in the grid.
++ Added optional 'PersonDetailPage' to the New Family block that can be used to navigate to a custom page instead of the default ~/Person/{PersonId} route
+
+
+Rock McKinley 6.8
+
++ Fixed an issue with an early version of the v6.7 install missing an updated file.
+
+
+Rock McKinley 6.7
+ 
++ Fixed exceptions that would appear on default home page after installing Rock v6 due to an invalid filter on the content blocks (Fixes #2155).
++ Fixed issue with event details being duplicated on the Calendar Event Detail block when using the Stark theme (Fixes #2245).
++ Updated the ZebraPhoto Lava Filter so that it can be used multiple times on the same label.
++ Added 'Save Then Add' and 'Save Then View Batch' as buttons when adding a new transaction to a batch.
++ Updated Registrations to use Sliding Date Range filters for Registrations, Registrants, and Payments. This also fixed an issue where the date range filters were sometimes not using the correct dates and not including recent registrations and payments.
++ Updated the Login block so that when a user logs in using an external provider such as Facebook or Google, their login will be remembered and they won't need to login again on every visit.
++ Added the ability to check-in using any type of device that supports keyboard wedge. This includes bar code scanners, proximity card readers, etc.
++ Added Campus (of Account) as a filter for Transaction List.
++ Added new features to Check-in that will automatically select options based on the person's last check-in (with ability for user to change the selection).
++ Added the ability for people to check-out.
++ Added option to have transaction matching so that additional optional accounts can be easily added per transaction.
++ Improved check-in so that when searching by name, the name field will have focus when screen is displayed (Fixes #2222).
++ Fixed issue with check-in that was preventing people from checking in when used with a culture that formats date as dd/mm/yyyy like en-GB or en-AU (Fixes #2212).
+
+
+Rock McKinley 6.6
+ 
++ Updated the Registration Entry block so that it no longer inserts nicknames into incorrect form fields (Fixes #2040).
++ Updated Registration Instance list to include the registration's confirmation email when exporting to Excel (Fixes #2209).
++ Fixed an exception that would occur if a person without a valid record type tried to register for an event.
++ Updated the reassign action in the TransactionList so that transactions can be reassigned to businesses.
++ Fixed an issue with downloaded transactions getting assigned to incorrect schedule if multiple PayFlowPro accounts are being used for contributions (Fixes #2234).
++ Added an option to have a predefined list of Batch Names when creating a new batch.
++ Fixed giving badge not filtering by account correctly.
++ Fixed an exception that would occur in the ContributionStatementLava if no pledges were given, and updated DateRange logic to be consistent.
++ Updated the ContributionStatemementLava so that GivingGroupId logic is consistent for Pledges and Contributions.
++ Updated transaction matching so that accounts that have non-zero amounts will always show regardless of account filter.
++ Added a 'Select All' action to the Account Picker control.
++ Updated the group detail block so that unlisted phone numbers are not displayed (Fixes #2085).
++ Fixed the GroupMemberAttendanceAddWorkflow action to use the schedule attribute value setting (Fixes #2125).
++ Fixed an issue with the new account entry block that would prevent existing people with a PIN number from being able to create a normal database login (Fixes #2204).
++ Fixed an issue with Bulk Update not updating deceased people (Fixes #2108).
++ Fixed group member max count role enforcement not enforcing correctly when adding a new family.
++ Added 'Edit Connection Status' and 'Edit Record Status' as security actions on the edit person block.
++ Added an additional security action to person edit block to control who can edit the combine giving value.
++ Fixed MyAccount block throwing an exception when trying to edit/crop the person image (Fixes #2001).
++ Fixed MyAccount block adding Demographic changes twice to history (Fixes #2078).
++ Updated the workflow SetAttributeValue action to save an encrypted field type value correctly (Fixes #2167).
++ Fixed the incorrect reporting page showing when canceling or adding a category in reports (Fixes #2056).
++ Fixed ContentChannelItem data view filters not showing attributes that are defined at the content channel.
++ Updated the ContentChannelView block to use new decluttered storage for Lava commands (Fixes EntityCommands not working in ContentChannelView).
++ Added support for the "suppress-bounce" event type in the Mailgun webhook (Fixes #2082).
++ Updated SignNow integration to handle an invalid filename (Fixes #2207).
++ Removed links to missing images from Stark theme.
++ Upgraded FontAwesome to v4.7. Been looking forward to the bathtub icon... http://fontawesome.io/icon/bath/
+
+
 Rock McKinley 6.5
 
 + Fixed an issue with ValueList and KeyValueList block settings not allowing user to add new values.
