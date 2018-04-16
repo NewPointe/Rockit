@@ -91,9 +91,9 @@ namespace org.newpointe.ProtectMyMinistry
             BackgroundCheck bgCheck = getBgCheck( rockContext, workflow, person.PrimaryAliasId.Value );
 
             List<string[]> SSNTraceCounties = null;
-            if ( requestTypePackageName.Equals( "PLUS", StringComparison.OrdinalIgnoreCase ) && !String.IsNullOrWhiteSpace( bgCheck.ResponseXml ) )
+            if ( requestTypePackageName.Equals( "PLUS", StringComparison.OrdinalIgnoreCase ) && !String.IsNullOrWhiteSpace( bgCheck.ResponseData ) )
             {
-                IEnumerable<XElement> transactions = XDocument.Parse( bgCheck.ResponseXml ).Root.Elements( "Transaction" );
+                IEnumerable<XElement> transactions = XDocument.Parse( bgCheck.ResponseData ).Root.Elements( "Transaction" );
                 IEnumerable<XElement> OrderXMLs = transactions.SelectMany( x => x.Elements( "OrderXML" ) );
                 IEnumerable<XElement> Orders = OrderXMLs.Select( x => x.Element( "Order" ) ).Where( x => x != null );
                 IEnumerable<XElement> OrderDetails = Orders.SelectMany( x => x.Elements( "OrderDetail" ) );
@@ -177,9 +177,9 @@ namespace org.newpointe.ProtectMyMinistry
                 xSSNElement.Value = "XXX-XX-XXXX";
             }
 
-            if ( !String.IsNullOrWhiteSpace( bgCheck.ResponseXml ) )
+            if ( !String.IsNullOrWhiteSpace( bgCheck.ResponseData ) )
             {
-                xTransactionLog = XDocument.Parse( bgCheck.ResponseXml );
+                xTransactionLog = XDocument.Parse( bgCheck.ResponseData );
             }
             else
             {
@@ -189,7 +189,7 @@ namespace org.newpointe.ProtectMyMinistry
             }
 
             xTransactionLog.Root.Add( xTransaction );
-            bgCheck.ResponseXml = xTransactionLog.ToString();
+            bgCheck.ResponseData = xTransactionLog.ToString();
             rockContext.SaveChanges();
 
             return xTransactionLog;
