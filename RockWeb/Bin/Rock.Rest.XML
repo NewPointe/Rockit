@@ -1559,6 +1559,15 @@
             <param name="activeOnly">if set to <c>true</c> [active only].</param>
             <returns></returns>
         </member>
+        <member name="M:Rock.Rest.Controllers.FinancialAccountsController.GetChildren(System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Gets the children.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="activeOnly">if set to <c>true</c> [active only].</param>
+            <param name="displayPublicName">if set to <c>true</c> [public name].</param>
+            <returns></returns>
+        </member>
         <member name="T:Rock.Rest.Controllers.FinancialBatchesController">
             <summary>
             FinancialBatches REST API
@@ -2109,13 +2118,6 @@
             <param name="postalCode">The postal code.</param>
             <param name="country">The country.</param>
             <exception cref="T:System.Web.Http.HttpResponseException"></exception>
-        </member>
-        <member name="M:Rock.Rest.Controllers.GroupsController.Put(System.Int32,Rock.Model.Group)">
-            <summary>
-            Puts the specified identifier.
-            </summary>
-            <param name="id">The identifier.</param>
-            <param name="group">The group.</param>
         </member>
         <member name="M:Rock.Rest.Controllers.GroupsController.GetMapInfo(System.Int32)">
             <summary>
@@ -2673,7 +2675,15 @@
             Gets the name of the series partition.
             </summary>
             <param name="metricId">The metric identifier.</param>
-            <param name="metricValuePartitionEntityIds">The metric value partition as a comma-delimited list of EntityTypeId|EntityId.</param>
+            <param name="metricValuePartitionEntityIds">The metric value partition entity ids.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Rock.Rest.Controllers.MetricValuesController.GetSeriesPartitionName(System.Int32,System.Collections.Generic.List{System.String})">
+            <summary>
+            Gets the name of the series partition using POST
+            </summary>
+            <param name="metricId">The metric identifier.</param>
+            <param name="metricValuePartitionEntityIdList">The metric value partition entity identifier list.</param>
             <returns></returns>
         </member>
         <member name="T:Rock.Rest.Controllers.NotesController">
@@ -2901,13 +2911,6 @@
             <param name="person">The person.</param>
             <returns></returns>
         </member>
-        <member name="M:Rock.Rest.Controllers.PeopleController.Put(System.Int32,Rock.Model.Person)">
-            <summary>
-            PUT endpoint. Use this to UPDATE a person record
-            </summary>
-            <param name="id">The identifier.</param>
-            <param name="person">The person.</param>
-        </member>
         <member name="M:Rock.Rest.Controllers.PeopleController.AddNewPersonToFamily(Rock.Model.Person,System.Int32,System.Int32)">
             <summary>
             Adds a new person and adds them to the specified family.
@@ -3069,6 +3072,15 @@
             </summary>
             <param name="personId">The person id.</param>
             <param name="monthCount">The month count.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Rock.Rest.Controllers.PersonBadgesController.InteractionsInRange(System.Int32,System.Int32,System.String)">
+            <summary>
+            Gets the the number of interactions in a given date range
+            </summary>
+            <param name="personId">The person id.</param>
+            <param name="interactionChannelId">The interaction channel identifier.</param>
+            <param name="delimitedDateRange">The delimited date range value.</param>
             <returns></returns>
         </member>
         <member name="T:Rock.Rest.Controllers.PersonBadgesController.GroupOfTypeResult">
@@ -3308,28 +3320,11 @@
             <summary>
             PhoneNumbers REST API
             </summary>
-            <summary>
-            
-            </summary>
         </member>
         <member name="M:Rock.Rest.Controllers.PhoneNumbersController.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Rock.Rest.Controllers.PhoneNumbersController"/> class.
             </summary>
-        </member>
-        <member name="M:Rock.Rest.Controllers.PhoneNumbersController.Put(System.Int32,Rock.Model.PhoneNumber)">
-            <summary>
-            Puts the specified identifier.
-            </summary>
-            <param name="id">The identifier.</param>
-            <param name="phoneNumber">The phone number.</param>
-        </member>
-        <member name="M:Rock.Rest.Controllers.PhoneNumbersController.Post(Rock.Model.PhoneNumber)">
-            <summary>
-            Posts the specified phone number.
-            </summary>
-            <param name="phoneNumber">The phone number.</param>
-            <returns></returns>
         </member>
         <member name="T:Rock.Rest.Controllers.PluginMigrationsController">
             <summary>
