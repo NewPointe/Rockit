@@ -1,3 +1,8 @@
+**Notice: We now run a full fork of Rock with our custom modifications and add-ons, you can find it at https://github.com/NewPointe/Rock.** The Rockit repo is left available for change history that we couldn't transfer to the full version.
+
+------
+
+
 Rockit
 =======
 
